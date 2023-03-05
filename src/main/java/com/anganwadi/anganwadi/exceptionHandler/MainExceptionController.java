@@ -1,0 +1,39 @@
+package com.anganwadi.anganwadi.exceptionHandler;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@ControllerAdvice
+@Slf4j
+public class MainExceptionController implements ErrorController {
+
+    @ExceptionHandler(NullPointerException.class)
+    private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
+        log.error(nullError.getMessage());
+
+        Map<String, Object> setNullError = new HashMap<>();
+        setNullError.put("status", HttpStatus.NOT_FOUND);
+        setNullError.put("message", "Error Occurred, Please Try Again Later & Contact Support Team");
+        return new ResponseEntity<>(setNullError, HttpStatus.NOT_FOUND);
+
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    private ResponseEntity<?> handleMethodError(HttpRequestMethodNotSupportedException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setNullError = new HashMap<>();
+        setNullError.put("status", HttpStatus.METHOD_NOT_ALLOWED);
+        setNullError.put("message", "Please Check The API Method");
+        return new ResponseEntity<>(setNullError, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+
+}
