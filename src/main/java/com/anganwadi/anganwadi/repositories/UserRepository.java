@@ -9,4 +9,5 @@ public interface UserRepository extends MongoRepository<User,String > {
 
     User getUserByMobileNumber(String username);
 
+    User findByMobileNumber(String mobileNumber);
 }

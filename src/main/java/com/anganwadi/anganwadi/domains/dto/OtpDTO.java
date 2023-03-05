@@ -13,4 +13,6 @@ public class OtpDTO {
 
     private String mobileNumber;
     private String status;
+    private String otp;
+    private String authToken;
 }

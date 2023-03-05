@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -15,18 +17,23 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService){
-        this.userService=userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
 
-
     @PostMapping("/sendOtp")
-    private OtpDTO sendOtp(@RequestBody OtpDTO otpDTO){
+    private OtpDTO sendOtp(@RequestBody OtpDTO otpDTO) throws IOException {
         return userService.sendOtp(otpDTO);
 
     }
 
+    @PostMapping("/verifyOtp")
+    private OtpDTO verifyOtp(@RequestBody OtpDTO otpDTO) throws IOException {
+
+        return userService.verifyOtp(otpDTO);
+
+    }
 
 
 

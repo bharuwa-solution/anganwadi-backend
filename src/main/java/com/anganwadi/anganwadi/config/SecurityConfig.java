@@ -11,11 +11,17 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 
+    private static final String[] WHITE_LIST_URL= {
+            "/user/sendOtp",
+            "/user/verifyOtp"
+    };
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity.cors().and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/anganwadi/getAddress")
+                .requestMatchers(WHITE_LIST_URL)
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

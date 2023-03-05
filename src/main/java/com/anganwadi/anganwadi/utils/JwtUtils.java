@@ -6,18 +6,19 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils implements Serializable {
+
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -45,22 +46,31 @@ public class JwtUtils implements Serializable {
         return expiration.before(new Date());
     }
 
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
 
-    public String generateToken(Authentication authentication) {
-        final String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(ApplicationConstants.AUTHORITIES_KEY, authorities)
+                .setSubject(userDetails.getUsername())
+                .setClaims(extraClaims)
+                .claim(ApplicationConstants.AUTHORITIES_KEY, userDetails.getUsername())
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ApplicationConstants.ACCESS_TOKEN_VALIDITY_SECONDS * 1000 * 100))
+                .setExpiration(new Date(System.currentTimeMillis() + ApplicationConstants.ACCESS_TOKEN_VALIDITY_SECONDS * 80 * 60))
                 .compact();
     }
 
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = getUsernameFromToken(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
+    }
+
+
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(ApplicationConstants.AUTHORITIES_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(ApplicationConstants.SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
