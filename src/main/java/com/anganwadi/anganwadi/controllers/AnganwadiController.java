@@ -1,8 +1,10 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
+import com.anganwadi.anganwadi.domains.dto.HouseholdsDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
+import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,10 +18,12 @@ import java.util.List;
 public class AnganwadiController {
 
     private final AnganwadiChildrenService anganwadiChildrenService;
+    private final FamilyService familyService;
 
     @Autowired
-    public AnganwadiController(AnganwadiChildrenService anganwadiChildrenService) {
+    public AnganwadiController(AnganwadiChildrenService anganwadiChildrenService, FamilyService familyService) {
         this.anganwadiChildrenService = anganwadiChildrenService;
+        this.familyService = familyService;
     }
 
 
@@ -39,14 +43,18 @@ public class AnganwadiController {
     }
 
     @PostMapping("/saveChildrenRecord")
-    private AnganwadiChildren saveChildrenRecord(@RequestBody  AnganwadiChildren anganwadiChildren) throws ParseException, IOException {
+    private AnganwadiChildren saveChildrenRecord(@RequestBody AnganwadiChildren anganwadiChildren) throws ParseException, IOException {
         return anganwadiChildrenService.saveChildrenRecord(anganwadiChildren);
     }
 
     @GetMapping("/getTotalChildren")
-    private List<ChildrenDTO> getTotalChildren(){
+    private List<ChildrenDTO> getTotalChildren() {
         return anganwadiChildrenService.getTotalChildren();
     }
 
+    @GetMapping("/getAllHouseholds")
+    private List<HouseholdsDTO> getAllHouseholds() {
+        return familyService.getAllHouseholds();
+    }
 
 }

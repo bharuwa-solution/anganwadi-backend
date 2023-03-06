@@ -1,6 +1,5 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
-import com.anganwadi.anganwadi.config.ApplicationConstants;
 import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
 import com.anganwadi.anganwadi.repositories.AnganwadiChildrenRepository;
@@ -78,4 +77,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         return profilePic;
     }
+
+
 }

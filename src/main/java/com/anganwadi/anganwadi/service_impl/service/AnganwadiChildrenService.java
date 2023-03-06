@@ -16,4 +16,6 @@ public interface AnganwadiChildrenService {
     List<ChildrenDTO> getTotalChildren();
 
     String uploadPic(MultipartFile file) throws IOException;
+
+
 }

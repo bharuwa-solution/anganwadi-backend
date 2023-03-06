@@ -23,6 +23,7 @@ public class SecurityConfig {
             "/anganwadi/saveChildrenRecord",
             "/anganwadi/getTotalChildren",
             "/anganwadi/uploadPic",
+            "/family/saveHouseholds",
             "/v2/api-docs",
             "/configuration/ui",
             "/swagger-resources/**",
