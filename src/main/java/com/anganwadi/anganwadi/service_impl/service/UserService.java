@@ -13,4 +13,6 @@ public interface UserService {
     OtpDTO sendOtp(OtpDTO otpDTO) throws IOException;
 
     OtpDTO verifyOtp(OtpDTO otpDTO);
+
+    OtpDTO verifyJwt(OtpDTO otpDTO);
 }

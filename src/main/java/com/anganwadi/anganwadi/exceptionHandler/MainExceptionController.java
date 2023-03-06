@@ -1,9 +1,12 @@
 package com.anganwadi.anganwadi.exceptionHandler;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +36,15 @@ public class MainExceptionController implements ErrorController {
         setNullError.put("status", HttpStatus.METHOD_NOT_ALLOWED);
         setNullError.put("message", "Please Check The API Method");
         return new ResponseEntity<>(setNullError, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    private ResponseEntity<?> handleMethodError(HttpMessageNotReadableException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.PARTIAL_CONTENT);
+        setBodyError.put("message", "Some Parameters Are Missing, Please Check");
+        return new ResponseEntity<>(setBodyError, HttpStatus.PARTIAL_CONTENT);
     }
 
 

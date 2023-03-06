@@ -25,12 +25,12 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class UserServiceImpl extends ApplicationConstants implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService,ApplicationConstants {
 
     private final UserRepository userRepository;
     private final OtpDetailsRepository otpDetailsRepository;
     private final JwtUtils jwtUtils;
-    ;
+
 
 
     @Autowired
@@ -158,6 +158,33 @@ public class UserServiceImpl extends ApplicationConstants implements UserService
 
         return otpDTO;
 
+    }
+
+    @Override
+    public OtpDTO verifyJwt(OtpDTO otpDTO) {
+
+
+        if (StringUtils.isEmpty(otpDTO.getAuthToken().trim())) {
+            throw new CustomException("Please Check AuthKey");
+        }
+
+        String username = jwtUtils.getUsernameFromToken(otpDTO.getAuthToken());
+        User user = userRepository.findByMobileNumber(username);
+        if (jwtUtils.isTokenValid(otpDTO.getAuthToken(), user)) {
+            otpDTO = OtpDTO.builder()
+                    .otp("")
+                    .status("Verified")
+                    .mobileNumber(username)
+                    .build();
+        } else {
+            otpDTO = OtpDTO.builder()
+                    .otp("")
+                    .status("Verification Failed")
+                    .mobileNumber(username)
+                    .build();
+        }
+
+        return otpDTO;
     }
 
 

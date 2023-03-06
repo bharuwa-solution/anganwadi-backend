@@ -29,13 +29,9 @@ public class UserController {
     }
 
     @PostMapping("/verifyOtp")
-    private OtpDTO verifyOtp(@RequestBody OtpDTO otpDTO) throws IOException {
-
+    private OtpDTO verifyOtp(@RequestBody OtpDTO otpDTO) {
         return userService.verifyOtp(otpDTO);
-
     }
-
-
 
 
 }
