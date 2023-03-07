@@ -9,21 +9,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HouseholdsDTO {
+public class householdsHeadList {
 
     private String headName;
-    private String houseNo;
-    private String uniqueIdType;
-    private String uniqueId;
     private String religion;
-    private String mobileNumber;
-    private String isMinority;
-    private String icdsService;
-    private String headGender;
+    private String category;
     private String headDob;
     private String totalMembers;
+    private String headGender;
     private String headPic;
-    private String category;
-
 
 }

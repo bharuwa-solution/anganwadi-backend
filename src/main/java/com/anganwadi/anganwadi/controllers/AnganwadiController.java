@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
-import com.anganwadi.anganwadi.domains.dto.HouseholdsDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
@@ -52,9 +51,5 @@ public class AnganwadiController {
         return anganwadiChildrenService.getTotalChildren();
     }
 
-    @GetMapping("/getAllHouseholds")
-    private List<HouseholdsDTO> getAllHouseholds() {
-        return familyService.getAllHouseholds();
-    }
 
 }

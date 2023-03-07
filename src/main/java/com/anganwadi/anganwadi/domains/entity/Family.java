@@ -11,9 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Builder
 @Document(collection = "Family")
-public class Family  extends BaseObject{
+public class Family extends BaseObject {
 
-    private String name;
+    private String headName;
+    private String headGender;
     private String houseNo;
     private String uniqueIdType;
     private String uniqueId;
@@ -26,5 +27,6 @@ public class Family  extends BaseObject{
     private String isMinority;
     private String icdsService;
     private String headPic;
-    private int totalMembers;
+    private String totalMembers;
 }
+
