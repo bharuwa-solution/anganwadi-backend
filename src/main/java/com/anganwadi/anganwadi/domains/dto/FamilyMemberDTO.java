@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FamilyMemberDTO {
 
+    private String id;
     private String name;
     private String photo;
     private String familyId;

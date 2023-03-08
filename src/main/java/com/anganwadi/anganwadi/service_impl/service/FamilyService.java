@@ -1,9 +1,7 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
 
-import com.anganwadi.anganwadi.domains.dto.FamilyMemberDTO;
-import com.anganwadi.anganwadi.domains.dto.HouseholdsDTO;
-import com.anganwadi.anganwadi.domains.dto.householdsHeadList;
+import com.anganwadi.anganwadi.domains.dto.*;
 
 import java.util.List;
 
@@ -15,4 +13,14 @@ public interface FamilyService {
     FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO);
 
     List<FamilyMemberDTO> getFamilyMembers(String familyId);
+
+    VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO);
+
+    WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO);
+
+    List<WeightRecordsDTO> getWeightRecords(String familyId, String childId);
+
+    List<WeightRecordsDTO> getAllChildWeightRecords(String familyId);
+
+    List<MPRDTO> getMPRRecords(String familyId);
 }
