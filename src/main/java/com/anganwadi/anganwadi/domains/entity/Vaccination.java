@@ -13,11 +13,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Document(collection = "Vaccination")
-public class Vaccination  extends BaseObject{
+public class Vaccination extends BaseObject {
 
 
     private String familyId;
     private String memberId;
+    private String childName;
+    private String gender;
+    private String photo;
     private String vaccinationName;
     private Date date;
 

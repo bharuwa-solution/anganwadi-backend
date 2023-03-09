@@ -8,11 +8,11 @@ import java.io.IOException;
 
 public interface UserService {
 
-    User login(LoginUser loginUser) throws Exception;
+
 
     OtpDTO sendOtp(OtpDTO otpDTO) throws IOException;
 
     OtpDTO verifyOtp(OtpDTO otpDTO);
 
-    OtpDTO verifyJwt(OtpDTO otpDTO);
+
 }

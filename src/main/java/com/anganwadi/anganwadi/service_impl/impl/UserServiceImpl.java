@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.config.ApplicationConstants;
-import com.anganwadi.anganwadi.domains.dto.LoginUser;
 import com.anganwadi.anganwadi.domains.dto.OtpDTO;
 import com.anganwadi.anganwadi.domains.entity.OtpDetails;
 import com.anganwadi.anganwadi.domains.entity.User;
@@ -10,67 +9,35 @@ import com.anganwadi.anganwadi.repositories.OtpDetailsRepository;
 import com.anganwadi.anganwadi.repositories.UserRepository;
 import com.anganwadi.anganwadi.service_impl.service.Msg91Services;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
-import com.anganwadi.anganwadi.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService,ApplicationConstants {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final OtpDetailsRepository otpDetailsRepository;
-    private final JwtUtils jwtUtils;
-
 
 
     @Autowired
-    private UserServiceImpl(UserRepository userRepository, JwtUtils jwtUtils, OtpDetailsRepository otpDetailsRepository
+    private UserServiceImpl(UserRepository userRepository, OtpDetailsRepository otpDetailsRepository
+
     ) {
         this.userRepository = userRepository;
-        this.jwtUtils = jwtUtils;
+
         this.otpDetailsRepository = otpDetailsRepository;
 
     }
 
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }
-
-
-    @Override
-    public User login(LoginUser loginUser) throws Exception {
-        if (loginUser.getUsername().equals(null) || loginUser.getPassword().equals(null)) {
-            throw new CustomException("Credentials are not valid");
-        }
-
-        User user = userRepository.getUserByMobileNumber(loginUser.getUsername());
-        log.info("users " + user);
-        if (user == null) {
-            throw new NoSuchElementException(loginUser.getUsername());
-        }
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if (!encoder.matches(loginUser.getPassword(), user.getPassword())) {
-            log.error("encoder===ifff===", encoder);
-            throw new CustomException("Invalid Credentials. Please Try Again");
-        }
-
-//        String token = jwtUtils.generateToken(user);
-
-        return null;
-    }
 
     private boolean validateNumber(String mobileNumber, boolean status) {
 
@@ -143,13 +110,13 @@ public class UserServiceImpl implements UserService, UserDetailsService,Applicat
 
         List<OtpDetails> verifyotp = otpDetailsRepository.findTopOneByMobileNumberAndOtp(otpDTO.getMobileNumber(), otpDTO.getOtp());
         User user = userRepository.getUserByMobileNumber(otpDTO.getMobileNumber());
-        String token = jwtUtils.generateToken(user);
+
         if (verifyotp != null) {
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
                     .status("success")
                     .mobileNumber(otpDTO.getMobileNumber())
-                    .authToken(token)
+                    .authToken("")
                     .build();
 
         } else {
@@ -158,33 +125,6 @@ public class UserServiceImpl implements UserService, UserDetailsService,Applicat
 
         return otpDTO;
 
-    }
-
-    @Override
-    public OtpDTO verifyJwt(OtpDTO otpDTO) {
-
-
-        if (StringUtils.isEmpty(otpDTO.getAuthToken().trim())) {
-            throw new CustomException("Please Check AuthKey");
-        }
-
-        String username = jwtUtils.getUsernameFromToken(otpDTO.getAuthToken());
-        User user = userRepository.findByMobileNumber(username);
-        if (jwtUtils.isTokenValid(otpDTO.getAuthToken(), user)) {
-            otpDTO = OtpDTO.builder()
-                    .otp("")
-                    .status("Verified")
-                    .mobileNumber(username)
-                    .build();
-        } else {
-            otpDTO = OtpDTO.builder()
-                    .otp("")
-                    .status("Verification Failed")
-                    .mobileNumber(username)
-                    .build();
-        }
-
-        return otpDTO;
     }
 
 

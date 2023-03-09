@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FamilyMemberRepository extends MongoRepository<FamilyMember,String > {
+public interface FamilyMemberRepository extends MongoRepository<FamilyMember, String> {
     List<FamilyMember> findAllByFamilyId(String familyId, Sort createdDate);
+
+    long countByFamilyId(String familyId);
+
+
 }

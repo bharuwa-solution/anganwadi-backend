@@ -1,15 +1,9 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.Family;
-import com.anganwadi.anganwadi.domains.entity.FamilyMember;
-import com.anganwadi.anganwadi.domains.entity.Visits;
-import com.anganwadi.anganwadi.domains.entity.WeightTracking;
+import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
-import com.anganwadi.anganwadi.repositories.FamilyMemberRepository;
-import com.anganwadi.anganwadi.repositories.FamilyRepository;
-import com.anganwadi.anganwadi.repositories.VisitsRepository;
-import com.anganwadi.anganwadi.repositories.WeightTrackingRepository;
+import com.anganwadi.anganwadi.repositories.*;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,16 +24,20 @@ public class FamilyServiceImpl implements FamilyService {
     private final FamilyMemberRepository familyMemberRepository;
     private final VisitsRepository visitsRepository;
     private final WeightTrackingRepository weightTrackingRepository;
-
+    private final VaccinationRepository vaccinationRepository;
+    private final PregnantAndDeliveryRepository pregnantAndDeliveryRepository;
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
-                             VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository) {
+                             VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
+                             PregnantAndDeliveryRepository pregnantAndDeliveryRepository) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
         this.visitsRepository = visitsRepository;
         this.weightTrackingRepository = weightTrackingRepository;
+        this.vaccinationRepository = vaccinationRepository;
+        this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
     }
 
 
@@ -48,15 +46,45 @@ public class FamilyServiceImpl implements FamilyService {
         List<householdsHeadList> addInList = new ArrayList<>();
         List<Family> familyList = familyRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
 
+        // Get Head of Family Details
+
         for (Family getHouseholds : familyList) {
+            String headName = "", dob = "", pic = "", gender = "";
+
+            List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(getHouseholds.getFamilyId().trim(), Sort.by(Sort.Direction.DESC, "createdDate"));
+            boolean headFound = false;
+
+            for (int i = 0; i <= findHeadDetails.size(); i++) {
+
+                for (FamilyMember checkDetails : findHeadDetails) {
+                    if (checkDetails.getRelationWithOwner().equalsIgnoreCase("Self")) {
+                        headName = checkDetails.getName();
+                        dob = checkDetails.getDob();
+                        pic = checkDetails.getPhoto();
+                        gender = checkDetails.getGender();
+                        break;
+                    } else {
+                        headName = checkDetails.getName();
+                        dob = checkDetails.getDob();
+                        pic = checkDetails.getPhoto();
+                        gender = checkDetails.getGender();
+
+                    }
+                }
+            }
+
+            // Count Members
+            long countMembers = familyMemberRepository.countByFamilyId(getHouseholds.getFamilyId());
+
+            // Map Details
             householdsHeadList householdsDTO = householdsHeadList.builder()
-                    .headName(getHouseholds.getHeadName())
-                    .headDob(getHouseholds.getHeadDob())
+                    .headName(headName)
+                    .headDob(dob)
                     .religion(getHouseholds.getReligion())
-                    .headGender(getHouseholds.getHeadGender())
+                    .headGender(gender)
                     .category(getHouseholds.getCategory())
-                    .totalMembers(getHouseholds.getTotalMembers())
-                    .headPic(getHouseholds.getHeadPic())
+                    .totalMembers(String.valueOf(countMembers))
+                    .headPic(pic)
                     .build();
             addInList.add(householdsDTO);
         }
@@ -82,13 +110,7 @@ public class FamilyServiceImpl implements FamilyService {
         String headGender = householdsDTO.getHeadGender() == null ? "" : householdsDTO.getHeadGender();
 
         Family saveFamily = Family.builder()
-                .headName(name)
-                .headDob(headDob)
-                .totalMembers(totalMembers)
-                .headPic(headPic)
                 .houseNo(houseNo)
-                .headGender(headGender)
-                .mobileNumber(mobileNo)
                 .uniqueIdType(uniqueIdType)
                 .uniqueId(uniqueId)
                 .category(category)
@@ -98,7 +120,32 @@ public class FamilyServiceImpl implements FamilyService {
                 .build();
         familyRepository.save(saveFamily);
 
-        return modelMapper.map(saveFamily, HouseholdsDTO.class);
+        FamilyMember saveInMember = FamilyMember.builder()
+                .name(name)
+                .dob(headDob)
+                .mobileNumber(mobileNo)
+                .category(category)
+                .photo(headPic)
+                .relationWithOwner("Self")
+                .gender(headGender)
+                .build();
+
+        familyMemberRepository.save(saveInMember);
+
+        return HouseholdsDTO.builder()
+                .headName(name)
+                .headDob(headDob)
+                .headPic(headPic)
+                .headGender(headGender)
+                .houseNo(houseNo)
+                .mobileNumber(mobileNo)
+                .uniqueIdType(uniqueIdType)
+                .uniqueId(uniqueId)
+                .category(category)
+                .religion(religion)
+                .isMinority(isMinority)
+                .icdsService(icdsService)
+                .build();
     }
 
     @Override
@@ -225,10 +272,69 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<MPRDTO> getMPRRecords(String familyId) {
+    public List<MPRDTO> getMPRRecords(String dateFrom, String dateTo, String category) {
 
-        
+        dateFrom = dateFrom == null ? "" : dateFrom;
+        dateTo = dateTo == null ? "" : dateTo;
+        category = category == null ? "" : category;
+
+//        List<FamilyMember> chekByCat = familyMemberRepository.findAllByPeriod(dateFrom, dateTo, category);
+
+
         return null;
+    }
+
+    @Override
+    public MPRDTO getMembersByFamilyId(String familyId) {
+
+        List<FamilyMember> checkMembers = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.ASC, "createdDate"));
+        int male = 0, female = 0, children = 0;
+
+        if (checkMembers.size() > 0) {
+            for (FamilyMember countByGender : checkMembers) {
+                if (countByGender.getGender().equalsIgnoreCase("Male")) {
+                    male++;
+                }
+                if (countByGender.getGender().equalsIgnoreCase("Female")) {
+                    female++;
+                }
+            }
+        }
+
+        return MPRDTO.builder()
+                .male(male)
+                .female(female)
+                .children(children)
+                .build();
+    }
+
+    @Override
+    public List<VaccinationRecords> getVaccinationRecords() {
+
+        List<Vaccination> vaccinationList = vaccinationRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<VaccinationRecords> addList = new ArrayList<>();
+
+        for (Vaccination getVaccinationDetails : vaccinationList) {
+            String motherName = "", dob = "";
+            List<PregnantAndDelivery> findChildDetails = pregnantAndDeliveryRepository.findByFamilyId(getVaccinationDetails.getFamilyId());
+            for (PregnantAndDelivery getChildDetails : findChildDetails) {
+                motherName = getChildDetails.getMotherName();
+                dob = getChildDetails.getDateOfDelivery().toString();
+            }
+
+            VaccinationRecords singleEntry = VaccinationRecords.builder()
+                    .name(getVaccinationDetails.getChildName())
+                    .motherName(motherName)
+                    .age(dob)
+                    .gender(getVaccinationDetails.getGender())
+                    .photo(getVaccinationDetails.getPhoto())
+                    .vaccination(getVaccinationDetails.getVaccinationName())
+                    .build();
+
+            addList.add(singleEntry);
+        }
+
+        return addList;
     }
 
 }

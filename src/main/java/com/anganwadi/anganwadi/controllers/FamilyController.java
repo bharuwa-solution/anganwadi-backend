@@ -61,8 +61,18 @@ public class FamilyController {
     }
 
     @GetMapping("/getMPRRecords")
-    private List<MPRDTO> getMPRRecords(@RequestParam String familyId) {
-        return familyService.getMPRRecords(familyId);
+    private List<MPRDTO> getMPRRecords(@RequestParam String dateFrom,@RequestParam String dateTo, @RequestParam String category) {
+        return familyService.getMPRRecords(dateFrom,dateTo,category);
+    }
+
+    @GetMapping("/getMembersByFamilyId")
+    private MPRDTO getMembersByFamilyId(@RequestParam String familyId) {
+        return familyService.getMembersByFamilyId(familyId);
+    }
+
+    @GetMapping("/getVaccinationRecords")
+    private List<VaccinationRecords> getVaccinationRecords() {
+        return familyService.getVaccinationRecords();
     }
 }
 

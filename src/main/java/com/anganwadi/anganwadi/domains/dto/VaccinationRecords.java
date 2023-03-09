@@ -9,14 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MPRDTO {
+public class VaccinationRecords {
 
-    private long male;
-    private long female;
-    private long children;
-    private long dharti;
-    private long pregnant;
-    private long mortality;
-    private long birth;
-
+    private String name;
+    private String motherName;
+    private String age;
+    private String gender;
+    private String vaccination;
+    private String photo;
 }

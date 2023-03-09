@@ -6,19 +6,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Service
 @Slf4j
-public class FileManagementService implements ApplicationConstants {
+public class FileManagementService {
 
 
     public String uploadPic(MultipartFile file) throws IOException {
@@ -31,7 +29,7 @@ public class FileManagementService implements ApplicationConstants {
         fileName = fileName.toLowerCase().replaceAll(" ", "_");
 
 
-        Path path = Paths.get(localUploadPath + fileSeparator + "uploads" + fileSeparator + fileName);
+        Path path = Paths.get(ApplicationConstants.localUploadPath + fileSeparator + "uploads" + fileSeparator + fileName);
         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build() + fileSeparator + "uploads" + fileSeparator + fileName;

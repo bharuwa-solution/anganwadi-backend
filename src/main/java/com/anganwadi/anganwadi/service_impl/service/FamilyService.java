@@ -22,5 +22,9 @@ public interface FamilyService {
 
     List<WeightRecordsDTO> getAllChildWeightRecords(String familyId);
 
-    List<MPRDTO> getMPRRecords(String familyId);
+    List<MPRDTO> getMPRRecords(String dateFrom,String dateTo, String category);
+
+    MPRDTO getMembersByFamilyId(String familyId);
+
+    List<VaccinationRecords> getVaccinationRecords();
 }
