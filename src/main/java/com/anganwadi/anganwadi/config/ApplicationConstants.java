@@ -19,7 +19,7 @@ public class ApplicationConstants {
     public static final String memberPicType = "members";
     public static final String USER_ROLE = "USER";
     public static final String USER_ADMIN = "ADMIN";
-    public static final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().replaceAll("vishwakarna-0.0.1-SNAPSHOT", "");
-    public static final String serverUploadPath = "/opt/apache-tomcat-9.0.50/webapps";
+    public static final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().replaceAll("anganwadi-0.0.1-SNAPSHOT", "");
+    public static final String serverUploadPath = "/data/apache-tomcat-9.0.38/webapps";
     public static final String localUploadPath = "C:/Prabeer/project/Anganwadi/code";
 }

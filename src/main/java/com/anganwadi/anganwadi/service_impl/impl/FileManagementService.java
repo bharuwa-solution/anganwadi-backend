@@ -4,7 +4,6 @@ import com.anganwadi.anganwadi.config.ApplicationConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,10 +28,10 @@ public class FileManagementService {
         fileName = fileName.toLowerCase().replaceAll(" ", "_");
 
 
-        Path path = Paths.get(ApplicationConstants.localUploadPath + fileSeparator + "uploads" + fileSeparator + fileName);
+        Path path = Paths.get(ApplicationConstants.serverUploadPath + fileSeparator + "uploads" + fileSeparator + fileName);
         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-        String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build() + fileSeparator + "uploads" + fileSeparator + fileName;
+        String fileUrl = ApplicationConstants.baseUrl + fileSeparator + "uploads" + fileSeparator + fileName;
         log.info("File Path " + fileUrl);
 
         return fileUrl;

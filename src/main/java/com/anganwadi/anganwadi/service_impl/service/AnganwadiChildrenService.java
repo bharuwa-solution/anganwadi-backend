@@ -1,6 +1,8 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
+import com.anganwadi.anganwadi.domains.dto.DashboardDetails;
+import com.anganwadi.anganwadi.domains.dto.UploadDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +17,9 @@ public interface AnganwadiChildrenService {
 
     List<ChildrenDTO> getTotalChildren();
 
-    String uploadPic(MultipartFile file) throws IOException;
+    UploadDTO uploadPic(MultipartFile file) throws IOException;
 
+    DashboardDetails getDashboardDetails();
 
+    DashboardDetails getAttendance();
 }

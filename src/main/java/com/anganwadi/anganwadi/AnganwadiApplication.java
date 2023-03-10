@@ -10,6 +10,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 @EnableMongoAuditing
 @EnableCaching
@@ -38,5 +39,9 @@ public class AnganwadiApplication extends SpringBootServletInitializer {
         SpringApplication.run(AnganwadiApplication.class, args);
     }
 
-
+    @Bean(name = "multipartResolver")
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        return multipartResolver;
+    }
 }
