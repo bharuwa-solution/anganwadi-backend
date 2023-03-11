@@ -1,6 +1,5 @@
 package com.anganwadi.anganwadi.domains.dto;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OtpDTO {
+public class SendOtpDTO {
 
     private String mobileNumber;
-    private String status;
-    private String otp;
-    @ApiModelProperty(hidden = true)
-    private String authToken;
 }

@@ -1,23 +1,17 @@
 package com.anganwadi.anganwadi.controllers;
 
-import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
-import com.anganwadi.anganwadi.domains.dto.DashboardDetails;
-import com.anganwadi.anganwadi.domains.dto.UploadDTO;
+import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("anganwadi")
@@ -37,13 +31,18 @@ public class AnganwadiController {
         return anganwadiChildrenService.getDashboardDetails();
     }
 
-    @PostMapping("getAttendance")
-    private DashboardDetails getAttendance() {
-        return anganwadiChildrenService.getAttendance();
+    @PostMapping("makeAttendance")
+    private AttendanceDTO makeAttendance(@RequestBody AttendanceDTO attendanceDTO) {
+        return anganwadiChildrenService.makeAttendance(attendanceDTO);
+    }
+
+    @PostMapping("getAttendanceByDate")
+    private List<AttendanceDTO> getAttendanceByDate(@RequestParam Date date) {
+        return anganwadiChildrenService.getAttendanceByDate(date);
     }
 
 
-    @PostMapping(path = "uploadPic",  consumes = "multipart/form-data")
+    @PostMapping(path = "uploadPic", consumes = "multipart/form-data")
     private UploadDTO uploadPic(@RequestPart MultipartFile file) throws IOException {
 
         return anganwadiChildrenService.uploadPic(file);
@@ -55,8 +54,8 @@ public class AnganwadiController {
     }
 
     @PostMapping("saveChildrenRecord")
-    private AnganwadiChildren saveChildrenRecord(@RequestBody AnganwadiChildren anganwadiChildren) throws ParseException, IOException {
-        return anganwadiChildrenService.saveChildrenRecord(anganwadiChildren);
+    private SaveAdmissionDTO saveChildrenRecord(@RequestBody SaveAdmissionDTO saveAdmissionDTO) throws ParseException, IOException {
+        return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO);
     }
 
     @GetMapping("getTotalChildren")

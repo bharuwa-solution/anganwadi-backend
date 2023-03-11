@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.OtpDTO;
+import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,8 @@ public class UserController {
 
 
     @PostMapping("/sendOtp")
-    private OtpDTO sendOtp(@RequestBody OtpDTO otpDTO) throws IOException {
-        return userService.sendOtp(otpDTO);
+    private OtpDTO sendOtp(@RequestBody SendOtpDTO sendOtpDTO) throws IOException {
+        return userService.sendOtp(sendOtpDTO);
 
     }
 

@@ -6,6 +6,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ApplicationConstants {
 
     public static final String SIGNING_KEY = "family_key";
+    public static final String ChildId = "AGCI_";
+    public static final String familyId = "AGFI_";
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final long ACCESS_TOKEN_VALIDITY_SECONDS = 5 * 60 * 60;
     public static final String HEADER_STRING = "Authorization";

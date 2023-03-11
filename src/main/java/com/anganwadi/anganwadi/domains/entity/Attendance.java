@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -15,8 +15,13 @@ import java.util.Date;
 @Document(collection = "Attendance")
 public class Attendance  extends BaseObject{
 
-    private String familyId;
-    private String childId;
-    private Date date;
-    private String attendance;
+    private UUID familyId;
+    private UUID childId;
+    private long date;
+    private Attendance attendance;
+
+    private enum attendance {
+        P,A;
+    }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,16 +17,36 @@ import java.util.Map;
 @Slf4j
 public class MainExceptionController implements ErrorController {
 
-    @ExceptionHandler(NullPointerException.class)
-    private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
-        log.error(nullError.getMessage());
+//    @ExceptionHandler(NullPointerException.class)
+//    private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
+//        log.error(nullError.getMessage());
+//        Map<String, Object> setNullError = new HashMap<>();
+//        setNullError.put("status", HttpStatus.BAD_REQUEST);
+//        setNullError.put("message", "Error Occurred, Please Try Again Later & Contact Support Team");
+//        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
+//
+//    }
 
+    @ExceptionHandler(CustomException.class)
+    private ResponseEntity<?> handleNullPointerException(CustomException nullError) {
+        log.error(nullError.getMessage());
         Map<String, Object> setNullError = new HashMap<>();
-        setNullError.put("status", HttpStatus.NOT_FOUND);
-        setNullError.put("message", "Error Occurred, Please Try Again Later & Contact Support Team");
-        return new ResponseEntity<>(setNullError, HttpStatus.NOT_FOUND);
+        setNullError.put("message", nullError.getMessage());
+        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
 
     }
+
+
+    @ExceptionHandler(HttpClientErrorException.NotFound.class)
+    private ResponseEntity<?> notFoundError(String error) {
+        log.error(error);
+        Map<String, Object> setNullError = new HashMap<>();
+        setNullError.put("status", HttpStatus.BAD_REQUEST);
+        setNullError.put("message", "Please Check Details Properly");
+        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
+
+    }
+
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     private ResponseEntity<?> handleMethodError(HttpRequestMethodNotSupportedException error) {

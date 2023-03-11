@@ -1,29 +1,27 @@
-package com.anganwadi.anganwadi.domains.entity;
+package com.anganwadi.anganwadi.domains.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "AnganwadiChildren")
-public class AnganwadiChildren  extends BaseObject{
+public class SaveAdmissionDTO {
 
+    private String id;
     private String profilePic;
+    private String name;
     private String familyId;
     private String childId;
-    private String name;
-    private String mobileNumber;
     private String fatherName;
     private String motherName;
-    private String gender;
-    private String dob;
+    private String mobileNumber;
     private String minority;
     private String handicap;
+    private String gender;
+    private String dob;
     private String category;
-
 }
