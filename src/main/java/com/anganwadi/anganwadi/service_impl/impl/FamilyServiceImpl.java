@@ -12,7 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -51,6 +60,7 @@ public class FamilyServiceImpl implements FamilyService {
         for (Family getHouseholds : familyList) {
             String headName = "", dob = "", pic = "", gender = "";
 
+
             List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(getHouseholds.getFamilyId().trim(), Sort.by(Sort.Direction.DESC, "createdDate"));
             boolean headFound = false;
 
@@ -59,13 +69,13 @@ public class FamilyServiceImpl implements FamilyService {
                 for (FamilyMember checkDetails : findHeadDetails) {
                     if (checkDetails.getRelationWithOwner().equalsIgnoreCase("Self")) {
                         headName = checkDetails.getName();
-                        dob = checkDetails.getDob();
+//                        dob = checkDetails.getDob();
                         pic = checkDetails.getPhoto();
                         gender = checkDetails.getGender();
                         break;
                     } else {
                         headName = checkDetails.getName();
-                        dob = checkDetails.getDob();
+//                        dob = checkDetails.getDob();
                         pic = checkDetails.getPhoto();
                         gender = checkDetails.getGender();
 
@@ -122,7 +132,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         FamilyMember saveInMember = FamilyMember.builder()
                 .name(name)
-                .dob(headDob)
+//                .dob(headDob)
                 .mobileNumber(mobileNo)
                 .category(category)
                 .photo(headPic)
@@ -172,7 +182,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .mobileNumber(familyMemberDTO.getMobileNumber() == null ? "" : familyMemberDTO.getMobileNumber())
                 .idType(familyMemberDTO.getIdType() == null ? "" : familyMemberDTO.getIdType())
                 .idNumber(familyMemberDTO.getIdNumber() == null ? "" : familyMemberDTO.getIdNumber())
-                .dob(dob)
+//                .dob(dob)
                 .maritalStatus(martialStatus)
                 .stateCode(stateCode)
                 .handicapType(handicapType)
@@ -334,6 +344,53 @@ public class FamilyServiceImpl implements FamilyService {
             addList.add(singleEntry);
         }
 
+        return addList;
+    }
+
+    @Override
+    public List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException {
+
+        LocalDateTime date = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+//        String convertToString = String.valueOf(new Date().getTime());
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        Date parseTime = df.parse(convertToString);
+
+        List<HouseholdsChildren> addList = new ArrayList<>();
+
+
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        log.info("Time "+convertToMills);
+
+        List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDob(convertToMills);
+
+        if (findAllChildren.size() > 0) {
+            String minority = "";
+            for (FamilyMember member : findAllChildren) {
+
+                Date getMillis = new Date(member.getDob());
+                List<Family> findFamilyDetails = familyRepository.findAllByFamilyId(member.getFamilyId());
+                for (Family findDetails : findFamilyDetails) {
+                    minority = findDetails.getIsMinority();
+                }
+
+                HouseholdsChildren singeEntry = HouseholdsChildren.builder()
+                        .childName(member.getName())
+                        .motherName("")
+                        .fatherName("")
+                        .dob(df.format(getMillis))
+                        .gender(member.getGender())
+                        .mobileNumber(member.getMobileNumber())
+                        .category(member.getCategory())
+                        .minority(minority)
+                        .handicap(member.getHandicapType())
+                        .photoUrl(member.getPhoto())
+                        .build();
+
+                addList.add(singeEntry);
+            }
+
+        }
         return addList;
     }
 

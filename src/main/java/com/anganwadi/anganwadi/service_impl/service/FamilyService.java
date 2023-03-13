@@ -3,6 +3,7 @@ package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface FamilyService {
@@ -27,4 +28,6 @@ public interface FamilyService {
     MPRDTO getMembersByFamilyId(String familyId);
 
     List<VaccinationRecords> getVaccinationRecords();
+
+    List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException;
 }

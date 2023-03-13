@@ -26,18 +26,18 @@ public class AnganwadiController {
         this.familyService = familyService;
     }
 
-    @GetMapping("getDashboardDetails")
-    private DashboardDetails getDashboardDetails() {
-        return anganwadiChildrenService.getDashboardDetails();
-    }
+//    @GetMapping("getDashboardDetails")
+//    private DashboardDetails getDashboardDetails() {
+//        return anganwadiChildrenService.getDashboardDetails();
+//    }
 
     @PostMapping("makeAttendance")
-    private AttendanceDTO makeAttendance(@RequestBody AttendanceDTO attendanceDTO) {
+    private AttendanceDTO makeAttendance(@RequestBody AttendanceDTO attendanceDTO) throws ParseException {
         return anganwadiChildrenService.makeAttendance(attendanceDTO);
     }
 
-    @PostMapping("getAttendanceByDate")
-    private List<AttendanceDTO> getAttendanceByDate(@RequestParam Date date) {
+    @GetMapping("getAttendanceByDate")
+    private List<AttendanceDTO> getAttendanceByDate(@RequestParam String  date) throws ParseException {
         return anganwadiChildrenService.getAttendanceByDate(date);
     }
 
@@ -62,6 +62,7 @@ public class AnganwadiController {
     private List<ChildrenDTO> getTotalChildren() {
         return anganwadiChildrenService.getTotalChildren();
     }
+
 
 
 }

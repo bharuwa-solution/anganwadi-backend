@@ -100,37 +100,62 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 .build();
     }
 
+//    @Override
+//    public DashboardDetails getDashboardDetails() {
+//        return null;
+//    }
+
+
+
     @Override
-    public DashboardDetails getDashboardDetails() {
-        return null;
+    public List<AttendanceDTO> getAttendanceByDate(String date) throws ParseException {
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date formatToTime = df.parse(date);
+        long timestamp = formatToTime.getTime();
+
+        List<Attendance> findRecords = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<AttendanceDTO> addList = new ArrayList<>();
+
+        for (Attendance singleRecord : findRecords) {
+            AttendanceDTO dailyRecord = AttendanceDTO.builder()
+                    .childId(singleRecord.getChildId())
+                    .attendance(singleRecord.getAttendance())
+                    .date(singleRecord.getDate())
+                    .build();
+
+            addList.add(dailyRecord);
+        }
+
+        return addList;
+
     }
 
     @Override
-    public DashboardDetails getAttendance() {
+    public AttendanceDTO makeAttendance(AttendanceDTO attendanceDTO) throws ParseException {
 
-        List<Attendance> attendanceList = attendanceRepository.findAll(Sort.by(Sort.Direction.DESC, "childId"));
 
-        return null;
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentTime = new Date();
+        String formatToString = df.format(currentTime.getTime());
+        Date formatToTime = df.parse(formatToString);
+        long timestamp = formatToTime.getTime();
 
-    }
-
-    @Override
-    public List<AttendanceDTO> getAttendanceByDate(Date date) {
-
-        return null;
-    }
-
-    @Override
-    public AttendanceDTO makeAttendance(AttendanceDTO attendanceDTO) {
-
-        return AttendanceDTO.builder()
-                .dob(attendanceDTO.getDob())
+        Attendance saveAttendance = Attendance.builder()
                 .childId(attendanceDTO.getChildId())
-                .date(attendanceDTO.getDate())
-                .name(attendanceDTO.getName())
-                .gender(attendanceDTO.getGender())
+                .date(timestamp)
                 .attendance(attendanceDTO.getAttendance())
                 .build();
+
+        attendanceRepository.save(saveAttendance);
+        log.info("Date " + formatToTime);
+        return AttendanceDTO.builder()
+                .childId(attendanceDTO.getChildId())
+                .date(timestamp)
+                .attendance(attendanceDTO.getAttendance())
+                .build();
+
+
     }
 
 

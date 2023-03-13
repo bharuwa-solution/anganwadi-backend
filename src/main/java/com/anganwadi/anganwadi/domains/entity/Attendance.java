@@ -6,22 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.UUID;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Document(collection = "Attendance")
-public class Attendance  extends BaseObject{
+public class Attendance extends BaseObject {
 
-    private UUID familyId;
-    private UUID childId;
+    private String familyId;
+    private String childId;
     private long date;
-    private Attendance attendance;
-
-    private enum attendance {
-        P,A;
-    }
+    private String attendance;
 
 }

@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 public interface AnganwadiChildrenService {
@@ -17,11 +16,10 @@ public interface AnganwadiChildrenService {
 
     UploadDTO uploadPic(MultipartFile file) throws IOException;
 
-    DashboardDetails getDashboardDetails();
+//    DashboardDetails getDashboardDetails();
 
-    DashboardDetails getAttendance();
+    List<AttendanceDTO> getAttendanceByDate(String date) throws ParseException;
 
-    List<AttendanceDTO> getAttendanceByDate(Date date);
+    AttendanceDTO makeAttendance(AttendanceDTO attendanceDTO) throws ParseException;
 
-    AttendanceDTO makeAttendance(AttendanceDTO attendanceDTO);
 }

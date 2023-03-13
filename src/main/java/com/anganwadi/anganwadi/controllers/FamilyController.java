@@ -5,6 +5,7 @@ import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -73,6 +74,12 @@ public class FamilyController {
     @GetMapping("/getVaccinationRecords")
     private List<VaccinationRecords> getVaccinationRecords() {
         return familyService.getVaccinationRecords();
+    }
+
+
+    @GetMapping("/getAllHouseholdsChildren")
+    private List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException {
+        return familyService.getAllHouseholdsChildren();
     }
 }
 

@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +24,7 @@ public class FamilyMember  extends BaseObject{
     private String idNumber;
     private String relationWithOwner;
     private String gender;
-    private String dob;
+    private long dob;
     private String maritalStatus;
     private String memberCode;
     private String handicapType;
