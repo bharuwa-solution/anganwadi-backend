@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface AttendanceRepository extends MongoRepository<Attendance, String> {
     List<Attendance> findAllByDate(long date, Sort createdDate);
+
+    Attendance findByChildId(String attend);
 }

@@ -1,11 +1,11 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
-import com.anganwadi.anganwadi.domains.dto.LoginUser;
+import com.anganwadi.anganwadi.domains.dto.AnganwadiCentersDTO;
 import com.anganwadi.anganwadi.domains.dto.OtpDTO;
 import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
-import com.anganwadi.anganwadi.domains.entity.User;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface UserService {
 
@@ -15,5 +15,7 @@ public interface UserService {
 
     OtpDTO verifyOtp(OtpDTO otpDTO);
 
+    List<AnganwadiCentersDTO> addAnganwadiCenters(List<AnganwadiCentersDTO> centersDTO);
 
+    List<AnganwadiCentersDTO> getAnganwadiCenters();
 }

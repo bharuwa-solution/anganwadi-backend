@@ -1,5 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
+import com.anganwadi.anganwadi.config.ApplicationConstants;
 import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
@@ -15,12 +16,10 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +49,91 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
 
+    private int totalHouseholdsMale(String familyId) {
+        int totalMale = 0;
+        LocalDateTime date = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+//        String convertToString = String.valueOf(new Date().getTime());
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        Date parseTime = df.parse(convertToString);
+
+        List<FamilyMember> checkFamily = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
+//        List<HouseholdsChildren> addList = new ArrayList<>();
+
+
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        log.info("Time " + convertToMills);
+
+        for (FamilyMember checkMales : checkFamily) {
+
+            if (checkMales.getGender().equalsIgnoreCase("1")) {
+                totalMale++;
+            }
+
+        }
+
+
+        return totalMale;
+
+    }
+
+    private int totalHouseholdsFemale(String familyId) {
+        int totalFemale = 0;
+        LocalDateTime date = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+//        String convertToString = String.valueOf(new Date().getTime());
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        Date parseTime = df.parse(convertToString);
+
+        List<FamilyMember> checkFamily = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
+//        List<HouseholdsChildren> addList = new ArrayList<>();
+
+
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        log.info("Time " + convertToMills);
+
+        for (FamilyMember checkMales : checkFamily) {
+
+            if (checkMales.getGender().equalsIgnoreCase("2")) {
+                totalFemale++;
+            }
+
+        }
+
+
+        return totalFemale;
+
+    }
+
+    private int totalHouseholdsChildren(String familyId) {
+        int totalChildren = 0;
+        LocalDateTime date = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+//        String convertToString = String.valueOf(new Date().getTime());
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        Date parseTime = df.parse(convertToString);
+
+        List<FamilyMember> checkFamily = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
+//        List<HouseholdsChildren> addList = new ArrayList<>();
+
+
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        log.info("Time " + convertToMills);
+
+        for (FamilyMember checkChildren : checkFamily) {
+
+            if (checkChildren.getDob() >= convertToMills) {
+                totalChildren++;
+            }
+
+        }
+
+
+        return totalChildren;
+
+    }
+
+
     @Override
     public List<householdsHeadList> getAllHouseholds() {
         List<householdsHeadList> addInList = new ArrayList<>();
@@ -59,6 +143,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         for (Family getHouseholds : familyList) {
             String headName = "", dob = "", pic = "", gender = "";
+            int male = 0, female = 0, children = 0;
 
 
             List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(getHouseholds.getFamilyId().trim(), Sort.by(Sort.Direction.DESC, "createdDate"));
@@ -67,18 +152,23 @@ public class FamilyServiceImpl implements FamilyService {
             for (int i = 0; i <= findHeadDetails.size(); i++) {
 
                 for (FamilyMember checkDetails : findHeadDetails) {
+
+                    long getDob = checkDetails.getDob();
+                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = new Date(getDob);
+
+
                     if (checkDetails.getRelationWithOwner().equalsIgnoreCase("Self")) {
                         headName = checkDetails.getName();
-//                        dob = checkDetails.getDob();
+                        dob = df.format(date);
                         pic = checkDetails.getPhoto();
                         gender = checkDetails.getGender();
                         break;
                     } else {
                         headName = checkDetails.getName();
-//                        dob = checkDetails.getDob();
+                        dob = df.format(date);
                         pic = checkDetails.getPhoto();
                         gender = checkDetails.getGender();
-
                     }
                 }
             }
@@ -90,8 +180,13 @@ public class FamilyServiceImpl implements FamilyService {
             householdsHeadList householdsDTO = householdsHeadList.builder()
                     .headName(headName)
                     .headDob(dob)
+                    .houseNo(getHouseholds.getHouseNo())
+                    .familyId(getHouseholds.getFamilyId())
                     .religion(getHouseholds.getReligion())
                     .headGender(gender)
+                    .totalMale(totalHouseholdsMale(getHouseholds.getFamilyId()))
+                    .totalFemale(totalHouseholdsFemale(getHouseholds.getFamilyId()))
+                    .totalChildren(totalHouseholdsChildren(getHouseholds.getFamilyId()))
                     .category(getHouseholds.getCategory())
                     .totalMembers(String.valueOf(countMembers))
                     .headPic(pic)
@@ -103,7 +198,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO) {
+    public HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO) throws ParseException {
 
         String name = householdsDTO.getHeadName() == null ? "" : householdsDTO.getHeadName();
         String headDob = householdsDTO.getHeadDob() == null ? "" : householdsDTO.getHeadDob();
@@ -119,8 +214,18 @@ public class FamilyServiceImpl implements FamilyService {
         String icdsService = householdsDTO.getIcdsService() == null ? "" : householdsDTO.getIcdsService();
         String headGender = householdsDTO.getHeadGender() == null ? "" : householdsDTO.getHeadGender();
 
+
+        long currentTime = System.currentTimeMillis();
+        String familyId = ApplicationConstants.familyId + currentTime;
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = df.parse(householdsDTO.getHeadDob());
+        long mills = date.getTime();
+
+
         Family saveFamily = Family.builder()
                 .houseNo(houseNo)
+                .familyId(familyId)
                 .uniqueIdType(uniqueIdType)
                 .uniqueId(uniqueId)
                 .category(category)
@@ -132,7 +237,8 @@ public class FamilyServiceImpl implements FamilyService {
 
         FamilyMember saveInMember = FamilyMember.builder()
                 .name(name)
-//                .dob(headDob)
+                .dob(mills)
+                .familyId(familyId)
                 .mobileNumber(mobileNo)
                 .category(category)
                 .photo(headPic)
@@ -143,6 +249,7 @@ public class FamilyServiceImpl implements FamilyService {
         familyMemberRepository.save(saveInMember);
 
         return HouseholdsDTO.builder()
+                .id("")
                 .headName(name)
                 .headDob(headDob)
                 .headPic(headPic)
@@ -159,7 +266,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO) {
+    public FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO) throws ParseException {
 
         String name = familyMemberDTO.getName() == null ? "" : familyMemberDTO.getName();
         String relationShip = familyMemberDTO.getRelationWithOwner() == null ? "" : familyMemberDTO.getRelationWithOwner();
@@ -172,7 +279,15 @@ public class FamilyServiceImpl implements FamilyService {
         String arrivalDate = familyMemberDTO.getDateOfArrival() == null ? "" : familyMemberDTO.getDateOfArrival();
         String leavingDate = familyMemberDTO.getDateOfLeaving() == null ? "" : familyMemberDTO.getDateOfLeaving();
         String deathDate = familyMemberDTO.getDateOfMortality() == null ? "" : familyMemberDTO.getDateOfMortality();
+        String code = familyMemberDTO.getMemberCode() == null ? "" : familyMemberDTO.getMemberCode();
         String photo = familyMemberDTO.getPhoto() == null ? "" : familyMemberDTO.getPhoto();
+        String category = familyMemberDTO.getCategory() == null ? "" : familyMemberDTO.getCategory();
+        String motherName = familyMemberDTO.getMotherName() == null ? "" : familyMemberDTO.getMotherName();
+        String fatherName = familyMemberDTO.getFatherName() == null ? "" : familyMemberDTO.getFatherName();
+        String memberCode = familyMemberDTO.getMemberCode() == null ? "" : familyMemberDTO.getMemberCode();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = df.parse(familyMemberDTO.getDob());
+        long mills = date.getTime();
 
         FamilyMember saveMember = FamilyMember.builder()
                 .name(name)
@@ -182,7 +297,12 @@ public class FamilyServiceImpl implements FamilyService {
                 .mobileNumber(familyMemberDTO.getMobileNumber() == null ? "" : familyMemberDTO.getMobileNumber())
                 .idType(familyMemberDTO.getIdType() == null ? "" : familyMemberDTO.getIdType())
                 .idNumber(familyMemberDTO.getIdNumber() == null ? "" : familyMemberDTO.getIdNumber())
-//                .dob(dob)
+                .dob(mills)
+                .motherName(motherName)
+                .fatherName(fatherName)
+                .memberCode(memberCode)
+                .memberCode(code)
+                .category(category)
                 .maritalStatus(martialStatus)
                 .stateCode(stateCode)
                 .handicapType(handicapType)
@@ -194,7 +314,31 @@ public class FamilyServiceImpl implements FamilyService {
                 .build();
 
         familyMemberRepository.save(saveMember);
-        return modelMapper.map(saveMember, FamilyMemberDTO.class);
+
+        Date formatDate = new Date(mills);
+
+        return FamilyMemberDTO.builder()
+                .name(name)
+                .relationWithOwner(relationShip)
+                .gender(gender)
+                .memberCode(code)
+                .familyId(familyMemberDTO.getFamilyId())
+                .mobileNumber(familyMemberDTO.getMobileNumber() == null ? "" : familyMemberDTO.getMobileNumber())
+                .idType(familyMemberDTO.getIdType() == null ? "" : familyMemberDTO.getIdType())
+                .idNumber(familyMemberDTO.getIdNumber() == null ? "" : familyMemberDTO.getIdNumber())
+                .dob(df.format(formatDate))
+                .maritalStatus(martialStatus)
+                .stateCode(stateCode)
+                .handicapType(handicapType)
+                .motherName(motherName)
+                .fatherName(fatherName)
+                .memberCode(memberCode)
+                .residentArea(area)
+                .dateOfArrival(arrivalDate)
+                .dateOfLeaving(leavingDate)
+                .dateOfMortality(deathDate)
+                .photo(photo)
+                .build();
     }
 
     @Override
@@ -205,9 +349,38 @@ public class FamilyServiceImpl implements FamilyService {
         }
         List<FamilyMemberDTO> addInList = new ArrayList<>();
         List<FamilyMember> getMembers = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
-
+        String gender = "";
         for (FamilyMember passDetails : getMembers) {
-            FamilyMemberDTO singleList = modelMapper.map(passDetails, FamilyMemberDTO.class);
+
+            long getMills = passDetails.getDob();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+
+
+            FamilyMemberDTO singleList = FamilyMemberDTO
+                    .builder()
+                    .id(passDetails.getId())
+                    .name(passDetails.getName() == null ? "" : passDetails.getName())
+                    .photo(passDetails.getPhoto() == null ? "" : passDetails.getPhoto())
+                    .category(passDetails.getCategory() == null ? "" : passDetails.getCategory())
+                    .familyId(passDetails.getFamilyId() == null ? "" : passDetails.getFamilyId())
+                    .mobileNumber(passDetails.getMobileNumber() == null ? "" : passDetails.getMobileNumber())
+                    .relationWithOwner(passDetails.getRelationWithOwner() == null ? "" : passDetails.getRelationWithOwner())
+                    .idType(passDetails.getIdType() == null ? "" : passDetails.getIdType())
+                    .memberCode(passDetails.getMemberCode() == null ? "" : passDetails.getMemberCode())
+                    .motherName(passDetails.getMotherName() == null ? "" : passDetails.getMotherName())
+                    .fatherName(passDetails.getFatherName() == null ? "" : passDetails.getFatherName())
+                    .idNumber(passDetails.getIdNumber() == null ? "" : passDetails.getIdNumber())
+                    .gender(passDetails.getGender() == null ? "" : passDetails.getGender())
+                    .dob(df.format(date))
+                    .maritalStatus(passDetails.getMaritalStatus() == null ? "" : passDetails.getMaritalStatus())
+                    .stateCode(passDetails.getStateCode() == null ? "" : passDetails.getStateCode())
+                    .handicapType(passDetails.getHandicapType() == null ? "" : passDetails.getHandicapType())
+                    .residentArea(passDetails.getResidentArea() == null ? "" : passDetails.getResidentArea())
+                    .dateOfArrival(passDetails.getDateOfArrival() == null ? "" : passDetails.getDateOfArrival())
+                    .dateOfLeaving(passDetails.getDateOfLeaving() == null ? "" : passDetails.getDateOfLeaving())
+                    .dateOfMortality(passDetails.getDateOfLeaving() == null ? "" : passDetails.getDateOfLeaving())
+                    .build();
             addInList.add(singleList);
         }
 
@@ -302,10 +475,10 @@ public class FamilyServiceImpl implements FamilyService {
 
         if (checkMembers.size() > 0) {
             for (FamilyMember countByGender : checkMembers) {
-                if (countByGender.getGender().equalsIgnoreCase("Male")) {
+                if (countByGender.getGender().equalsIgnoreCase("1")) {
                     male++;
                 }
-                if (countByGender.getGender().equalsIgnoreCase("Female")) {
+                if (countByGender.getGender().equalsIgnoreCase("2")) {
                     female++;
                 }
             }
@@ -363,6 +536,7 @@ public class FamilyServiceImpl implements FamilyService {
         log.info("Time "+convertToMills);
 
         List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDob(convertToMills);
+        String gender = "";
 
         if (findAllChildren.size() > 0) {
             String minority = "";
@@ -374,10 +548,13 @@ public class FamilyServiceImpl implements FamilyService {
                     minority = findDetails.getIsMinority();
                 }
 
+
                 HouseholdsChildren singeEntry = HouseholdsChildren.builder()
                         .childName(member.getName())
                         .motherName("")
                         .fatherName("")
+                        .familyId(member.getFamilyId())
+                        .childId(member.getId())
                         .dob(df.format(getMillis))
                         .gender(member.getGender())
                         .mobileNumber(member.getMobileNumber())

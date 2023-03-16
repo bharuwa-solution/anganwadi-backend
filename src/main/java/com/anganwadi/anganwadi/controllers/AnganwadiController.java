@@ -32,7 +32,7 @@ public class AnganwadiController {
 //    }
 
     @PostMapping("makeAttendance")
-    private AttendanceDTO makeAttendance(@RequestBody AttendanceDTO attendanceDTO) throws ParseException {
+    private List<AttendanceDTO> makeAttendance(@RequestBody AttendanceDTO attendanceDTO) throws ParseException {
         return anganwadiChildrenService.makeAttendance(attendanceDTO);
     }
 

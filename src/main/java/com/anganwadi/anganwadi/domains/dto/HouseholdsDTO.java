@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class HouseholdsDTO {
 
+    private String id;
     private String headName;
     private String houseNo;
     private String uniqueIdType;

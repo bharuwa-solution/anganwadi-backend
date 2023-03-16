@@ -1,27 +1,29 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.config.ApplicationConstants;
+import com.anganwadi.anganwadi.domains.dto.AnganwadiCentersDTO;
 import com.anganwadi.anganwadi.domains.dto.OtpDTO;
 import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
+import com.anganwadi.anganwadi.domains.entity.AnganwadiCenters;
 import com.anganwadi.anganwadi.domains.entity.OtpDetails;
 import com.anganwadi.anganwadi.domains.entity.User;
 import com.anganwadi.anganwadi.exceptionHandler.BadRequestException;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
+import com.anganwadi.anganwadi.repositories.AnganwadiCentersRepository;
 import com.anganwadi.anganwadi.repositories.OtpDetailsRepository;
 import com.anganwadi.anganwadi.repositories.UserRepository;
 import com.anganwadi.anganwadi.service_impl.service.Msg91Services;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -29,15 +31,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final OtpDetailsRepository otpDetailsRepository;
-
+    private final AnganwadiCentersRepository anganwadiCentersRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private UserServiceImpl(UserRepository userRepository, OtpDetailsRepository otpDetailsRepository
+    private UserServiceImpl(UserRepository userRepository, OtpDetailsRepository otpDetailsRepository,
+                            AnganwadiCentersRepository anganwadiCentersRepository, ModelMapper modelMapper
 
     ) {
         this.userRepository = userRepository;
-
+        this.modelMapper = modelMapper;
         this.otpDetailsRepository = otpDetailsRepository;
+        this.anganwadiCentersRepository = anganwadiCentersRepository;
 
     }
 
@@ -126,6 +131,28 @@ public class UserServiceImpl implements UserService {
 
         return otpDTO;
 
+    }
+
+    @Override
+    public List<AnganwadiCentersDTO> addAnganwadiCenters(List<AnganwadiCentersDTO> centersDTO) {
+
+        return centersDTO;
+
+
+    }
+
+    @Override
+    public List<AnganwadiCentersDTO> getAnganwadiCenters() {
+
+        List<AnganwadiCenters> centersDTOList = anganwadiCentersRepository.findAll(Sort.by(Sort.Direction.DESC, "centerName"));
+        List<AnganwadiCentersDTO> addInList = new ArrayList<>();
+
+        for (AnganwadiCenters fetchDetails : centersDTOList) {
+            AnganwadiCentersDTO singleCenterDetail = modelMapper.map(fetchDetails, AnganwadiCentersDTO.class);
+            addInList.add(singleCenterDetail);
+        }
+
+        return addInList;
     }
 
 

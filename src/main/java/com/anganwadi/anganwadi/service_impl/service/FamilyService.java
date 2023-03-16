@@ -9,9 +9,9 @@ import java.util.List;
 public interface FamilyService {
     List<householdsHeadList> getAllHouseholds();
 
-    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO);
+    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO) throws ParseException;
 
-    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO);
+    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO) throws ParseException;
 
     List<FamilyMemberDTO> getFamilyMembers(String familyId);
 

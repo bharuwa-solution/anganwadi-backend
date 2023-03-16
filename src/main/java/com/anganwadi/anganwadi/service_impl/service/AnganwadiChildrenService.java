@@ -20,6 +20,6 @@ public interface AnganwadiChildrenService {
 
     List<AttendanceDTO> getAttendanceByDate(String date) throws ParseException;
 
-    AttendanceDTO makeAttendance(AttendanceDTO attendanceDTO) throws ParseException;
+    List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException;
 
 }

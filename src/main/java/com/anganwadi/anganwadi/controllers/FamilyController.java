@@ -27,12 +27,12 @@ public class FamilyController {
 
 
     @PostMapping("/saveHouseholds")
-    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO) {
+    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO) throws ParseException {
         return familyService.saveHouseholds(householdsDTO);
     }
 
     @PostMapping("/saveFamilyMembers")
-    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO) {
+    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO) throws ParseException {
         return familyService.saveFamilyMembers(familyMemberDTO);
     }
 

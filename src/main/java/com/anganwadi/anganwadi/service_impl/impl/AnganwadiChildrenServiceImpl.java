@@ -1,6 +1,9 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
-import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.dto.AttendanceDTO;
+import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
+import com.anganwadi.anganwadi.domains.dto.SaveAdmissionDTO;
+import com.anganwadi.anganwadi.domains.dto.UploadDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
 import com.anganwadi.anganwadi.domains.entity.Attendance;
 import com.anganwadi.anganwadi.repositories.AnganwadiChildrenRepository;
@@ -54,20 +57,26 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         UUID childId = UUID.randomUUID();
 
         AnganwadiChildren saveAdmission = AnganwadiChildren.builder()
-                .name(saveAdmissionDTO.getName())
+                .name(saveAdmissionDTO.getName()==null?"":saveAdmissionDTO.getName())
                 .familyId(familyId.toString())
-                .childId(childId.toString())
-                .fatherName(saveAdmissionDTO.getFatherName())
+                .fatherName(saveAdmissionDTO.getFatherName()==null?"":saveAdmissionDTO.getFatherName())
                 .dob(df.format(dob))
-                .gender(saveAdmissionDTO.getGender())
-                .mobileNumber(saveAdmissionDTO.getMobileNumber())
-                .category(saveAdmissionDTO.getCategory())
-                .minority(saveAdmissionDTO.getMinority())
-                .handicap(saveAdmissionDTO.getHandicap())
-                .profilePic(saveAdmissionDTO.getProfilePic())
+                .gender(saveAdmissionDTO.getGender()==null?"":saveAdmissionDTO.getGender())
+                .mobileNumber(saveAdmissionDTO.getMobileNumber()==null?"":saveAdmissionDTO.getMobileNumber())
+                .category(saveAdmissionDTO.getCategory()==null?"":saveAdmissionDTO.getCategory())
+                .minority(saveAdmissionDTO.getMinority()==null?"":saveAdmissionDTO.getMinority())
+                .handicap(saveAdmissionDTO.getHandicap()==null?"":saveAdmissionDTO.getHandicap())
+                .profilePic(saveAdmissionDTO.getProfilePic()==null?"":saveAdmissionDTO.getProfilePic())
                 .build();
 
         anganwadiChildrenRepository.save(saveAdmission);
+
+        AnganwadiChildren updateChildId = anganwadiChildrenRepository.findById(saveAdmission.getId()).get();
+
+        updateChildId.setChildId(saveAdmission.getId());
+        anganwadiChildrenRepository.save(updateChildId);
+
+        saveAdmission.setChildId(updateChildId.getChildId());
 
         return modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
     }
@@ -106,7 +115,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 //    }
 
 
-
     @Override
     public List<AttendanceDTO> getAttendanceByDate(String date) throws ParseException {
 
@@ -120,6 +128,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (Attendance singleRecord : findRecords) {
             AttendanceDTO dailyRecord = AttendanceDTO.builder()
                     .childId(singleRecord.getChildId())
+                    .name(singleRecord.getName())
+                    .gender(singleRecord.getGender())
+                    .dob(singleRecord.getDob())
+                    .photo(singleRecord.getPhoto())
                     .attendance(singleRecord.getAttendance())
                     .date(singleRecord.getDate())
                     .build();
@@ -131,8 +143,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
 
+
     @Override
-    public AttendanceDTO makeAttendance(AttendanceDTO attendanceDTO) throws ParseException {
+    public List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException {
 
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -141,19 +154,70 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date formatToTime = df.parse(formatToString);
         long timestamp = formatToTime.getTime();
 
-        Attendance saveAttendance = Attendance.builder()
-                .childId(attendanceDTO.getChildId())
-                .date(timestamp)
-                .attendance(attendanceDTO.getAttendance())
-                .build();
+        String[] spiltComma = attendanceDTO.getChildId().trim().split(",");
+        List<AttendanceDTO> addList = new ArrayList<>();
+        String attendance = "A";
+        long currentDate = 0L;
 
-        attendanceRepository.save(saveAttendance);
-        log.info("Date " + formatToTime);
-        return AttendanceDTO.builder()
-                .childId(attendanceDTO.getChildId())
-                .date(timestamp)
-                .attendance(attendanceDTO.getAttendance())
-                .build();
+        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAll();
+        String ids = "", angwandiId = "";
+        for (AnganwadiChildren getId : findChildren) {
+            angwandiId = getId.getId();
+
+            Attendance saveAttendance = Attendance.builder()
+                    .childId(getId.getId())
+                    .dob(getId.getDob())
+                    .name(getId.getName())
+                    .latitude(attendanceDTO.getLatitude())
+                    .longitude(attendanceDTO.getLongitude())
+                    .photo(getId.getProfilePic())
+                    .gender(getId.getGender())
+                    .date(timestamp)
+                    .attendance(attendance)
+                    .build();
+            attendanceRepository.save(saveAttendance);
+
+            currentDate = saveAttendance.getDate();
+            ids = saveAttendance.getId();
+        }
+        try {
+            for (String attend : spiltComma) {
+
+
+                Attendance updateAttendance = attendanceRepository.findByChildId(attend);
+                updateAttendance.setAttendance("P");
+                attendanceRepository.save(updateAttendance);
+
+                log.info("Date " + formatToTime);
+
+
+            }
+
+
+        } catch (NoSuchElementException | NullPointerException e) {
+            log.info("Id Not Found");
+        }
+
+        List<Attendance> getDetails = attendanceRepository.findAllByDate(currentDate, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        for (Attendance fetchDetails : getDetails) {
+
+            AttendanceDTO singleEntry = AttendanceDTO
+                    .builder()
+                    .childId(fetchDetails.getId())
+                    .dob(fetchDetails.getDob())
+                    .name(fetchDetails.getName())
+                    .latitude(attendanceDTO.getLatitude())
+                    .longitude(attendanceDTO.getLongitude())
+                    .photo(fetchDetails.getPhoto())
+                    .gender(fetchDetails.getGender())
+                    .date(currentDate)
+                    .attendance(fetchDetails.getAttendance())
+                    .build();
+
+            addList.add(singleEntry);
+        }
+        return addList;
 
 
     }
