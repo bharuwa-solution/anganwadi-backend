@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +19,7 @@ public class User extends BaseObject {
     private String password;
     private String gender;
     private String email;
-    private Date dob;
+    private String dob;
     private String userPic;
     private Role role;
     private String authToken;

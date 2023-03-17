@@ -16,4 +16,10 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'dob':{$gte:?0}}")
     List<FamilyMember> findAllByDob(long convertToMills);
+
+    @Query("{'gender':'2'}")
+    List<FamilyMember> findAllByGender();
+
+    @Query("{'relationWithOwner':'Self'}")
+    List<FamilyMember> findAllByHusband();
 }

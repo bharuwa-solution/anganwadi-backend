@@ -1,9 +1,10 @@
 package com.anganwadi.anganwadi.controllers;
 
-import com.anganwadi.anganwadi.domains.dto.AnganwadiCentersDTO;
+import com.anganwadi.anganwadi.domains.dto.AnganwadiCenterDTO;
 import com.anganwadi.anganwadi.domains.dto.OtpDTO;
 import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
-import com.anganwadi.anganwadi.repositories.AnganwadiCentersRepository;
+import com.anganwadi.anganwadi.domains.dto.UserDTO;
+import com.anganwadi.anganwadi.repositories.AnganwadiCenterRepository;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +20,10 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final AnganwadiCentersRepository anganwadiCentersRepository;
+    private final AnganwadiCenterRepository anganwadiCentersRepository;
 
     @Autowired
-    public UserController(UserService userService,AnganwadiCentersRepository anganwadiCentersRepository) {
+    public UserController(UserService userService, AnganwadiCenterRepository anganwadiCentersRepository) {
         this.userService = userService;
         this.anganwadiCentersRepository=anganwadiCentersRepository;
     }
@@ -41,13 +42,18 @@ public class UserController {
 
 
     @PostMapping("/addAnganwadiCenters")
-    private List<AnganwadiCentersDTO> addAnganwadiCenters(@RequestBody List<AnganwadiCentersDTO> centersDTO) {
+    private List<AnganwadiCenterDTO> addAnganwadiCenters(@RequestBody List<AnganwadiCenterDTO> centersDTO) {
         return userService.addAnganwadiCenters(centersDTO);
+    }
+
+    @PostMapping("/registerUser")
+    private UserDTO registerUser(@RequestBody UserDTO userDTO){
+        return userService.registerUser(userDTO);
     }
 
 
     @PostMapping("/getAnganwadiCenters")
-    private List<AnganwadiCentersDTO> getAnganwadiCenters() {
+    private List<AnganwadiCenterDTO> getAnganwadiCenters() {
         return userService.getAnganwadiCenters();
     }
 

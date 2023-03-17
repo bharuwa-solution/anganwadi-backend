@@ -1,15 +1,16 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.config.ApplicationConstants;
-import com.anganwadi.anganwadi.domains.dto.AnganwadiCentersDTO;
+import com.anganwadi.anganwadi.domains.dto.AnganwadiCenterDTO;
 import com.anganwadi.anganwadi.domains.dto.OtpDTO;
 import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
-import com.anganwadi.anganwadi.domains.entity.AnganwadiCenters;
+import com.anganwadi.anganwadi.domains.dto.UserDTO;
+import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
 import com.anganwadi.anganwadi.domains.entity.OtpDetails;
 import com.anganwadi.anganwadi.domains.entity.User;
 import com.anganwadi.anganwadi.exceptionHandler.BadRequestException;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
-import com.anganwadi.anganwadi.repositories.AnganwadiCentersRepository;
+import com.anganwadi.anganwadi.repositories.AnganwadiCenterRepository;
 import com.anganwadi.anganwadi.repositories.OtpDetailsRepository;
 import com.anganwadi.anganwadi.repositories.UserRepository;
 import com.anganwadi.anganwadi.service_impl.service.Msg91Services;
@@ -31,12 +32,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final OtpDetailsRepository otpDetailsRepository;
-    private final AnganwadiCentersRepository anganwadiCentersRepository;
+    private final AnganwadiCenterRepository anganwadiCentersRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
     private UserServiceImpl(UserRepository userRepository, OtpDetailsRepository otpDetailsRepository,
-                            AnganwadiCentersRepository anganwadiCentersRepository, ModelMapper modelMapper
+                            AnganwadiCenterRepository anganwadiCentersRepository, ModelMapper modelMapper
 
     ) {
         this.userRepository = userRepository;
@@ -134,7 +135,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AnganwadiCentersDTO> addAnganwadiCenters(List<AnganwadiCentersDTO> centersDTO) {
+    public List<AnganwadiCenterDTO> addAnganwadiCenters(List<AnganwadiCenterDTO> centersDTO) {
 
         return centersDTO;
 
@@ -142,17 +143,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AnganwadiCentersDTO> getAnganwadiCenters() {
+    public List<AnganwadiCenterDTO> getAnganwadiCenters() {
 
-        List<AnganwadiCenters> centersDTOList = anganwadiCentersRepository.findAll(Sort.by(Sort.Direction.DESC, "centerName"));
-        List<AnganwadiCentersDTO> addInList = new ArrayList<>();
+        List<AnganwadiCenter> centersDTOList = anganwadiCentersRepository.findAll(Sort.by(Sort.Direction.DESC, "centerName"));
+        List<AnganwadiCenterDTO> addInList = new ArrayList<>();
 
-        for (AnganwadiCenters fetchDetails : centersDTOList) {
-            AnganwadiCentersDTO singleCenterDetail = modelMapper.map(fetchDetails, AnganwadiCentersDTO.class);
+        for (AnganwadiCenter fetchDetails : centersDTOList) {
+            AnganwadiCenterDTO singleCenterDetail = modelMapper.map(fetchDetails, AnganwadiCenterDTO.class);
             addInList.add(singleCenterDetail);
         }
 
         return addInList;
+    }
+
+    @Override
+    public UserDTO registerUser(UserDTO userDTO) {
+
+        User passUserData = modelMapper.map(userDTO, User.class);
+
+        userRepository.save(passUserData);
+
+        UserDTO fetchUser = modelMapper.map(passUserData, UserDTO.class);
+
+        return fetchUser;
     }
 
 

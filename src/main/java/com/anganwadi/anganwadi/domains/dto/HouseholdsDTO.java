@@ -14,6 +14,7 @@ public class HouseholdsDTO {
     private String id;
     private String headName;
     private String houseNo;
+    private String centerId;
     private String uniqueIdType;
     private String uniqueId;
     private String religion;

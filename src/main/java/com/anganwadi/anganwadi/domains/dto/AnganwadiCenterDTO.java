@@ -1,18 +1,15 @@
-package com.anganwadi.anganwadi.domains.entity;
+package com.anganwadi.anganwadi.domains.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "AnganwadiCenter")
-public class AnganwadiCenter extends BaseObject {
-
+public class AnganwadiCenterDTO {
 
     private String centerName;
     private String villageName;

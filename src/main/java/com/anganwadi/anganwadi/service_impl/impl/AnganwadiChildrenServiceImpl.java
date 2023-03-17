@@ -53,12 +53,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         String finalDate = saveAdmissionDTO.getDob();
         Date dob = df2.parse(finalDate);
 
-        UUID familyId = UUID.randomUUID();
-        UUID childId = UUID.randomUUID();
+
 
         AnganwadiChildren saveAdmission = AnganwadiChildren.builder()
-                .name(saveAdmissionDTO.getName()==null?"":saveAdmissionDTO.getName())
-                .familyId(familyId.toString())
+                .name(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName())
+                .familyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId())
+                .childId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId())
                 .fatherName(saveAdmissionDTO.getFatherName()==null?"":saveAdmissionDTO.getFatherName())
                 .dob(df.format(dob))
                 .gender(saveAdmissionDTO.getGender()==null?"":saveAdmissionDTO.getGender())
@@ -70,13 +70,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 .build();
 
         anganwadiChildrenRepository.save(saveAdmission);
-
-        AnganwadiChildren updateChildId = anganwadiChildrenRepository.findById(saveAdmission.getId()).get();
-
-        updateChildId.setChildId(saveAdmission.getId());
-        anganwadiChildrenRepository.save(updateChildId);
-
-        saveAdmission.setChildId(updateChildId.getChildId());
 
         return modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
     }
@@ -183,11 +176,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         try {
             for (String attend : spiltComma) {
 
-
                 Attendance updateAttendance = attendanceRepository.findByChildId(attend);
                 updateAttendance.setAttendance("P");
                 attendanceRepository.save(updateAttendance);
-
                 log.info("Date " + formatToTime);
 
 

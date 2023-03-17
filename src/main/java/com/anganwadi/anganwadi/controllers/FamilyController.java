@@ -41,10 +41,10 @@ public class FamilyController {
         return familyService.getFamilyMembers(familyId);
     }
 
-    @PostMapping("/saveVisitsDetails")
-    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO) {
-        return familyService.saveVisitsDetails(visitsDetailsDTO);
-    }
+//    @PostMapping("/saveVisitsDetails")
+//    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO) {
+//        return familyService.saveVisitsDetails(visitsDetailsDTO);
+//    }
 
     @PostMapping("/saveWeightRecords")
     private WeightRecordsDTO saveWeightRecords(@RequestBody WeightRecordsDTO weightRecordsDTO) {
@@ -81,5 +81,9 @@ public class FamilyController {
     private List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException {
         return familyService.getAllHouseholdsChildren();
     }
+
+
+
+
 }
 

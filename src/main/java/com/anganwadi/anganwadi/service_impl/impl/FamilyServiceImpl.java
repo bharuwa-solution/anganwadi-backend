@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -227,6 +228,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .houseNo(houseNo)
                 .familyId(familyId)
                 .uniqueIdType(uniqueIdType)
+                .centerId("Belda")
                 .uniqueId(uniqueId)
                 .category(category)
                 .religion(religion)
@@ -253,6 +255,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .headName(name)
                 .headDob(headDob)
                 .headPic(headPic)
+                .centerId("Belda")
                 .headGender(headGender)
                 .houseNo(houseNo)
                 .mobileNumber(mobileNo)
@@ -539,13 +542,14 @@ public class FamilyServiceImpl implements FamilyService {
         String gender = "";
 
         if (findAllChildren.size() > 0) {
-            String minority = "";
+            String minority = "", category = "";
             for (FamilyMember member : findAllChildren) {
 
                 Date getMillis = new Date(member.getDob());
                 List<Family> findFamilyDetails = familyRepository.findAllByFamilyId(member.getFamilyId());
                 for (Family findDetails : findFamilyDetails) {
                     minority = findDetails.getIsMinority();
+                    category = findDetails.getCategory();
                 }
 
 
@@ -556,9 +560,12 @@ public class FamilyServiceImpl implements FamilyService {
                         .familyId(member.getFamilyId())
                         .childId(member.getId())
                         .dob(df.format(getMillis))
+                        .motherName(member.getMotherName())
+                        .fatherName(member.getFatherName())
+                        .memberCode(member.getMemberCode())
                         .gender(member.getGender())
                         .mobileNumber(member.getMobileNumber())
-                        .category(member.getCategory())
+                        .category(category)
                         .minority(minority)
                         .handicap(member.getHandicapType())
                         .photoUrl(member.getPhoto())
@@ -568,6 +575,88 @@ public class FamilyServiceImpl implements FamilyService {
             }
 
         }
+        return addList;
+    }
+
+    private String visitRounds(String familyId, String visitName){
+
+        String visitPrefix = "";
+        int roundsA = 0;
+
+        List<Visits> checkRounds = visitsRepository.findAllByFamilyId(familyId);
+
+        for(Visits verifyVisit :  checkRounds) {
+
+            switch (verifyVisit.getVisitType().trim()) {
+                case "Pregnancy of 4-6 months":
+                    visitPrefix = "A";
+
+                    break;
+            }
+
+        }
+            return null;
+    }
+
+
+
+    @Override
+    public List<FemaleMembersDTO> getHouseholdsFemaleDetails() {
+
+
+        List<FamilyMember> findFemales = familyMemberRepository.findAllByGender();
+        List<FemaleMembersDTO> addList = new ArrayList<>();
+
+        for (FamilyMember checkAge : findFemales) {
+            int getYear = 0 ;
+            String centerName = "", husbandName = "", houseNo = "";
+
+            long millis = checkAge.getDob();
+
+            Date date = new Date(millis);
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            String dateOfDob = df.format(date);
+            String[] dateParts = dateOfDob.split("-");
+            getYear = Integer.parseInt(dateParts[2]);
+            int currentYear = Year.now().getValue();
+            int getDiff = currentYear - getYear;
+
+            if (getDiff >= 20 && getDiff <= 60) {
+
+                // center Name
+                List<Family> checkHouseDetails = familyRepository.findAllByFamilyId(checkAge.getFamilyId());
+
+                for (Family getDetails : checkHouseDetails) {
+                   centerName = getDetails.getCenterId();
+                   houseNo = getDetails.getHouseNo();
+                }
+
+                if(checkAge.getRelationWithOwner().trim().equals("1")){
+                    List<FamilyMember> findHusband = familyMemberRepository.findAllByHusband();
+
+                    for(FamilyMember getName :  findHusband){
+                       husbandName = getName.getName();
+                    }
+
+                }
+
+
+                FemaleMembersDTO addMember = FemaleMembersDTO.builder()
+                        .name(checkAge.getName())
+                        .centerName(centerName)
+                        .husbandName(husbandName)
+                        .houseNo(houseNo)
+                        .profilePic(checkAge.getPhoto())
+                        .dob(df.format(checkAge.getDob()))
+                        .build();
+
+                addList.add(addMember);
+            }
+
+
+        }
+
+
         return addList;
     }
 

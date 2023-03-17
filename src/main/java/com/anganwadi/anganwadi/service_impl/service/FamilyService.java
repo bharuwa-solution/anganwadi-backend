@@ -30,4 +30,7 @@ public interface FamilyService {
     List<VaccinationRecords> getVaccinationRecords();
 
     List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException;
+
+
+    List<FemaleMembersDTO> getHouseholdsFemaleDetails();
 }
