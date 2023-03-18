@@ -121,9 +121,16 @@ public class UserServiceImpl implements UserService {
         if (verifyotp != null || otpDTO.getOtp().trim().equals("1105")) {
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
+                    .centerId(user.getCenterId()==null?"":user.getCenterId())
+                    .centerName(user.getCenterName()==null?"":user.getCenterName())
+                    .userPic(user.getUserPic()==null?"":user.getUserPic())
+                    .mobileNumber(user.getMobileNumber()==null?"":user.getMobileNumber())
+                    .gender(user.getGender()==null?"":user.getGender())
+                    .name(user.getName()==null?"":user.getName())
                     .status("success")
-                    .mobileNumber(otpDTO.getMobileNumber())
-                    .authToken("")
+                    .uniqueCode(user.getUniqueCode()==null?"":user.getUniqueCode())
+                    .dob(user.getDob()==null?"":otpDTO.getDob())
+                    .email(user.getEmail()==null?"":user.getEmail())
                     .build();
 
         } else {

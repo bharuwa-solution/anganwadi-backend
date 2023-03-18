@@ -1,6 +1,5 @@
 package com.anganwadi.anganwadi.domains.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +11,15 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OtpDTO {
 
-    private String mobileNumber;
-    private String status;
+    private String centerId;
     private String otp;
-    @JsonIgnore
-    private String authToken;
+    private String status;
+    private String centerName;
+    private String uniqueCode;
+    private String name;
+    private String mobileNumber;
+    private String gender;
+    private String email;
+    private String dob;
+    private String userPic;
 }

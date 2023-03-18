@@ -15,6 +15,7 @@ public class AnganwadiCenter extends BaseObject {
 
 
     private String centerName;
+    private String uniqueCode;
     private String villageName;
     private String tahsilName;
     private String blockName;

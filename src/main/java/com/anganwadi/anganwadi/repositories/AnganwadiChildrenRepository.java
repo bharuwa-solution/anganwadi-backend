@@ -9,4 +9,8 @@ import java.util.List;
 @Repository
 public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiChildren, String> {
 
+    AnganwadiChildren findByChildId(String attend);
+
+
+    List<AnganwadiChildren> findAllByChildId(String attend);
 }

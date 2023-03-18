@@ -9,15 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDTO {
+public class HouseVisitDTO {
 
-    private String centerId;
-    private String centerName;
-    private String uniqueCode;
     private String name;
-    private String mobileNumber;
-    private String gender;
-    private String email;
+    private String profilePic;
+    private String husbandName;
+    private String memberId;
+    private String houseNo;
+    private String visits;
     private String dob;
-    private String userPic;
+    private String centerName;
+
+
 }

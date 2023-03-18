@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class HouseholdsDTO {
 
     private String id;
+    private String uniqueCode;
     private String headName;
     private String houseNo;
     private String centerId;

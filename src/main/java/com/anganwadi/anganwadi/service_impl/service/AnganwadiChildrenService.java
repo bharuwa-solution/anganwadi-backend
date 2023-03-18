@@ -22,4 +22,5 @@ public interface AnganwadiChildrenService {
 
     List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException;
 
+    List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO) throws ParseException;
 }

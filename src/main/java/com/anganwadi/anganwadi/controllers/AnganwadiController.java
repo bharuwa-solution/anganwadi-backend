@@ -33,8 +33,8 @@ public class AnganwadiController {
 //    }
 
     @PostMapping("makeAttendance")
-    private List<AttendanceDTO> makeAttendance(@RequestBody AttendanceDTO attendanceDTO) throws ParseException {
-        return anganwadiChildrenService.makeAttendance(attendanceDTO);
+    private List<AttendanceDTO> makeAndUpdateAttendance(@RequestBody AttendanceDTO attendanceDTO) throws ParseException {
+        return anganwadiChildrenService.makeAndUpdateAttendance(attendanceDTO);
     }
 
     @GetMapping("getAttendanceByDate")

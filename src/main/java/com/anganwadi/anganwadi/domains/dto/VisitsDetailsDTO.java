@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VisitsDetailsDTO {
 
-    private String familyId;
+    private String memberId;
     private String visitType;
     private String visitFor;
     private String visitRound;

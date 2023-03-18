@@ -118,6 +118,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<Attendance> findRecords = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<AttendanceDTO> addList = new ArrayList<>();
 
+        if(findRecords.size()<=0){
+            markAsAbsent();
+        }
+
+
         for (Attendance singleRecord : findRecords) {
             AttendanceDTO dailyRecord = AttendanceDTO.builder()
                     .childId(singleRecord.getChildId())
@@ -132,6 +137,109 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             addList.add(dailyRecord);
         }
 
+        return addList;
+
+    }
+
+    private void markAsAbsent() throws ParseException {
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentTime = new Date();
+        String formatToString = df.format(currentTime.getTime());
+        Date formatToTime = df.parse(formatToString);
+        long timestamp = formatToTime.getTime();
+
+        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAll();
+        String attendance = "A";
+
+        for (AnganwadiChildren getId : findChildren) {
+
+            Attendance saveAttendance = Attendance.builder()
+                    .childId(getId.getChildId())
+                    .dob(getId.getDob())
+                    .name(getId.getName())
+                    .photo(getId.getProfilePic())
+                    .gender(getId.getGender())
+                    .date(timestamp)
+                    .attendance(attendance)
+                    .build();
+            attendanceRepository.save(saveAttendance);
+
+
+        }
+
+    }
+
+
+    private void markPresent(String childId, String latitude, String longitude, long timestamp) {
+
+        String[] splitString = childId.split(",");
+
+        for (String getChildId : splitString) {
+            List<Attendance> findChildInRecord = attendanceRepository.updateAttendance(getChildId.trim(), timestamp);
+
+            if (findChildInRecord.size() > 0) {
+
+                for (Attendance markAttendance : findChildInRecord) {
+                    markAttendance.setLatitude(latitude);
+                    markAttendance.setLongitude(longitude);
+                    markAttendance.setAttendance("P");
+                    attendanceRepository.save(markAttendance);
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO) throws ParseException {
+
+        // convert date to millis
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentTime = new Date();
+        String formatToString = df.format(currentTime.getTime());
+        Date formatToTime = df.parse(formatToString);
+        long timestamp = formatToTime.getTime();
+
+        // set default value
+        boolean isMarked = false;
+
+        List<AttendanceDTO> addList = new ArrayList<>();
+
+        // Checking if record exists for current date
+        List<Attendance> checkDailyAttendance = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        // updating if not exists
+        if (checkDailyAttendance.size() <= 0) {
+            markAsAbsent();
+        }
+
+
+        // After updating Above fields
+
+        markPresent(attendanceDTO.getChildId(), attendanceDTO.getLatitude(), attendanceDTO.getLongitude(), timestamp);
+
+        List<Attendance> getDetails = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+
+        for (Attendance fetchDetails : getDetails) {
+
+            AttendanceDTO singleEntry = AttendanceDTO
+                    .builder()
+                    .childId(fetchDetails.getChildId())
+                    .dob(fetchDetails.getDob())
+                    .name(fetchDetails.getName())
+                    .latitude(attendanceDTO.getLatitude())
+                    .longitude(attendanceDTO.getLongitude())
+                    .photo(fetchDetails.getPhoto())
+                    .gender(fetchDetails.getGender())
+                    .date(timestamp)
+                    .attendance(fetchDetails.getAttendance())
+                    .build();
+
+            addList.add(singleEntry);
+        }
         return addList;
 
     }
@@ -158,7 +266,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             angwandiId = getId.getId();
 
             Attendance saveAttendance = Attendance.builder()
-                    .childId(getId.getId())
+                    .childId(getId.getChildId())
                     .dob(getId.getDob())
                     .name(getId.getName())
                     .latitude(attendanceDTO.getLatitude())
@@ -173,21 +281,28 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             currentDate = saveAttendance.getDate();
             ids = saveAttendance.getId();
         }
-        try {
+
             for (String attend : spiltComma) {
 
-                Attendance updateAttendance = attendanceRepository.findByChildId(attend);
-                updateAttendance.setAttendance("P");
-                attendanceRepository.save(updateAttendance);
-                log.info("Date " + formatToTime);
+                List<AnganwadiChildren> checkChild = anganwadiChildrenRepository.findAllByChildId(attend.trim());
+                try {
+                    if (checkChild.size() > 0) {
+                        for (AnganwadiChildren children : checkChild) {
+                            List<Attendance> updateAttendance = attendanceRepository.findAllByChildId(children.getChildId());
+
+                            for (Attendance updateAtt : updateAttendance) {
+                                updateAtt.setAttendance("P");
+                                attendanceRepository.save(updateAtt);
+                                log.info("Date " + formatToTime);
+                            }
+                        }
+                    }
+                } catch (NoSuchElementException | NullPointerException e) {
+                    log.info("Id Not Found");
+                }
 
 
             }
-
-
-        } catch (NoSuchElementException | NullPointerException e) {
-            log.info("Id Not Found");
-        }
 
         List<Attendance> getDetails = attendanceRepository.findAllByDate(currentDate, Sort.by(Sort.Direction.DESC, "createdDate"));
 
@@ -195,7 +310,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             AttendanceDTO singleEntry = AttendanceDTO
                     .builder()
-                    .childId(fetchDetails.getId())
+                    .childId(fetchDetails.getChildId())
                     .dob(fetchDetails.getDob())
                     .name(fetchDetails.getName())
                     .latitude(attendanceDTO.getLatitude())

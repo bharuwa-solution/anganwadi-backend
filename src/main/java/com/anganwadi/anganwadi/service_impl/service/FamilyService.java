@@ -33,4 +33,8 @@ public interface FamilyService {
 
 
     List<FemaleMembersDTO> getHouseholdsFemaleDetails();
+
+    List<HouseVisitDTO> getHouseVisitListing();
+
+    List<MemberVisits> getMemberVisitDetails(String memberId);
 }

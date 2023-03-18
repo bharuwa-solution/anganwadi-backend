@@ -13,6 +13,7 @@ public class FemaleMembersDTO {
 
     private String name;
     private String profilePic;
+    private String memberId;
     private String husbandName;
     private String houseNo;
     private String dob;

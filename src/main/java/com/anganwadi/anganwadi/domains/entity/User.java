@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User extends BaseObject {
 
     private String centerId;
+    private String uniqueCode;
+    private String centerName;
     private String name;
     private String mobileNumber;
     private String password;

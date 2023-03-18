@@ -22,6 +22,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -203,11 +204,13 @@ public class FamilyServiceImpl implements FamilyService {
 
         String name = householdsDTO.getHeadName() == null ? "" : householdsDTO.getHeadName();
         String headDob = householdsDTO.getHeadDob() == null ? "" : householdsDTO.getHeadDob();
+        String centerID = householdsDTO.getCenterId() == null ? "" : householdsDTO.getCenterId();
         String totalMembers = householdsDTO.getTotalMembers() == null ? "" : householdsDTO.getTotalMembers();
         String houseNo = householdsDTO.getHouseNo() == null ? "" : householdsDTO.getHouseNo();
         String mobileNo = householdsDTO.getMobileNumber() == null ? "" : householdsDTO.getMobileNumber();
         String headPic = householdsDTO.getHeadPic() == null ? "" : householdsDTO.getHeadPic();
         String uniqueIdType = householdsDTO.getUniqueIdType() == null ? "" : householdsDTO.getUniqueIdType();
+        String uniqueCode = householdsDTO.getUniqueCode() == null ? "" : householdsDTO.getUniqueCode();
         String uniqueId = householdsDTO.getUniqueId() == null ? "" : householdsDTO.getUniqueId();
         String category = householdsDTO.getCategory() == null ? "" : householdsDTO.getCategory();
         String religion = householdsDTO.getReligion() == null ? "" : householdsDTO.getReligion();
@@ -228,7 +231,8 @@ public class FamilyServiceImpl implements FamilyService {
                 .houseNo(houseNo)
                 .familyId(familyId)
                 .uniqueIdType(uniqueIdType)
-                .centerId("Belda")
+                .centerId(centerID)
+                .uniqueCode(uniqueCode)
                 .uniqueId(uniqueId)
                 .category(category)
                 .religion(religion)
@@ -251,7 +255,7 @@ public class FamilyServiceImpl implements FamilyService {
         familyMemberRepository.save(saveInMember);
 
         return HouseholdsDTO.builder()
-                .id("")
+                .id(saveInMember.getId())
                 .headName(name)
                 .headDob(headDob)
                 .headPic(headPic)
@@ -321,6 +325,7 @@ public class FamilyServiceImpl implements FamilyService {
         Date formatDate = new Date(mills);
 
         return FamilyMemberDTO.builder()
+                .id(saveMember.getId())
                 .name(name)
                 .relationWithOwner(relationShip)
                 .gender(gender)
@@ -394,7 +399,7 @@ public class FamilyServiceImpl implements FamilyService {
     public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO) {
 
         Visits saveVisitDetails = Visits.builder()
-                .familyId(visitsDetailsDTO.getFamilyId() == null ? "" : visitsDetailsDTO.getFamilyId())
+                .memberId(visitsDetailsDTO.getMemberId() == null ? "" : visitsDetailsDTO.getMemberId())
                 .visitType(visitsDetailsDTO.getVisitType() == null ? "" : visitsDetailsDTO.getVisitType())
                 .visitFor(visitsDetailsDTO.getVisitFor() == null ? "" : visitsDetailsDTO.getVisitFor())
                 .description(visitsDetailsDTO.getDescription() == null ? "" : visitsDetailsDTO.getDescription())
@@ -578,24 +583,88 @@ public class FamilyServiceImpl implements FamilyService {
         return addList;
     }
 
-    private String visitRounds(String familyId, String visitName){
+    private String getPrefix(String caseId) {
 
         String visitPrefix = "";
-        int roundsA = 0;
+        long noOfRounds = 0;
+        switch (caseId) {
+            case "1":
+                visitPrefix = "A";
+                noOfRounds = visitsRepository.countByVisitType(caseId);
+                break;
 
-        List<Visits> checkRounds = visitsRepository.findAllByFamilyId(familyId);
+            case "2":
+                visitPrefix = "B";
+                noOfRounds = visitsRepository.countByVisitType(caseId);
+                break;
 
-        for(Visits verifyVisit :  checkRounds) {
+            case "3":
+                visitPrefix = "C";
 
-            switch (verifyVisit.getVisitType().trim()) {
-                case "Pregnancy of 4-6 months":
-                    visitPrefix = "A";
+                break;
 
-                    break;
-            }
+            case "4":
+                visitPrefix = "D";
+
+                break;
+
+            case "5":
+                visitPrefix = "E";
+
+                break;
+
+            case "6":
+                visitPrefix = "F";
+
+                break;
+
+            case "7":
+                visitPrefix = "G";
+
+                break;
+
+            case "8":
+                visitPrefix = "H";
+
+                break;
+
+            case "9":
+                visitPrefix = "I";
+
+                break;
+
+            case "10":
+                visitPrefix = "J";
+
+                break;
 
         }
-            return null;
+
+        HashSet<String> prefixType = new HashSet<>();
+        prefixType.add(visitPrefix);
+
+        visitPrefix = visitPrefix + noOfRounds;
+        return visitPrefix;
+    }
+
+    private String visitRounds(String familyId) {
+
+
+        StringBuilder appendRounds = new StringBuilder();
+
+
+        List<Visits> checkRounds = visitsRepository.findAllByFamilyId(familyId);
+        HashSet<String> visitType = new HashSet<>();
+        String data = "";
+        for (Visits verifyVisit : checkRounds) {
+            if (visitType.add(verifyVisit.getVisitType())) {
+                data = verifyVisit.getVisitType();
+                appendRounds.append(getPrefix(data)).append(appendRounds.append(","));
+            }
+        }
+
+
+        return appendRounds.toString();
     }
 
 
@@ -631,21 +700,15 @@ public class FamilyServiceImpl implements FamilyService {
                    houseNo = getDetails.getHouseNo();
                 }
 
-                if(checkAge.getRelationWithOwner().trim().equals("1")){
-                    List<FamilyMember> findHusband = familyMemberRepository.findAllByHusband();
-
-                    for(FamilyMember getName :  findHusband){
-                       husbandName = getName.getName();
-                    }
-
-                }
+                husbandName = checkAge.getFatherName();
 
 
                 FemaleMembersDTO addMember = FemaleMembersDTO.builder()
                         .name(checkAge.getName())
                         .centerName(centerName)
-                        .husbandName(husbandName)
+                        .husbandName(husbandName == null ? "" : husbandName)
                         .houseNo(houseNo)
+                        .memberId(checkAge.getId())
                         .profilePic(checkAge.getPhoto())
                         .dob(df.format(checkAge.getDob()))
                         .build();
@@ -658,6 +721,98 @@ public class FamilyServiceImpl implements FamilyService {
 
 
         return addList;
+    }
+
+    @Override
+    public List<HouseVisitDTO> getHouseVisitListing() {
+
+        List<Visits> checkRounds = visitsRepository.findAll();
+        List<HouseVisitDTO> addInList = new ArrayList<>();
+        HashSet<String> memberId = new HashSet<>();
+
+        for (Visits visitsDetails : checkRounds) {
+            FamilyMember checkMembers = familyMemberRepository.findById(visitsDetails.getMemberId()).get();
+
+            String husband_FatherName = "", houseNo = "", centerName = "";
+
+
+            long millis = checkMembers.getDob();
+            Date date = new Date(millis);
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+            husband_FatherName = checkMembers.getFatherName();
+
+
+            List<Family> checkHouseDetails = familyRepository.findAllByFamilyId(visitsDetails.getFamilyId());
+
+            for (Family findFamily : checkHouseDetails) {
+                houseNo = findFamily.getHouseNo();
+                centerName = findFamily.getCenterId();
+            }
+
+            if (memberId.add(visitsDetails.getMemberId())) {
+                HouseVisitDTO addSingle = HouseVisitDTO.builder()
+                        .name(checkMembers.getName() == null ? "" : checkMembers.getName())
+                        .dob(df.format(date))
+                        .husbandName(husband_FatherName == null ? "" : husband_FatherName)
+                        .houseNo(houseNo)
+                        .memberId(checkMembers.getId())
+                        .centerName(centerName == null ? "" : houseNo)
+                        .profilePic(checkMembers.getPhoto() == null ? "" : checkMembers.getPhoto())
+                        .visits("")
+                        .build();
+
+                addInList.add(addSingle);
+            }
+
+        }
+
+
+        return addInList;
+    }
+
+    private List<VisitArray> visitArrayList(String memberId) {
+
+        List<Visits> checkVisitsFor = visitsRepository.findAllByMemberId(memberId);
+        List<VisitArray> addInList = new ArrayList<>();
+
+        for (Visits findDetails : checkVisitsFor) {
+
+            VisitArray visitArray = VisitArray.builder()
+                    .date(findDetails.getVisitDateTime())
+                    .visitFor(findDetails.getVisitFor())
+                    .visitRound(findDetails.getVisitRound())
+                    .build();
+
+            addInList.add(visitArray);
+        }
+
+        return addInList;
+    }
+
+    @Override
+    public List<MemberVisits> getMemberVisitDetails(String memberId) {
+
+        List<Visits> findMember = visitsRepository.findAllByMemberId(memberId);
+        List<MemberVisits> addInList = new ArrayList<>();
+
+        HashSet<String> uniqueMember = new HashSet<>();
+        for (Visits checkDetails : findMember) {
+
+            if (uniqueMember.add(checkDetails.getVisitType())) {
+                MemberVisits memberVisits = MemberVisits.builder()
+                        .visitType(checkDetails.getVisitType())
+                        .visitArray(visitArrayList(checkDetails.getMemberId()))
+                        .build();
+
+                addInList.add(memberVisits);
+
+            }
+
+
+        }
+
+        return addInList;
     }
 
 }

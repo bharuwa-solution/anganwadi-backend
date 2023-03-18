@@ -1,6 +1,8 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.FemaleMembersDTO;
+import com.anganwadi.anganwadi.domains.dto.HouseVisitDTO;
+import com.anganwadi.anganwadi.domains.dto.MemberVisits;
 import com.anganwadi.anganwadi.domains.dto.VisitsDetailsDTO;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +33,14 @@ public class HouseVisitsController {
     }
 
     @GetMapping("/getHouseVisitListing")
-    private List<FemaleMembersDTO> getHouseVisitListing() {
+    private List<HouseVisitDTO> getHouseVisitListing() {
         return familyService.getHouseVisitListing();
     }
 
+    @GetMapping("/getMemberVisitDetails")
+    private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId) {
+        return familyService.getMemberVisitDetails(memberId);
+    }
 
 
 }
