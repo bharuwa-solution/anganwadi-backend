@@ -751,12 +751,11 @@ public class FamilyServiceImpl implements FamilyService {
 
             husband_FatherName = checkMembers.getFatherName();
 
-
-            List<Family> checkHouseDetails = familyRepository.findAllByFamilyId(visitsDetails.getFamilyId());
+            List<Family> checkHouseDetails = familyRepository.findAllByFamilyId(checkMembers.getFamilyId());
 
             for (Family findFamily : checkHouseDetails) {
                 houseNo = findFamily.getHouseNo();
-                centerName = findFamily.getCenterId();
+                centerName = findFamily.getCenterName();
             }
 
             if (memberId.add(visitsDetails.getMemberId())) {
@@ -766,7 +765,7 @@ public class FamilyServiceImpl implements FamilyService {
                         .husbandName(husband_FatherName == null ? "" : husband_FatherName)
                         .houseNo(houseNo)
                         .memberId(checkMembers.getId())
-                        .centerName(centerName == null ? "" : houseNo)
+                        .centerName(centerName == null ? "" : centerName)
                         .profilePic(checkMembers.getPhoto() == null ? "" : checkMembers.getPhoto())
                         .visits("")
                         .build();

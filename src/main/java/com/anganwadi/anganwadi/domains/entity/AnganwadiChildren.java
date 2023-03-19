@@ -16,6 +16,7 @@ public class AnganwadiChildren  extends BaseObject{
     private String profilePic;
     private String familyId;
     private String childId;
+    private String centerName;
     private String name;
     private String mobileNumber;
     private String fatherName;

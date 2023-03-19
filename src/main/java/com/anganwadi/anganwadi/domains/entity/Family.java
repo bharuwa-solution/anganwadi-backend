@@ -15,6 +15,7 @@ public class Family extends BaseObject {
 
 
     private String houseNo;
+    private String centerName;
     private String uniqueIdType;
     private String uniqueId;
     private String religion;
