@@ -8,6 +8,7 @@ import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -21,9 +22,8 @@ public class HouseVisitsController {
         this.familyService = familyService;
     }
 
-
     @PostMapping("/saveVisitsDetails")
-    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO) {
+    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO) throws ParseException {
         return familyService.saveVisitsDetails(visitsDetailsDTO);
     }
 
@@ -40,6 +40,11 @@ public class HouseVisitsController {
     @GetMapping("/getMemberVisitDetails")
     private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId) {
         return familyService.getMemberVisitDetails(memberId);
+    }
+
+    @GetMapping("/getMemberVisitDetailsLatest")
+    private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId) {
+        return familyService.getMemberVisitDetailsLatest(memberId);
     }
 
 

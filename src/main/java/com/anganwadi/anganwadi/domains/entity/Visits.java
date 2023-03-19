@@ -20,7 +20,7 @@ public class Visits  extends BaseObject{
     private String visitFor;
     private String visitRound;
     private String description;
-    private String visitDateTime;
+    private long visitDateTime;
     private String latitude;
     private String longitude;
 }

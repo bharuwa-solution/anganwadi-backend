@@ -20,10 +20,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -396,7 +393,20 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO) {
+    public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO) throws ParseException {
+
+
+//        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("UTC+5.30"));
+
+        Date date = new Date();
+        String formattedDate = df.format(date);
+        log.info("Formatted Date : " + formattedDate);
+
+        Date AfterFormat = df.parse(formattedDate);
+        long millis = AfterFormat.getTime();
+        log.info("Date in Millis  : " + millis);
 
         Visits saveVisitDetails = Visits.builder()
                 .memberId(visitsDetailsDTO.getMemberId() == null ? "" : visitsDetailsDTO.getMemberId())
@@ -406,7 +416,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .visitRound(visitsDetailsDTO.getVisitRound() == null ? "" : visitsDetailsDTO.getVisitRound())
                 .latitude(visitsDetailsDTO.getLatitude() == null ? "" : visitsDetailsDTO.getLatitude())
                 .longitude(visitsDetailsDTO.getLongitude() == null ? "" : visitsDetailsDTO.getLongitude())
-                .visitDateTime(visitsDetailsDTO.getVisitDateTime() == null ? "" : visitsDetailsDTO.getVisitDateTime())
+                .visitDateTime(millis)
                 .build();
         visitsRepository.save(saveVisitDetails);
 
@@ -668,7 +678,6 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
 
-
     @Override
     public List<FemaleMembersDTO> getHouseholdsFemaleDetails() {
 
@@ -696,8 +705,8 @@ public class FamilyServiceImpl implements FamilyService {
                 List<Family> checkHouseDetails = familyRepository.findAllByFamilyId(checkAge.getFamilyId());
 
                 for (Family getDetails : checkHouseDetails) {
-                   centerName = getDetails.getCenterId();
-                   houseNo = getDetails.getHouseNo();
+                    centerName = getDetails.getCenterId();
+                    houseNo = getDetails.getHouseNo();
                 }
 
                 husbandName = checkAge.getFatherName();
@@ -771,21 +780,61 @@ public class FamilyServiceImpl implements FamilyService {
         return addInList;
     }
 
-    private List<VisitArray> visitArrayList(String memberId) {
+    private List<VisitArray> visitArrayList(String memberId, String visitType) {
 
-        List<Visits> checkVisitsFor = visitsRepository.findAllByMemberId(memberId);
+        List<Visits> checkVisitsFor = visitsRepository.findAllByMemberIdAndVisitType(memberId, visitType);
         List<VisitArray> addInList = new ArrayList<>();
 
         for (Visits findDetails : checkVisitsFor) {
 
+            long millis = findDetails.getVisitDateTime();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            Date date = new Date(millis);
+
             VisitArray visitArray = VisitArray.builder()
-                    .date(findDetails.getVisitDateTime())
+                    .date(df.format(date))
                     .visitFor(findDetails.getVisitFor())
                     .visitRound(findDetails.getVisitRound())
                     .build();
 
             addInList.add(visitArray);
         }
+
+        return addInList;
+    }
+
+    @Override
+    public List<MemberVisits> getMemberVisitDetailsLatest(String memberId) {
+
+
+        List<MemberVisits> addInList = new ArrayList<>();
+        MemberVisits memberVisits = new MemberVisits();
+        HashSet<String> uniqueMember = new HashSet<>();
+        int count = 0;
+
+
+        for (int i = 1; i <= 10; i++) {
+            List<Visits> findMember = visitsRepository.findAllByMemberIdAndVisitType(memberId, String.valueOf(i));
+            if (findMember.size() > 0) {
+                for (Visits checkDetails : findMember) {
+
+                    memberVisits = MemberVisits.builder()
+                            .visitType(checkDetails.getVisitType())
+                            .visitArray(visitArrayList(checkDetails.getMemberId(), checkDetails.getVisitType()))
+                            .build();
+
+                }
+
+            } else {
+                memberVisits = MemberVisits.builder()
+                        .visitType(String.valueOf(i))
+                        .build();
+
+
+            }
+            addInList.add(memberVisits);
+        }
+
 
         return addInList;
     }
@@ -802,7 +851,7 @@ public class FamilyServiceImpl implements FamilyService {
             if (uniqueMember.add(checkDetails.getVisitType())) {
                 MemberVisits memberVisits = MemberVisits.builder()
                         .visitType(checkDetails.getVisitType())
-                        .visitArray(visitArrayList(checkDetails.getMemberId()))
+                        .visitArray(visitArrayList(checkDetails.getMemberId(), checkDetails.getVisitType()))
                         .build();
 
                 addInList.add(memberVisits);

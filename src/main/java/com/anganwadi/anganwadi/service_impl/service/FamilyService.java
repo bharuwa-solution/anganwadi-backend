@@ -15,7 +15,7 @@ public interface FamilyService {
 
     List<FamilyMemberDTO> getFamilyMembers(String familyId);
 
-    VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO);
+    VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO) throws ParseException;
 
     WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO);
 
@@ -37,4 +37,6 @@ public interface FamilyService {
     List<HouseVisitDTO> getHouseVisitListing();
 
     List<MemberVisits> getMemberVisitDetails(String memberId);
+
+    List<MemberVisits> getMemberVisitDetailsLatest(String memberId);
 }

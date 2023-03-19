@@ -15,4 +15,8 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     Long countByVisitType(String visitType);
 
     List<Visits> findAllByMemberId(String memberId);
+
+    Visits findByMemberIdAndVisitType(String memberId, String valueOf);
+
+    List<Visits> findAllByMemberIdAndVisitType(String memberId, String valueOf);
 }
