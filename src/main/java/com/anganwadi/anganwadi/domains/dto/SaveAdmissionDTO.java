@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class SaveAdmissionDTO {
 
     private String id;
+    private String centerName;
     private String profilePic;
     private String name;
     private String familyId;

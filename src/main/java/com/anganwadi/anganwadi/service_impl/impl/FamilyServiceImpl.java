@@ -134,9 +134,9 @@ public class FamilyServiceImpl implements FamilyService {
 
 
     @Override
-    public List<householdsHeadList> getAllHouseholds() {
+    public List<householdsHeadList> getAllHouseholds(String centerName) {
         List<householdsHeadList> addInList = new ArrayList<>();
-        List<Family> familyList = familyRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Family> familyList = familyRepository.findAllByCenterName(centerName,Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // Get Head of Family Details
 
@@ -157,7 +157,7 @@ public class FamilyServiceImpl implements FamilyService {
                     Date date = new Date(getDob);
 
 
-                    if (checkDetails.getRelationWithOwner().equalsIgnoreCase("Self")) {
+                    if (checkDetails.getRelationWithOwner().equalsIgnoreCase("0")) {
                         headName = checkDetails.getName();
                         dob = df.format(date);
                         pic = checkDetails.getPhoto();
@@ -197,12 +197,11 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO) throws ParseException {
+    public HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerName) throws ParseException {
 
         String name = householdsDTO.getHeadName() == null ? "" : householdsDTO.getHeadName();
         String headDob = householdsDTO.getHeadDob() == null ? "" : householdsDTO.getHeadDob();
         String centerID = householdsDTO.getCenterId() == null ? "" : householdsDTO.getCenterId();
-        String totalMembers = householdsDTO.getTotalMembers() == null ? "" : householdsDTO.getTotalMembers();
         String houseNo = householdsDTO.getHouseNo() == null ? "" : householdsDTO.getHouseNo();
         String mobileNo = householdsDTO.getMobileNumber() == null ? "" : householdsDTO.getMobileNumber();
         String headPic = householdsDTO.getHeadPic() == null ? "" : householdsDTO.getHeadPic();
@@ -231,6 +230,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .centerId(centerID)
                 .uniqueCode(uniqueCode)
                 .uniqueId(uniqueId)
+                .centerName(centerName)
                 .category(category)
                 .religion(religion)
                 .isMinority(isMinority)
@@ -245,7 +245,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .mobileNumber(mobileNo)
                 .category(category)
                 .photo(headPic)
-                .relationWithOwner("Self")
+                .relationWithOwner("0")
                 .gender(headGender)
                 .build();
 
@@ -254,9 +254,12 @@ public class FamilyServiceImpl implements FamilyService {
         return HouseholdsDTO.builder()
                 .id(saveInMember.getId())
                 .headName(name)
+                .centerName(centerName)
                 .headDob(headDob)
+                .uniqueCode("")
+                .totalMembers("")
                 .headPic(headPic)
-                .centerId("Belda")
+                .centerId("")
                 .headGender(headGender)
                 .houseNo(houseNo)
                 .mobileNumber(mobileNo)
@@ -353,7 +356,7 @@ public class FamilyServiceImpl implements FamilyService {
             throw new CustomException("Family Id Is Missed, Please Check!!");
         }
         List<FamilyMemberDTO> addInList = new ArrayList<>();
-        List<FamilyMember> getMembers = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<FamilyMember> getMembers = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.ASC, "createdDate"));
         String gender = "";
         for (FamilyMember passDetails : getMembers) {
 

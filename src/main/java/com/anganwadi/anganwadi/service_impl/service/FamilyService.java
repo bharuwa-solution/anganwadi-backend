@@ -7,9 +7,9 @@ import java.text.ParseException;
 import java.util.List;
 
 public interface FamilyService {
-    List<householdsHeadList> getAllHouseholds();
+    List<householdsHeadList> getAllHouseholds(String centerName);
 
-    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO) throws ParseException;
+    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerName) throws ParseException;
 
     FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO) throws ParseException;
 

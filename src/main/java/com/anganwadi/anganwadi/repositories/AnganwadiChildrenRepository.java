@@ -13,4 +13,6 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
 
 
     List<AnganwadiChildren> findAllByChildId(String attend);
+
+    List<AnganwadiChildren> findAllByCenterName(String centerName);
 }

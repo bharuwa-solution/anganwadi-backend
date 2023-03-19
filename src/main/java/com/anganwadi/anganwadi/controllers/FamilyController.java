@@ -21,14 +21,14 @@ public class FamilyController {
     }
 
     @GetMapping("/getAllHouseholds")
-    private List<householdsHeadList> getAllHouseholds() {
-        return familyService.getAllHouseholds();
+    private List<householdsHeadList> getAllHouseholds(@RequestHeader String centerName) {
+        return familyService.getAllHouseholds(centerName);
     }
 
 
     @PostMapping("/saveHouseholds")
-    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO) throws ParseException {
-        return familyService.saveHouseholds(householdsDTO);
+    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveHouseholds(householdsDTO, centerName);
     }
 
     @PostMapping("/saveFamilyMembers")

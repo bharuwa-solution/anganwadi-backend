@@ -14,6 +14,7 @@ public class AttendanceDTO {
     private String name;
     private String gender;
     private String childId;
+    private String centerName;
     private String dob;
     private String latitude;
     private String longitude;

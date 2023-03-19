@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Attendance extends BaseObject {
 
     private String familyId;
+    private String centerName;
     private String name;
     private String childId;
     private long date;

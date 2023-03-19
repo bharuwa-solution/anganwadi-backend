@@ -10,7 +10,7 @@ import java.util.List;
 public interface AnganwadiChildrenService {
 
 
-    SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO) throws ParseException, IOException;
+    SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO,String centerName) throws ParseException, IOException;
 
     List<ChildrenDTO> getTotalChildren();
 
@@ -18,9 +18,9 @@ public interface AnganwadiChildrenService {
 
 //    DashboardDetails getDashboardDetails();
 
-    List<AttendanceDTO> getAttendanceByDate(String date) throws ParseException;
+    List<AttendanceDTO> getAttendanceByDate(String date,String centerName) throws ParseException;
 
     List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException;
 
-    List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO) throws ParseException;
+    List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerName) throws ParseException;
 }

@@ -42,7 +42,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO) throws ParseException {
+    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerName) throws ParseException {
 
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -53,13 +53,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         String finalDate = saveAdmissionDTO.getDob();
         Date dob = df2.parse(finalDate);
 
-
-
         AnganwadiChildren saveAdmission = AnganwadiChildren.builder()
                 .name(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName())
                 .familyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId())
                 .childId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId())
-                .fatherName(saveAdmissionDTO.getFatherName()==null?"":saveAdmissionDTO.getFatherName())
+                .fatherName(saveAdmissionDTO.getFatherName() == null ? "" : saveAdmissionDTO.getFatherName())
+                .motherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName())
+                .centerName(centerName)
                 .dob(df.format(dob))
                 .gender(saveAdmissionDTO.getGender()==null?"":saveAdmissionDTO.getGender())
                 .mobileNumber(saveAdmissionDTO.getMobileNumber()==null?"":saveAdmissionDTO.getMobileNumber())
@@ -109,7 +109,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public List<AttendanceDTO> getAttendanceByDate(String date) throws ParseException {
+    public List<AttendanceDTO> getAttendanceByDate(String date, String centerName) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date formatToTime = df.parse(date);
@@ -118,8 +118,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<Attendance> findRecords = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<AttendanceDTO> addList = new ArrayList<>();
 
-        if(findRecords.size()<=0){
-            markAsAbsent();
+        if (findRecords.size() <= 0) {
+            markAsAbsent(centerName);
         }
 
 
@@ -141,7 +141,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
 
-    private void markAsAbsent() throws ParseException {
+    private void markAsAbsent(String centerName) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();
@@ -149,7 +149,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date formatToTime = df.parse(formatToString);
         long timestamp = formatToTime.getTime();
 
-        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAll();
+        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCenterName(centerName);
         String attendance = "A";
 
         for (AnganwadiChildren getId : findChildren) {
@@ -157,6 +157,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             Attendance saveAttendance = Attendance.builder()
                     .childId(getId.getChildId())
                     .dob(getId.getDob())
+                    .centerName(centerName)
                     .name(getId.getName())
                     .photo(getId.getProfilePic())
                     .gender(getId.getGender())
@@ -192,7 +193,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO) throws ParseException {
+    public List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerName) throws ParseException {
 
         // convert date to millis
 
@@ -212,7 +213,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         // updating if not exists
         if (checkDailyAttendance.size() <= 0) {
-            markAsAbsent();
+            markAsAbsent(centerName);
         }
 
 
@@ -227,6 +228,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             AttendanceDTO singleEntry = AttendanceDTO
                     .builder()
+                    .centerName(centerName)
                     .childId(fetchDetails.getChildId())
                     .dob(fetchDetails.getDob())
                     .name(fetchDetails.getName())
