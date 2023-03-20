@@ -14,6 +14,7 @@ public class FamilyMemberDTO {
     private String id;
     private String name;
     private String photo;
+    private String centerName;
     private String motherName;
     private String fatherName;
     private String familyId;

@@ -11,11 +11,11 @@ public interface FamilyService {
 
     HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerName) throws ParseException;
 
-    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO) throws ParseException;
+    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO,  String centerName) throws ParseException;
 
     List<FamilyMemberDTO> getFamilyMembers(String familyId);
 
-    VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO) throws ParseException;
+    VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerName) throws ParseException;
 
     WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO);
 
@@ -29,14 +29,14 @@ public interface FamilyService {
 
     List<VaccinationRecords> getVaccinationRecords();
 
-    List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException;
+    List<HouseholdsChildren> getAllHouseholdsChildren(String centerName) throws ParseException;
 
 
-    List<FemaleMembersDTO> getHouseholdsFemaleDetails();
+    List<FemaleMembersDTO> getHouseholdsFemaleDetails(String centerName);
 
-    List<HouseVisitDTO> getHouseVisitListing();
+    List<HouseVisitDTO> getHouseVisitListing(String centerName);
 
-    List<MemberVisits> getMemberVisitDetails(String memberId);
+    List<MemberVisits> getMemberVisitDetails(String memberId,String centerName);
 
-    List<MemberVisits> getMemberVisitDetailsLatest(String memberId);
+    List<MemberVisits> getMemberVisitDetailsLatest(String memberId,String centerName);
 }

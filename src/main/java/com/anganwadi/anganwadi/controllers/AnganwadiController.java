@@ -60,8 +60,8 @@ public class AnganwadiController {
     }
 
     @GetMapping("getTotalChildren")
-    private List<ChildrenDTO> getTotalChildren() {
-        return anganwadiChildrenService.getTotalChildren();
+    private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerName) {
+        return anganwadiChildrenService.getTotalChildren(centerName);
     }
 
 

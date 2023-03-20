@@ -226,6 +226,7 @@ public class FamilyServiceImpl implements FamilyService {
         Family saveFamily = Family.builder()
                 .houseNo(houseNo)
                 .familyId(familyId)
+                .centerName(centerName)
                 .uniqueIdType(uniqueIdType)
                 .centerId(centerID)
                 .uniqueCode(uniqueCode)
@@ -241,6 +242,7 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember saveInMember = FamilyMember.builder()
                 .name(name)
                 .dob(mills)
+                .centerName(centerName)
                 .familyId(familyId)
                 .mobileNumber(mobileNo)
                 .category(category)
@@ -257,6 +259,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .centerName(centerName)
                 .headDob(headDob)
                 .uniqueCode("")
+                .centerName(centerName)
                 .totalMembers("")
                 .headPic(headPic)
                 .centerId("")
@@ -273,7 +276,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO) throws ParseException {
+    public FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO, String centerName) throws ParseException {
 
         String name = familyMemberDTO.getName() == null ? "" : familyMemberDTO.getName();
         String relationShip = familyMemberDTO.getRelationWithOwner() == null ? "" : familyMemberDTO.getRelationWithOwner();
@@ -305,6 +308,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .idType(familyMemberDTO.getIdType() == null ? "" : familyMemberDTO.getIdType())
                 .idNumber(familyMemberDTO.getIdNumber() == null ? "" : familyMemberDTO.getIdNumber())
                 .dob(mills)
+                .centerName(centerName)
                 .motherName(motherName)
                 .fatherName(fatherName)
                 .memberCode(memberCode)
@@ -329,6 +333,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .name(name)
                 .relationWithOwner(relationShip)
                 .gender(gender)
+                .centerName(centerName)
                 .memberCode(code)
                 .familyId(familyMemberDTO.getFamilyId())
                 .mobileNumber(familyMemberDTO.getMobileNumber() == null ? "" : familyMemberDTO.getMobileNumber())
@@ -396,7 +401,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO) throws ParseException {
+    public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerName) throws ParseException {
 
 
 //        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -413,6 +418,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         Visits saveVisitDetails = Visits.builder()
                 .memberId(visitsDetailsDTO.getMemberId() == null ? "" : visitsDetailsDTO.getMemberId())
+                .centerName(centerName)
                 .visitType(visitsDetailsDTO.getVisitType() == null ? "" : visitsDetailsDTO.getVisitType())
                 .visitFor(visitsDetailsDTO.getVisitFor() == null ? "" : visitsDetailsDTO.getVisitFor())
                 .description(visitsDetailsDTO.getDescription() == null ? "" : visitsDetailsDTO.getDescription())
@@ -542,7 +548,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException {
+    public List<HouseholdsChildren> getAllHouseholdsChildren(String centerName) throws ParseException {
 
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -556,7 +562,7 @@ public class FamilyServiceImpl implements FamilyService {
         long convertToMills = zdt.toInstant().toEpochMilli();
         log.info("Time "+convertToMills);
 
-        List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDob(convertToMills);
+        List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterName(convertToMills, centerName);
         String gender = "";
 
         if (findAllChildren.size() > 0) {
@@ -682,15 +688,14 @@ public class FamilyServiceImpl implements FamilyService {
 
 
     @Override
-    public List<FemaleMembersDTO> getHouseholdsFemaleDetails() {
+    public List<FemaleMembersDTO> getHouseholdsFemaleDetails(String centerName) {
 
-
-        List<FamilyMember> findFemales = familyMemberRepository.findAllByGender();
+        List<FamilyMember> findFemales = familyMemberRepository.findAllByGenderAndCenterName(centerName);
         List<FemaleMembersDTO> addList = new ArrayList<>();
 
         for (FamilyMember checkAge : findFemales) {
-            int getYear = 0 ;
-            String centerName = "", husbandName = "", houseNo = "";
+            int getYear = 0;
+            String husbandName = "", houseNo = "";
 
             long millis = checkAge.getDob();
 
@@ -736,16 +741,16 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<HouseVisitDTO> getHouseVisitListing() {
+    public List<HouseVisitDTO> getHouseVisitListing(String centerName) {
 
-        List<Visits> checkRounds = visitsRepository.findAll();
+        List<Visits> checkRounds = visitsRepository.findAllByCenterName(centerName);
         List<HouseVisitDTO> addInList = new ArrayList<>();
         HashSet<String> memberId = new HashSet<>();
 
         for (Visits visitsDetails : checkRounds) {
             FamilyMember checkMembers = familyMemberRepository.findById(visitsDetails.getMemberId()).get();
 
-            String husband_FatherName = "", houseNo = "", centerName = "";
+            String husband_FatherName = "", houseNo = "";
 
 
             long millis = checkMembers.getDob();
@@ -806,7 +811,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<MemberVisits> getMemberVisitDetailsLatest(String memberId) {
+    public List<MemberVisits> getMemberVisitDetailsLatest(String memberId, String centerName) {
 
 
         List<MemberVisits> addInList = new ArrayList<>();
@@ -814,9 +819,8 @@ public class FamilyServiceImpl implements FamilyService {
         HashSet<String> uniqueMember = new HashSet<>();
         int count = 0;
 
-
         for (int i = 1; i <= 10; i++) {
-            List<Visits> findMember = visitsRepository.findAllByMemberIdAndVisitType(memberId, String.valueOf(i));
+            List<Visits> findMember = visitsRepository.findAllByMemberIdAndCenterNameAndVisitType(memberId, centerName, String.valueOf(i));
             if (findMember.size() > 0) {
                 for (Visits checkDetails : findMember) {
 
@@ -830,6 +834,7 @@ public class FamilyServiceImpl implements FamilyService {
             } else {
                 memberVisits = MemberVisits.builder()
                         .visitType(String.valueOf(i))
+                        .visitArray(Collections.emptyList())
                         .build();
 
 
@@ -842,9 +847,9 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<MemberVisits> getMemberVisitDetails(String memberId) {
+    public List<MemberVisits> getMemberVisitDetails(String memberId, String centerName) {
 
-        List<Visits> findMember = visitsRepository.findAllByMemberId(memberId);
+        List<Visits> findMember = visitsRepository.findAllByMemberIdAndCenterName(memberId, centerName);
         List<MemberVisits> addInList = new ArrayList<>();
 
         HashSet<String> uniqueMember = new HashSet<>();

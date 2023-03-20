@@ -22,4 +22,10 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'relationWithOwner':'Self'}")
     List<FamilyMember> findAllByHusband();
+
+    @Query("{'gender':'2','centerName':?0}")
+    List<FamilyMember> findAllByGenderAndCenterName(String centerName);
+
+    @Query("{'dob':{$gte:?0},'centerName':?1}")
+    List<FamilyMember> findAllByDobAndCenterName(long convertToMills, String centerName);
 }

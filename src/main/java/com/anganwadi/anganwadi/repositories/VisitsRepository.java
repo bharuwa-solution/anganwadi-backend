@@ -19,4 +19,10 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     Visits findByMemberIdAndVisitType(String memberId, String valueOf);
 
     List<Visits> findAllByMemberIdAndVisitType(String memberId, String valueOf);
+
+    List<Visits> findAllByCenterName(String centerName);
+
+    List<Visits> findAllByMemberIdAndCenterNameAndVisitType(String memberId, String centerName, String valueOf);
+
+    List<Visits> findAllByMemberIdAndCenterName(String memberId, String centerName);
 }

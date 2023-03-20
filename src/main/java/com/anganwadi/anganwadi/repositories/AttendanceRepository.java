@@ -21,4 +21,6 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
 
     @Query("{$and:[{'childId':{$in:[?0]}},{'date':?1}]}}")
     List<Attendance> updateAttendance(String childId, long timestamp);
+
+    List<Attendance> findAllByDateAndCenterName(long timestamp, String centerName, Sort createdDate);
 }

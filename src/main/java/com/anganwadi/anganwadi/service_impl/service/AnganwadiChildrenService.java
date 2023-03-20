@@ -12,7 +12,7 @@ public interface AnganwadiChildrenService {
 
     SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO,String centerName) throws ParseException, IOException;
 
-    List<ChildrenDTO> getTotalChildren();
+    List<ChildrenDTO> getTotalChildren(String centerName);
 
     UploadDTO uploadPic(MultipartFile file) throws IOException;
 

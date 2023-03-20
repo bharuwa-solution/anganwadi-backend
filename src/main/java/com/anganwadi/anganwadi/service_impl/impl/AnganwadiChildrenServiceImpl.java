@@ -75,11 +75,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<ChildrenDTO> getTotalChildren() {
+    public List<ChildrenDTO> getTotalChildren(String centerName) {
 
 
         List<ChildrenDTO> addInList = new ArrayList<>();
-        List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterName(centerName);
 
         for (AnganwadiChildren getChildren : childrenList) {
             ChildrenDTO childrenDTO = ChildrenDTO.builder()
@@ -115,7 +115,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date formatToTime = df.parse(date);
         long timestamp = formatToTime.getTime();
 
-        List<Attendance> findRecords = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<AttendanceDTO> addList = new ArrayList<>();
 
         if (findRecords.size() <= 0) {

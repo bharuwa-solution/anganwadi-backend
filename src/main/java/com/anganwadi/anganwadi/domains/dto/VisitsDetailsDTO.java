@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class VisitsDetailsDTO {
 
     private String memberId;
+    private String centerName;
     private String visitType;
     private String visitFor;
     private String visitRound;

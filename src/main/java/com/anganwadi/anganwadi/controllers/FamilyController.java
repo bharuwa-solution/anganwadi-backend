@@ -32,8 +32,8 @@ public class FamilyController {
     }
 
     @PostMapping("/saveFamilyMembers")
-    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO) throws ParseException {
-        return familyService.saveFamilyMembers(familyMemberDTO);
+    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO,@RequestHeader String centerName) throws ParseException {
+        return familyService.saveFamilyMembers(familyMemberDTO, centerName);
     }
 
     @GetMapping("/getFamilyMembers")
@@ -78,8 +78,8 @@ public class FamilyController {
 
 
     @GetMapping("/getAllHouseholdsChildren")
-    private List<HouseholdsChildren> getAllHouseholdsChildren() throws ParseException {
-        return familyService.getAllHouseholdsChildren();
+    private List<HouseholdsChildren> getAllHouseholdsChildren(@RequestHeader String centerName) throws ParseException {
+        return familyService.getAllHouseholdsChildren(centerName);
     }
 
 

@@ -23,28 +23,28 @@ public class HouseVisitsController {
     }
 
     @PostMapping("/saveVisitsDetails")
-    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO) throws ParseException {
-        return familyService.saveVisitsDetails(visitsDetailsDTO);
+    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveVisitsDetails(visitsDetailsDTO,centerName);
     }
 
     @GetMapping("/getHouseholdsFemaleDetails")
-    private List<FemaleMembersDTO> getHouseholdsFemaleDetails() {
-        return familyService.getHouseholdsFemaleDetails();
+    private List<FemaleMembersDTO> getHouseholdsFemaleDetails(@RequestHeader String centerName) {
+        return familyService.getHouseholdsFemaleDetails(centerName);
     }
 
     @GetMapping("/getHouseVisitListing")
-    private List<HouseVisitDTO> getHouseVisitListing() {
-        return familyService.getHouseVisitListing();
+    private List<HouseVisitDTO> getHouseVisitListing(@RequestHeader String centerName) {
+        return familyService.getHouseVisitListing(centerName);
     }
 
     @GetMapping("/getMemberVisitDetails")
-    private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId) {
-        return familyService.getMemberVisitDetails(memberId);
+    private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId,@RequestHeader String centerName) {
+        return familyService.getMemberVisitDetails(memberId,centerName);
     }
 
     @GetMapping("/getMemberVisitDetailsLatest")
-    private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId) {
-        return familyService.getMemberVisitDetailsLatest(memberId);
+    private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId, @RequestHeader String centerName) {
+        return familyService.getMemberVisitDetailsLatest(memberId,centerName);
     }
 
 
