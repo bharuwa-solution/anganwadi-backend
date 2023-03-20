@@ -48,7 +48,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
 
-    private int totalHouseholdsMale(String familyId) {
+    public int totalHouseholdsMale(String familyId) {
         int totalMale = 0;
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -76,7 +76,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     }
 
-    private int totalHouseholdsFemale(String familyId) {
+    public int totalHouseholdsFemale(String familyId) {
         int totalFemale = 0;
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -104,7 +104,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     }
 
-    private int totalHouseholdsChildren(String familyId) {
+    public int totalHouseholdsChildren(String familyId) {
         int totalChildren = 0;
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -659,20 +659,17 @@ public class FamilyServiceImpl implements FamilyService {
 
         }
 
-        HashSet<String> prefixType = new HashSet<>();
-        prefixType.add(visitPrefix);
-
         visitPrefix = visitPrefix + noOfRounds;
         return visitPrefix;
     }
 
-    private String visitRounds(String familyId) {
+    private String visitRounds(String memberId) {
 
 
         StringBuilder appendRounds = new StringBuilder();
 
 
-        List<Visits> checkRounds = visitsRepository.findAllByFamilyId(familyId);
+        List<Visits> checkRounds = visitsRepository.findAllByMemberId(memberId);
         HashSet<String> visitType = new HashSet<>();
         String data = "";
         for (Visits verifyVisit : checkRounds) {
@@ -732,13 +729,12 @@ public class FamilyServiceImpl implements FamilyService {
 
                 addList.add(addMember);
             }
-
-
         }
 
 
         return addList;
     }
+
 
     @Override
     public List<HouseVisitDTO> getHouseVisitListing(String centerName) {
@@ -775,7 +771,7 @@ public class FamilyServiceImpl implements FamilyService {
                         .memberId(checkMembers.getId())
                         .centerName(centerName == null ? "" : centerName)
                         .profilePic(checkMembers.getPhoto() == null ? "" : checkMembers.getPhoto())
-                        .visits("")
+                        .visits(visitRounds(visitsDetails.getMemberId()))
                         .build();
 
                 addInList.add(addSingle);

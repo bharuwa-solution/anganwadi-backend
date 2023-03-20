@@ -17,7 +17,9 @@ public class AssetsStock  extends BaseObject{
 
 
     private String itemName;
-    private int qty;
+    private String qty;
+    private String itemCode;
+    private String centerName;
     private String qtyUnit;
     private Date date;
     private String previousStock;

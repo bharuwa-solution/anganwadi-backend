@@ -1,9 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
-import com.anganwadi.anganwadi.domains.dto.AttendanceDTO;
-import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
-import com.anganwadi.anganwadi.domains.dto.SaveAdmissionDTO;
-import com.anganwadi.anganwadi.domains.dto.UploadDTO;
+import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +59,12 @@ public class AnganwadiController {
     @GetMapping("getTotalChildren")
     private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerName) {
         return anganwadiChildrenService.getTotalChildren(centerName);
+    }
+
+
+    @GetMapping("getRegisteredHouseholdsList")
+    private List<householdsHeadList> getRegisteredHouseholdsList(@RequestHeader String centerName) {
+        return anganwadiChildrenService.getRegisteredHouseholdsList(centerName);
     }
 
 

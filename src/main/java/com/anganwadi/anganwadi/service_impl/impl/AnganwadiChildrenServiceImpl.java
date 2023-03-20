@@ -1,13 +1,8 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
-import com.anganwadi.anganwadi.domains.dto.AttendanceDTO;
-import com.anganwadi.anganwadi.domains.dto.ChildrenDTO;
-import com.anganwadi.anganwadi.domains.dto.SaveAdmissionDTO;
-import com.anganwadi.anganwadi.domains.dto.UploadDTO;
-import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
-import com.anganwadi.anganwadi.domains.entity.Attendance;
-import com.anganwadi.anganwadi.repositories.AnganwadiChildrenRepository;
-import com.anganwadi.anganwadi.repositories.AttendanceRepository;
+import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.*;
+import com.anganwadi.anganwadi.repositories.*;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -30,14 +25,24 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final FileManagementService fileManagementService;
     private final AttendanceRepository attendanceRepository;
     private final ModelMapper modelMapper;
+    private final FamilyRepository familyRepository;
+    private final FamilyMemberRepository familyMemberRepository;
+    private final FamilyServiceImpl familyServiceImpl;
+    private final AssetsStockRepository assetsStockRepository;
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
-                                        AttendanceRepository attendanceRepository, ModelMapper modelMapper) {
+                                        AttendanceRepository attendanceRepository, ModelMapper modelMapper,
+                                        FamilyRepository familyRepository, FamilyMemberRepository familyMemberRepository,
+                                        FamilyServiceImpl familyServiceImpl, AssetsStockRepository assetsStockRepository) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
         this.modelMapper = modelMapper;
+        this.familyRepository = familyRepository;
+        this.familyMemberRepository = familyMemberRepository;
+        this.familyServiceImpl = familyServiceImpl;
+        this.assetsStockRepository = assetsStockRepository;
     }
 
 
@@ -258,6 +263,122 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         }
         return addList;
 
+    }
+
+    @Override
+    public List<householdsHeadList> getRegisteredHouseholdsList(String centerName) {
+        List<householdsHeadList> addInList = new ArrayList<>();
+        List<AnganwadiChildren> findFamilyIds = anganwadiChildrenRepository.findAllByCenterName(centerName);
+        HashSet<String> uniqueFamilyIds = new HashSet<>();
+
+        if (findFamilyIds.size() > 0) {
+            String familyId = "";
+            for (AnganwadiChildren ac : findFamilyIds) {
+
+                if (uniqueFamilyIds.add(ac.getFamilyId())) {
+
+                    List<Family> checkHouseDetails = familyRepository.findAllByFamilyIdIn(ac.getFamilyId());
+                    if (checkHouseDetails.size() > 0) {
+                        for (Family familyDetails : checkHouseDetails) {
+
+                            String headName = "", dob = "", pic = "", gender = "", houseNo = "", religion = "", category = "";
+
+
+                            houseNo = familyDetails.getHouseNo();
+                            religion = familyDetails.getReligion();
+                            category = familyDetails.getCategory();
+
+
+                            List<FamilyMember> findHouseholds = familyMemberRepository.findAllByFamilyId(ac.getFamilyId(), Sort.by(Sort.Direction.DESC, "createdDate"));
+
+                            for (FamilyMember findHeadDetails : findHouseholds) {
+                                long millis = findHeadDetails.getDob();
+                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                                Date date = new Date(millis);
+
+                                if (findHeadDetails.getRelationWithOwner().equalsIgnoreCase("0")) {
+                                    headName = findHeadDetails.getName();
+                                    dob = df.format(date);
+                                    pic = findHeadDetails.getPhoto();
+                                    gender = findHeadDetails.getGender();
+                                    break;
+                                } else {
+                                    headName = findHeadDetails.getName();
+                                    dob = df.format(date);
+                                    pic = findHeadDetails.getPhoto();
+                                    gender = findHeadDetails.getGender();
+                                }
+
+                            }
+
+
+                            long countMembers = familyMemberRepository.countByFamilyId(ac.getFamilyId());
+
+                            householdsHeadList householdsDTO = householdsHeadList.builder()
+                                    .headName(headName)
+                                    .headDob(dob)
+                                    .houseNo(houseNo)
+                                    .familyId(familyId)
+                                    .religion(religion)
+                                    .headGender(gender)
+                                    .totalMale(familyServiceImpl.totalHouseholdsMale(ac.getFamilyId()))
+                                    .totalFemale(familyServiceImpl.totalHouseholdsFemale(ac.getFamilyId()))
+                                    .totalChildren(familyServiceImpl.totalHouseholdsChildren(ac.getFamilyId()))
+                                    .category(category)
+                                    .totalMembers(String.valueOf(countMembers))
+                                    .headPic(pic)
+                                    .build();
+                            addInList.add(householdsDTO);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return addInList;
+    }
+
+    private String sumOfItems(String centerName, String itemCode) {
+        String itemSum = "";
+        List<AssetsStock> findCenterItems = assetsStockRepository.findAllByCenterNameAndItemCode(centerName, itemCode);
+        float itemInFloat = 0L;
+        if (findCenterItems.size() > 0) {
+
+            for (AssetsStock fs : findCenterItems) {
+
+                itemInFloat = itemInFloat + Float.parseFloat(fs.getQty());
+
+            }
+
+        }
+
+        itemSum = String.valueOf(itemInFloat);
+
+        return itemSum;
+    }
+
+    @Override
+    public List<StockItemsDTO> getAvailableItems(String centerName) {
+        List<AssetsStock> findCenterStock = assetsStockRepository.findAllByCenterName(centerName);
+        List<StockItemsDTO> addInList = new ArrayList<>();
+        HashSet<String> uniqueStockCode = new HashSet<>();
+
+        for (AssetsStock mapItems : findCenterStock) {
+            if (uniqueStockCode.add(mapItems.getItemCode())) {
+                StockItemsDTO assets = StockItemsDTO.builder()
+                        .itemCode(mapItems.getItemCode())
+                        .centerName(centerName)
+                        .quantity(sumOfItems(centerName, mapItems.getItemCode()))
+                        .unit(mapItems.getQtyUnit())
+                        .itemName(mapItems.getItemName())
+                        .build();
+                    addInList.add(assets);
+            }
+        }
+
+
+        return addInList;
     }
 
 
