@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         if(!validateNumber(sendOtpDTO.getMobileNumber(), status) || !validateUser(sendOtpDTO.getMobileNumber())){
-            throw new CustomException("Mobile No "+sendOtpDTO.getMobileNumber()+" Not Found");
+            throw new CustomException("User not registered");
 
         }
         return otpDTO;
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
                     .build();
 
         } else {
-            throw new BadRequestException("Otp Ver1fy Failed, Please Re-Send Otp");
+            throw new BadRequestException("Incorrect Otp, please fill correct otp");
         }
 
         return otpDTO;
