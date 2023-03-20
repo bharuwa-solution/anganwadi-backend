@@ -36,6 +36,15 @@ public class MainExceptionController implements ErrorController {
 
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    private ResponseEntity<?> handleBadRequestException(BadRequestException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setNullError = new HashMap<>();
+        setNullError.put("message", error.getMessage());
+        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
+
+    }
+
 
     @ExceptionHandler(HttpClientErrorException.NotFound.class)
     private ResponseEntity<?> notFoundError(String error) {

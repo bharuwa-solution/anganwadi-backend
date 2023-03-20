@@ -23,4 +23,6 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
     List<Attendance> updateAttendance(String childId, long timestamp);
 
     List<Attendance> findAllByDateAndCenterName(long timestamp, String centerName, Sort createdDate);
+
+    List<Attendance> findAllByChildIdAndDateAndCenterName(String childId, long date, String centerName);
 }

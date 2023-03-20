@@ -115,13 +115,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date formatToTime = df.parse(date);
         long timestamp = formatToTime.getTime();
 
+        markAsAbsent(centerName);
+
         List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<AttendanceDTO> addList = new ArrayList<>();
-
-        if (findRecords.size() <= 0) {
-            markAsAbsent(centerName);
-        }
-
 
         for (Attendance singleRecord : findRecords) {
             AttendanceDTO dailyRecord = AttendanceDTO.builder()
@@ -141,6 +138,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
 
+    private String checkAttendanceOnDay(String childId, long date, String centerName) {
+        String attendance = "";
+        List<Attendance> findChild = attendanceRepository.findAllByChildIdAndDateAndCenterName(childId, date, centerName);
+
+        if (findChild.size() > 0) {
+            for (Attendance checkAttendance : findChild) {
+                attendance = checkAttendance.getAttendance();
+
+            }
+        }
+
+        return attendance;
+
+    }
+
     private void markAsAbsent(String centerName) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -152,20 +164,25 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCenterName(centerName);
         String attendance = "A";
 
+
         for (AnganwadiChildren getId : findChildren) {
+            List<Attendance> lastVerify = attendanceRepository.findAllByChildIdAndDateAndCenterName(getId.getChildId(), timestamp, centerName);
+           String  verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, centerName);
+            if (lastVerify.size() <= 0) {
 
-            Attendance saveAttendance = Attendance.builder()
-                    .childId(getId.getChildId())
-                    .dob(getId.getDob())
-                    .centerName(centerName)
-                    .name(getId.getName())
-                    .photo(getId.getProfilePic())
-                    .gender(getId.getGender())
-                    .date(timestamp)
-                    .attendance(attendance)
-                    .build();
-            attendanceRepository.save(saveAttendance);
+                Attendance saveAttendance = Attendance.builder()
+                        .childId(getId.getChildId())
+                        .dob(getId.getDob())
+                        .centerName(centerName)
+                        .name(getId.getName())
+                        .photo(getId.getProfilePic())
+                        .gender(getId.getGender())
+                        .date(timestamp)
+                        .attendance(verifyAttend.equals("") ? attendance : verifyAttend)
+                        .build();
+                attendanceRepository.save(saveAttendance);
 
+            }
 
         }
 
@@ -212,16 +229,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<Attendance> checkDailyAttendance = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // updating if not exists
-        if (checkDailyAttendance.size() <= 0) {
-            markAsAbsent(centerName);
-        }
-
+        markAsAbsent(centerName);
 
         // After updating Above fields
 
         markPresent(attendanceDTO.getChildId(), attendanceDTO.getLatitude(), attendanceDTO.getLongitude(), timestamp);
 
-        List<Attendance> getDetails = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Attendance> getDetails = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
 
 
         for (Attendance fetchDetails : getDetails) {

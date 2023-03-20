@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         List<OtpDetails> verifyotp = otpDetailsRepository.findTopOneByMobileNumberAndOtp(otpDTO.getMobileNumber(), otpDTO.getOtp());
         User user = userRepository.getUserByMobileNumber(otpDTO.getMobileNumber());
 
-        if (verifyotp != null || otpDTO.getOtp().trim().equals("1105")) {
+        if (verifyotp.size()>0 || otpDTO.getOtp().trim().equals("1105")) {
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
                     .centerId(user.getCenterId()==null?"":user.getCenterId())
