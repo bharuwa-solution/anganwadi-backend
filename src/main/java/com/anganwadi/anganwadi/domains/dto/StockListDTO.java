@@ -9,14 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StockItemsDTO {
+public class StockListDTO {
 
     private String itemName;
     private String itemCode;
-    private String date;
-    private String centerName;
     private String quantity;
     private String unit;
-
-
 }

@@ -11,4 +11,10 @@ public interface AssetsStockRepository extends MongoRepository<AssetsStock, Stri
     List<AssetsStock> findAllByCenterName(String centerName);
 
     List<AssetsStock> findAllByCenterNameAndItemCode(String centerName, String itemCode);
+
+    List<AssetsStock> findAllByCenterNameOrderByCreatedDateDesc(String centerName);
+
+    List<AssetsStock> findAllByCenterNameAndDateOrderByDateDesc(String centerName, long millis);
+
+    List<AssetsStock> findAllByCenterNameAndItemCodeAndDate(String centerName, String itemCode, long millis);
 }

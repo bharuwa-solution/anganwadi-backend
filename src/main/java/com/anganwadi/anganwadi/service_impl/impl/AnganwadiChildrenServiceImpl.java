@@ -29,12 +29,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final FamilyMemberRepository familyMemberRepository;
     private final FamilyServiceImpl familyServiceImpl;
     private final AssetsStockRepository assetsStockRepository;
+    private final StockListRepository stockListRepository;
+
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
                                         AttendanceRepository attendanceRepository, ModelMapper modelMapper,
                                         FamilyRepository familyRepository, FamilyMemberRepository familyMemberRepository,
-                                        FamilyServiceImpl familyServiceImpl, AssetsStockRepository assetsStockRepository) {
+                                        FamilyServiceImpl familyServiceImpl, AssetsStockRepository assetsStockRepository,
+                                        StockListRepository stockListRepository) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
@@ -43,6 +46,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.familyMemberRepository = familyMemberRepository;
         this.familyServiceImpl = familyServiceImpl;
         this.assetsStockRepository = assetsStockRepository;
+        this.stockListRepository = stockListRepository;
     }
 
 
@@ -359,26 +363,147 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<StockItemsDTO> getAvailableItems(String centerName) {
-        List<AssetsStock> findCenterStock = assetsStockRepository.findAllByCenterName(centerName);
-        List<StockItemsDTO> addInList = new ArrayList<>();
+    public List<StockListDTO> getAvailableItems() {
+        List<StockList> stockLists = stockListRepository.findAll();
+        List<StockListDTO> addInList = new ArrayList<>();
         HashSet<String> uniqueStockCode = new HashSet<>();
 
-        for (AssetsStock mapItems : findCenterStock) {
+        for (StockList mapItems : stockLists) {
             if (uniqueStockCode.add(mapItems.getItemCode())) {
-                StockItemsDTO assets = StockItemsDTO.builder()
+                StockListDTO assets = StockListDTO.builder()
                         .itemCode(mapItems.getItemCode())
-                        .centerName(centerName)
-                        .quantity(sumOfItems(centerName, mapItems.getItemCode()))
-                        .unit(mapItems.getQtyUnit())
+                        .quantity(mapItems.getQuantity())
+                        .unit(mapItems.getUnit())
                         .itemName(mapItems.getItemName())
                         .build();
-                    addInList.add(assets);
+                addInList.add(assets);
             }
         }
 
 
         return addInList;
+    }
+
+    @Override
+    public List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerName) throws ParseException {
+
+        List<StockItemsDTO> addInList = new ArrayList<>();
+
+
+        for (StockItemsDTO assetsList : assetsStock) {
+
+
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date currentTime = new Date();
+            String formatToString = df.format(currentTime.getTime());
+            Date formatToTime = df.parse(formatToString);
+            long timestamp = formatToTime.getTime();
+
+            AssetsStock saveStocks = AssetsStock.builder()
+                    .centerName(centerName)
+                    .qtyUnit(assetsList.getUnit())
+                    .itemCode(assetsList.getItemCode())
+                    .itemName(assetsList.getItemName())
+                    .qty(assetsList.getQuantity())
+                    .date(timestamp)
+                    .build();
+
+            assetsStockRepository.save(saveStocks);
+
+
+            StockItemsDTO addSingleItem = StockItemsDTO.builder()
+                    .centerName(centerName)
+                    .unit(assetsList.getUnit())
+                    .itemCode(assetsList.getItemCode())
+                    .itemName(assetsList.getItemName())
+                    .quantity(assetsList.getQuantity())
+                    .date(formatToString)
+                    .build();
+
+            addInList.add(addSingleItem);
+        }
+        return addInList;
+    }
+
+    private String sumOfItemsByDate(String centerName, String itemCode, long Millis) {
+        String itemSum = "";
+        List<AssetsStock> findCenterItems = assetsStockRepository.findAllByCenterNameAndItemCodeAndDate(centerName, itemCode, Millis);
+        float itemInFloat = 0L;
+        if (findCenterItems.size() > 0) {
+
+            for (AssetsStock fs : findCenterItems) {
+
+                itemInFloat = itemInFloat + Float.parseFloat(fs.getQty());
+
+            }
+
+        }
+
+        itemSum = String.valueOf(itemInFloat);
+
+        return itemSum;
+    }
+
+    private List<StockOutputArray> getStockArray(String centerName, long millis) {
+        HashSet<String> uniqueCode = new HashSet<>();
+        List<StockOutputArray> addInArrayList = new ArrayList<>();
+        List<AssetsStock> findDetails = assetsStockRepository.findAllByCenterNameAndDateOrderByDateDesc(centerName, millis);
+
+        for (AssetsStock findItemsWise : findDetails) {
+            if (uniqueCode.add(findItemsWise.getItemCode())) {
+                StockOutputArray singleEntry = StockOutputArray.builder()
+                        .centerName(findItemsWise.getCenterName())
+                        .itemCode(findItemsWise.getItemCode())
+                        .itemName(findItemsWise.getItemName())
+                        .quantity(sumOfItemsByDate(findItemsWise.getCenterName(), findItemsWise.getItemCode(), millis))
+                        .unit(findItemsWise.getQtyUnit())
+                        .build();
+                addInArrayList.add(singleEntry);
+            }
+        }
+
+        return addInArrayList;
+    }
+
+
+    @Override
+    public List<StockOutputItemsDTO> getStocks(String centerName) {
+
+        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterNameOrderByCreatedDateDesc(centerName);
+        HashSet<String> captureMonth = new HashSet<>();
+        List<StockOutputItemsDTO> addInList = new ArrayList<>();
+
+        for (AssetsStock findMonth : findByCenterName) {
+            long getMills = findMonth.getDate();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+
+            if (captureMonth.add(df.format(date))) {
+                StockOutputItemsDTO addSingle = StockOutputItemsDTO.builder()
+                        .date(df.format(date))
+                        .stockArrayList(getStockArray(centerName, getMills))
+                        .build();
+
+                addInList.add(addSingle);
+            }
+        }
+
+
+        return addInList;
+    }
+
+    @Override
+    public List<StockListDTO> getStocksLists() {
+
+        List<StockList> stockLists = stockListRepository.findAll();
+        List<StockListDTO> addInList = new ArrayList<>();
+        for (StockList loopStocks : stockLists) {
+            StockListDTO addSingle = modelMapper.map(loopStocks, StockListDTO.class);
+            addInList.add(addSingle);
+
+        }
+        return addInList;
+
     }
 
 

@@ -1,6 +1,8 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.AssetsStock;
+import com.anganwadi.anganwadi.domains.entity.StockList;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,5 +28,11 @@ public interface AnganwadiChildrenService {
 
     List<householdsHeadList> getRegisteredHouseholdsList(String centerName);
 
-    List<StockItemsDTO> getAvailableItems(String centerName);
+    List<StockListDTO> getAvailableItems();
+
+    List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerName) throws ParseException;
+
+    List<StockOutputItemsDTO> getStocks(String centerName);
+
+    List<StockListDTO> getStocksLists();
 }

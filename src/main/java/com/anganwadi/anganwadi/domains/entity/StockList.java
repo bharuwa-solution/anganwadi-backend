@@ -6,25 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "AssetsStock")
-public class AssetsStock  extends BaseObject{
-
+@Document(collection = "StockList")
+public class StockList extends BaseObject {
 
     private String itemName;
-    private String qty;
     private String itemCode;
-    private String centerName;
-    private String qtyUnit;
-    private long date;
-    private String previousStock;
-    private long credit;
-    private long withdraw;
-    private String comments;
+    private String quantity;
+    private String unit;
+
 
 }

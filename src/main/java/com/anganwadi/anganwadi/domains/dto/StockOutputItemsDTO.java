@@ -5,18 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StockItemsDTO {
+public class StockOutputItemsDTO {
 
-    private String itemName;
-    private String itemCode;
+
     private String date;
-    private String centerName;
-    private String quantity;
-    private String unit;
-
+    private List<StockOutputArray> stockArrayList;
 
 }
