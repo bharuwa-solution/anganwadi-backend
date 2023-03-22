@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.BirthPlaceDTO;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/family")
+@RequestMapping("/`family")
 public class FamilyController {
 
     private final FamilyService familyService;
@@ -82,6 +83,10 @@ public class FamilyController {
         return familyService.getAllHouseholdsChildren(centerName);
     }
 
+    @PostMapping("/saveBirthDetails")
+    private List<BirthPlaceDTO> saveBirthDetails(@RequestBody List<BirthPlaceDTO> birthPlaceDTO, @RequestHeader String centerName){
+        return familyService.saveBirthDetails(birthPlaceDTO, centerName);
+    }
 
 
 

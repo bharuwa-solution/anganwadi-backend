@@ -2,6 +2,7 @@ package com.anganwadi.anganwadi.service_impl.service;
 
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.BirthPlaceDTO;
 
 import java.text.ParseException;
 import java.util.List;
@@ -39,4 +40,6 @@ public interface FamilyService {
     List<MemberVisits> getMemberVisitDetails(String memberId,String centerName);
 
     List<MemberVisits> getMemberVisitDetailsLatest(String memberId,String centerName);
+
+    List<BirthPlaceDTO> saveBirthDetails(List<BirthPlaceDTO> birthPlaceDTO, String centerName);
 }

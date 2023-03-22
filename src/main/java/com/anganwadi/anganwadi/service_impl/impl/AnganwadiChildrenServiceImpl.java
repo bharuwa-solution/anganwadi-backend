@@ -596,12 +596,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         HashSet<String> uniqueFamily = new HashSet<>();
 
         for (StockDistribution sd : findFamily) {
-            String name = "", profilePic = "", houseNo = "";
+            String name = "", profilePic = "", houseNo = "", familyId = "";
 
             List<Family> findHouseholds = familyRepository.findAllByFamilyId(sd.getFamilyId());
 
             for (Family fy : findHouseholds) {
                 houseNo = fy.getHouseNo();
+                familyId = fy.getFamilyId();
             }
 
             List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(sd.getFamilyId(), Sort.by(Sort.Direction.DESC, "createdDate"));
@@ -627,6 +628,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
                 DistributionOutputList singleEntry = DistributionOutputList.builder()
                         .name(name)
+                        .familyId(familyId)
                         .profilePic(profilePic)
                         .houseNo(houseNo)
                         .date(df.format(date))

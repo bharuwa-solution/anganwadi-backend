@@ -14,6 +14,7 @@ import java.util.List;
 public class DistributionOutputList {
 
     private String name;
+    private String familyId;
     private String profilePic;
     private String houseNo;
     private String date;

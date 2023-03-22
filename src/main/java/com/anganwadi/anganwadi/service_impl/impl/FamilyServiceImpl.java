@@ -33,11 +33,12 @@ public class FamilyServiceImpl implements FamilyService {
     private final WeightTrackingRepository weightTrackingRepository;
     private final VaccinationRepository vaccinationRepository;
     private final PregnantAndDeliveryRepository pregnantAndDeliveryRepository;
+    private final BabiesBirthRepository babiesBirthRepository;
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
                              VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
-                             PregnantAndDeliveryRepository pregnantAndDeliveryRepository) {
+                             PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
@@ -45,6 +46,7 @@ public class FamilyServiceImpl implements FamilyService {
         this.weightTrackingRepository = weightTrackingRepository;
         this.vaccinationRepository = vaccinationRepository;
         this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
+        this.babiesBirthRepository = babiesBirthRepository;
     }
 
 
@@ -836,6 +838,42 @@ public class FamilyServiceImpl implements FamilyService {
 
             }
             addInList.add(memberVisits);
+        }
+
+
+        return addInList;
+    }
+
+    @Override
+    public List<BirthPlaceDTO> saveBirthDetails(List<BirthPlaceDTO> birthPlaceDTO, String centerName) {
+        List<BirthPlaceDTO> addInList = new ArrayList<>();
+
+        for (BirthPlaceDTO birthDetails : birthPlaceDTO) {
+
+            BabiesBirth saveDetails = BabiesBirth.builder()
+                    .name(birthDetails.getName() == null ? "" : birthDetails.getName())
+                    .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
+                    .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
+                    .familyId(birthDetails.getFamilyId() == null ? "" : birthDetails.getFamilyId())
+                    .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
+                    .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
+                    .centerId(centerName)
+                    .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
+                    .build();
+            babiesBirthRepository.save(saveDetails);
+
+            BirthPlaceDTO singleEntry = BirthPlaceDTO.builder()
+                    .name(birthDetails.getName() == null ? "" : birthDetails.getName())
+                    .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
+                    .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
+                    .familyId(birthDetails.getFamilyId() == null ? "" : birthDetails.getFamilyId())
+                    .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
+                    .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
+                    .centerId(centerName)
+                    .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
+                    .build();
+            addInList.add(singleEntry);
+
         }
 
 
