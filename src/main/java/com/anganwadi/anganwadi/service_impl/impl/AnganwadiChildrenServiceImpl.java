@@ -30,14 +30,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final FamilyServiceImpl familyServiceImpl;
     private final AssetsStockRepository assetsStockRepository;
     private final StockListRepository stockListRepository;
-
+    private final StockDistributionRepository stockDistributionRepository;
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
                                         AttendanceRepository attendanceRepository, ModelMapper modelMapper,
                                         FamilyRepository familyRepository, FamilyMemberRepository familyMemberRepository,
                                         FamilyServiceImpl familyServiceImpl, AssetsStockRepository assetsStockRepository,
-                                        StockListRepository stockListRepository) {
+                                        StockListRepository stockListRepository, StockDistributionRepository stockDistributionRepository) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
@@ -47,6 +47,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.familyServiceImpl = familyServiceImpl;
         this.assetsStockRepository = assetsStockRepository;
         this.stockListRepository = stockListRepository;
+        this.stockDistributionRepository = stockDistributionRepository;
     }
 
 
@@ -322,7 +323,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                                     .headName(headName)
                                     .headDob(dob)
                                     .houseNo(houseNo)
-                                    .familyId(familyId)
+                                    .familyId(ac.getFamilyId())
                                     .religion(religion)
                                     .headGender(gender)
                                     .totalMale(familyServiceImpl.totalHouseholdsMale(ac.getFamilyId()))
@@ -364,7 +365,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     @Override
     public List<StockListDTO> getAvailableItems() {
-        List<StockList> stockLists = stockListRepository.findAll();
+        List<StockList> stockLists = stockListRepository.findAll(Sort.by(Sort.Direction.ASC, "itemCode"));
         List<StockListDTO> addInList = new ArrayList<>();
         HashSet<String> uniqueStockCode = new HashSet<>();
 
@@ -506,10 +507,144 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
 
+    @Override
+    public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerName) throws ParseException {
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date();
+        long mills = date.getTime();
+        List<StockDistributionDTO> addInList = new ArrayList<>();
+
+        for (StockDistributionDTO stockList : stockDistributionDTOS) {
+
+            StockDistribution saveEntry = StockDistribution.builder()
+                    .centerName(centerName)
+                    .date(mills)
+                    .familyId(stockList.getFamilyId())
+                    .itemCode(stockList.getItemCode())
+                    .itemName(stockList.getItemName())
+                    .quantity(stockList.getQuantity())
+                    .unit(stockList.getUnit())
+                    .build();
+
+            stockDistributionRepository.save(saveEntry);
+
+            StockDistributionDTO singleEntry = StockDistributionDTO.builder()
+                    .centerName(centerName)
+                    .date(df.format(date))
+                    .familyId(stockList.getFamilyId())
+                    .itemCode(stockList.getItemCode())
+                    .itemName(stockList.getItemName())
+                    .quantity(stockList.getQuantity())
+                    .unit(stockList.getUnit())
+                    .build();
+
+
+            addInList.add(singleEntry);
+
+        }
+
+        return addInList;
+    }
+
+    private String getDistributionQty(String familyId, String itemCode) {
+
+        List<StockDistribution> findItemsQty = stockDistributionRepository.findAllByFamilyIdAndItemCode(familyId, itemCode,Sort.by(Sort.Direction.ASC, "itemCode"));
+        Float sum = 0F;
+        String finalQty = "";
+        for (StockDistribution findQty : findItemsQty) {
+
+            sum = sum + Float.parseFloat(findQty.getQuantity());
+        }
+        finalQty = String.valueOf(sum);
+        return finalQty;
+    }
+
+
+    private List<DistributionArrayList> getItemArray(String familyId) {
+
+        HashSet<String> uniqueItem = new HashSet<>();
+        List<StockDistribution> findItems = stockDistributionRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<DistributionArrayList> itemList = new ArrayList<>();
+
+        for (StockDistribution items : findItems) {
+
+            if (uniqueItem.add(items.getItemCode())) {
+
+                DistributionArrayList singeList = DistributionArrayList.builder()
+                        .itemName(items.getItemName())
+                        .itemCode(items.getItemCode())
+                        .unit(items.getUnit())
+                        .quantity(getDistributionQty(items.getFamilyId(), items.getItemCode()))
+                        .build();
+
+                itemList.add(singeList);
+            }
+
+
+        }
+
+        return itemList;
+    }
+
+
+    @Override
+    public List<DistributionOutputList> getDistributionList(String centerName) {
+
+        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterName(centerName);
+        List<DistributionOutputList> addInList = new ArrayList<>();
+        HashSet<String> uniqueFamily = new HashSet<>();
+
+        for (StockDistribution sd : findFamily) {
+            String name = "", profilePic = "", houseNo = "";
+
+            List<Family> findHouseholds = familyRepository.findAllByFamilyId(sd.getFamilyId());
+
+            for (Family fy : findHouseholds) {
+                houseNo = fy.getHouseNo();
+            }
+
+            List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(sd.getFamilyId(), Sort.by(Sort.Direction.DESC, "createdDate"));
+
+            for (FamilyMember fm : findHeadDetails) {
+                if (fm.getRelationWithOwner().trim().equals("0")) {
+                    name = fm.getName();
+                    profilePic = fm.getPhoto();
+                    break;
+                } else {
+                    name = fm.getName();
+                    profilePic = fm.getPhoto();
+                }
+            }
+
+
+            if (uniqueFamily.add(sd.getFamilyId())) {
+
+                long getMills = sd.getDate();
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                Date date = new Date(getMills);
+
+
+                DistributionOutputList singleEntry = DistributionOutputList.builder()
+                        .name(name)
+                        .profilePic(profilePic)
+                        .houseNo(houseNo)
+                        .date(df.format(date))
+                        .arrayLists(getItemArray(sd.getFamilyId()))
+                        .build();
+                addInList.add(singleEntry);
+            }
+
+
+        }
+
+
+        return addInList;
+    }
+
 
     @Override
     public List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException {
-
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();

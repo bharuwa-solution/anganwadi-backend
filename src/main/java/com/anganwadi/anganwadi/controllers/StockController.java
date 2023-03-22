@@ -1,8 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
-import com.anganwadi.anganwadi.domains.dto.StockItemsDTO;
-import com.anganwadi.anganwadi.domains.dto.StockListDTO;
-import com.anganwadi.anganwadi.domains.dto.StockOutputItemsDTO;
+import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.AssetsStock;
 import com.anganwadi.anganwadi.domains.entity.StockList;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
@@ -44,4 +42,15 @@ public class StockController {
     private List<StockListDTO> getStocksLists() {
         return anganwadiChildrenService.getStocksLists();
     }
+
+    @PostMapping("saveDistributionList")
+    private List<StockDistributionDTO> saveDistributionList(@RequestBody List<StockDistributionDTO> stockDistributionDTOS, @RequestHeader String centerName) throws ParseException {
+        return anganwadiChildrenService.saveDistributionList(stockDistributionDTOS, centerName);
+    }
+
+    @GetMapping("getDistributionList")
+    private List<DistributionOutputList> getDistributionList(@RequestHeader String centerName) {
+        return anganwadiChildrenService.getDistributionList(centerName);
+    }
+
 }
