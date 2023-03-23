@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.BirthPlaceDTO;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -63,12 +62,12 @@ public class FamilyController {
     }
 
     @GetMapping("/getMPRRecords")
-    private List<MPRDTO> getMPRRecords(@RequestParam String dateFrom,@RequestParam String dateTo, @RequestParam String category) {
-        return familyService.getMPRRecords(dateFrom,dateTo,category);
+    private MPRDTO getMPRRecords(@RequestParam(required = false) String month, @RequestParam(required = false) String duration, @RequestParam(required = false) String category, @RequestHeader String centerName) throws ParseException {
+        return familyService.getMPRRecords(month, duration, category, centerName);
     }
 
     @GetMapping("/getMembersByFamilyId")
-    private MPRDTO getMembersByFamilyId(@RequestParam String familyId) {
+    private FamilyMemberCounts getMembersByFamilyId(@RequestParam String familyId) {
         return familyService.getMembersByFamilyId(familyId);
     }
 

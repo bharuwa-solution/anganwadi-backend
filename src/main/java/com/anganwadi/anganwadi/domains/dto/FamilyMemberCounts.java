@@ -9,13 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MPRDTO {
+public class FamilyMemberCounts {
 
     private long male;
     private long female;
-    private long dharti;
-    private long pregnant;
-    private long mortality;
-    private long birth;
-
+    private long children;
 }

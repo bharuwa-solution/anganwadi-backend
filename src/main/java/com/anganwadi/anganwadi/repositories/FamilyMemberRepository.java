@@ -28,4 +28,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'dob':{$gte:?0},'centerName':?1}")
     List<FamilyMember> findAllByDobAndCenterName(long convertToMills, String centerName);
+
+    @Query("{'centerName':{$regex:?0},'recordForMonth':{$regex:?1},'category':{$regex:?2}}")
+    List<FamilyMember> findAllByCenterNameAndRecordForMonthAndCategory(String centerName, String month, String category);
 }

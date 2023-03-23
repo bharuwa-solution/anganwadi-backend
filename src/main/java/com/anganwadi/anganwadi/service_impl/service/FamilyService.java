@@ -24,9 +24,9 @@ public interface FamilyService {
 
     List<WeightRecordsDTO> getAllChildWeightRecords(String familyId);
 
-    List<MPRDTO> getMPRRecords(String dateFrom,String dateTo, String category);
+    MPRDTO getMPRRecords(String month, String duration, String category, String centerName) throws ParseException;
 
-    MPRDTO getMembersByFamilyId(String familyId);
+    FamilyMemberCounts getMembersByFamilyId(String familyId);
 
     List<VaccinationRecords> getVaccinationRecords();
 

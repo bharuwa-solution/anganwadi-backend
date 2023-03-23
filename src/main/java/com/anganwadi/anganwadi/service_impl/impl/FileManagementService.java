@@ -27,7 +27,6 @@ public class FileManagementService {
         fileName = date.trim() + "_" + file.getOriginalFilename();
         fileName = fileName.toLowerCase().replaceAll(" ", "_");
 
-
         Path path = Paths.get(ApplicationConstants.serverUploadPath + fileSeparator + "uploads" + fileSeparator + fileName);
         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 

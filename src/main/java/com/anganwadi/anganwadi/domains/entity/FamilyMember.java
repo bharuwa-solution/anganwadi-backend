@@ -35,5 +35,6 @@ public class FamilyMember  extends BaseObject{
     private String dateOfArrival;
     private String dateOfLeaving;
     private String dateOfMortality;
+    private String recordForMonth;
 
 }

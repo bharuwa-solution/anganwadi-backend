@@ -594,8 +594,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
                 itemList.add(singeList);
             }
-
-
         }
 
         return itemList;

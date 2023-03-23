@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -224,6 +225,10 @@ public class FamilyServiceImpl implements FamilyService {
         Date date = df.parse(householdsDTO.getHeadDob());
         long mills = date.getTime();
 
+        Date currentMonth = new Date();
+        String[] splitMonth = df.format(currentMonth).split("-");
+        String getMonth = splitMonth[1].replace("0", "");
+
 
         Family saveFamily = Family.builder()
                 .houseNo(houseNo)
@@ -249,6 +254,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .familyId(familyId)
                 .idNumber(uniqueId)
                 .idType(uniqueIdType)
+                .recordForMonth(getMonth)
                 .mobileNumber(mobileNo)
                 .category(category)
                 .photo(headPic)
@@ -304,6 +310,16 @@ public class FamilyServiceImpl implements FamilyService {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = df.parse(familyMemberDTO.getDob());
         long mills = date.getTime();
+        String headCategory = "";
+        List<Family> findHod = familyRepository.findAllByFamilyId(familyMemberDTO.getFamilyId());
+        for (Family getFamilyId : findHod) {
+            headCategory = getFamilyId.getCategory();
+        }
+
+        Date currentMonth = new Date();
+        String[] splitMonth = df.format(currentMonth).split("-");
+        String getMonth = splitMonth[1].replace("0", "");
+
 
         FamilyMember saveMember = FamilyMember.builder()
                 .name(name)
@@ -314,12 +330,13 @@ public class FamilyServiceImpl implements FamilyService {
                 .idType(familyMemberDTO.getIdType() == null ? "" : familyMemberDTO.getIdType())
                 .idNumber(familyMemberDTO.getIdNumber() == null ? "" : familyMemberDTO.getIdNumber())
                 .dob(mills)
+                .recordForMonth(getMonth)
                 .centerName(centerName)
                 .motherName(motherName)
                 .fatherName(fatherName)
                 .memberCode(memberCode)
                 .memberCode(code)
-                .category(category)
+                .category(category.equals("") ? headCategory : category)
                 .maritalStatus(martialStatus)
                 .stateCode(stateCode)
                 .handicapType(handicapType)
@@ -396,7 +413,6 @@ public class FamilyServiceImpl implements FamilyService {
                     .category(passDetails.getCategory()) //join
                     .idType(passDetails.getIdType())
                     .idNumber(passDetails.getIdNumber())
-
                     .maritalStatus(passDetails.getMaritalStatus() == null ? "" : passDetails.getMaritalStatus())
                     .stateCode(passDetails.getStateCode() == null ? "" : passDetails.getStateCode())
 //                    .handicapType(passDetails.getHandicapType() == null ? "" : passDetails.getHandicapType())
@@ -437,6 +453,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .latitude(visitsDetailsDTO.getLatitude() == null ? "" : visitsDetailsDTO.getLatitude())
                 .longitude(visitsDetailsDTO.getLongitude() == null ? "" : visitsDetailsDTO.getLongitude())
                 .visitDateTime(millis)
+                .childDob(0)
                 .build();
         visitsRepository.save(saveVisitDetails);
 
@@ -485,28 +502,229 @@ public class FamilyServiceImpl implements FamilyService {
         if (StringUtils.isEmpty(familyId.trim())) {
             throw new CustomException("Family Id Is Missed, Please Check!!");
         }
-        List<WeightTracking> findAllChildRecords = weightTrackingRepository.findAllByFamilyId(familyId,Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<WeightTracking> findAllChildRecords = weightTrackingRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.ASC, "createdDate"));
 
         List<WeightRecordsDTO> addList = new ArrayList<>();
 
         return null;
     }
 
+    private long MPRDurationEndDate(String duration) throws ParseException {
+        long endMillis = 0L;
+        switch (duration) {
+
+            case "2":
+                LocalDateTime minus7Months = LocalDateTime.now().minusMonths(7);
+                String temp7Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus7Months);
+                DateFormat df7 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last7Months = df7.parse(temp7Date);
+                endMillis = last7Months.getTime();
+                break;
+
+            case "3":
+                LocalDateTime minus12Months = LocalDateTime.now().minusMonths(12);
+                String temp12Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus12Months);
+                DateFormat df12 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last12Months = df12.parse(temp12Date);
+                endMillis = last12Months.getTime();
+                break;
+
+            case "4":
+                LocalDateTime minus24Months = LocalDateTime.now().minusMonths(24);
+                String temp24Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus24Months);
+                DateFormat df24 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last24Months = df24.parse(temp24Date);
+                endMillis = last24Months.getTime();
+                break;
+
+            case "5":
+                LocalDateTime minus36Months = LocalDateTime.now().minusMonths(36);
+                String temp36Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus36Months);
+                DateFormat df36 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last36Months = df36.parse(temp36Date);
+                endMillis = last36Months.getTime();
+                break;
+
+            case "6":
+                LocalDateTime minus48Months = LocalDateTime.now().minusMonths(48);
+                String temp48Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus48Months);
+                DateFormat df48 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last48Months = df48.parse(temp48Date);
+                endMillis = last48Months.getTime();
+                break;
+
+            default:
+                endMillis = new Date().getTime();
+                break;
+        }
+
+
+        return endMillis;
+
+    }
+
+    private long MPRDurationStartDate(String duration) throws ParseException {
+        long startMillis = 0L;
+        switch (duration) {
+
+            case "1":
+                LocalDateTime minus6Months = LocalDateTime.now().minusMonths(6);
+                String temp6Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus6Months);
+                DateFormat df6 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last6Months = df6.parse(temp6Date);
+                startMillis = last6Months.getTime();
+                break;
+
+            case "2":
+                LocalDateTime minus12Months = LocalDateTime.now().minusMonths(12);
+                String temp12Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus12Months);
+                DateFormat df12 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last12Months = df12.parse(temp12Date);
+                startMillis = last12Months.getTime();
+                break;
+
+            case "3":
+                LocalDateTime minus24Months = LocalDateTime.now().minusMonths(24);
+                String temp24Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus24Months);
+                DateFormat df24 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last24Months = df24.parse(temp24Date);
+                startMillis = last24Months.getTime();
+                break;
+
+            case "4":
+                LocalDateTime minus36Months = LocalDateTime.now().minusMonths(36);
+                String temp36Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus36Months);
+                DateFormat df36 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last36Months = df36.parse(temp36Date);
+                startMillis = last36Months.getTime();
+                break;
+
+            case "5":
+                LocalDateTime minus48Months = LocalDateTime.now().minusMonths(48);
+                String temp48Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus48Months);
+                DateFormat df48 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last48Months = df48.parse(temp48Date);
+                startMillis = last48Months.getTime();
+                break;
+
+            default:
+                LocalDateTime minus60Months = LocalDateTime.now().minusMonths(60);
+                String temp60Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus60Months);
+                DateFormat df60 = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date last60Months = df60.parse(temp60Date);
+                startMillis = last60Months.getTime();
+                break;
+        }
+
+
+        return startMillis;
+
+    }
+
+
     @Override
-    public List<MPRDTO> getMPRRecords(String dateFrom, String dateTo, String category) {
+    public MPRDTO getMPRRecords(String month, String duration, String category, String centerName) throws ParseException {
 
-        dateFrom = dateFrom == null ? "" : dateFrom;
-        dateTo = dateTo == null ? "" : dateTo;
+        month = month == null ? "" : month;
+        duration = duration == null ? "" : duration;
         category = category == null ? "" : category;
+        long male = 0, female = 0, dharti = 0, pregnant = 0, birth = 0, mortality = 0;
+        MPRDTO MprCounts = new MPRDTO();
 
-//        List<FamilyMember> chekByCat = familyMemberRepository.findAllByPeriod(dateFrom, dateTo, category);
+        List<FamilyMember> findByCenter = familyMemberRepository.findAllByCenterNameAndRecordForMonthAndCategory(centerName, month, category);
+        long startDate = 0, endDate = 0;
+
+        for (FamilyMember formatDetails : findByCenter) {
 
 
-        return null;
+            startDate = MPRDurationStartDate(duration);
+            endDate = MPRDurationEndDate(duration);
+            long deathInMillis = 0L;
+
+            if (formatDetails.getDateOfMortality().trim().length() > 0) {
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                Date deathDate = df.parse(formatDetails.getDateOfMortality());
+                deathInMillis = deathDate.getTime();
+            }
+
+
+            if (formatDetails.getDob() >= startDate && formatDetails.getDob() < endDate && formatDetails.getGender().trim().equals("1")) {
+                male++;
+                log.error("Male Name " + formatDetails.getName());
+            }
+
+            if (formatDetails.getDob() >= startDate && formatDetails.getDob() < endDate && formatDetails.getGender().trim().equals("2")) {
+                female++;
+                log.error("Female Name " + formatDetails.getName());
+            }
+
+            if (formatDetails.getDob() >= startDate && formatDetails.getDob() < endDate) {
+                birth++;
+                log.error("Birth Name " + formatDetails.getName());
+            }
+
+            if (deathInMillis >= startDate && deathInMillis < endDate) {
+                mortality++;
+                log.error("Birth Name " + formatDetails.getName());
+            }
+
+        }
+
+
+        List<Visits> findDhatri = visitsRepository.findAllByCenterName(centerName);
+        HashSet<String> uniqueMemberId = new HashSet<>();
+
+        for (Visits checkDetails : findDhatri) {
+
+            long getMills = checkDetails.getVisitDateTime();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+            String[] splitMonth = df.format(date).split("-");
+            String getMonth = splitMonth[1].replace("0", "");
+
+            if (month.length() > 0) {
+
+                if (getMonth.trim().equals(month) && checkDetails.getVisitType().equals("3") && checkDetails.getChildDob() >= startDate && checkDetails.getChildDob() < endDate) {
+                    if (uniqueMemberId.add(checkDetails.getMemberId())) {
+                        dharti++;
+                    }
+                }
+            } else {
+                if (checkDetails.getVisitType().equals("3") && checkDetails.getChildDob() >= startDate && checkDetails.getChildDob() < endDate) {
+                    if (uniqueMemberId.add(checkDetails.getMemberId())) {
+                        dharti++;
+                    }
+                }
+            }
+        }
+
+        MprCounts = MPRDTO.builder()
+                .male(male)
+                .female(female)
+                .birth(birth)
+                .mortality(mortality)
+                .dharti(dharti)
+                .build();
+
+//        List<FamilyMember> chekByCat = familyMemberRepository.findAllByMPRPeriod(month, duration, category, centerName);
+
+
+        return MprCounts;
     }
 
     @Override
-    public MPRDTO getMembersByFamilyId(String familyId) {
+    public FamilyMemberCounts getMembersByFamilyId(String familyId) {
 
         List<FamilyMember> checkMembers = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.ASC, "createdDate"));
         int male = 0, female = 0, children = 0;
@@ -522,7 +740,7 @@ public class FamilyServiceImpl implements FamilyService {
             }
         }
 
-        return MPRDTO.builder()
+        return FamilyMemberCounts.builder()
                 .male(male)
                 .female(female)
                 .children(children)
@@ -878,6 +1096,11 @@ public class FamilyServiceImpl implements FamilyService {
         Date date = df.parse(birthDetails.getDob());
         long mills = date.getTime();
 
+        Date currentMonth = new Date();
+        String[] splitMonth = df.format(currentMonth).split("-");
+        String getMonth = splitMonth[1].replace("0", "");
+
+
         // Save in Birth Table
 
         BabiesBirth saveDetails = BabiesBirth.builder()
@@ -902,6 +1125,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .motherName(saveDetails.getName())
                 .fatherName(headName)
                 .maritalStatus("2")
+                .recordForMonth(getMonth)
                 .mobileNumber(searchFamilyId.getMobileNumber())
                 .stateCode(searchFamilyId.getStateCode())
                 .centerName(centerName)
@@ -926,6 +1150,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .visitRound(birthDetails.getVisitRound())
                 .memberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
                 .centerName(centerName)
+                .childDob(mills)
                 .description("")
                 .longitude("")
                 .latitude("")
@@ -974,7 +1199,6 @@ public class FamilyServiceImpl implements FamilyService {
                 addInList.add(memberVisits);
 
             }
-
 
         }
 
