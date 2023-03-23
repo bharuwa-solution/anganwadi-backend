@@ -245,7 +245,10 @@ public class FamilyServiceImpl implements FamilyService {
                 .name(name)
                 .dob(mills)
                 .centerName(centerName)
+                .maritalStatus("1")
                 .familyId(familyId)
+                .idNumber(uniqueId)
+                .idType(uniqueIdType)
                 .mobileNumber(mobileNo)
                 .category(category)
                 .photo(headPic)
@@ -260,11 +263,12 @@ public class FamilyServiceImpl implements FamilyService {
                 .headName(name)
                 .centerName(centerName)
                 .headDob(headDob)
-                .uniqueCode("")
+                .uniqueCode(uniqueCode)
+                .uniqueId(uniqueId)
                 .centerName(centerName)
                 .totalMembers("")
                 .headPic(headPic)
-                .centerId("")
+                .centerId(centerName)
                 .headGender(headGender)
                 .houseNo(houseNo)
                 .mobileNumber(mobileNo)
@@ -388,9 +392,14 @@ public class FamilyServiceImpl implements FamilyService {
                     .idNumber(passDetails.getIdNumber() == null ? "" : passDetails.getIdNumber())
                     .gender(passDetails.getGender() == null ? "" : passDetails.getGender())
                     .dob(df.format(date))
+                    .centerName(passDetails.getCenterName())
+                    .category(passDetails.getCategory()) //join
+                    .idType(passDetails.getIdType())
+                    .idNumber(passDetails.getIdNumber())
+
                     .maritalStatus(passDetails.getMaritalStatus() == null ? "" : passDetails.getMaritalStatus())
                     .stateCode(passDetails.getStateCode() == null ? "" : passDetails.getStateCode())
-                    .handicapType(passDetails.getHandicapType() == null ? "" : passDetails.getHandicapType())
+//                    .handicapType(passDetails.getHandicapType() == null ? "" : passDetails.getHandicapType())
                     .residentArea(passDetails.getResidentArea() == null ? "" : passDetails.getResidentArea())
                     .dateOfArrival(passDetails.getDateOfArrival() == null ? "" : passDetails.getDateOfArrival())
                     .dateOfLeaving(passDetails.getDateOfLeaving() == null ? "" : passDetails.getDateOfLeaving())
@@ -845,40 +854,107 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<BirthPlaceDTO> saveBirthDetails(List<BirthPlaceDTO> birthPlaceDTO, String centerName) {
+    public List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerName) throws ParseException {
         List<BirthPlaceDTO> addInList = new ArrayList<>();
 
-        for (BirthPlaceDTO birthDetails : birthPlaceDTO) {
 
-            BabiesBirth saveDetails = BabiesBirth.builder()
-                    .name(birthDetails.getName() == null ? "" : birthDetails.getName())
-                    .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
-                    .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
-                    .familyId(birthDetails.getFamilyId() == null ? "" : birthDetails.getFamilyId())
-                    .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
-                    .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
-                    .centerId(centerName)
-                    .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
-                    .build();
-            babiesBirthRepository.save(saveDetails);
+        // Find Family Details
 
-            BirthPlaceDTO singleEntry = BirthPlaceDTO.builder()
-                    .name(birthDetails.getName() == null ? "" : birthDetails.getName())
-                    .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
-                    .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
-                    .familyId(birthDetails.getFamilyId() == null ? "" : birthDetails.getFamilyId())
-                    .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
-                    .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
-                    .centerId(centerName)
-                    .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
-                    .build();
-            addInList.add(singleEntry);
-
+        FamilyMember searchFamilyId = familyMemberRepository.findById(birthDetails.getMotherMemberId()).get();
+        List<FamilyMember> findHead = familyMemberRepository.findAllByFamilyId(searchFamilyId.getFamilyId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+        String headName = "";
+        for (FamilyMember headDetails : findHead) {
+            if (headDetails.getRelationWithOwner().equalsIgnoreCase("0")) {
+                headName = headDetails.getName();
+                break;
+            } else {
+                headName = headDetails.getName();
+            }
         }
 
+        // Date to Millis
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = df.parse(birthDetails.getDob());
+        long mills = date.getTime();
+
+        // Save in Birth Table
+
+        BabiesBirth saveDetails = BabiesBirth.builder()
+                .name(birthDetails.getName() == null ? "" : birthDetails.getName())
+                .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
+                .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
+                .familyId(searchFamilyId.getFamilyId())
+                .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
+                .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
+                .centerId(centerName)
+                .height(birthDetails.getHeight() == null ? "" : birthDetails.getHeight())
+                .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
+                .build();
+        babiesBirthRepository.save(saveDetails);
+
+        // Save in Family Member Table
+
+        FamilyMember addMember = FamilyMember.builder()
+                .familyId(searchFamilyId.getFamilyId())
+                .name(birthDetails.getName() == null ? "" : birthDetails.getName())
+                .category(searchFamilyId.getCategory())
+                .motherName(saveDetails.getName())
+                .fatherName(headName)
+                .maritalStatus("2")
+                .mobileNumber(searchFamilyId.getMobileNumber())
+                .stateCode(searchFamilyId.getStateCode())
+                .centerName(centerName)
+                .relationWithOwner(birthDetails.getRelationWithOwner() == null ? "" : birthDetails.getRelationWithOwner())
+                .gender(birthDetails.getGender())
+                .dob(mills)
+                .build();
+        familyMemberRepository.save(addMember);
+
+        // Save in Visit
+        Date visitDate = new Date();
+
+        DateFormat visitDf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String convertToString = visitDf.format(new Date());
+        Date visitTime = visitDf.parse(convertToString);
+        long timestamp = visitTime.getTime();
+
+
+        Visits updateRecord = Visits.builder()
+                .visitFor(birthDetails.getVisitFor())
+                .visitType(birthDetails.getVisitType())
+                .visitRound(birthDetails.getVisitRound())
+                .memberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
+                .centerName(centerName)
+                .description("")
+                .longitude("")
+                .latitude("")
+                .visitDateTime(timestamp)
+                .build();
+
+        visitsRepository.save(updateRecord);
+
+
+        BirthPlaceDTO singleEntry = BirthPlaceDTO.builder()
+                .name(birthDetails.getName() == null ? "" : birthDetails.getName())
+                .relationWithOwner(birthDetails.getRelationWithOwner() == null ? "" : birthDetails.getRelationWithOwner())
+                .dob(birthDetails.getDob())
+                .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
+                .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
+                .familyId(searchFamilyId.getFamilyId() == null ? "" : searchFamilyId.getFamilyId())
+                .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
+                .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
+                .centerId(centerName)
+                .visitFor(birthDetails.getVisitFor())
+                .visitType(birthDetails.getVisitType())
+                .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
+                .height(birthDetails.getHeight() == null ? "" : birthDetails.getHeight())
+                .build();
+        addInList.add(singleEntry);
 
         return addInList;
     }
+
 
     @Override
     public List<MemberVisits> getMemberVisitDetails(String memberId, String centerName) {

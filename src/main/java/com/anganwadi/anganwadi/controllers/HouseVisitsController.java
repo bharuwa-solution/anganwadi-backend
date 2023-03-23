@@ -4,6 +4,7 @@ import com.anganwadi.anganwadi.domains.dto.FemaleMembersDTO;
 import com.anganwadi.anganwadi.domains.dto.HouseVisitDTO;
 import com.anganwadi.anganwadi.domains.dto.MemberVisits;
 import com.anganwadi.anganwadi.domains.dto.VisitsDetailsDTO;
+import com.anganwadi.anganwadi.domains.entity.BirthPlaceDTO;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +48,9 @@ public class HouseVisitsController {
         return familyService.getMemberVisitDetailsLatest(memberId,centerName);
     }
 
+    @PostMapping("/saveBirthDetails")
+    private List<BirthPlaceDTO> saveBirthDetails(@RequestBody BirthPlaceDTO birthDetails, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveBirthDetails(birthDetails, centerName);
+    }
 
 }

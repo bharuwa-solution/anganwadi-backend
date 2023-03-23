@@ -15,6 +15,7 @@ public class StockDistribution extends BaseObject {
 
     private String familyId;
     private long date;
+    private String month;
     private String centerName;
     private String itemName;
     private String itemCode;

@@ -11,8 +11,9 @@ import java.util.List;
 public interface StockDistributionRepository extends MongoRepository<StockDistribution, String> {
     List<StockDistribution> findAllByCenterName(String centerName);
 
+    List<StockDistribution> findAllByCenterNameAndMonth(String centerName, String selectedMonth);
 
-    List<StockDistribution> findAllByFamilyId(String familyId, Sort createdDate);
+    List<StockDistribution> findAllByFamilyIdAndMonth(String familyId, String selectedMonth);
 
-    List<StockDistribution> findAllByFamilyIdAndItemCode(String familyId, String itemCode, Sort itemCode1);
+    List<StockDistribution> findAllByFamilyIdAndItemCodeAndMonth(String familyId, String itemCode, String selectedMonth, Sort itemCode1);
 }

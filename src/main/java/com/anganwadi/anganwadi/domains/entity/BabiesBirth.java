@@ -17,6 +17,7 @@ public class BabiesBirth extends BaseObject {
     private String birthPlace;
     private String birthType;
     private String centerId;
+    private String height;
     private String gender;
     private String firstWeight;
     private String motherMemberId;

@@ -41,5 +41,5 @@ public interface FamilyService {
 
     List<MemberVisits> getMemberVisitDetailsLatest(String memberId,String centerName);
 
-    List<BirthPlaceDTO> saveBirthDetails(List<BirthPlaceDTO> birthPlaceDTO, String centerName);
+    List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerName) throws ParseException;
 }

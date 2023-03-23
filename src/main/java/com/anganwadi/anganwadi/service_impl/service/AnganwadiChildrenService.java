@@ -30,11 +30,11 @@ public interface AnganwadiChildrenService {
 
     List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerName) throws ParseException;
 
-    List<StockOutputItemsDTO> getStocks(String centerName);
+    StockOutputItemsDTO getStocks(String centerName, String selectedMonth);
 
     List<StockListDTO> getStocksLists();
 
     List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerName) throws ParseException;
 
-    List<DistributionOutputList> getDistributionList(String centerName);
+    List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth);
 }

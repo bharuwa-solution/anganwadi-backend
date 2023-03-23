@@ -155,7 +155,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         if (findChild.size() > 0) {
             for (Attendance checkAttendance : findChild) {
                 attendance = checkAttendance.getAttendance();
-
             }
         }
 
@@ -399,6 +398,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             String formatToString = df.format(currentTime.getTime());
             Date formatToTime = df.parse(formatToString);
             long timestamp = formatToTime.getTime();
+            String[] spiltMonth = formatToString.split("-");
+            String currentMonth = spiltMonth[1].replace("0", "");
 
             AssetsStock saveStocks = AssetsStock.builder()
                     .centerName(centerName)
@@ -407,6 +408,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .itemName(assetsList.getItemName())
                     .qty(assetsList.getQuantity())
                     .date(timestamp)
+                    .month(currentMonth)
                     .build();
 
             assetsStockRepository.save(saveStocks);
@@ -426,14 +428,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addInList;
     }
 
-    private String sumOfItemsByDate(String centerName, String itemCode, long Millis) {
+    private String sumOfItemsByDate(String centerName, String itemCode, String selectedMonth) {
         String itemSum = "";
-        List<AssetsStock> findCenterItems = assetsStockRepository.findAllByCenterNameAndItemCodeAndDate(centerName, itemCode, Millis);
+        List<AssetsStock> findCenterItems = assetsStockRepository.findAllByCenterNameAndItemCodeAndMonth(centerName, itemCode, selectedMonth);
         float itemInFloat = 0L;
         if (findCenterItems.size() > 0) {
 
             for (AssetsStock fs : findCenterItems) {
-
                 itemInFloat = itemInFloat + Float.parseFloat(fs.getQty());
 
             }
@@ -445,22 +446,27 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return itemSum;
     }
 
-    private List<StockOutputArray> getStockArray(String centerName, long millis) {
+    private List<StockOutputArray> getStockArray(String centerName, String selectedMonth) {
         HashSet<String> uniqueCode = new HashSet<>();
         List<StockOutputArray> addInArrayList = new ArrayList<>();
-        List<AssetsStock> findDetails = assetsStockRepository.findAllByCenterNameAndDateOrderByDateDesc(centerName, millis);
+        List<AssetsStock> findDetails = assetsStockRepository.findAllByCenterNameAndMonthOrderByDateDesc(centerName, selectedMonth);
 
         for (AssetsStock findItemsWise : findDetails) {
+            long getMills = findItemsWise.getDate();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+
             if (uniqueCode.add(findItemsWise.getItemCode())) {
                 StockOutputArray singleEntry = StockOutputArray.builder()
                         .centerName(findItemsWise.getCenterName())
                         .itemCode(findItemsWise.getItemCode())
                         .itemName(findItemsWise.getItemName())
-                        .quantity(sumOfItemsByDate(findItemsWise.getCenterName(), findItemsWise.getItemCode(), millis))
+                        .quantity(sumOfItemsByDate(findItemsWise.getCenterName(), findItemsWise.getItemCode(), selectedMonth))
                         .unit(findItemsWise.getQtyUnit())
                         .build();
                 addInArrayList.add(singleEntry);
             }
+
         }
 
         return addInArrayList;
@@ -468,29 +474,34 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public List<StockOutputItemsDTO> getStocks(String centerName) {
+    public StockOutputItemsDTO getStocks(String centerName, String selectedMonth) {
 
-        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterNameOrderByCreatedDateDesc(centerName);
+        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterNameAndMonthOrderByCreatedDateAsc(centerName, selectedMonth);
         HashSet<String> captureMonth = new HashSet<>();
         List<StockOutputItemsDTO> addInList = new ArrayList<>();
+        StockOutputItemsDTO addSingle = new StockOutputItemsDTO();
+        if (findByCenterName.size() > 0) {
+            for (AssetsStock findMonth : findByCenterName) {
+                long getMills = findMonth.getDate();
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                Date date = new Date(getMills);
+                if (captureMonth.add(df.format(date))) {
+                    log.info("date " + df.format(date));
+                    addSingle = StockOutputItemsDTO.builder()
+                            .date(df.format(date))
+                            .stockArrayList(getStockArray(centerName, selectedMonth))
+                            .build();
+                }
 
-        for (AssetsStock findMonth : findByCenterName) {
-            long getMills = findMonth.getDate();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            Date date = new Date(getMills);
-
-            if (captureMonth.add(df.format(date))) {
-                StockOutputItemsDTO addSingle = StockOutputItemsDTO.builder()
-                        .date(df.format(date))
-                        .stockArrayList(getStockArray(centerName, getMills))
-                        .build();
-
-                addInList.add(addSingle);
             }
+        } else {
+            addSingle = StockOutputItemsDTO.builder()
+                    .date("")
+                    .stockArrayList(Collections.EMPTY_LIST)
+                    .build();
         }
 
-
-        return addInList;
+        return addSingle;
     }
 
     @Override
@@ -514,12 +525,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date date = new Date();
         long mills = date.getTime();
         List<StockDistributionDTO> addInList = new ArrayList<>();
+        String[] spiltMonth = df.format(date).split("-");
+        String currentMonth = spiltMonth[1].replace("0", "");
 
         for (StockDistributionDTO stockList : stockDistributionDTOS) {
 
             StockDistribution saveEntry = StockDistribution.builder()
                     .centerName(centerName)
                     .date(mills)
+                    .month(currentMonth)
                     .familyId(stockList.getFamilyId())
                     .itemCode(stockList.getItemCode())
                     .itemName(stockList.getItemName())
@@ -547,9 +561,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addInList;
     }
 
-    private String getDistributionQty(String familyId, String itemCode) {
+    private String getDistributionQty(String familyId, String itemCode, String selectedMonth) {
 
-        List<StockDistribution> findItemsQty = stockDistributionRepository.findAllByFamilyIdAndItemCode(familyId, itemCode,Sort.by(Sort.Direction.ASC, "itemCode"));
+        List<StockDistribution> findItemsQty = stockDistributionRepository.findAllByFamilyIdAndItemCodeAndMonth(familyId, itemCode, selectedMonth, Sort.by(Sort.Direction.ASC, "itemCode"));
         Float sum = 0F;
         String finalQty = "";
         for (StockDistribution findQty : findItemsQty) {
@@ -561,10 +575,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
 
-    private List<DistributionArrayList> getItemArray(String familyId) {
+    private List<DistributionArrayList> getItemArray(String familyId, String selectedMonth) {
 
         HashSet<String> uniqueItem = new HashSet<>();
-        List<StockDistribution> findItems = stockDistributionRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<StockDistribution> findItems = stockDistributionRepository.findAllByFamilyIdAndMonth(familyId, selectedMonth);
         List<DistributionArrayList> itemList = new ArrayList<>();
 
         for (StockDistribution items : findItems) {
@@ -575,7 +589,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .itemName(items.getItemName())
                         .itemCode(items.getItemCode())
                         .unit(items.getUnit())
-                        .quantity(getDistributionQty(items.getFamilyId(), items.getItemCode()))
+                        .quantity(getDistributionQty(items.getFamilyId(), items.getItemCode(), selectedMonth))
                         .build();
 
                 itemList.add(singeList);
@@ -589,11 +603,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public List<DistributionOutputList> getDistributionList(String centerName) {
+    public List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth) {
 
-        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterName(centerName);
+        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterNameAndMonth(centerName, selectedMonth);
         List<DistributionOutputList> addInList = new ArrayList<>();
         HashSet<String> uniqueFamily = new HashSet<>();
+
 
         for (StockDistribution sd : findFamily) {
             String name = "", profilePic = "", houseNo = "", familyId = "";
@@ -632,12 +647,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .profilePic(profilePic)
                         .houseNo(houseNo)
                         .date(df.format(date))
-                        .arrayLists(getItemArray(sd.getFamilyId()))
+                        .arrayLists(getItemArray(sd.getFamilyId(), selectedMonth))
                         .build();
                 addInList.add(singleEntry);
             }
-
-
         }
 
 

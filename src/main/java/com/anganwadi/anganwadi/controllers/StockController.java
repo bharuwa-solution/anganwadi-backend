@@ -34,8 +34,8 @@ public class StockController {
 
 
     @GetMapping("getStocks")
-    private List<StockOutputItemsDTO> getStocks(@RequestHeader String centerName) {
-        return anganwadiChildrenService.getStocks(centerName);
+    private StockOutputItemsDTO getStocks(@RequestHeader String centerName, @RequestParam String selectedMonth) {
+        return anganwadiChildrenService.getStocks(centerName,selectedMonth);
     }
 
     @GetMapping("getStocksLists")
@@ -49,8 +49,8 @@ public class StockController {
     }
 
     @GetMapping("getDistributionList")
-    private List<DistributionOutputList> getDistributionList(@RequestHeader String centerName) {
-        return anganwadiChildrenService.getDistributionList(centerName);
+    private List<DistributionOutputList> getDistributionList(@RequestHeader String centerName, String selectedMonth) {
+        return anganwadiChildrenService.getDistributionList(centerName, selectedMonth);
     }
 
 }
