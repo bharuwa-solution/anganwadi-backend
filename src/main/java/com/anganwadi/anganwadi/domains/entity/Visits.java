@@ -17,6 +17,7 @@ public class Visits  extends BaseObject{
     private String familyId;
     private String memberId;
     private long childDob;
+    private String category;
     private String centerName;
     private String visitType;
     private String visitFor;

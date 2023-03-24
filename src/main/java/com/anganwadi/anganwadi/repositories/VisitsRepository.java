@@ -25,4 +25,10 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     List<Visits> findAllByMemberIdAndCenterNameAndVisitType(String memberId, String centerName, String valueOf);
 
     List<Visits> findAllByMemberIdAndCenterName(String memberId, String centerName);
+
+    @Query("{'centerName':?0,'category':{$regex:?1}}")
+    List<Visits> findAllByCenterNameAndCategory(String centerName, String category);
+
+    @Query("{'centerName':?0,'visitType':{$regex:?1},'category':{$regex:?2}}")
+    List<Visits> findAllByCenterNameAndVisitTypeAndCategory(String centerName, String duration, String category);
 }

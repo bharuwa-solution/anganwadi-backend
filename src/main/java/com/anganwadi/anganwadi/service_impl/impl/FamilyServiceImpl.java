@@ -254,6 +254,15 @@ public class FamilyServiceImpl implements FamilyService {
                 .familyId(familyId)
                 .idNumber(uniqueId)
                 .idType(uniqueIdType)
+                .dateOfMortality("")
+                .dateOfLeaving("")
+                .dateOfArrival("")
+                .motherName("")
+                .fatherName("")
+                .handicapType("")
+                .memberCode("")
+                .residentArea("")
+                .stateCode("")
                 .recordForMonth(getMonth)
                 .mobileNumber(mobileNo)
                 .category(category)
@@ -442,6 +451,12 @@ public class FamilyServiceImpl implements FamilyService {
         Date AfterFormat = df.parse(formattedDate);
         long millis = AfterFormat.getTime();
         log.info("Date in Millis  : " + millis);
+        String visitCat = "";
+        List<Family> findCat = familyRepository.findAllByFamilyId(visitsDetailsDTO.getMemberId());
+
+        for (Family getCat : findCat) {
+            visitCat = getCat.getCategory();
+        }
 
         Visits saveVisitDetails = Visits.builder()
                 .memberId(visitsDetailsDTO.getMemberId() == null ? "" : visitsDetailsDTO.getMemberId())
@@ -453,6 +468,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .latitude(visitsDetailsDTO.getLatitude() == null ? "" : visitsDetailsDTO.getLatitude())
                 .longitude(visitsDetailsDTO.getLongitude() == null ? "" : visitsDetailsDTO.getLongitude())
                 .visitDateTime(millis)
+                .category(visitCat)
                 .childDob(0)
                 .build();
         visitsRepository.save(saveVisitDetails);
@@ -617,13 +633,18 @@ public class FamilyServiceImpl implements FamilyService {
                 startMillis = last48Months.getTime();
                 break;
 
-            default:
+            case "6":
                 LocalDateTime minus60Months = LocalDateTime.now().minusMonths(60);
                 String temp60Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus60Months);
                 DateFormat df60 = new SimpleDateFormat("dd-MM-yyyy");
 
                 Date last60Months = df60.parse(temp60Date);
                 startMillis = last60Months.getTime();
+                break;
+
+
+            default:
+                startMillis = -5364683608000L;
                 break;
         }
 
@@ -682,9 +703,14 @@ public class FamilyServiceImpl implements FamilyService {
         }
 
 
-        List<Visits> findDhatri = visitsRepository.findAllByCenterName(centerName);
-        HashSet<String> uniqueMemberId = new HashSet<>();
+        List<Visits> findDhatri = visitsRepository.findAllByCenterNameAndCategory(centerName, category);
+        HashSet<String> uniqueDhartiMemberId = new HashSet<>();
+        HashSet<String> uniquePregnantMemberId = new HashSet<>();
+        List<Visits> findPregnant = visitsRepository.findAllByCenterNameAndVisitTypeAndCategory(centerName, duration, category);
+        String visitCat = "";
 
+
+        // Find Dharti
         for (Visits checkDetails : findDhatri) {
 
             long getMills = checkDetails.getVisitDateTime();
@@ -693,21 +719,51 @@ public class FamilyServiceImpl implements FamilyService {
             String[] splitMonth = df.format(date).split("-");
             String getMonth = splitMonth[1].replace("0", "");
 
+
             if (month.length() > 0) {
 
                 if (getMonth.trim().equals(month) && checkDetails.getVisitType().equals("3") && checkDetails.getChildDob() >= startDate && checkDetails.getChildDob() < endDate) {
-                    if (uniqueMemberId.add(checkDetails.getMemberId())) {
+                    if (uniqueDhartiMemberId.add(checkDetails.getMemberId())) {
                         dharti++;
                     }
                 }
+
             } else {
                 if (checkDetails.getVisitType().equals("3") && checkDetails.getChildDob() >= startDate && checkDetails.getChildDob() < endDate) {
-                    if (uniqueMemberId.add(checkDetails.getMemberId())) {
+                    if (uniqueDhartiMemberId.add(checkDetails.getMemberId())) {
                         dharti++;
                     }
                 }
             }
+
         }
+
+        // Find Pregnant
+
+        for (Visits preg : findPregnant) {
+
+            long getMills = preg.getVisitDateTime();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+            String[] splitMonth = df.format(date).split("-");
+            String getMonth = splitMonth[1].replace("0", "");
+
+            if (month.length() > 0) {
+
+                if (getMonth.trim().equals(month)) {
+                    if (uniquePregnantMemberId.add(preg.getMemberId())) {
+                        log.error("MemberId " + preg.getMemberId());
+                        pregnant++;
+                    }
+                }
+            } else {
+                if (uniquePregnantMemberId.add(preg.getMemberId())) {
+                    log.error("MemberId " + preg.getMemberId());
+                    pregnant++;
+                }
+            }
+        }
+
 
         MprCounts = MPRDTO.builder()
                 .male(male)
@@ -715,6 +771,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .birth(birth)
                 .mortality(mortality)
                 .dharti(dharti)
+                .pregnant(pregnant)
                 .build();
 
 //        List<FamilyMember> chekByCat = familyMemberRepository.findAllByMPRPeriod(month, duration, category, centerName);
@@ -1074,11 +1131,15 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerName) throws ParseException {
         List<BirthPlaceDTO> addInList = new ArrayList<>();
-
+        String headCategory = "";
 
         // Find Family Details
 
         FamilyMember searchFamilyId = familyMemberRepository.findById(birthDetails.getMotherMemberId()).get();
+        List<Family> findHod = familyRepository.findAllByFamilyId(searchFamilyId.getFamilyId());
+        for (Family getFamilyId : findHod) {
+            headCategory = getFamilyId.getCategory();
+        }
         List<FamilyMember> findHead = familyMemberRepository.findAllByFamilyId(searchFamilyId.getFamilyId(), Sort.by(Sort.Direction.ASC, "createdDate"));
         String headName = "";
         for (FamilyMember headDetails : findHead) {
@@ -1121,10 +1182,16 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember addMember = FamilyMember.builder()
                 .familyId(searchFamilyId.getFamilyId())
                 .name(birthDetails.getName() == null ? "" : birthDetails.getName())
-                .category(searchFamilyId.getCategory())
+                .category(searchFamilyId.getCategory().length() <= 0 ? headCategory : searchFamilyId.getCategory())
                 .motherName(saveDetails.getName())
                 .fatherName(headName)
                 .maritalStatus("2")
+                .dateOfMortality("")
+                .dateOfLeaving("")
+                .dateOfArrival("")
+                .handicapType("")
+                .memberCode("")
+                .residentArea("")
                 .recordForMonth(getMonth)
                 .mobileNumber(searchFamilyId.getMobileNumber())
                 .stateCode(searchFamilyId.getStateCode())
@@ -1146,11 +1213,13 @@ public class FamilyServiceImpl implements FamilyService {
 
         Visits updateRecord = Visits.builder()
                 .visitFor(birthDetails.getVisitFor())
+                .familyId(searchFamilyId.getFamilyId())
                 .visitType(birthDetails.getVisitType())
                 .visitRound(birthDetails.getVisitRound())
                 .memberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
                 .centerName(centerName)
                 .childDob(mills)
+                .category(searchFamilyId.getCategory().length() <= 0 ? headCategory : searchFamilyId.getCategory())
                 .description("")
                 .longitude("")
                 .latitude("")
