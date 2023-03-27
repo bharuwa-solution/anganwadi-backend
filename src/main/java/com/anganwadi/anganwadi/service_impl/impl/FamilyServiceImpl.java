@@ -36,6 +36,7 @@ public class FamilyServiceImpl implements FamilyService {
     private final PregnantAndDeliveryRepository pregnantAndDeliveryRepository;
     private final BabiesBirthRepository babiesBirthRepository;
 
+
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
                              VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
@@ -805,32 +806,44 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<VaccinationRecords> getVaccinationRecords() {
+    public List<GetVaccinationDTO> getVaccinationRecords(String vaccineName, String centerName) {
 
-        List<Vaccination> vaccinationList = vaccinationRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate"));
-        List<VaccinationRecords> addList = new ArrayList<>();
 
-        for (Vaccination getVaccinationDetails : vaccinationList) {
-            String motherName = "", dob = "";
-            List<PregnantAndDelivery> findChildDetails = pregnantAndDeliveryRepository.findByFamilyId(getVaccinationDetails.getFamilyId());
-            for (PregnantAndDelivery getChildDetails : findChildDetails) {
-                motherName = getChildDetails.getMotherName();
-                dob = getChildDetails.getDateOfDelivery().toString();
+        List<GetVaccinationDTO> addList = new ArrayList<>();
+        String childName = "", motherName = "", gender = "", dob = "", vaccinationName = "", photo = "";
+        List<Vaccination> vaccinationList = new ArrayList<>();
+        HashSet<String> uniqueFamilyId = new HashSet<>();
+
+        if (vaccinationName.trim().length() > 0) {
+            vaccinationList = vaccinationRepository.findAllByVaccinationNameAndCenterName(vaccinationName, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
+        } else {
+            vaccinationList = vaccinationRepository.findAllByCenterName(centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
+        }
+
+        for (Vaccination vaccDetails : vaccinationList) {
+            if (uniqueFamilyId.add(vaccDetails.getFamilyId())) {
+                FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getChildId()).get();
+                    long getMills = fmd.getDob();
+                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = new Date(getMills);
+
+                GetVaccinationDTO addSingle = GetVaccinationDTO.builder()
+                        .name(fmd.getName())
+                        .gender(fmd.getGender())
+                        .vaccination(vaccDetails.getVaccinationName())
+                        .age(df.format(date))
+                        .photo(fmd.getPhoto())
+                        .motherName(fmd.getMotherName())
+                        .build();
+
+                addList.add(addSingle);
+
             }
 
-            VaccinationRecords singleEntry = VaccinationRecords.builder()
-                    .name(getVaccinationDetails.getChildName())
-                    .motherName(motherName)
-                    .age(dob)
-                    .gender(getVaccinationDetails.getGender())
-                    .photo(getVaccinationDetails.getPhoto())
-                    .vaccination(getVaccinationDetails.getVaccinationName())
-                    .build();
-
-            addList.add(singleEntry);
         }
 
         return addList;
+
     }
 
     @Override
@@ -1247,6 +1260,79 @@ public class FamilyServiceImpl implements FamilyService {
         addInList.add(singleEntry);
 
         return addInList;
+    }
+
+    @Override
+    public SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerName) {
+
+        String familyId = saveVaccinationDTO.getFamilyId() == null ? "" : saveVaccinationDTO.getFamilyId();
+        String motherName = saveVaccinationDTO.getMotherName() == null ? "" : saveVaccinationDTO.getMotherName();
+        String childId = saveVaccinationDTO.getChildId() == null ? "" : saveVaccinationDTO.getChildId();
+        String vaccinationName = saveVaccinationDTO.getVaccinationName() == null ? "" : saveVaccinationDTO.getVaccinationName();
+        String visitFor = saveVaccinationDTO.getVisitFor() == null ? "" : saveVaccinationDTO.getVisitFor();
+        String visitType = saveVaccinationDTO.getVisitType() == null ? "" : saveVaccinationDTO.getVisitType();
+        String desc = saveVaccinationDTO.getDescription() == null ? "" : saveVaccinationDTO.getDescription();
+        String visitRound = saveVaccinationDTO.getVisitRound() == null ? "" : saveVaccinationDTO.getVisitRound();
+        String latitude = saveVaccinationDTO.getLatitude() == null ? "" : saveVaccinationDTO.getLatitude();
+        String longitude = saveVaccinationDTO.getLongitude() == null ? "" : saveVaccinationDTO.getLongitude();
+
+        // Current Date
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date();
+        long mills = date.getTime();
+
+        String visitCat = "";
+        List<Family> findCat = familyRepository.findAllByFamilyId(familyId);
+
+        for (Family cat : findCat) {
+            visitCat = cat.getCategory();
+        }
+
+
+        // Save in Vaccination
+        Vaccination saveRecord = Vaccination.builder()
+                .familyId(familyId)
+                .date(mills)
+                .centerName(centerName)
+                .motherName(motherName)
+                .childId(childId)
+                .description(desc)
+                .vaccinationName(vaccinationName)
+                .build();
+        vaccinationRepository.save(saveRecord);
+
+        // Save in Visits
+
+        Visits saveVaccinationVisit = Visits.builder()
+                .visitType(visitType)
+                .visitFor(visitFor)
+                .memberId(childId)
+                .category(visitCat)
+                .familyId(familyId)
+                .centerName(centerName)
+                .childDob(0)
+                .visitDateTime(mills)
+                .description(desc)
+                .latitude(latitude)
+                .longitude(longitude)
+                .visitRound(visitRound)
+                .build();
+        visitsRepository.save(saveVaccinationVisit);
+
+        return SaveVaccinationDTO.builder()
+                .familyId(familyId)
+                .date(df.format(mills))
+                .motherName(motherName)
+                .childId(childId)
+                .description(desc)
+                .vaccinationName(vaccinationName)
+                .visitType(visitType)
+                .visitFor(visitFor)
+                .familyId(familyId)
+                .latitude(latitude)
+                .longitude(longitude)
+                .visitRound(visitRound)
+                .build();
     }
 
 

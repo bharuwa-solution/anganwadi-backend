@@ -28,7 +28,7 @@ public interface FamilyService {
 
     FamilyMemberCounts getMembersByFamilyId(String familyId);
 
-    List<VaccinationRecords> getVaccinationRecords();
+    List<GetVaccinationDTO> getVaccinationRecords(String vaccineName, String centerName);
 
     List<HouseholdsChildren> getAllHouseholdsChildren(String centerName) throws ParseException;
 
@@ -42,4 +42,6 @@ public interface FamilyService {
     List<MemberVisits> getMemberVisitDetailsLatest(String memberId,String centerName);
 
     List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerName) throws ParseException;
+
+    SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerName);
 }

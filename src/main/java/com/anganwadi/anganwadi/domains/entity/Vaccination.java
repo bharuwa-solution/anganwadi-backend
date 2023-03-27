@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,11 +15,11 @@ public class Vaccination extends BaseObject {
 
 
     private String familyId;
-    private String memberId;
-    private String childName;
-    private String gender;
-    private String photo;
+    private String childId;
+    private String centerName;
+    private String motherName;
+    private String description;
     private String vaccinationName;
-    private Date date;
+    private long date;
 
 }

@@ -1,9 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
-import com.anganwadi.anganwadi.domains.dto.FemaleMembersDTO;
-import com.anganwadi.anganwadi.domains.dto.HouseVisitDTO;
-import com.anganwadi.anganwadi.domains.dto.MemberVisits;
-import com.anganwadi.anganwadi.domains.dto.VisitsDetailsDTO;
+import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.BirthPlaceDTO;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +42,7 @@ public class HouseVisitsController {
 
     @GetMapping("/getMemberVisitDetailsLatest")
     private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId, @RequestHeader String centerName) {
-        return familyService.getMemberVisitDetailsLatest(memberId,centerName);
+        return familyService.getMemberVisitDetailsLatest(memberId, centerName);
     }
 
     @PostMapping("/saveBirthDetails")
@@ -53,4 +50,13 @@ public class HouseVisitsController {
         return familyService.saveBirthDetails(birthDetails, centerName);
     }
 
+    @PostMapping("/saveVaccinationDetails")
+    private SaveVaccinationDTO saveVaccinationDetails(@RequestBody SaveVaccinationDTO saveVaccinationDTO, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveVaccinationDetails(saveVaccinationDTO, centerName);
+    }
+
+    @GetMapping("/getVaccinationRecords")
+    private List<GetVaccinationDTO> getVaccinationRecords(@RequestParam(required = false) String vaccineName, @RequestHeader String centerName) {
+        return familyService.getVaccinationRecords(vaccineName, centerName);
+    }
 }

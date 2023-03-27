@@ -71,10 +71,7 @@ public class FamilyController {
         return familyService.getMembersByFamilyId(familyId);
     }
 
-    @GetMapping("/getVaccinationRecords")
-    private List<VaccinationRecords> getVaccinationRecords() {
-        return familyService.getVaccinationRecords();
-    }
+
 
 
     @GetMapping("/getAllHouseholdsChildren")

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VaccinationRecords {
+public class GetVaccinationDTO {
 
     private String name;
     private String motherName;
