@@ -1420,8 +1420,7 @@ public class FamilyServiceImpl implements FamilyService {
         long lastDayMillis = lastDay.getTime();
 
 
-
-        List<FamilyMember> findChildrenRecords = familyMemberRepository.findAllByChildrenCateria(childrenCaste, gender);
+        List<FamilyMember> findChildrenRecords = familyMemberRepository.findAllByChildrenCriteria(childrenCaste, gender);
 
         long zeroToOne = 0, oneToTwo = 0,twoToThree = 0,threeToFour = 0,fourToFive = 0, fiveToSix = 0;
 
@@ -1473,6 +1472,162 @@ public class FamilyServiceImpl implements FamilyService {
                 .build();
 
         return childrenData;
+    }
+
+    @Override
+    public HouseholdCategoryData getHouseholdCategoryData(String type, String month) {
+
+        long general = 0, obc = 0, sc = 0, st = 0, others = 0;
+        String categoryType = type == null ? "" : type;
+
+        LocalDateTime date = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+        String[] splitType = categoryType.split(",");
+        for (String fetchCat : splitType) {
+            List<FamilyMember> findByCategory = familyMemberRepository.findByCategoryCriteria(fetchCat.trim());
+
+            for (FamilyMember fm : findByCategory) {
+
+
+                if (fm.getCategory().trim().equals("1")) {
+                    general++;
+                }
+
+                if (fm.getCategory().trim().equals("2")) {
+                    obc++;
+                }
+
+                if (fm.getCategory().trim().equals("3")) {
+                    sc++;
+                }
+
+                if (fm.getCategory().trim().equals("4")) {
+                    st++;
+                }
+
+                if (fm.getCategory().trim().equals("5")) {
+                    others++;
+                }
+
+            }
+        }
+
+        return HouseholdCategoryData.builder()
+                .type(categoryType)
+                .month(month)
+                .general(general)
+                .sc(sc)
+                .st(st)
+                .others(others)
+                .obc(obc)
+                .build();
+
+    }
+
+    @Override
+    public PregnancyData getPregnancyData(String month) throws ParseException {
+
+
+        List<Visits> findPregnancyData = visitsRepository.findAllByPregnancyCriteria();
+        HashSet<String> uniqueMemberId = new HashSet<>();
+
+        long gen = 0, st = 0, sc = 0, obc = 0, others = 0;
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date startDate = df.parse(month);
+        long startDayMillis = startDate.getTime();
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(df.parse(month));
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DATE, -1);
+        Date lastDay = calendar.getTime();
+        long lastDayMillis = lastDay.getTime();
+
+        for (Visits cat : findPregnancyData) {
+
+            long createdDateMillis = cat.getCreatedDate().getTime();
+
+            if (uniqueMemberId.add(cat.getMemberId()) && (createdDateMillis >= startDayMillis && createdDateMillis <= lastDayMillis)) {
+                if (cat.getCategory().trim().equals("1")) {
+                    gen++;
+                }
+
+                if (cat.getCategory().trim().equals("2")) {
+                    obc++;
+                }
+
+                if (cat.getCategory().trim().equals("3")) {
+                    sc++;
+                }
+
+                if (cat.getCategory().trim().equals("4")) {
+                    st++;
+                }
+
+                if (cat.getCategory().trim().equals("5")) {
+                    others++;
+                }
+            }
+        }
+
+        return PregnancyData.builder()
+                .general(gen)
+                .st(st)
+                .sc(sc)
+                .obc(obc)
+                .others(others)
+                .month(month)
+                .build();
+
+    }
+
+    @Override
+    public List<PregnantWomenDetails> getPregnantWomenDetails(String month, String search) throws ParseException {
+
+        List<Visits> findPregnancyData = visitsRepository.findAllByPregnancyCriteria();
+        List<PregnantWomenDetails> addInList = new ArrayList<>();
+        HashSet<String> uniqueMemberId = new HashSet<>();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date startDate = df.parse(month);
+        long startDayMillis = startDate.getTime();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(df.parse(month));
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DATE, -1);
+        Date lastDay = calendar.getTime();
+        long lastDayMillis = lastDay.getTime();
+
+
+        for (Visits visits : findPregnancyData) {
+            long createdDateMillis = visits.getCreatedDate().getTime();
+            if (createdDateMillis >= startDayMillis && createdDateMillis <= lastDayMillis) {
+                if (uniqueMemberId.add(visits.getMemberId())) {
+                    FamilyMember fm = familyMemberRepository.findById(visits.getMemberId()).get();
+                    Family households = familyRepository.findByFamilyId(fm.getFamilyId());
+
+                    PregnantWomenDetails addSingle = PregnantWomenDetails.builder()
+                            .name(fm.getName())
+                            .husbandName(fm.getFatherName())
+                            .dob(df.format(fm.getDob()))
+                            .category(fm.getCategory())
+                            .religion(households.getReligion())
+                            .duration("")
+                            .build();
+
+                    addInList.add(addSingle);
+                }
+
+            }
+        }
+        return addInList;
     }
 
 

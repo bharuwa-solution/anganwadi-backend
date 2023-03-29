@@ -16,4 +16,6 @@ public interface FamilyRepository extends MongoRepository<Family, String> {
 
     @Query("{'familyId':{$in:[?0]}}")
     List<Family> findAllByFamilyIdIn(String familyId);
+
+    Family findByFamilyId(String familyId);
 }

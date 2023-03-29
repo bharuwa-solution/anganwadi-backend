@@ -32,7 +32,6 @@ public interface FamilyService {
 
     List<HouseholdsChildren> getAllHouseholdsChildren(String centerName) throws ParseException;
 
-
     List<FemaleMembersDTO> getHouseholdsFemaleDetails(String centerName);
 
     List<HouseVisitDTO> getHouseVisitListing(String centerName);
@@ -48,4 +47,11 @@ public interface FamilyService {
     DashboardFamilyData getDashboardFamilyData(LocationFilter filter);
 
     TotalChildrenData getTotalChildrenData(String caste, String gender, String month) throws ParseException;
+
+    HouseholdCategoryData getHouseholdCategoryData(String type, String month);
+
+    PregnancyData getPregnancyData(String month) throws ParseException;
+
+
+    List<PregnantWomenDetails> getPregnantWomenDetails(String month, String search) throws ParseException;
 }

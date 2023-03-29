@@ -31,4 +31,7 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
 
     @Query("{'centerName':?0,'visitType':{$regex:?1},'category':{$regex:?2}}")
     List<Visits> findAllByCenterNameAndVisitTypeAndCategory(String centerName, String duration, String category);
+
+    @Query("{$or:[{'visitType':'1'},{'visitType':'2'}]}")
+    List<Visits> findAllByPregnancyCriteria();
 }
