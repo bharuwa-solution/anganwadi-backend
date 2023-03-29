@@ -44,4 +44,8 @@ public interface FamilyService {
     List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerName) throws ParseException;
 
     SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerName);
+
+    DashboardFamilyData getDashboardFamilyData(LocationFilter filter);
+
+    TotalChildrenData getTotalChildrenData(String caste, String gender, String month) throws ParseException;
 }

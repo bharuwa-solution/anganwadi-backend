@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
@@ -31,4 +32,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'centerName':{$regex:?0},'recordForMonth':{$regex:?1},'category':{$regex:?2}}")
     List<FamilyMember> findAllByCenterNameAndRecordForMonthAndCategory(String centerName, String month, String category);
+
+    @Query("{'category':{$regex:?0},'gender':{$regex:?1}}")
+    List<FamilyMember> findAllByChildrenCateria(String caste, String gender);
 }

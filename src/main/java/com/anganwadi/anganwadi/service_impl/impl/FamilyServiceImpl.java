@@ -35,12 +35,14 @@ public class FamilyServiceImpl implements FamilyService {
     private final VaccinationRepository vaccinationRepository;
     private final PregnantAndDeliveryRepository pregnantAndDeliveryRepository;
     private final BabiesBirthRepository babiesBirthRepository;
+    private final AnganwadiChildrenRepository anganwadiChildrenRepository;
 
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
                              VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
-                             PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository) {
+                             PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
+                             AnganwadiChildrenRepository anganwadiChildrenRepository) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
@@ -49,6 +51,7 @@ public class FamilyServiceImpl implements FamilyService {
         this.vaccinationRepository = vaccinationRepository;
         this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
         this.babiesBirthRepository = babiesBirthRepository;
+        this.anganwadiChildrenRepository = anganwadiChildrenRepository;
     }
 
 
@@ -814,8 +817,8 @@ public class FamilyServiceImpl implements FamilyService {
         List<Vaccination> vaccinationList = new ArrayList<>();
         HashSet<String> uniqueFamilyId = new HashSet<>();
 
-        if (vaccinationName.trim().length() > 0) {
-            vaccinationList = vaccinationRepository.findAllByVaccinationNameAndCenterName(vaccinationName, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
+        if (vaccineName.trim().length() > 0) {
+            vaccinationList = vaccinationRepository.findAllByVaccinationNameAndCenterName(vaccineName, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
         } else {
             vaccinationList = vaccinationRepository.findAllByCenterName(centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
         }
@@ -823,9 +826,9 @@ public class FamilyServiceImpl implements FamilyService {
         for (Vaccination vaccDetails : vaccinationList) {
             if (uniqueFamilyId.add(vaccDetails.getFamilyId())) {
                 FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getChildId()).get();
-                    long getMills = fmd.getDob();
-                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                    Date date = new Date(getMills);
+                long getMills = fmd.getDob();
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                Date date = new Date(getMills);
 
                 GetVaccinationDTO addSingle = GetVaccinationDTO.builder()
                         .name(fmd.getName())
@@ -1302,7 +1305,6 @@ public class FamilyServiceImpl implements FamilyService {
         vaccinationRepository.save(saveRecord);
 
         // Save in Visits
-
         Visits saveVaccinationVisit = Visits.builder()
                 .visitType(visitType)
                 .visitFor(visitFor)
@@ -1333,6 +1335,144 @@ public class FamilyServiceImpl implements FamilyService {
                 .longitude(longitude)
                 .visitRound(visitRound)
                 .build();
+    }
+
+    @Override
+    public DashboardFamilyData getDashboardFamilyData(LocationFilter filter) {
+
+        List<Family> findData = familyRepository.findAll();
+        List<FamilyMember> fm = familyMemberRepository.findAll();
+        List<AnganwadiChildren> ac = anganwadiChildrenRepository.findAll();
+        HashSet<String> uniqueFamilyId = new HashSet<>();
+        long totalChildren = 0;
+
+        for (AnganwadiChildren anganwadiChildren : ac) {
+            uniqueFamilyId.add(anganwadiChildren.getFamilyId());
+        }
+
+        for (FamilyMember children : fm) {
+            LocalDateTime date = LocalDateTime.now().minusYears(6);
+            ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+            long convertToMills = zdt.toInstant().toEpochMilli();
+
+            if (children.getDob() >= convertToMills) {
+                totalChildren++;
+            }
+
+        }
+
+        return DashboardFamilyData.builder()
+                .households(findData.size())
+                .population(fm.size())
+                .totalBeneficiary(uniqueFamilyId.size())
+                .children(totalChildren)
+                .build();
+    }
+
+    @Override
+    public TotalChildrenData getTotalChildrenData(String caste, String gender, String month) throws ParseException {
+
+        TotalChildrenData childrenData = new TotalChildrenData();
+        String childrenCaste = caste == null ? "" : caste;
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date currentDate = new Date();
+        long currentMillis = currentDate.getTime();
+
+        LocalDateTime firstDate = LocalDateTime.now().minusYears(1);
+        ZonedDateTime firstZdt = ZonedDateTime.of(firstDate, ZoneId.systemDefault());
+        long firstMills = firstZdt.toInstant().toEpochMilli();
+
+        LocalDateTime secondDate = LocalDateTime.now().minusYears(2);
+        ZonedDateTime secondZdt = ZonedDateTime.of(secondDate, ZoneId.systemDefault());
+        long secondMills = secondZdt.toInstant().toEpochMilli();
+
+        LocalDateTime thirdDate = LocalDateTime.now().minusYears(3);
+        ZonedDateTime thirdZdt = ZonedDateTime.of(thirdDate, ZoneId.systemDefault());
+        long thirdMills = thirdZdt.toInstant().toEpochMilli();
+
+        LocalDateTime fourDate = LocalDateTime.now().minusYears(4);
+        ZonedDateTime fourZdt = ZonedDateTime.of(fourDate, ZoneId.systemDefault());
+        long fourMills = fourZdt.toInstant().toEpochMilli();
+
+        LocalDateTime fifthDate = LocalDateTime.now().minusYears(5);
+        ZonedDateTime fifthZdt = ZonedDateTime.of(fifthDate, ZoneId.systemDefault());
+        long fifthMills = fifthZdt.toInstant().toEpochMilli();
+
+        LocalDateTime sixthDate = LocalDateTime.now().minusYears(6);
+        ZonedDateTime sixthZdt = ZonedDateTime.of(sixthDate, ZoneId.systemDefault());
+        long sixthMills = sixthZdt.toInstant().toEpochMilli();
+
+
+
+        Date startDate = df.parse(month);
+        long startDateMillis = startDate.getTime();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(df.parse(month));
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DATE, -1);
+
+        Date lastDay = calendar.getTime();
+        long lastDayMillis = lastDay.getTime();
+
+
+
+        List<FamilyMember> findChildrenRecords = familyMemberRepository.findAllByChildrenCateria(childrenCaste, gender);
+
+        long zeroToOne = 0, oneToTwo = 0,twoToThree = 0,threeToFour = 0,fourToFive = 0, fiveToSix = 0;
+
+
+        for (FamilyMember fm : findChildrenRecords) {
+
+            long millis = fm.getCreatedDate().getTime();
+
+            if (millis >= startDateMillis && millis <= lastDayMillis) {
+
+                if(fm.getDob()>=firstMills && fm.getDob()<=currentMillis){
+                    zeroToOne++;
+                }
+
+                if(fm.getDob()>=secondMills && fm.getDob()<firstMills){
+                    oneToTwo++;
+                }
+
+                if(fm.getDob()>=thirdMills && fm.getDob()<secondMills){
+                    twoToThree++;
+                }
+
+                if(fm.getDob()>=fourMills && fm.getDob()<thirdMills){
+                    threeToFour++;
+                }
+
+                if(fm.getDob()>=fifthMills && fm.getDob()<fourMills){
+                    fourToFive++;
+                }
+
+                if(fm.getDob()>=sixthMills && fm.getDob()<fifthMills){
+                    fiveToSix++;
+                }
+
+            }
+
+        }
+
+        childrenData = TotalChildrenData.builder()
+                .caste(childrenCaste)
+                .gender(gender)
+                .month(month)
+                .zeroToOne(zeroToOne)
+                .oneToTwo(oneToTwo)
+                .twoToThree(twoToThree)
+                .threeToFour(threeToFour)
+                .fourToFive(fourToFive)
+                .fiveToSix(fiveToSix)
+                .build();
+
+        return childrenData;
     }
 
 
