@@ -16,10 +16,11 @@ public class Vaccination extends BaseObject {
 
     private String familyId;
     private String childId;
+    private String month;
     private String centerName;
     private String motherName;
     private String description;
-    private String vaccinationName;
+    private String vaccinationCode;
     private long date;
 
 }

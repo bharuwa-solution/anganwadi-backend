@@ -54,4 +54,8 @@ public interface FamilyService {
 
 
     List<PregnantWomenDetails> getPregnantWomenDetails(String month, String search) throws ParseException;
+
+    List<DeliveryDTO> getDeliveryData(String month);
+
+    List<VaccinationRecordsDTO> getVaccinationData(String month);
 }

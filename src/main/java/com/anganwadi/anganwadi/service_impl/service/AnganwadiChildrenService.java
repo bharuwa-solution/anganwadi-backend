@@ -37,4 +37,8 @@ public interface AnganwadiChildrenService {
     List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerName) throws ParseException;
 
     List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth);
+
+    List<AnganwadiAahaarData> getAnganwadiAahaarData(String month);
+
+    List<WeightTrackingDTO> getChildrenWeightData(String month);
 }

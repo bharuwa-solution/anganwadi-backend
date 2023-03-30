@@ -482,17 +482,29 @@ public class FamilyServiceImpl implements FamilyService {
 
     @Override
     public WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO) {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date();
+        long mills = date.getTime();
 
         WeightTracking saveRecord = WeightTracking.builder()
                 .familyId(weightRecordsDTO.getFamilyId() == null ? "" : weightRecordsDTO.getFamilyId())
                 .childId(weightRecordsDTO.getChildId() == null ? "" : weightRecordsDTO.getChildId())
-                .date(weightRecordsDTO.getDate() == null ? "" : weightRecordsDTO.getDate())
+                .date(mills)
                 .weight(weightRecordsDTO.getWeight() == null ? "" : weightRecordsDTO.getWeight())
                 .height(weightRecordsDTO.getHeight() == null ? "" : weightRecordsDTO.getHeight())
                 .build();
 
         weightTrackingRepository.save(saveRecord);
-        return modelMapper.map(saveRecord, WeightRecordsDTO.class);
+
+        return WeightRecordsDTO.builder()
+                .familyId(weightRecordsDTO.getFamilyId() == null ? "" : weightRecordsDTO.getFamilyId())
+                .childId(weightRecordsDTO.getChildId() == null ? "" : weightRecordsDTO.getChildId())
+                .date(df.format(date))
+                .weight(weightRecordsDTO.getWeight() == null ? "" : weightRecordsDTO.getWeight())
+                .height(weightRecordsDTO.getHeight() == null ? "" : weightRecordsDTO.getHeight())
+                .build();
+
+
     }
 
     @Override
@@ -818,7 +830,7 @@ public class FamilyServiceImpl implements FamilyService {
         HashSet<String> uniqueFamilyId = new HashSet<>();
 
         if (vaccineName.trim().length() > 0) {
-            vaccinationList = vaccinationRepository.findAllByVaccinationNameAndCenterName(vaccineName, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
+            vaccinationList = vaccinationRepository.findAllByVaccinationCodeAndCenterName(vaccineName, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
         } else {
             vaccinationList = vaccinationRepository.findAllByCenterName(centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
         }
@@ -833,7 +845,7 @@ public class FamilyServiceImpl implements FamilyService {
                 GetVaccinationDTO addSingle = GetVaccinationDTO.builder()
                         .name(fmd.getName())
                         .gender(fmd.getGender())
-                        .vaccination(vaccDetails.getVaccinationName())
+                        .vaccination(vaccDetails.getVaccinationCode())
                         .age(df.format(date))
                         .photo(fmd.getPhoto())
                         .motherName(fmd.getMotherName())
@@ -1300,7 +1312,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .motherName(motherName)
                 .childId(childId)
                 .description(desc)
-                .vaccinationName(vaccinationName)
+                .vaccinationCode(vaccinationName)
                 .build();
         vaccinationRepository.save(saveRecord);
 
@@ -1589,6 +1601,7 @@ public class FamilyServiceImpl implements FamilyService {
     public List<PregnantWomenDetails> getPregnantWomenDetails(String month, String search) throws ParseException {
 
         List<Visits> findPregnancyData = visitsRepository.findAllByPregnancyCriteria();
+
         List<PregnantWomenDetails> addInList = new ArrayList<>();
         HashSet<String> uniqueMemberId = new HashSet<>();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -1627,6 +1640,47 @@ public class FamilyServiceImpl implements FamilyService {
 
             }
         }
+        return addInList;
+    }
+
+    @Override
+    public List<DeliveryDTO> getDeliveryData(String month) {
+
+        String selectedMonth = month == null ? "" : month;
+        List<DeliveryDTO> addInList = new ArrayList<>();
+        List<BabiesBirth> birthList = babiesBirthRepository.findAllByMonth(selectedMonth);
+
+
+        for (BabiesBirth bb : birthList) {
+            DeliveryDTO singleEntry = DeliveryDTO.builder()
+                    .name(bb.getName())
+                    .birthType(bb.getBirthType())
+                    .build();
+
+            addInList.add(singleEntry);
+
+        }
+
+        return addInList;
+    }
+
+    @Override
+    public List<VaccinationRecordsDTO> getVaccinationData(String month) {
+
+        String selectedMonth = month == null ? "" : month;
+        List<VaccinationRecordsDTO> addInList = new ArrayList<>();
+        List<Vaccination> vaccinationList = vaccinationRepository.findAllByMonth(selectedMonth);
+
+        for (Vaccination details : vaccinationList) {
+            VaccinationRecordsDTO singleEntry = VaccinationRecordsDTO.builder()
+                    .vaccinationCode(details.getVaccinationCode())
+                    .centerName(details.getCenterName())
+                    .childId(details.getChildId())
+                    .build();
+
+            addInList.add(singleEntry);
+        }
+
         return addInList;
     }
 

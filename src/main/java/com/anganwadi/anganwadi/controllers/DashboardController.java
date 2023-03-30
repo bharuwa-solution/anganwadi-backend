@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,12 @@ import java.util.List;
 public class DashboardController {
 
     private final FamilyService familyService;
+    private final AnganwadiChildrenService anganwadiChildrenService;
 
     @Autowired
-    public DashboardController(FamilyService familyService) {
+    public DashboardController(FamilyService familyService, AnganwadiChildrenService anganwadiChildrenService) {
         this.familyService = familyService;
+        this.anganwadiChildrenService = anganwadiChildrenService;
     }
 
     @PostMapping("getDashboardFamilyData")
@@ -44,5 +47,24 @@ public class DashboardController {
         return familyService.getPregnantWomenDetails(month, search);
     }
 
+    @GetMapping("getAnganwadiAahaarData")
+    private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestParam(required = false) String month) {
+        return anganwadiChildrenService.getAnganwadiAahaarData(month);
+    }
+
+    @GetMapping("getChildrenWeightData")
+    private List<WeightTrackingDTO> getChildrenWeightData(@RequestParam(required = false) String month) {
+        return anganwadiChildrenService.getChildrenWeightData(month);
+    }
+
+    @GetMapping("getDeliveryData")
+    private List<DeliveryDTO> getDeliveryData(@RequestParam(required = false) String month) {
+        return familyService.getDeliveryData(month);
+    }
+
+    @GetMapping("getVaccinationData")
+    private List<VaccinationRecordsDTO> getVaccinationData(@RequestParam(required = false) String month){
+        return familyService.getVaccinationData(month);
+    }
 
 }

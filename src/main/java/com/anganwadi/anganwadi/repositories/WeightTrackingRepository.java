@@ -3,6 +3,7 @@ package com.anganwadi.anganwadi.repositories;
 import com.anganwadi.anganwadi.domains.entity.WeightTracking;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,4 +13,7 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
     List<WeightTracking> findAllByFamilyIdAndChildId(String familyId, String childId, Sort createdDate);
 
     List<WeightTracking> findAllByFamilyId(String familyId, Sort createdDate);
+
+    @Query("{'month':{$regex:?0}}")
+    List<WeightTracking> findAllByMonth(String month);
 }

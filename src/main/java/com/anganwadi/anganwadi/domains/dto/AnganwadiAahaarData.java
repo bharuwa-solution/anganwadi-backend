@@ -1,22 +1,18 @@
-package com.anganwadi.anganwadi.domains.entity;
+package com.anganwadi.anganwadi.domains.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "Meals")
-public class Meals extends BaseObject {
-
+public class AnganwadiAahaarData {
     private String foodName;
     private String quantity;
     private String quantityUnit;
-    private String month;
-    private long date;
+    private String date;
     private String mealType;
 }

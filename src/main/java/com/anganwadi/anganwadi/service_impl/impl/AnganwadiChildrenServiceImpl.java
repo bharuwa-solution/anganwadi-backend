@@ -31,13 +31,16 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final AssetsStockRepository assetsStockRepository;
     private final StockListRepository stockListRepository;
     private final StockDistributionRepository stockDistributionRepository;
+    private final MealsRepository mealsRepository;
+    private final WeightTrackingRepository weightTrackingRepository;
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
                                         AttendanceRepository attendanceRepository, ModelMapper modelMapper,
                                         FamilyRepository familyRepository, FamilyMemberRepository familyMemberRepository,
                                         FamilyServiceImpl familyServiceImpl, AssetsStockRepository assetsStockRepository,
-                                        StockListRepository stockListRepository, StockDistributionRepository stockDistributionRepository) {
+                                        StockListRepository stockListRepository, StockDistributionRepository stockDistributionRepository,
+                                        MealsRepository mealsRepository, WeightTrackingRepository weightTrackingRepository) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
@@ -48,6 +51,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.assetsStockRepository = assetsStockRepository;
         this.stockListRepository = stockListRepository;
         this.stockDistributionRepository = stockDistributionRepository;
+        this.mealsRepository = mealsRepository;
+        this.weightTrackingRepository = weightTrackingRepository;
     }
 
 
@@ -651,6 +656,61 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             }
         }
 
+
+        return addInList;
+    }
+
+    @Override
+    public List<AnganwadiAahaarData> getAnganwadiAahaarData(String month) {
+        String selectedMonth = month == null ? "" : month;
+        List<Meals> findMeals = mealsRepository.findAllBYMonth(selectedMonth, Sort.by(Sort.Direction.DESC, "date"));
+        List<AnganwadiAahaarData> dataList = new ArrayList<>();
+
+        for (Meals meals : findMeals) {
+
+            long getMills = meals.getDate();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+
+
+            AnganwadiAahaarData singleMeals = AnganwadiAahaarData.builder()
+                    .foodName(meals.getFoodName())
+                    .quantity(meals.getQuantity())
+                    .quantityUnit(meals.getQuantityUnit())
+                    .mealType(meals.getMealType())
+                    .date(df.format(date))
+                    .build();
+            dataList.add(singleMeals);
+
+        }
+
+        return dataList;
+    }
+
+    @Override
+    public List<WeightTrackingDTO> getChildrenWeightData(String month) {
+
+        String selectedMonth = month == null ? "" : month;
+
+        List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonth(month);
+        List<WeightTrackingDTO> addInList = new ArrayList<>();
+
+        for (WeightTracking tracking : findChildren) {
+
+            long getMills = tracking.getDate();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+
+
+            WeightTrackingDTO addSingle = WeightTrackingDTO.builder()
+                    .familyId(tracking.getFamilyId())
+                    .childId(tracking.getChildId())
+                    .date(df.format(date))
+                    .height(tracking.getHeight())
+                    .weight(tracking.getWeight())
+                    .build();
+            addInList.add(addSingle);
+        }
 
         return addInList;
     }
