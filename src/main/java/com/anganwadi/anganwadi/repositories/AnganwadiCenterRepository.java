@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AnganwadiCenterRepository extends MongoRepository<AnganwadiCenter, String> {
+    AnganwadiCenter findByCenterName(String centerName);
 }

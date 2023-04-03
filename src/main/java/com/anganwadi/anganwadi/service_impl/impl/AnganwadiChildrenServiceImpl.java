@@ -715,6 +715,111 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addInList;
     }
 
+    @Override
+    public List<DashboardAttendanceDTO> getAttendanceData(String month) throws ParseException {
+
+        long startDayMillis = 0, lastDayMillis = 0;
+        List<DashboardAttendanceDTO> addInList = new ArrayList<>();
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date startDate = df.parse(month);
+        startDayMillis = startDate.getTime();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(df.parse(month));
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DATE, -1);
+        Date lastDay = calendar.getTime();
+        lastDayMillis = lastDay.getTime();
+
+        List<Attendance> findAllList = attendanceRepository.findAllByDateRange(startDayMillis, lastDayMillis);
+
+        for (Attendance attend : findAllList) {
+            Date attendanceDate = new Date(attend.getDate());
+            DashboardAttendanceDTO singleEntry = DashboardAttendanceDTO.builder()
+                    .centerName(attend.getCenterName())
+                    .childId(attend.getChildId())
+                    .date(df.format(attendanceDate))
+                    .attendance(attend.getAttendance())
+                    .build();
+
+            addInList.add(singleEntry);
+        }
+
+        return addInList;
+
+    }
+
+    @Override
+    public AnganwadiChildrenDTO getAnganwadiChildrenData(String month) throws ParseException {
+
+        long startDayMillis = 0, lastDayMillis = 0;
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        long gen = 0, obc = 0, sc = 0, st = 0, minority = 0;
+
+        Date startDate = df.parse(month);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(df.parse(month));
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DATE, -1);
+        Date lastDay = calendar.getTime();
+
+        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCreatedDate(startDate, lastDay);
+
+        for (AnganwadiChildren childrenList : findChildren) {
+
+            switch (childrenList.getCategory().trim()) {
+                case "1":
+                    gen++;
+                    break;
+
+                case "2":
+                    obc++;
+                    break;
+
+                case "3":
+                    sc++;
+                    break;
+
+                case "4":
+                    st++;
+                    break;
+            }
+
+
+            if (childrenList.getMinority().trim().equals("1")) {
+                minority++;
+            }
+        }
+
+
+        return AnganwadiChildrenDTO.builder()
+                .gen(gen)
+                .obc(obc)
+                .sc(sc)
+                .st(st)
+                .minority(minority)
+                .month(month)
+                .build();
+    }
+
+    @Override
+    public List<AnganwadiChildrenList> getAnganwadiChildrenDetails(String startDate, String endDate) throws ParseException {
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+
+        // List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCreatedDate();
+
+        return null;
+    }
+
 
     @Override
     public List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException {

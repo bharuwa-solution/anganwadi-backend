@@ -58,4 +58,10 @@ public interface FamilyService {
     List<DeliveryDTO> getDeliveryData(String month);
 
     List<VaccinationRecordsDTO> getVaccinationData(String month);
+
+    HouseholdsDTO updateHouseHold(HouseholdsDTO householdsDTO);
+
+    FamilyMemberDTO updateHouseHoldMember(FamilyMemberDTO familyMemberDTO);
+
+    HouseholdsDTO getHouseholdById(String id);
 }

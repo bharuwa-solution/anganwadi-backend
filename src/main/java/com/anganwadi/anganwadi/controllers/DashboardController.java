@@ -67,4 +67,18 @@ public class DashboardController {
         return familyService.getVaccinationData(month);
     }
 
+    @GetMapping("getAttendanceData")
+    private List<DashboardAttendanceDTO> getAttendanceData(@RequestParam(required = false) String month) throws ParseException {
+        return anganwadiChildrenService.getAttendanceData(month);
+    }
+
+    @GetMapping("getAnganwadiChildrenData")
+    private AnganwadiChildrenDTO getAnganwadiChildrenData(@RequestParam(required = false) String month) throws ParseException {
+        return anganwadiChildrenService.getAnganwadiChildrenData(month);
+    }
+
+    @GetMapping("getAnganwadiChildrenDetails")
+    private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+        return anganwadiChildrenService.getAnganwadiChildrenDetails(startDate,endDate);
+    }
 }

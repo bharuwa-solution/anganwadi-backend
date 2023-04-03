@@ -28,6 +28,7 @@ public class FamilyMemberDTO {
     private String dob;
     private String maritalStatus;
     private String stateCode;
+    private String handicap;
     private String handicapType;
     private String residentArea;
     private String dateOfArrival;

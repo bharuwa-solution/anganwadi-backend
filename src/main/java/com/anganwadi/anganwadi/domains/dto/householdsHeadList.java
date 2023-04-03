@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class householdsHeadList {
 
+    private String id;
     private String headName;
     private String religion;
     private String houseNo;

@@ -39,4 +39,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'gender':{$regex:?0}}")
     List<FamilyMember> findByCategoryCriteria(String type);
+
+    @Query("{'familyId':?0,'relationWithOwner':'0'}")
+    FamilyMember findByHead(String familyId);
 }

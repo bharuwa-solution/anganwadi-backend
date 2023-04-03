@@ -71,16 +71,26 @@ public class FamilyController {
         return familyService.getMembersByFamilyId(familyId);
     }
 
-
-
-
     @GetMapping("/getAllHouseholdsChildren")
     private List<HouseholdsChildren> getAllHouseholdsChildren(@RequestHeader String centerName) throws ParseException {
         return familyService.getAllHouseholdsChildren(centerName);
     }
 
+    @PutMapping("/updateHouseHold")
+    private HouseholdsDTO updateHouseHold(@RequestBody HouseholdsDTO householdsDTO){
+        return familyService.updateHouseHold(householdsDTO);
+    }
 
 
+    @PutMapping("/updateHouseHoldMember")
+    private FamilyMemberDTO updateHouseHoldMember(@RequestBody FamilyMemberDTO familyMemberDTO){
+        return familyService.updateHouseHoldMember(familyMemberDTO);
+    }
+
+    @GetMapping("/getHouseholdById")
+    private HouseholdsDTO getHouseholdById(@RequestParam String id){
+        return familyService.getHouseholdById(id);
+    }
 
 }
 

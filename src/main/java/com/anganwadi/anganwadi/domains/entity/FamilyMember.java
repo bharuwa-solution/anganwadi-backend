@@ -30,6 +30,7 @@ public class FamilyMember  extends BaseObject{
     private long dob;
     private String maritalStatus;
     private String memberCode;
+    private String handicap;
     private String handicapType;
     private String residentArea;
     private String dateOfArrival;
