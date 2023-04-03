@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Builder
 @Document(collection = "AnganwadiChildren")
-public class AnganwadiChildren  extends BaseObject{
+public class AnganwadiChildren extends StateObject {
 
     private String profilePic;
     private String familyId;

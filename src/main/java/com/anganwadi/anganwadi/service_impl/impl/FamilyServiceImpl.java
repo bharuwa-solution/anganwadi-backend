@@ -499,15 +499,18 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO) {
+    public WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerName) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
-        long mills = date.getTime();
+        String convertToString = df.format(date);
+        Date convertToDate = df.parse(convertToString);
+        long mills = convertToDate.getTime();
 
         WeightTracking saveRecord = WeightTracking.builder()
                 .familyId(weightRecordsDTO.getFamilyId() == null ? "" : weightRecordsDTO.getFamilyId())
                 .childId(weightRecordsDTO.getChildId() == null ? "" : weightRecordsDTO.getChildId())
                 .date(mills)
+                .centerName(centerName)
                 .weight(weightRecordsDTO.getWeight() == null ? "" : weightRecordsDTO.getWeight())
                 .height(weightRecordsDTO.getHeight() == null ? "" : weightRecordsDTO.getHeight())
                 .build();
@@ -518,6 +521,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .familyId(weightRecordsDTO.getFamilyId() == null ? "" : weightRecordsDTO.getFamilyId())
                 .childId(weightRecordsDTO.getChildId() == null ? "" : weightRecordsDTO.getChildId())
                 .date(df.format(date))
+                .centerName(centerName)
                 .weight(weightRecordsDTO.getWeight() == null ? "" : weightRecordsDTO.getWeight())
                 .height(weightRecordsDTO.getHeight() == null ? "" : weightRecordsDTO.getHeight())
                 .build();
@@ -526,37 +530,68 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<WeightRecordsDTO> getWeightRecords(String familyId, String childId) {
-
-        if (StringUtils.isEmpty(familyId.trim())) {
-            throw new CustomException("Family Id Is Missed, Please Check!!");
-        }
+    public List<WeightRecordsDTO> getWeightRecords(String childId) {
 
         if (StringUtils.isEmpty(childId.trim())) {
             throw new CustomException("Child Id Is Missed, Please Check!!");
         }
 
-        List<WeightTracking> findChildRecords = weightTrackingRepository.findAllByFamilyIdAndChildId(familyId, childId, Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<WeightTracking> findChildRecords = weightTrackingRepository.findAllByChildId(childId, Sort.by(Sort.Direction.ASC, "createdDate"));
         List<WeightRecordsDTO> addList = new ArrayList<>();
 
-        for(WeightTracking passRecords : findChildRecords){
-            WeightRecordsDTO getRecords =  modelMapper.map(passRecords, WeightRecordsDTO.class);
+        for (WeightTracking passRecords : findChildRecords) {
+
+            long millis = passRecords.getDate();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(millis);
+
+            WeightRecordsDTO getRecords = WeightRecordsDTO.builder()
+                    .familyId(passRecords.getFamilyId() == null ? "" : passRecords.getFamilyId())
+                    .childId(passRecords.getChildId() == null ? "" : passRecords.getChildId())
+                    .date(df.format(date))
+                    .centerName(passRecords.getCenterName())
+                    .weight(passRecords.getWeight() == null ? "" : passRecords.getWeight())
+                    .height(passRecords.getHeight() == null ? "" : passRecords.getHeight())
+                    .build();
+
+
+            modelMapper.map(passRecords, WeightRecordsDTO.class);
             addList.add(getRecords);
         }
         return addList;
     }
 
     @Override
-    public List<WeightRecordsDTO> getAllChildWeightRecords(String familyId) {
+    public List<WeightRecordsDTO> getAllChildWeightRecords(String centerName) {
 
-        if (StringUtils.isEmpty(familyId.trim())) {
-            throw new CustomException("Family Id Is Missed, Please Check!!");
+        if (StringUtils.isEmpty(centerName.trim())) {
+            throw new CustomException("center Name Is Missed, Please Check!!");
         }
-        List<WeightTracking> findAllChildRecords = weightTrackingRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.ASC, "createdDate"));
 
-        List<WeightRecordsDTO> addList = new ArrayList<>();
+        HashSet<String> uniqueChildId = new HashSet<>();
+        List<WeightRecordsDTO> addInList = new ArrayList<>();
+        List<WeightTracking> findAllChildRecords = weightTrackingRepository.findAllByCenterName(centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return null;
+        for (WeightTracking tracking : findAllChildRecords) {
+
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(tracking.getDate());
+
+            if (uniqueChildId.add(tracking.getChildId())) {
+                WeightRecordsDTO singleEntry = WeightRecordsDTO.builder()
+                        .familyId(tracking.getFamilyId() == null ? "" : tracking.getFamilyId())
+                        .childId(tracking.getChildId() == null ? "" : tracking.getChildId())
+                        .date(df.format(date))
+                        .centerName(centerName)
+                        .weight(tracking.getWeight() == null ? "" : tracking.getWeight())
+                        .height(tracking.getHeight() == null ? "" : tracking.getHeight())
+                        .build();
+
+                addInList.add(singleEntry);
+            }
+        }
+
+        return addInList;
     }
 
     private long MPRDurationEndDate(String duration) throws ParseException {

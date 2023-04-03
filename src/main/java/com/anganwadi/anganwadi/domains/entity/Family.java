@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Builder
 @Document(collection = "Family")
-public class Family extends BaseObject {
+public class Family extends StateObject {
 
 
     private String houseNo;

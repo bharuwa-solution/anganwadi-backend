@@ -11,10 +11,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Builder
 @Document(collection = "WeightTracking")
-public class WeightTracking  extends BaseObject{
+public class WeightTracking extends StateObject {
 
     private String familyId;
     private String childId;
+    private String centerName;
     private long date;
     private String height;
     private String weight;

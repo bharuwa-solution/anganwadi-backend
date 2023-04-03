@@ -18,11 +18,11 @@ public interface FamilyService {
 
     VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerName) throws ParseException;
 
-    WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO);
+    WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerName) throws ParseException;
 
-    List<WeightRecordsDTO> getWeightRecords(String familyId, String childId);
+    List<WeightRecordsDTO> getWeightRecords(String childId);
 
-    List<WeightRecordsDTO> getAllChildWeightRecords(String familyId);
+    List<WeightRecordsDTO> getAllChildWeightRecords(String centerName);
 
     MPRDTO getMPRRecords(String month, String duration, String category, String centerName) throws ParseException;
 

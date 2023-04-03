@@ -46,20 +46,6 @@ public class FamilyController {
 //        return familyService.saveVisitsDetails(visitsDetailsDTO);
 //    }
 
-    @PostMapping("/saveWeightRecords")
-    private WeightRecordsDTO saveWeightRecords(@RequestBody WeightRecordsDTO weightRecordsDTO) {
-        return familyService.saveWeightRecords(weightRecordsDTO);
-    }
-
-    @GetMapping("/getChildWeightRecords")
-    private List<WeightRecordsDTO> getWeightRecords(@RequestParam String familyId, @RequestParam String childId) {
-        return familyService.getWeightRecords(familyId, childId);
-    }
-
-    @GetMapping("/getAllChildWeightRecords")
-    private List<WeightRecordsDTO> getAllChildWeightRecords(@RequestParam String familyId) {
-        return familyService.getAllChildWeightRecords(familyId);
-    }
 
     @GetMapping("/getMPRRecords")
     private MPRDTO getMPRRecords(@RequestParam(required = false) String month, @RequestParam(required = false) String duration, @RequestParam(required = false) String category, @RequestHeader String centerName) throws ParseException {

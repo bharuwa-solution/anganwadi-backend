@@ -10,10 +10,13 @@ import java.util.List;
 
 @Repository
 public interface WeightTrackingRepository extends MongoRepository<WeightTracking, String> {
-    List<WeightTracking> findAllByFamilyIdAndChildId(String familyId, String childId, Sort createdDate);
 
     List<WeightTracking> findAllByFamilyId(String familyId, Sort createdDate);
 
     @Query("{'month':{$regex:?0}}")
     List<WeightTracking> findAllByMonth(String month);
+
+    List<WeightTracking> findAllByChildId(String childId, Sort createdDate);
+
+    List<WeightTracking> findAllByCenterName(String centerName, Sort createdDate);
 }
