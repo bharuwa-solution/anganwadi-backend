@@ -130,7 +130,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date formatToTime = df.parse(date);
         long timestamp = formatToTime.getTime();
 
-        markAsAbsent(centerName);
+//        markAsAbsent(centerName);
 
         List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<AttendanceDTO> addList = new ArrayList<>();
