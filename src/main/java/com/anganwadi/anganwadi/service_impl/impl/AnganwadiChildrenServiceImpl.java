@@ -343,8 +343,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 }
             }
         }
-
-
         return addInList;
     }
 
@@ -355,11 +353,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         if (findCenterItems.size() > 0) {
 
             for (AssetsStock fs : findCenterItems) {
-
                 itemInFloat = itemInFloat + Float.parseFloat(fs.getQty());
-
             }
-
         }
 
         itemSum = String.valueOf(itemInFloat);
@@ -810,14 +805,32 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<AnganwadiChildrenList> getAnganwadiChildrenDetails(String startDate, String endDate) throws ParseException {
+    public List<AnganwadiChildrenList> getAnganwadiChildrenDetails(String startDate, String endDate, String search) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<AnganwadiChildrenList> addInList = new ArrayList<>();
+        String searchKeyword = search == null ? "": search;
+
+        Date startTime = df.parse(startDate);
+        Date endTime = df.parse(endDate);
+
+        List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCreatedDateAndSearch(startTime, endTime, searchKeyword);
 
 
-        // List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCreatedDate();
+        for (AnganwadiChildren dataList : childrenList) {
+            Family findReligion = familyRepository.findByFamilyId(dataList.getFamilyId());
+            AnganwadiChildrenList addSingle = AnganwadiChildrenList.builder()
+                    .name(dataList.getName())
+                    .motherName(dataList.getMotherName())
+                    .fatherName(dataList.getFatherName())
+                    .dob(dataList.getDob())
+                    .category(dataList.getCategory())
+                    .religion(findReligion.getReligion())
+                    .build();
+            addInList.add(addSingle);
+        }
 
-        return null;
+        return addInList;
     }
 
 

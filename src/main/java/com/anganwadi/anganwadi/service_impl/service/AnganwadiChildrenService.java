@@ -46,5 +46,5 @@ public interface AnganwadiChildrenService {
 
     AnganwadiChildrenDTO getAnganwadiChildrenData(String month) throws ParseException;
 
-    List<AnganwadiChildrenList> getAnganwadiChildrenDetails(String startDate, String endDate) throws ParseException;
+    List<AnganwadiChildrenList> getAnganwadiChildrenDetails(String startDate, String endDate, String search) throws ParseException;
 }

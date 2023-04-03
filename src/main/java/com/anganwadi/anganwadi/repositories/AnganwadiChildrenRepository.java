@@ -20,4 +20,7 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
 
     @Query("{'createdDate':{$gte:?0,$lte:?1}}")
     List<AnganwadiChildren> findAllByCreatedDate(Date startDate, Date lastDay);
+
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'name':{$regex:?2,'$options':i}}")
+    List<AnganwadiChildren> findAllByCreatedDateAndSearch(Date startDate, Date endDate, String search);
 }

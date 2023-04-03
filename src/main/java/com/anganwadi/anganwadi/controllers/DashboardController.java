@@ -78,7 +78,7 @@ public class DashboardController {
     }
 
     @GetMapping("getAnganwadiChildrenDetails")
-    private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
-        return anganwadiChildrenService.getAnganwadiChildrenDetails(startDate,endDate);
+    private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestParam String startDate, @RequestParam String endDate, @RequestParam(required = false) String search) throws ParseException {
+        return anganwadiChildrenService.getAnganwadiChildrenDetails(startDate,endDate, search);
     }
 }
