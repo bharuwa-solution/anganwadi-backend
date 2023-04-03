@@ -170,9 +170,8 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(passUserData);
 
-        UserDTO fetchUser = modelMapper.map(passUserData, UserDTO.class);
+        return modelMapper.map(passUserData, UserDTO.class);
 
-        return fetchUser;
     }
 
 
