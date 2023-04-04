@@ -537,6 +537,7 @@ public class FamilyServiceImpl implements FamilyService {
         }
 
         List<WeightTracking> findChildRecords = weightTrackingRepository.findAllByChildId(childId, Sort.by(Sort.Direction.ASC, "createdDate"));
+        FamilyMember findChildDetails = familyMemberRepository.findById(childId).get();
         List<WeightRecordsDTO> addList = new ArrayList<>();
 
         for (WeightTracking passRecords : findChildRecords) {
@@ -548,14 +549,17 @@ public class FamilyServiceImpl implements FamilyService {
             WeightRecordsDTO getRecords = WeightRecordsDTO.builder()
                     .familyId(passRecords.getFamilyId() == null ? "" : passRecords.getFamilyId())
                     .childId(passRecords.getChildId() == null ? "" : passRecords.getChildId())
+                    .name(findChildDetails.getName())
+                    .gender(findChildDetails.getGender())
+                    .motherName(findChildDetails.getMotherName())
+                    .dob(df.format(findChildDetails.getDob()))
+                    .photo(findChildDetails.getPhoto())
                     .date(df.format(date))
                     .centerName(passRecords.getCenterName())
                     .weight(passRecords.getWeight() == null ? "" : passRecords.getWeight())
                     .height(passRecords.getHeight() == null ? "" : passRecords.getHeight())
                     .build();
 
-
-            modelMapper.map(passRecords, WeightRecordsDTO.class);
             addList.add(getRecords);
         }
         return addList;
@@ -576,11 +580,17 @@ public class FamilyServiceImpl implements FamilyService {
 
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date date = new Date(tracking.getDate());
+            FamilyMember findChildDetails = familyMemberRepository.findById(tracking.getChildId()).get();
 
             if (uniqueChildId.add(tracking.getChildId())) {
                 WeightRecordsDTO singleEntry = WeightRecordsDTO.builder()
                         .familyId(tracking.getFamilyId() == null ? "" : tracking.getFamilyId())
                         .childId(tracking.getChildId() == null ? "" : tracking.getChildId())
+                        .name(findChildDetails.getName())
+                        .gender(findChildDetails.getGender())
+                        .motherName(findChildDetails.getMotherName())
+                        .dob(df.format(findChildDetails.getDob()))
+                        .photo(findChildDetails.getPhoto())
                         .date(df.format(date))
                         .centerName(centerName)
                         .weight(tracking.getWeight() == null ? "" : tracking.getWeight())
@@ -1243,34 +1253,20 @@ public class FamilyServiceImpl implements FamilyService {
         String getMonth = splitMonth[1].replace("0", "");
 
 
-        // Save in Birth Table
-
-        BabiesBirth saveDetails = BabiesBirth.builder()
-                .name(birthDetails.getName() == null ? "" : birthDetails.getName())
-                .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
-                .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
-                .familyId(searchFamilyId.getFamilyId())
-                .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
-                .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
-                .centerId(centerName)
-                .height(birthDetails.getHeight() == null ? "" : birthDetails.getHeight())
-                .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
-                .build();
-        babiesBirthRepository.save(saveDetails);
-
         // Save in Family Member Table
 
         FamilyMember addMember = FamilyMember.builder()
                 .familyId(searchFamilyId.getFamilyId())
                 .name(birthDetails.getName() == null ? "" : birthDetails.getName())
                 .category(searchFamilyId.getCategory().length() <= 0 ? headCategory : searchFamilyId.getCategory())
-                .motherName(saveDetails.getName())
+                .motherName(searchFamilyId.getName())
                 .fatherName(headName)
                 .maritalStatus("2")
                 .dateOfMortality("")
                 .dateOfLeaving("")
                 .dateOfArrival("")
                 .handicapType("")
+                .photo("")
                 .memberCode("")
                 .residentArea("")
                 .recordForMonth(getMonth)
@@ -1282,6 +1278,35 @@ public class FamilyServiceImpl implements FamilyService {
                 .dob(mills)
                 .build();
         familyMemberRepository.save(addMember);
+
+        // Save in Birth Table
+
+        BabiesBirth saveDetails = BabiesBirth.builder()
+                .name(birthDetails.getName() == null ? "" : birthDetails.getName())
+                .childId(addMember.getId())
+                .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
+                .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
+                .familyId(searchFamilyId.getFamilyId())
+                .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
+                .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
+                .centerId(centerName)
+                .height(birthDetails.getHeight() == null ? "" : birthDetails.getHeight())
+                .firstWeight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
+                .build();
+        babiesBirthRepository.save(saveDetails);
+
+        // Save in Weight Table
+
+        WeightTracking saveRecord = WeightTracking.builder()
+                .familyId(searchFamilyId.getFamilyId() == null ? "" : searchFamilyId.getFamilyId())
+                .childId(saveDetails.getChildId() == null ? "" : saveDetails.getChildId())
+                .date(mills)
+                .centerName(centerName)
+                .weight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
+                .height(birthDetails.getHeight() == null ? "" : birthDetails.getHeight())
+                .build();
+
+        weightTrackingRepository.save(saveRecord);
 
         // Save in Visit
         Date visitDate = new Date();
@@ -1308,7 +1333,6 @@ public class FamilyServiceImpl implements FamilyService {
                 .build();
 
         visitsRepository.save(updateRecord);
-
 
         BirthPlaceDTO singleEntry = BirthPlaceDTO.builder()
                 .name(birthDetails.getName() == null ? "" : birthDetails.getName())

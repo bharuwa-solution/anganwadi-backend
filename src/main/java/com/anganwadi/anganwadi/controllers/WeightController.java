@@ -19,7 +19,6 @@ public class WeightController {
         this.familyService = familyService;
     }
 
-
     @PostMapping("/saveWeightRecords")
     private WeightRecordsDTO saveWeightRecords(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerName) throws ParseException {
         return familyService.saveWeightRecords(weightRecordsDTO,centerName);

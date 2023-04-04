@@ -92,7 +92,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     @Override
     public List<ChildrenDTO> getTotalChildren(String centerName) {
 
-
         List<ChildrenDTO> addInList = new ArrayList<>();
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterName(centerName);
 
@@ -139,6 +138,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             AttendanceDTO dailyRecord = AttendanceDTO.builder()
                     .childId(singleRecord.getChildId())
                     .name(singleRecord.getName())
+                    .centerName(centerName)
                     .gender(singleRecord.getGender())
                     .dob(singleRecord.getDob())
                     .photo(singleRecord.getPhoto())

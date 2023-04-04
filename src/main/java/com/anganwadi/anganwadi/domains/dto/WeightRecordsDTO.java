@@ -12,6 +12,11 @@ import lombok.NoArgsConstructor;
 public class WeightRecordsDTO {
 
     private String familyId;
+    private String name;
+    private String gender;
+    private String motherName;
+    private String dob;
+    private String photo;
     private String childId;
     private String centerName;
     private String date;
