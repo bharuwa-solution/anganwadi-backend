@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -34,12 +33,15 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'centerName':{$regex:?0},'recordForMonth':{$regex:?1},'category':{$regex:?2}}")
     List<FamilyMember> findAllByCenterNameAndRecordForMonthAndCategory(String centerName, String month, String category);
 
-    @Query("{'category':{$regex:?0},'gender':{$regex:?1}}")
-    List<FamilyMember> findAllByChildrenCriteria(String caste, String gender);
+    @Query("{'category':{$regex:?0},'gender':{$regex:?1}, 'createdDate':{$gte:?2,$lte:?3}}")
+    List<FamilyMember> findAllByChildrenCriteria(String caste, String gender, Date startTime, Date endTime);
 
     @Query("{'gender':{$regex:?0}}")
     List<FamilyMember> findByCategoryCriteria(String type);
 
     @Query("{'familyId':?0,'relationWithOwner':'0'}")
     FamilyMember findByHead(String familyId);
+
+    @Query("{'_id':?0, 'name':{$regex:?1,'$options':i}}")
+    List<FamilyMember> findAllByIdAndNameSearch(String memberId, String name);
 }

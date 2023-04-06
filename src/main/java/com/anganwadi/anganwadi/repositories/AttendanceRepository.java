@@ -22,10 +22,14 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
     @Query("{$and:[{'childId':{$in:[?0]}},{'date':?1}]}}")
     List<Attendance> updateAttendance(String childId, long timestamp);
 
+    @Query
     List<Attendance> findAllByDateAndCenterName(long timestamp, String centerName, Sort createdDate);
 
     List<Attendance> findAllByChildIdAndDateAndCenterName(String childId, long date, String centerName);
 
     @Query("{'date':{$gte:?0,$lte:?1}}")
     List<Attendance> findAllByDateRange(long startDayMillis, long lastDayMillis);
+
+    @Query("{'date':?0,'centerName':?1,'isRegistered':true}")
+    List<Attendance> findAllByDateAndCenterNameAndRegistered(long timestamp, String centerName, Sort createdDate);
 }

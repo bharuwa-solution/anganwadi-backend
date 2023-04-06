@@ -28,8 +28,8 @@ public class DashboardController {
     }
 
     @GetMapping("getTotalChildrenData")
-    private TotalChildrenData getTotalChildrenData(@RequestParam(required = false) String caste, @RequestParam String gender, @RequestParam String month) throws ParseException {
-        return familyService.getTotalChildrenData(caste, gender, month);
+    private TotalChildrenData getTotalChildrenData(@RequestParam(required = false) String caste, @RequestParam String gender, @RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+        return familyService.getTotalChildrenData(caste, gender, startDate, endDate);
     }
 
     @GetMapping("getHouseholdCategoryData")
@@ -38,13 +38,13 @@ public class DashboardController {
     }
 
     @GetMapping("getPregnancyData")
-    private PregnancyData getPregnancyData(@RequestParam String month) throws ParseException {
-        return familyService.getPregnancyData(month);
+    private PregnancyData getPregnancyData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+        return familyService.getPregnancyData(startDate,endDate);
     }
 
     @GetMapping("getPregnantWomenDetails")
-    private List<PregnantWomenDetails> getPregnantWomenDetails(@RequestParam String month, @RequestParam(required = false) String search) throws ParseException {
-        return familyService.getPregnantWomenDetails(month, search);
+    private List<PregnantWomenDetails> getPregnantWomenDetails(@RequestParam String startDate, @RequestParam String endDate, @RequestParam(required = false) String search) throws ParseException {
+        return familyService.getPregnantWomenDetails(startDate,endDate, search);
     }
 
     @GetMapping("getAnganwadiAahaarData")

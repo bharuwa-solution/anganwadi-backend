@@ -36,6 +36,11 @@ public class FamilyController {
         return familyService.saveFamilyMembers(familyMemberDTO, centerName);
     }
 
+//    @PutMapping("updateRegisteredValue")
+//    private FamilyMemberDTO updateRegisteredValue(@RequestParam String id, @RequestParam boolean isRegistered) {
+//        return familyService.updateRegisteredValue(id, isRegistered);
+//    }
+
     @GetMapping("/getFamilyMembers")
     private List<FamilyMemberDTO> getFamilyMembers(@RequestParam String familyId) {
         return familyService.getFamilyMembers(familyId);

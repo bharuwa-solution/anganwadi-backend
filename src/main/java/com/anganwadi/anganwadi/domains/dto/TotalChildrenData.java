@@ -19,5 +19,6 @@ public class TotalChildrenData {
     private long fiveToSix;
     private String caste;
     private String gender;
-    private String month;
+    private String startDate;
+    private String endDate;
 }

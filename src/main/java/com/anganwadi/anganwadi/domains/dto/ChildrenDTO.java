@@ -14,6 +14,7 @@ public class ChildrenDTO {
     private String name;
     private String gender;
     private String dob;
+    private boolean isRegistered;
     private String profilePic;
     private String category;
 

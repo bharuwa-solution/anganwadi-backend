@@ -17,4 +17,6 @@ public class PregnancyData {
     private long obc;
     private long general;
     private long others;
+    private String startDate;
+    private String endDate;
 }

@@ -19,6 +19,7 @@ public class FamilyMemberDTO {
     private String fatherName;
     private String familyId;
     private String category;
+    private boolean isRegistered;
     private String mobileNumber;
     private String memberCode;
     private String idType;

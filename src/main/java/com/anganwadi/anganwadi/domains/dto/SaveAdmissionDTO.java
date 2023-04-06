@@ -17,6 +17,7 @@ public class SaveAdmissionDTO {
     private String name;
     private String familyId;
     private String childId;
+    private boolean isRegistered;
     private String fatherName;
     private String motherName;
     private String mobileNumber;

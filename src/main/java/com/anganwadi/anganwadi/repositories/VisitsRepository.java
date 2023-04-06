@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -32,9 +33,11 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     @Query("{'centerName':?0,'visitType':{$regex:?1},'category':{$regex:?2}}")
     List<Visits> findAllByCenterNameAndVisitTypeAndCategory(String centerName, String duration, String category);
 
-    @Query("{$or:[{'visitType':'1'},{'visitType':'2'}]}")
-    List<Visits> findAllByPregnancyCriteria();
+    @Query("{$or:[{'visitType':'1'},{'visitType':'2'}],'createdDate':{$gte:?0,$lte:?1}}")
+    List<Visits> findAllByPregnancyCriteria(Date startDate, Date endDate);
 
     @Query("{$or:[{'visitType':'1'},{'visitType':'2'}],}")
     List<Visits> findAllByPregnancySearchCriteria(String search);
+
+
 }

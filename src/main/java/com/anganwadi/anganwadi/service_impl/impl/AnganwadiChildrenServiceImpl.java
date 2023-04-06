@@ -59,7 +59,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     @Override
     public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerName) throws ParseException {
 
-
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
         df.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
@@ -67,6 +66,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         String finalDate = saveAdmissionDTO.getDob();
         Date dob = df2.parse(finalDate);
+        boolean isRegistered = false;
+        if (saveAdmissionDTO.isRegistered()) {
+            isRegistered = true;
+        }
 
         AnganwadiChildren saveAdmission = AnganwadiChildren.builder()
                 .name(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName())
@@ -74,14 +77,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 .childId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId())
                 .fatherName(saveAdmissionDTO.getFatherName() == null ? "" : saveAdmissionDTO.getFatherName())
                 .motherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName())
+                .isRegistered(isRegistered)
                 .centerName(centerName)
                 .dob(df.format(dob))
-                .gender(saveAdmissionDTO.getGender()==null?"":saveAdmissionDTO.getGender())
-                .mobileNumber(saveAdmissionDTO.getMobileNumber()==null?"":saveAdmissionDTO.getMobileNumber())
-                .category(saveAdmissionDTO.getCategory()==null?"":saveAdmissionDTO.getCategory())
-                .minority(saveAdmissionDTO.getMinority()==null?"":saveAdmissionDTO.getMinority())
-                .handicap(saveAdmissionDTO.getHandicap()==null?"":saveAdmissionDTO.getHandicap())
-                .profilePic(saveAdmissionDTO.getProfilePic()==null?"":saveAdmissionDTO.getProfilePic())
+                .gender(saveAdmissionDTO.getGender() == null ? "" : saveAdmissionDTO.getGender())
+                .mobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber())
+                .category(saveAdmissionDTO.getCategory() == null ? "" : saveAdmissionDTO.getCategory())
+                .minority(saveAdmissionDTO.getMinority() == null ? "" : saveAdmissionDTO.getMinority())
+                .handicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap())
+                .profilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
                 .build();
 
         anganwadiChildrenRepository.save(saveAdmission);
@@ -89,15 +93,48 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
     }
 
+
+    @Override
+    public SaveAdmissionDTO updateRegisteredValue(String id, boolean isRegistered) {
+
+        AnganwadiChildren findId = anganwadiChildrenRepository.findById(id).get();
+
+        if (findId != null) {
+
+            findId.setRegistered(isRegistered);
+            anganwadiChildrenRepository.save(findId);
+
+        }
+
+        return SaveAdmissionDTO.builder()
+                .id(findId.getId() == null ? "" : findId.getId())
+                .name(findId.getName() == null ? "" : findId.getName())
+                .familyId(findId.getFamilyId() == null ? "" : findId.getFamilyId())
+                .childId(findId.getChildId() == null ? "" : findId.getChildId())
+                .fatherName(findId.getFatherName() == null ? "" : findId.getFatherName())
+                .motherName(findId.getMotherName() == null ? "" : findId.getMotherName())
+                .isRegistered(findId.isRegistered())
+                .centerName(findId.getCenterName())
+                .dob(findId.getDob())
+                .gender(findId.getGender() == null ? "" : findId.getGender())
+                .mobileNumber(findId.getMobileNumber() == null ? "" : findId.getMobileNumber())
+                .category(findId.getCategory() == null ? "" : findId.getCategory())
+                .minority(findId.getMinority() == null ? "" : findId.getMinority())
+                .handicap(findId.getHandicap() == null ? "" : findId.getHandicap())
+                .profilePic(findId.getProfilePic() == null ? "" : findId.getProfilePic())
+                .build();
+    }
+
     @Override
     public List<ChildrenDTO> getTotalChildren(String centerName) {
 
         List<ChildrenDTO> addInList = new ArrayList<>();
-        List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterName(centerName);
+        List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterNameAndRegisteredTrue(centerName);
 
         for (AnganwadiChildren getChildren : childrenList) {
             ChildrenDTO childrenDTO = ChildrenDTO.builder()
                     .dob(getChildren.getDob())
+                    .isRegistered(getChildren.isRegistered())
                     .category(getChildren.getCategory())
                     .name(getChildren.getName())
                     .gender(getChildren.getGender())
@@ -131,7 +168,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 //        markAsAbsent(centerName);
 
-        List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterNameAndRegistered(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<AttendanceDTO> addList = new ArrayList<>();
 
         for (Attendance singleRecord : findRecords) {
@@ -175,7 +212,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date formatToTime = df.parse(formatToString);
         long timestamp = formatToTime.getTime();
 
-        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCenterName(centerName);
+        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCenterNameAndRegisteredTrue(centerName);
         String attendance = "A";
 
 
@@ -187,6 +224,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 Attendance saveAttendance = Attendance.builder()
                         .childId(getId.getChildId())
                         .dob(getId.getDob())
+                        .isRegistered(getId.isRegistered())
+                        .longitude("")
+                        .latitude("")
                         .centerName(centerName)
                         .name(getId.getName())
                         .photo(getId.getProfilePic())
@@ -226,6 +266,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     @Override
     public List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerName) throws ParseException {
 
+        log.error("Child Id : " + attendanceDTO.getChildId());
+        log.error("Center Name : " + centerName);
         // convert date to millis
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");

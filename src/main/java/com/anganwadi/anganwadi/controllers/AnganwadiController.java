@@ -56,6 +56,12 @@ public class AnganwadiController {
         return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO,centerName);
     }
 
+    @PutMapping("updateRegisteredValue")
+    private SaveAdmissionDTO updateRegisteredValue(@RequestParam String id, @RequestParam boolean isRegistered) {
+        return anganwadiChildrenService.updateRegisteredValue(id, isRegistered);
+    }
+
+
     @GetMapping("getTotalChildren")
     private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerName) {
         return anganwadiChildrenService.getTotalChildren(centerName);
