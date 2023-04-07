@@ -1749,11 +1749,12 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<DeliveryDTO> getDeliveryData(String month) {
+    public List<DeliveryDTO> getDeliveryData(String startDate, String endDate) {
 
-        String selectedMonth = month == null ? "" : month;
+//        String selectedMonth = month == null ? "" : month;
         List<DeliveryDTO> addInList = new ArrayList<>();
-        List<BabiesBirth> birthList = babiesBirthRepository.findAllByMonth(selectedMonth);
+        List<BabiesBirth> birthList = new ArrayList<>();
+//                babiesBirthRepository.findAllByMonth(startDate, endDate);
 
 
         for (BabiesBirth bb : birthList) {

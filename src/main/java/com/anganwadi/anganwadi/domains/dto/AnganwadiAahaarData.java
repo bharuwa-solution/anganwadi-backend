@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AnganwadiAahaarData {
     private String foodName;
+    private String foodCode;
     private String quantity;
     private String quantityUnit;
     private String date;

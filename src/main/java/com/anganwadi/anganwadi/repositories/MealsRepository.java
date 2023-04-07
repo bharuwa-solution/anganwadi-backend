@@ -6,11 +6,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface MealsRepository extends MongoRepository<Meals, String> {
 
-    @Query("{'month':{$regex:?0}}")
-    List<Meals> findAllBYMonth(String selectedMonth, Sort date);
+    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
+    List<Meals> findAllByMonthCriteria(Date startDate, Date endDate,Sort date);
 }

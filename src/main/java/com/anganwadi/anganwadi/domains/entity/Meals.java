@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Meals extends StateObject {
 
     private String foodName;
+    private String foodCode;
     private String quantity;
     private String quantityUnit;
     private String month;

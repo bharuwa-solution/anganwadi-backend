@@ -243,12 +243,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
 
-    private void markPresent(String childId, String latitude, String longitude, long timestamp) {
+    private void markPresent(String childId, String latitude, String longitude, long timestamp, String centerName) {
 
         String[] splitString = childId.split(",");
 
         for (String getChildId : splitString) {
-            List<Attendance> findChildInRecord = attendanceRepository.updateAttendance(getChildId.trim(), timestamp);
+            List<Attendance> findChildInRecord = attendanceRepository.updateAttendance(getChildId.trim(), timestamp, centerName);
 
             if (findChildInRecord.size() > 0) {
 
@@ -289,7 +289,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         // After updating Above fields
 
-        markPresent(attendanceDTO.getChildId(), attendanceDTO.getLatitude(), attendanceDTO.getLongitude(), timestamp);
+        markPresent(attendanceDTO.getChildId(), attendanceDTO.getLatitude(), attendanceDTO.getLongitude(), timestamp, centerName);
 
         List<Attendance> getDetails = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
 
@@ -692,52 +692,98 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 addInList.add(singleEntry);
             }
         }
+        return addInList;
+    }
+
+//    private String selectMonth(int monthValue) {
+//        String month = "";
+//        switch (monthValue) {
+//            case 1:
+//                month = "Jan";
+//                break;
+//            case 2:
+//                month = "Feb";
+//                break;
+//            case 3:
+//                month = "Mar";
+//                break;
+//            case 4:
+//                month = "Apr";
+//                break;
+//            case 5:
+//                month = "May";
+//                break;
+//            case 6:
+//                month = "June";
+//                break;
+//            case 7:
+//                month = "Jul";
+//                break;
+//            case 8:
+//                month = "Aug";
+//                break;
+//            case 9:
+//                month = "Sep";
+//                break;
+//            case 10:
+//                month = "Oct";
+//                break;
+//            case 11:
+//                month = "Nov";
+//                break;
+//            case 12:
+//                month = "Dec";
+//                break;
+//        }
+//        return month;
+//    }
 
 
+
+    @Override
+    public List<AnganwadiAahaarData> getAnganwadiAahaarData(String startDate, String endDate) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<AnganwadiAahaarData> addInList = new ArrayList<>();
+
+        long item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0, item6 = 0, item7 = 0, item8 = 0, item9 = 0, item10 = 0, item11 = 0;
+
+        Date startTime = df.parse(startDate);
+        Date endTime = df.parse(endDate);
+
+        List<Meals> findMeals = mealsRepository.findAllByMonthCriteria(startTime, endTime, Sort.by(Sort.Direction.ASC, "date"));
+        List<AnganwadiAahaarData> dataList = new ArrayList<>();
+        HashSet<Integer> uniqueMonth = new HashSet<>();
+
+        for (Meals meals : findMeals) {
+
+
+            AnganwadiAahaarData singleList = AnganwadiAahaarData.builder()
+                        .foodName(meals.getFoodName())
+                        .foodCode(meals.getFoodCode())
+                        .quantity(meals.getQuantity())
+                        .quantityUnit(meals.getQuantityUnit())
+                        .date(df.format(new Date(meals.getDate())))
+                        .mealType(meals.getMealType())
+                        .build();
+                addInList.add(singleList);
+            }
         return addInList;
     }
 
     @Override
-    public List<AnganwadiAahaarData> getAnganwadiAahaarData(String month) {
-        String selectedMonth = month == null ? "" : month;
-        List<Meals> findMeals = mealsRepository.findAllBYMonth(selectedMonth, Sort.by(Sort.Direction.DESC, "date"));
-        List<AnganwadiAahaarData> dataList = new ArrayList<>();
+    public List<WeightTrackingDTO> getChildrenWeightData(String startDate, String endDate) throws ParseException {
 
-        for (Meals meals : findMeals) {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date startTime = df.parse(startDate);
+        Date endTime = df.parse(endDate);
 
-            long getMills = meals.getDate();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            Date date = new Date(getMills);
-
-
-            AnganwadiAahaarData singleMeals = AnganwadiAahaarData.builder()
-                    .foodName(meals.getFoodName())
-                    .quantity(meals.getQuantity())
-                    .quantityUnit(meals.getQuantityUnit())
-                    .mealType(meals.getMealType())
-                    .date(df.format(date))
-                    .build();
-            dataList.add(singleMeals);
-
-        }
-
-        return dataList;
-    }
-
-    @Override
-    public List<WeightTrackingDTO> getChildrenWeightData(String month) {
-
-        String selectedMonth = month == null ? "" : month;
-
-        List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonth(month);
+        List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonthCriteria(startTime, endTime,Sort.by(Sort.Direction.ASC, "createdDate"));
         List<WeightTrackingDTO> addInList = new ArrayList<>();
 
         for (WeightTracking tracking : findChildren) {
 
             long getMills = tracking.getDate();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date date = new Date(getMills);
-
 
             WeightTrackingDTO addSingle = WeightTrackingDTO.builder()
                     .familyId(tracking.getFamilyId())

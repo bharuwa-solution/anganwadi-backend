@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,7 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
     List<WeightTracking> findAllByChildId(String childId, Sort createdDate);
 
     List<WeightTracking> findAllByCenterName(String centerName, Sort createdDate);
+
+    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
+    List<WeightTracking> findAllByMonthCriteria(Date startTime, Date endTime, Sort createdDate);
 }

@@ -48,18 +48,18 @@ public class DashboardController {
     }
 
     @GetMapping("getAnganwadiAahaarData")
-    private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestParam(required = false) String month) {
-        return anganwadiChildrenService.getAnganwadiAahaarData(month);
+    private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+        return anganwadiChildrenService.getAnganwadiAahaarData(startDate,endDate);
     }
 
     @GetMapping("getChildrenWeightData")
-    private List<WeightTrackingDTO> getChildrenWeightData(@RequestParam(required = false) String month) {
-        return anganwadiChildrenService.getChildrenWeightData(month);
+    private List<WeightTrackingDTO> getChildrenWeightData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+        return anganwadiChildrenService.getChildrenWeightData(startDate,endDate);
     }
 
     @GetMapping("getDeliveryData")
-    private List<DeliveryDTO> getDeliveryData(@RequestParam(required = false) String month) {
-        return familyService.getDeliveryData(month);
+    private List<DeliveryDTO> getDeliveryData(@RequestParam String startDate, @RequestParam String endDate) {
+        return familyService.getDeliveryData(startDate, endDate);
     }
 
     @GetMapping("getVaccinationData")
