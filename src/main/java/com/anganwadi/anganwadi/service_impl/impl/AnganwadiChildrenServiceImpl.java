@@ -100,10 +100,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         AnganwadiChildren findId = anganwadiChildrenRepository.findById(id).get();
 
         if (findId != null) {
-
             findId.setRegistered(isRegistered);
             anganwadiChildrenRepository.save(findId);
-
         }
 
         return SaveAdmissionDTO.builder()
@@ -218,7 +216,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         for (AnganwadiChildren getId : findChildren) {
             List<Attendance> lastVerify = attendanceRepository.findAllByChildIdAndDateAndCenterName(getId.getChildId(), timestamp, centerName);
-           String  verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, centerName);
+            String verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, centerName);
             if (lastVerify.size() <= 0) {
 
                 Attendance saveAttendance = Attendance.builder()
@@ -292,7 +290,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         markPresent(attendanceDTO.getChildId(), attendanceDTO.getLatitude(), attendanceDTO.getLongitude(), timestamp, centerName);
 
         List<Attendance> getDetails = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
-
 
         for (Attendance fetchDetails : getDetails) {
 

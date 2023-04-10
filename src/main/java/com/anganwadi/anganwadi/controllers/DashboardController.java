@@ -58,7 +58,7 @@ public class DashboardController {
     }
 
     @GetMapping("getDeliveryData")
-    private List<DeliveryDTO> getDeliveryData(@RequestParam String startDate, @RequestParam String endDate) {
+    private DeliveryDTO getDeliveryData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
         return familyService.getDeliveryData(startDate, endDate);
     }
 

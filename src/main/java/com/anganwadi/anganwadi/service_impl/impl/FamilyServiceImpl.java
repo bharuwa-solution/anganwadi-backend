@@ -558,9 +558,17 @@ public class FamilyServiceImpl implements FamilyService {
         String convertToString = df.format(date);
         Date convertToDate = df.parse(convertToString);
         long mills = convertToDate.getTime();
+        FamilyMember findDetails = new FamilyMember();
+        try {
+
+            findDetails = familyMemberRepository.findById(weightRecordsDTO.getChildId()).get();
+        } catch (Exception e) {
+            throw new CustomException("Child Not Found");
+        }
+
 
         WeightTracking saveRecord = WeightTracking.builder()
-                .familyId(weightRecordsDTO.getFamilyId() == null ? "" : weightRecordsDTO.getFamilyId())
+                .familyId(findDetails.getFamilyId() == null ? "" : findDetails.getFamilyId())
                 .childId(weightRecordsDTO.getChildId() == null ? "" : weightRecordsDTO.getChildId())
                 .date(mills)
                 .centerName(centerName)
@@ -570,14 +578,17 @@ public class FamilyServiceImpl implements FamilyService {
 
         weightTrackingRepository.save(saveRecord);
 
+        Date dob = new Date(findDetails.getDob());
+
+
         return WeightRecordsDTO.builder()
-                .familyId(weightRecordsDTO.getFamilyId() == null ? "" : weightRecordsDTO.getFamilyId())
+                .familyId(findDetails.getFamilyId() == null ? "" : findDetails.getFamilyId())
                 .childId(weightRecordsDTO.getChildId() == null ? "" : weightRecordsDTO.getChildId())
-                .name(weightRecordsDTO.getName() == null ? "" : weightRecordsDTO.getName())
-                .gender(weightRecordsDTO.getGender() == null ? "" : weightRecordsDTO.getGender())
-                .motherName(weightRecordsDTO.getMotherName() == null ? "" : weightRecordsDTO.getMotherName())
-                .dob(df.format(weightRecordsDTO.getDob()))
-                .photo(weightRecordsDTO.getPhoto() == null ? "" : weightRecordsDTO.getPhoto())
+                .name(findDetails.getName() == null ? "" : findDetails.getName())
+                .gender(findDetails.getGender() == null ? "" : findDetails.getGender())
+                .motherName(findDetails.getMotherName() == null ? "" : findDetails.getMotherName())
+                .dob(df.format(dob))
+                .photo(findDetails.getPhoto() == null ? "" : weightRecordsDTO.getPhoto())
                 .date(df.format(date))
                 .centerName(centerName)
                 .weight(weightRecordsDTO.getWeight() == null ? "" : weightRecordsDTO.getWeight())
@@ -637,12 +648,14 @@ public class FamilyServiceImpl implements FamilyService {
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date date = new Date(tracking.getDate());
             FamilyMember findChildDetails = familyMemberRepository.findById(tracking.getChildId()).get();
+            Family findFamilyDetails = familyRepository.findByFamilyId(findChildDetails.getFamilyId());
 
             if (uniqueChildId.add(tracking.getChildId())) {
                 WeightRecordsDTO singleEntry = WeightRecordsDTO.builder()
                         .familyId(tracking.getFamilyId() == null ? "" : tracking.getFamilyId())
                         .childId(tracking.getChildId() == null ? "" : tracking.getChildId())
                         .name(findChildDetails.getName())
+                        .houseNo(findFamilyDetails.getHouseNo() == null ? "" : findFamilyDetails.getHouseNo())
                         .gender(findChildDetails.getGender())
                         .motherName(findChildDetails.getMotherName())
                         .dob(df.format(findChildDetails.getDob()))
@@ -1749,25 +1762,35 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<DeliveryDTO> getDeliveryData(String startDate, String endDate) {
+    public DeliveryDTO getDeliveryData(String startDate, String endDate) throws ParseException {
 
-//        String selectedMonth = month == null ? "" : month;
-        List<DeliveryDTO> addInList = new ArrayList<>();
-        List<BabiesBirth> birthList = new ArrayList<>();
-//                babiesBirthRepository.findAllByMonth(startDate, endDate);
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date startTime = df.parse(startDate);
+        Date endTime = df.parse(endDate);
+        long inHome = 0, inHospital = 0;
+
+
+        List<BabiesBirth> birthList = babiesBirthRepository.findAllByMonth(startTime, endTime);
 
 
         for (BabiesBirth bb : birthList) {
-            DeliveryDTO singleEntry = DeliveryDTO.builder()
-                    .name(bb.getName())
-                    .birthType(bb.getBirthType())
-                    .build();
 
-            addInList.add(singleEntry);
+            if (bb.getBirthType().trim().equals("1")) {
+                inHome++;
+            }
+            if (bb.getBirthType().trim().equals("2")) {
+                inHospital++;
+            }
+
 
         }
-
-        return addInList;
+        return DeliveryDTO.builder()
+                .startDate(startDate)
+                .endDate(endDate)
+                .inHome(inHome)
+                .inHospital(inHospital)
+                .build();
     }
 
     @Override

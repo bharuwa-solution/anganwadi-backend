@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DeliveryDTO {
 
-    private String birthType;
-    private String name;
+    private String startDate;
+    private String endDate;
+    private long inHome;
+    private long inHospital;
 }

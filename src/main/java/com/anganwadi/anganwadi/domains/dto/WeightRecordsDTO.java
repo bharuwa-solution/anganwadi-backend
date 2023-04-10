@@ -15,6 +15,7 @@ public class WeightRecordsDTO {
     private String name;
     private String gender;
     private String motherName;
+    private String houseNo;
     private String dob;
     private String photo;
     private String childId;
