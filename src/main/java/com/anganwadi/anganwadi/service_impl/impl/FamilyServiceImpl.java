@@ -1977,6 +1977,27 @@ public class FamilyServiceImpl implements FamilyService {
 
     }
 
+    @Override
+    public List<PerVaccineRecord> getVaccinationByChildId(String childId) {
+
+        List<Vaccination> findRecords = vaccinationRepository.findAllByChildId(childId, Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<PerVaccineRecord> addInSingle = new ArrayList<>();
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        for (Vaccination lists : findRecords) {
+            Date date = new Date(lists.getDate());
+            PerVaccineRecord singleList = PerVaccineRecord.builder()
+                    .vaccinationCode(lists.getVaccinationCode())
+                    .vaccinationName(lists.getVaccinationName())
+                    .date(df.format(date))
+                    .build();
+            addInSingle.add(singleList);
+        }
+
+        return addInSingle;
+    }
+
 
     @Override
     public List<MemberVisits> getMemberVisitDetails(String memberId, String centerName) {

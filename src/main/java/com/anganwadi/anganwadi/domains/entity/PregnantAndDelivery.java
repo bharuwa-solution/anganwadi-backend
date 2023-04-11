@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Document(collection = "PregnantAndDelivery")
-public class PregnantAndDelivery  extends BaseObject{
+public class PregnantAndDelivery extends BaseObject {
 
 
     private String familyId;

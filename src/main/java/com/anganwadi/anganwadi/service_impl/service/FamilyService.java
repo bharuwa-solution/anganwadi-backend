@@ -64,5 +64,7 @@ public interface FamilyService {
 
     HouseholdsDTO getHouseholdById(String id);
 
+    List<PerVaccineRecord> getVaccinationByChildId(String childId);
+
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }

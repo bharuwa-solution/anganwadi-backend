@@ -16,4 +16,6 @@ public interface VaccinationRepository extends MongoRepository<Vaccination, Stri
 
     @Query("{'createdDate':{$gte:?0,$lte:?1}}")
     List<Vaccination> findAllByMonthCriteria(String startDate, String endDate);
+
+    List<Vaccination> findAllByChildId(String childId, Sort createdDate);
 }
