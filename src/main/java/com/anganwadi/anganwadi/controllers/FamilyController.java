@@ -21,19 +21,19 @@ public class FamilyController {
     }
 
     @GetMapping("/getAllHouseholds")
-    private List<householdsHeadList> getAllHouseholds(@RequestHeader String centerName) {
-        return familyService.getAllHouseholds(centerName);
+    private List<householdsHeadList> getAllHouseholds(@RequestHeader String centerId) {
+        return familyService.getAllHouseholds(centerId);
     }
 
 
     @PostMapping("/saveHouseholds")
-    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveHouseholds(householdsDTO, centerName);
+    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO, @RequestHeader String centerId,@RequestHeader String centerName) throws ParseException {
+        return familyService.saveHouseholds(householdsDTO, centerId, centerName);
     }
 
     @PostMapping("/saveFamilyMembers")
-    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO,@RequestHeader String centerName) throws ParseException {
-        return familyService.saveFamilyMembers(familyMemberDTO, centerName);
+    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO,@RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveFamilyMembers(familyMemberDTO, centerId, centerName);
     }
 
 //    @PutMapping("updateRegisteredValue")
@@ -63,8 +63,8 @@ public class FamilyController {
     }
 
     @GetMapping("/getAllHouseholdsChildren")
-    private List<HouseholdsChildren> getAllHouseholdsChildren(@RequestHeader String centerName) throws ParseException {
-        return familyService.getAllHouseholdsChildren(centerName);
+    private List<HouseholdsChildren> getAllHouseholdsChildren(@RequestHeader String centerId) throws ParseException {
+        return familyService.getAllHouseholdsChildren(centerId);
     }
 
     @PutMapping("/updateHouseHold")

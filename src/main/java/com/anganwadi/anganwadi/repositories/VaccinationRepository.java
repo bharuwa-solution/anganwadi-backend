@@ -10,10 +10,10 @@ import java.util.List;
 
 @Repository
 public interface VaccinationRepository extends MongoRepository<Vaccination, String> {
-    List<Vaccination> findAllByVaccinationCodeAndCenterName(String vaccinationName, String centerName, Sort createdDate);
+    List<Vaccination> findAllByVaccinationCodeAndCenterId(String vaccinationName, String centerId, Sort createdDate);
 
-    List<Vaccination> findAllByCenterName(String centerName, Sort createdDate);
+    List<Vaccination> findAllByCenterId(String centerName, Sort createdDate);
 
-    @Query("{'month':{$regex:?0}}")
-    List<Vaccination> findAllByMonth(String month);
+    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
+    List<Vaccination> findAllByMonthCriteria(String startDate, String endDate);
 }

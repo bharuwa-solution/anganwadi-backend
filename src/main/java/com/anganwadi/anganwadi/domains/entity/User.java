@@ -18,6 +18,7 @@ public class User extends BaseObject {
     private String centerName;
     private String name;
     private String mobileNumber;
+    private long lastLogin;
     private String password;
     private String gender;
     private String email;

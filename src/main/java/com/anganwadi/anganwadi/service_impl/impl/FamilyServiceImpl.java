@@ -56,15 +56,6 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
 
-    private String centerId(String centerName) {
-
-        AnganwadiCenter centerId = anganwadiCenterRepository.findByCenterName(centerName);
-
-        return centerId.getId();
-
-    }
-
-
     public int totalHouseholdsMale(String familyId) {
         int totalMale = 0;
         LocalDateTime date = LocalDateTime.now().minusYears(6);
@@ -146,14 +137,13 @@ public class FamilyServiceImpl implements FamilyService {
 
 
         return totalChildren;
-
     }
 
 
     @Override
-    public List<householdsHeadList> getAllHouseholds(String centerName) {
+    public List<householdsHeadList> getAllHouseholds(String centerId) {
         List<householdsHeadList> addInList = new ArrayList<>();
-        List<Family> familyList = familyRepository.findAllByCenterName(centerName,Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Family> familyList = familyRepository.findAllByCenterId(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // Get Head of Family Details
 
@@ -218,11 +208,12 @@ public class FamilyServiceImpl implements FamilyService {
 
 
     @Override
-    public HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerName) throws ParseException {
+    public HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerId, String centerName) throws ParseException {
 
         String name = householdsDTO.getHeadName() == null ? "" : householdsDTO.getHeadName();
         String headDob = householdsDTO.getHeadDob() == null ? "" : householdsDTO.getHeadDob();
-        String centerID = householdsDTO.getCenterId() == null ? centerId(centerName) : householdsDTO.getCenterId();
+        String centerID = householdsDTO.getCenterId() == null ? "" : householdsDTO.getCenterId();
+        String centerNames = householdsDTO.getCenterName() == null ? "" : householdsDTO.getCenterName();
         String houseNo = householdsDTO.getHouseNo() == null ? "" : householdsDTO.getHouseNo();
         String mobileNo = householdsDTO.getMobileNumber() == null ? "" : householdsDTO.getMobileNumber();
         String headPic = householdsDTO.getHeadPic() == null ? "" : householdsDTO.getHeadPic();
@@ -251,9 +242,8 @@ public class FamilyServiceImpl implements FamilyService {
         Family saveFamily = Family.builder()
                 .houseNo(houseNo)
                 .familyId(familyId)
-                .centerName(centerName)
+                .centerName(centerNames)
                 .centerId(centerID)
-                .centerName(centerName)
                 .category(category)
                 .religion(religion)
                 .isMinority(isMinority)
@@ -264,7 +254,7 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember saveInMember = FamilyMember.builder()
                 .name(name)
                 .dob(mills)
-                .centerName(centerName)
+                .centerName(centerNames)
                 .maritalStatus("1")
                 .familyId(familyId)
                 .idNumber(uniqueId)
@@ -295,7 +285,6 @@ public class FamilyServiceImpl implements FamilyService {
                 .headDob(headDob)
                 .uniqueCode(uniqueCode)
                 .uniqueId(uniqueId)
-                .centerName(centerName)
                 .totalMembers("")
                 .headPic(headPic)
                 .centerId(centerID)
@@ -312,7 +301,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO, String centerName) throws ParseException {
+    public FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO, String centerId, String centerName) throws ParseException {
 
         String name = familyMemberDTO.getName() == null ? "" : familyMemberDTO.getName();
         String relationShip = familyMemberDTO.getRelationWithOwner() == null ? "" : familyMemberDTO.getRelationWithOwner();
@@ -361,6 +350,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .idNumber(familyMemberDTO.getIdNumber() == null ? "" : familyMemberDTO.getIdNumber())
                 .dob(mills)
                 .recordForMonth(getMonth)
+                .centerId(centerId)
                 .centerName(centerName)
                 .motherName(motherName)
                 .fatherName(fatherName)
@@ -953,31 +943,30 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<GetVaccinationDTO> getVaccinationRecords(String vaccineName, String centerName) {
-
+    public List<GetVaccinationDTO> getVaccinationRecords(String vaccineCode, String centerId) {
 
         List<GetVaccinationDTO> addList = new ArrayList<>();
-        String childName = "", motherName = "", gender = "", dob = "", vaccinationName = "", photo = "";
         List<Vaccination> vaccinationList = new ArrayList<>();
         HashSet<String> uniqueFamilyId = new HashSet<>();
+        String code = vaccineCode == null ? "" : vaccineCode;
 
-        if (vaccineName.trim().length() > 0) {
-            vaccinationList = vaccinationRepository.findAllByVaccinationCodeAndCenterName(vaccineName, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
+        if (code.trim().length() > 0) {
+            vaccinationList = vaccinationRepository.findAllByVaccinationCodeAndCenterId(vaccineCode, centerId, Sort.by(Sort.Direction.ASC, "createdDate"));
         } else {
-            vaccinationList = vaccinationRepository.findAllByCenterName(centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
+            vaccinationList = vaccinationRepository.findAllByCenterId(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
         }
 
         for (Vaccination vaccDetails : vaccinationList) {
-            if (uniqueFamilyId.add(vaccDetails.getFamilyId())) {
-                FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getChildId()).get();
-                long getMills = fmd.getDob();
-                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = new Date(getMills);
+            FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getChildId()).get();
+            long getMills = fmd.getDob();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
 
                 GetVaccinationDTO addSingle = GetVaccinationDTO.builder()
                         .name(fmd.getName())
                         .gender(fmd.getGender())
-                        .vaccination(vaccDetails.getVaccinationCode())
+                        .vaccinationCode(vaccDetails.getVaccinationCode())
+                        .vaccinationName(vaccDetails.getVaccinationName())
                         .age(df.format(date))
                         .photo(fmd.getPhoto())
                         .motherName(fmd.getMotherName())
@@ -985,14 +974,14 @@ public class FamilyServiceImpl implements FamilyService {
                 addList.add(addSingle);
             }
 
-        }
+
 
         return addList;
 
     }
 
     @Override
-    public List<HouseholdsChildren> getAllHouseholdsChildren(String centerName) throws ParseException {
+    public List<HouseholdsChildren> getAllHouseholdsChildren(String centerId) throws ParseException {
 
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -1006,7 +995,7 @@ public class FamilyServiceImpl implements FamilyService {
         long convertToMills = zdt.toInstant().toEpochMilli();
         log.info("Time "+convertToMills);
 
-        List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterName(convertToMills, centerName);
+        List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId);
         String gender = "";
 
         if (findAllChildren.size() > 0) {
@@ -1425,19 +1414,20 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerName) {
+    public SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId, String centerName) {
 
         String familyId = saveVaccinationDTO.getFamilyId() == null ? "" : saveVaccinationDTO.getFamilyId();
         String motherName = saveVaccinationDTO.getMotherName() == null ? "" : saveVaccinationDTO.getMotherName();
         String childId = saveVaccinationDTO.getChildId() == null ? "" : saveVaccinationDTO.getChildId();
         String vaccinationName = saveVaccinationDTO.getVaccinationName() == null ? "" : saveVaccinationDTO.getVaccinationName();
         String visitFor = saveVaccinationDTO.getVisitFor() == null ? "" : saveVaccinationDTO.getVisitFor();
+        String vaccinationCode = saveVaccinationDTO.getVaccinationCode() == null ? "" : saveVaccinationDTO.getVaccinationCode();
         String visitType = saveVaccinationDTO.getVisitType() == null ? "" : saveVaccinationDTO.getVisitType();
         String desc = saveVaccinationDTO.getDescription() == null ? "" : saveVaccinationDTO.getDescription();
         String visitRound = saveVaccinationDTO.getVisitRound() == null ? "" : saveVaccinationDTO.getVisitRound();
         String latitude = saveVaccinationDTO.getLatitude() == null ? "" : saveVaccinationDTO.getLatitude();
         String longitude = saveVaccinationDTO.getLongitude() == null ? "" : saveVaccinationDTO.getLongitude();
-
+        String dob = saveVaccinationDTO.getDob() == null ? "" : saveVaccinationDTO.getDob();
         // Current Date
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
@@ -1455,36 +1445,39 @@ public class FamilyServiceImpl implements FamilyService {
         Vaccination saveRecord = Vaccination.builder()
                 .familyId(familyId)
                 .date(mills)
+                .centerId(centerId)
                 .centerName(centerName)
                 .motherName(motherName)
                 .childId(childId)
                 .description(desc)
-                .vaccinationCode(vaccinationName)
+                .vaccinationCode(vaccinationCode)
+                .vaccinationName(vaccinationName)
                 .build();
         vaccinationRepository.save(saveRecord);
 
         // Save in Visits
-        Visits saveVaccinationVisit = Visits.builder()
-                .visitType(visitType)
-                .visitFor(visitFor)
-                .memberId(childId)
-                .category(visitCat)
-                .familyId(familyId)
-                .centerName(centerName)
-                .childDob(0)
-                .visitDateTime(mills)
-                .description(desc)
-                .latitude(latitude)
-                .longitude(longitude)
-                .visitRound(visitRound)
-                .build();
-        visitsRepository.save(saveVaccinationVisit);
+//        Visits saveVaccinationVisit = Visits.builder()
+//                .visitType(visitType)
+//                .visitFor(visitFor)
+//                .memberId(childId)
+//                .category(visitCat)
+//                .familyId(familyId)
+//                .centerName(centerName)
+//                .childDob(new Date(dob).getTime())
+//                .visitDateTime(mills)
+//                .description(desc)
+//                .latitude(latitude)
+//                .longitude(longitude)
+//                .visitRound(visitRound)
+//                .build();
+//        visitsRepository.save(saveVaccinationVisit);
 
         return SaveVaccinationDTO.builder()
                 .familyId(familyId)
                 .date(df.format(mills))
                 .motherName(motherName)
                 .childId(childId)
+                .dob(dob)
                 .description(desc)
                 .vaccinationName(vaccinationName)
                 .visitType(visitType)
@@ -1794,11 +1787,15 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<VaccinationRecordsDTO> getVaccinationData(String month) {
+    public List<VaccinationRecordsDTO> getVaccinationData(String startDate, String endDate) throws ParseException {
 
-        String selectedMonth = month == null ? "" : month;
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date startTime = df.parse(startDate);
+        Date endTime = df.parse(endDate);
+
         List<VaccinationRecordsDTO> addInList = new ArrayList<>();
-        List<Vaccination> vaccinationList = vaccinationRepository.findAllByMonth(selectedMonth);
+        List<Vaccination> vaccinationList = vaccinationRepository.findAllByMonthCriteria(startDate, endDate);
 
         for (Vaccination details : vaccinationList) {
             VaccinationRecordsDTO singleEntry = VaccinationRecordsDTO.builder()

@@ -13,7 +13,10 @@ public class SaveVaccinationDTO {
 
     private String familyId;
     private String motherName;
+    private String dob;
     private String childId;
+    private String photo;
+    private String vaccinationCode;
     private String vaccinationName;
     private String description;
     private String visitRound;

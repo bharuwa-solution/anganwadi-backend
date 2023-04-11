@@ -8,11 +8,11 @@ import java.text.ParseException;
 import java.util.List;
 
 public interface FamilyService {
-    List<householdsHeadList> getAllHouseholds(String centerName);
+    List<householdsHeadList> getAllHouseholds(String centerId);
 
-    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerName) throws ParseException;
+    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerId, String centerName) throws ParseException;
 
-    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO,  String centerName) throws ParseException;
+    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO, String centerId, String centerName) throws ParseException;
 
     List<FamilyMemberDTO> getFamilyMembers(String familyId);
 
@@ -28,9 +28,9 @@ public interface FamilyService {
 
     FamilyMemberCounts getMembersByFamilyId(String familyId);
 
-    List<GetVaccinationDTO> getVaccinationRecords(String vaccineName, String centerName);
+    List<GetVaccinationDTO> getVaccinationRecords(String vaccineCode, String centerId);
 
-    List<HouseholdsChildren> getAllHouseholdsChildren(String centerName) throws ParseException;
+    List<HouseholdsChildren> getAllHouseholdsChildren(String centerId) throws ParseException;
 
     List<FemaleMembersDTO> getHouseholdsFemaleDetails(String centerName);
 
@@ -42,7 +42,7 @@ public interface FamilyService {
 
     List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerName) throws ParseException;
 
-    SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerName);
+    SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId, String centerName);
 
     DashboardFamilyData getDashboardFamilyData(LocationFilter filter);
 
@@ -56,7 +56,7 @@ public interface FamilyService {
 
     DeliveryDTO getDeliveryData(String startDate, String endDate) throws ParseException;
 
-    List<VaccinationRecordsDTO> getVaccinationData(String month);
+    List<VaccinationRecordsDTO> getVaccinationData(String startDate, String endDate) throws ParseException;
 
     HouseholdsDTO updateHouseHold(HouseholdsDTO householdsDTO);
 

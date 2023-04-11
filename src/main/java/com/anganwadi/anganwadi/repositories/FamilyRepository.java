@@ -12,10 +12,10 @@ import java.util.List;
 public interface FamilyRepository extends MongoRepository<Family, String> {
     List<Family> findAllByFamilyId(String familyId);
 
-    List<Family> findAllByCenterName(String centerName, Sort createdDate);
-
     @Query("{'familyId':{$in:[?0]}}")
     List<Family> findAllByFamilyIdIn(String familyId);
 
     Family findByFamilyId(String familyId);
+
+    List<Family> findAllByCenterId(String centerId, Sort createdDate);
 }

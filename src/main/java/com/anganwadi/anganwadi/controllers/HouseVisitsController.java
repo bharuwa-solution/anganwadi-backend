@@ -50,13 +50,4 @@ public class HouseVisitsController {
         return familyService.saveBirthDetails(birthDetails, centerName);
     }
 
-    @PostMapping("/saveVaccinationDetails")
-    private SaveVaccinationDTO saveVaccinationDetails(@RequestBody SaveVaccinationDTO saveVaccinationDTO, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveVaccinationDetails(saveVaccinationDTO, centerName);
-    }
-
-    @GetMapping("/getVaccinationRecords")
-    private List<GetVaccinationDTO> getVaccinationRecords(@RequestParam(required = false) String vaccineName, @RequestHeader String centerName) {
-        return familyService.getVaccinationRecords(vaccineName, centerName);
-    }
 }

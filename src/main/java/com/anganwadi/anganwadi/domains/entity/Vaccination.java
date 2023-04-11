@@ -17,10 +17,12 @@ public class Vaccination extends StateObject {
     private String familyId;
     private String childId;
     private String month;
+    private String centerId;
     private String centerName;
     private String motherName;
     private String description;
     private String vaccinationCode;
+    private String vaccinationName;
     private long date;
 
 }

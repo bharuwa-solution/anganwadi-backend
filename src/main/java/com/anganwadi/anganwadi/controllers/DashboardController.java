@@ -63,8 +63,8 @@ public class DashboardController {
     }
 
     @GetMapping("getVaccinationData")
-    private List<VaccinationRecordsDTO> getVaccinationData(@RequestParam(required = false) String month){
-        return familyService.getVaccinationData(month);
+    private List<VaccinationRecordsDTO> getVaccinationDa(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+        return familyService.getVaccinationData(startDate, endDate);
     }
 
     @GetMapping("getAttendanceData")

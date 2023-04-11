@@ -15,6 +15,7 @@ public class GetVaccinationDTO {
     private String motherName;
     private String age;
     private String gender;
-    private String vaccination;
+    private String vaccinationCode;
+    private String vaccinationName;
     private String photo;
 }

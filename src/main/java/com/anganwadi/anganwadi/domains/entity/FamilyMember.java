@@ -25,6 +25,7 @@ public class FamilyMember  extends BaseObject{
     private String stateCode;
     private String idType;
     private String idNumber;
+    private String centerId;
     private String centerName;
     private String relationWithOwner;
     private String gender;

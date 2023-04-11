@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         if (verifyotp.size()>0 || otpDTO.getOtp().trim().equals("1105")) {
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
-                    .centerId(user.getCenterId()==null?"":user.getCenterId())
+                    .centerId(user.getUniqueCode()==null?"":user.getUniqueCode())
                     .centerName(user.getCenterName()==null?"":user.getCenterName())
                     .userPic(user.getUserPic()==null?"":user.getUserPic())
                     .mobileNumber(user.getMobileNumber()==null?"":user.getMobileNumber())
@@ -132,6 +132,12 @@ public class UserServiceImpl implements UserService {
                     .dob(user.getDob()==null?"":otpDTO.getDob())
                     .email(user.getEmail()==null?"":user.getEmail())
                     .build();
+
+            User findUser = userRepository.findByMobileNumber(otpDTO.getMobileNumber());
+
+            findUser.setLastLogin(new Date().getTime());
+            userRepository.save(findUser);
+
 
         } else {
             throw new BadRequestException("Incorrect Otp, please fill correct otp");
