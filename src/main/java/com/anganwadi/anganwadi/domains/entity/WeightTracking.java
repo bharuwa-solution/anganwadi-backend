@@ -15,6 +15,7 @@ public class WeightTracking extends StateObject {
 
     private String familyId;
     private String childId;
+    private String centerId;
     private String centerName;
     private long date;
     private String height;

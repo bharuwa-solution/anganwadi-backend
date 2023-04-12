@@ -542,7 +542,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerName) throws ParseException {
+    public WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
         String convertToString = df.format(date);
@@ -560,6 +560,7 @@ public class FamilyServiceImpl implements FamilyService {
         WeightTracking saveRecord = WeightTracking.builder()
                 .familyId(findDetails.getFamilyId() == null ? "" : findDetails.getFamilyId())
                 .childId(weightRecordsDTO.getChildId() == null ? "" : weightRecordsDTO.getChildId())
+                .centerId(centerId)
                 .date(mills)
                 .centerName(centerName)
                 .weight(weightRecordsDTO.getWeight() == null ? "" : weightRecordsDTO.getWeight())
@@ -623,22 +624,30 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<WeightRecordsDTO> getAllChildWeightRecords(String centerName) {
+    public List<WeightRecordsDTO> getAllChildWeightRecords(String centerId) {
 
-        if (StringUtils.isEmpty(centerName.trim())) {
-            throw new CustomException("center Name Is Missed, Please Check!!");
+        if (StringUtils.isEmpty(centerId.trim())) {
+            throw new CustomException("center Details Are Missed, Please Check!!");
         }
+
+        LocalDateTime minus6Years = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(minus6Years, ZoneId.systemDefault());
+        long convertToMills = zdt.toInstant().toEpochMilli();
 
         HashSet<String> uniqueChildId = new HashSet<>();
         List<WeightRecordsDTO> addInList = new ArrayList<>();
-        List<WeightTracking> findAllChildRecords = weightTrackingRepository.findAllByCenterName(centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<FamilyMember> findAllChildRecords = familyMemberRepository.findAllByCenterIdAndDob(centerId, convertToMills, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        for (WeightTracking tracking : findAllChildRecords) {
+        for (FamilyMember tracking : findAllChildRecords) {
 
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            Date date = new Date(tracking.getDate());
-            FamilyMember findChildDetails = familyMemberRepository.findById(tracking.getChildId()).get();
-            Family findFamilyDetails = familyRepository.findByFamilyId(findChildDetails.getFamilyId());
+            List<WeightTracking> findChildDetails = weightTrackingRepository.findAllByChildId(tracking.getId(),Sort.by(Sort.Direction.DESC, "createdDate"));
+
+            Date date = new Date();
+            for(WeightTracking weightDetails :  findChildDetails) {
+                date = new Date(weightDetails.getDate());
+            }
+
 
             if (uniqueChildId.add(tracking.getChildId())) {
                 WeightRecordsDTO singleEntry = WeightRecordsDTO.builder()
@@ -1626,27 +1635,28 @@ public class FamilyServiceImpl implements FamilyService {
 
             for (FamilyMember fm : findByCategory) {
 
+                switch (fm.getCategory().trim()) {
+                    case  "1":
+                        general++;
+                        break;
 
-                if (fm.getCategory().trim().equals("1")) {
-                    general++;
+                    case  "2":
+                        obc++;
+                        break;
+
+                    case  "3":
+                        sc++;
+                        break;
+
+                    case  "4":
+                        st++;
+                        break;
+
+                    case  "5":
+                        others++;
+                        break;
+
                 }
-
-                if (fm.getCategory().trim().equals("2")) {
-                    obc++;
-                }
-
-                if (fm.getCategory().trim().equals("3")) {
-                    sc++;
-                }
-
-                if (fm.getCategory().trim().equals("4")) {
-                    st++;
-                }
-
-                if (fm.getCategory().trim().equals("5")) {
-                    others++;
-                }
-
             }
         }
 
@@ -1677,8 +1687,10 @@ public class FamilyServiceImpl implements FamilyService {
         List<Visits> findPregnancyData = visitsRepository.findAllByPregnancyCriteria(startTime, endTime);
         for (Visits cat : findPregnancyData) {
 
-            if (cat.getCategory().trim().equals("1")) {
-                gen++;
+            switch (cat.getCategory().trim()) {
+                case "1":
+                    gen++;
+                    break;
             }
 
             if (cat.getCategory().trim().equals("2")) {
@@ -2017,7 +2029,6 @@ public class FamilyServiceImpl implements FamilyService {
                 addInList.add(memberVisits);
 
             }
-
         }
 
         return addInList;

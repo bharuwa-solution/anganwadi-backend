@@ -20,8 +20,8 @@ public class WeightController {
     }
 
     @PostMapping("/saveWeightRecords")
-    private WeightRecordsDTO saveWeightRecords(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveWeightRecords(weightRecordsDTO,centerName);
+    private WeightRecordsDTO saveWeightRecords(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveWeightRecords(weightRecordsDTO,centerId, centerName);
     }
 
     @GetMapping("/getChildWeightRecords")
@@ -30,8 +30,8 @@ public class WeightController {
     }
 
     @GetMapping("/getAllChildWeightRecords")
-    private List<WeightRecordsDTO> getAllChildWeightRecords(@RequestHeader String centerName) {
-        return familyService.getAllChildWeightRecords(centerName);
+    private List<WeightRecordsDTO> getAllChildWeightRecords(@RequestHeader String centerId) {
+        return familyService.getAllChildWeightRecords(centerId);
     }
 
 }
