@@ -32,4 +32,6 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
 
     @Query("{'childId':?0,'isRegistered':true}")
     List<AnganwadiChildren> findAllByChildIdAndRegisteredTrue(String id);
+
+    void deleteAllByChildId(String primaryId);
 }

@@ -14,11 +14,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Attendance extends StateObject {
 
     private String familyId;
+    private String centerId;
     private String centerName;
     private String name;
     private boolean isRegistered;
     private String childId;
     private long date;
+    private String attType;
     private String latitude;
     private String longitude;
     private String dob;

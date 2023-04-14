@@ -16,7 +16,7 @@ public interface FamilyService {
 
     List<FamilyMemberDTO> getFamilyMembers(String familyId);
 
-    VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerName) throws ParseException;
+    VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerId, String centerName) throws ParseException;
 
     WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName) throws ParseException;
 
@@ -65,6 +65,12 @@ public interface FamilyService {
     HouseholdsDTO getHouseholdById(String id);
 
     List<PerVaccineRecord> getVaccinationByChildId(String childId);
+
+    HouseholdsDTO deleteHouseHold(String familyId, String id);
+
+    List<BeneficiaryList> getAllBeneficiaryList(String centerId);
+
+    FamilyMemberDTO deleteFamilyMembers(String memberId, String id);
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }

@@ -18,6 +18,7 @@ public class Visits extends StateObject {
     private String memberId;
     private long childDob;
     private String category;
+    private String centerId;
     private String centerName;
     private String visitType;
     private String visitFor;

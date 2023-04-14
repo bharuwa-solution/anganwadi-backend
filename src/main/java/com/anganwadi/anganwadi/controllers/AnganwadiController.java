@@ -34,6 +34,12 @@ public class AnganwadiController {
         return anganwadiChildrenService.makeAndUpdateAttendance(attendanceDTO, centerName);
     }
 
+    @PostMapping("makeAttendanceManual")
+    private List<AttendanceDTO> makeAttendanceManual(@RequestBody List<AttendanceDTO> attendanceDTO, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.makeAttendanceManual(attendanceDTO, centerId);
+    }
+
+
     @GetMapping("getAttendanceByDate")
     private List<AttendanceDTO> getAttendanceByDate(@RequestParam String  date, @RequestHeader String centerName) throws ParseException {
         return anganwadiChildrenService.getAttendanceByDate(date,centerName);
@@ -52,8 +58,8 @@ public class AnganwadiController {
     }
 
     @PostMapping("saveChildrenRecord")
-    private SaveAdmissionDTO saveChildrenRecord(@RequestBody SaveAdmissionDTO saveAdmissionDTO, @RequestHeader String centerName) throws ParseException, IOException {
-        return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO,centerName);
+    private SaveAdmissionDTO saveChildrenRecord(@RequestBody SaveAdmissionDTO saveAdmissionDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException, IOException {
+        return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO,centerId, centerName);
     }
 
     @PutMapping("updateRegisteredValue")
@@ -61,18 +67,15 @@ public class AnganwadiController {
         return anganwadiChildrenService.updateRegisteredValue(id, isRegistered);
     }
 
-
     @GetMapping("getTotalChildren")
     private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerName) {
         return anganwadiChildrenService.getTotalChildren(centerName);
     }
 
-
     @GetMapping("getRegisteredHouseholdsList")
     private List<householdsHeadList> getRegisteredHouseholdsList(@RequestHeader String centerName) {
         return anganwadiChildrenService.getRegisteredHouseholdsList(centerName);
     }
-
 
 
 }

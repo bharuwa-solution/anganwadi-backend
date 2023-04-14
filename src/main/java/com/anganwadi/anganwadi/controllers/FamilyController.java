@@ -72,6 +72,16 @@ public class FamilyController {
         return familyService.updateHouseHold(householdsDTO);
     }
 
+    @PutMapping("/deleteHouseHold")
+    private HouseholdsDTO deleteHouseHold(@RequestParam String familyId, @RequestParam String id){
+        return familyService.deleteHouseHold(familyId, id);
+    }
+
+    @PutMapping("/deleteFamilyMembers")
+    private FamilyMemberDTO deleteFamilyMembers(@RequestParam String memberId, @RequestParam String id){
+        return familyService.deleteFamilyMembers(memberId, id);
+    }
+
 
     @PutMapping("/updateHouseHoldMember")
     private FamilyMemberDTO updateHouseHoldMember(@RequestBody FamilyMemberDTO familyMemberDTO){
@@ -81,6 +91,11 @@ public class FamilyController {
     @GetMapping("/getHouseholdById")
     private HouseholdsDTO getHouseholdById(@RequestParam String id){
         return familyService.getHouseholdById(id);
+    }
+
+    @GetMapping("/getAllBeneficiaryList")
+    private List<BeneficiaryList> getAllBeneficiaryList(@RequestParam(required = false) String centerId){
+        return familyService.getAllBeneficiaryList(centerId);
     }
 
 }

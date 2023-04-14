@@ -16,6 +16,7 @@ public class Vaccination extends StateObject {
 
     private String familyId;
     private String childId;
+    private String houseNo;
     private String month;
     private String centerId;
     private String centerName;

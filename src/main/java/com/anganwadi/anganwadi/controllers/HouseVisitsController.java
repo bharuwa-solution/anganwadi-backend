@@ -21,8 +21,8 @@ public class HouseVisitsController {
     }
 
     @PostMapping("/saveVisitsDetails")
-    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveVisitsDetails(visitsDetailsDTO,centerName);
+    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO,@RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveVisitsDetails(visitsDetailsDTO,centerId,centerName);
     }
 
     @GetMapping("/getHouseholdsFemaleDetails")

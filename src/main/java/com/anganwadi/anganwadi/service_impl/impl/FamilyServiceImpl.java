@@ -37,12 +37,16 @@ public class FamilyServiceImpl implements FamilyService {
     private final BabiesBirthRepository babiesBirthRepository;
     private final AnganwadiChildrenRepository anganwadiChildrenRepository;
     private final AnganwadiCenterRepository anganwadiCenterRepository;
+    private final UserRepository userRepository;
+    private final AttendanceRepository attendanceRepository;
+
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
                              VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
                              PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
-                             AnganwadiChildrenRepository anganwadiChildrenRepository, AnganwadiCenterRepository anganwadiCenterRepository) {
+                             AnganwadiChildrenRepository anganwadiChildrenRepository, AnganwadiCenterRepository anganwadiCenterRepository,
+                             UserRepository userRepository, AttendanceRepository attendanceRepository) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
@@ -53,6 +57,15 @@ public class FamilyServiceImpl implements FamilyService {
         this.babiesBirthRepository = babiesBirthRepository;
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.anganwadiCenterRepository = anganwadiCenterRepository;
+        this.userRepository = userRepository;
+        this.attendanceRepository = attendanceRepository;
+    }
+
+    private String findCenterName(String centerId) {
+        AnganwadiCenter centers = anganwadiCenterRepository.findById(centerId).get();
+
+        return centers.getCenterName().trim();
+
     }
 
 
@@ -150,57 +163,59 @@ public class FamilyServiceImpl implements FamilyService {
         for (Family getHouseholds : familyList) {
             String headName = "", dob = "", pic = "", gender = "", headId = "";
             int male = 0, female = 0, children = 0;
+            if (!getHouseholds.isDeleted()) {
+
+                List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(getHouseholds.getFamilyId().trim(), Sort.by(Sort.Direction.DESC, "createdDate"));
+                boolean headFound = false;
+
+                for (int i = 0; i <= findHeadDetails.size(); i++) {
+
+                    for (FamilyMember checkDetails : findHeadDetails) {
+
+                        long getDob = checkDetails.getDob();
+                        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                        Date date = new Date(getDob);
 
 
-            List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(getHouseholds.getFamilyId().trim(), Sort.by(Sort.Direction.DESC, "createdDate"));
-            boolean headFound = false;
-
-            for (int i = 0; i <= findHeadDetails.size(); i++) {
-
-                for (FamilyMember checkDetails : findHeadDetails) {
-
-                    long getDob = checkDetails.getDob();
-                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                    Date date = new Date(getDob);
-
-
-                    if (checkDetails.getRelationWithOwner().equalsIgnoreCase("0")) {
-                        headName = checkDetails.getName();
-                        headId = checkDetails.getId();
-                        dob = df.format(date);
-                        pic = checkDetails.getPhoto();
-                        gender = checkDetails.getGender();
-                        break;
-                    } else {
-                        headName = checkDetails.getName();
-                        headId = checkDetails.getId();
-                        dob = df.format(date);
-                        pic = checkDetails.getPhoto();
-                        gender = checkDetails.getGender();
+                        if (checkDetails.getRelationWithOwner().equalsIgnoreCase("0")) {
+                            headName = checkDetails.getName();
+                            headId = checkDetails.getId();
+                            dob = df.format(date);
+                            pic = checkDetails.getPhoto();
+                            gender = checkDetails.getGender();
+                            break;
+                        } else {
+                            headName = checkDetails.getName();
+                            headId = checkDetails.getId();
+                            dob = df.format(date);
+                            pic = checkDetails.getPhoto();
+                            gender = checkDetails.getGender();
+                        }
                     }
                 }
+
+
+                // Count Members
+                long countMembers = familyMemberRepository.countByFamilyId(getHouseholds.getFamilyId());
+
+                // Map Details
+                householdsHeadList householdsDTO = householdsHeadList.builder()
+                        .id(getHouseholds.getId())
+                        .headName(headName)
+                        .headDob(dob)
+                        .houseNo(getHouseholds.getHouseNo())
+                        .familyId(getHouseholds.getFamilyId())
+                        .religion(getHouseholds.getReligion())
+                        .headGender(gender)
+                        .totalMale(totalHouseholdsMale(getHouseholds.getFamilyId()))
+                        .totalFemale(totalHouseholdsFemale(getHouseholds.getFamilyId()))
+                        .totalChildren(totalHouseholdsChildren(getHouseholds.getFamilyId()))
+                        .category(getHouseholds.getCategory())
+                        .totalMembers(String.valueOf(countMembers))
+                        .headPic(pic)
+                        .build();
+                addInList.add(householdsDTO);
             }
-
-            // Count Members
-            long countMembers = familyMemberRepository.countByFamilyId(getHouseholds.getFamilyId());
-
-            // Map Details
-            householdsHeadList householdsDTO = householdsHeadList.builder()
-                    .id(getHouseholds.getId())
-                    .headName(headName)
-                    .headDob(dob)
-                    .houseNo(getHouseholds.getHouseNo())
-                    .familyId(getHouseholds.getFamilyId())
-                    .religion(getHouseholds.getReligion())
-                    .headGender(gender)
-                    .totalMale(totalHouseholdsMale(getHouseholds.getFamilyId()))
-                    .totalFemale(totalHouseholdsFemale(getHouseholds.getFamilyId()))
-                    .totalChildren(totalHouseholdsChildren(getHouseholds.getFamilyId()))
-                    .category(getHouseholds.getCategory())
-                    .totalMembers(String.valueOf(countMembers))
-                    .headPic(pic)
-                    .build();
-            addInList.add(householdsDTO);
         }
 
         return addInList;
@@ -212,8 +227,8 @@ public class FamilyServiceImpl implements FamilyService {
 
         String name = householdsDTO.getHeadName() == null ? "" : householdsDTO.getHeadName();
         String headDob = householdsDTO.getHeadDob() == null ? "" : householdsDTO.getHeadDob();
-        String centerID = householdsDTO.getCenterId() == null ? "" : householdsDTO.getCenterId();
-        String centerNames = householdsDTO.getCenterName() == null ? "" : householdsDTO.getCenterName();
+        String centerID = centerId == null ? "" : centerId;
+        String centerNames = centerName == null ? "" : centerName;
         String houseNo = householdsDTO.getHouseNo() == null ? "" : householdsDTO.getHouseNo();
         String mobileNo = householdsDTO.getMobileNumber() == null ? "" : householdsDTO.getMobileNumber();
         String headPic = householdsDTO.getHeadPic() == null ? "" : householdsDTO.getHeadPic();
@@ -254,6 +269,7 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember saveInMember = FamilyMember.builder()
                 .name(name)
                 .dob(mills)
+                .centerId(centerID)
                 .centerName(centerNames)
                 .maritalStatus("1")
                 .familyId(familyId)
@@ -451,6 +467,13 @@ public class FamilyServiceImpl implements FamilyService {
         if (StringUtils.isEmpty(familyId.trim())) {
             throw new CustomException("Family Id Is Missed, Please Check!!");
         }
+
+        Family checkDeleted = familyRepository.findByFamilyId(familyId);
+
+        if (checkDeleted.isDeleted()) {
+            throw new CustomException("The Family Is Deleted, Please Check With Support Team, to Re-activate It!!");
+        }
+
         List<FamilyMemberDTO> addInList = new ArrayList<>();
         List<FamilyMember> getMembers = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.ASC, "createdDate"));
         String gender = "";
@@ -500,7 +523,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerName) throws ParseException {
+    public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerId, String centerName) throws ParseException {
 
 
 //        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -525,6 +548,7 @@ public class FamilyServiceImpl implements FamilyService {
         Visits saveVisitDetails = Visits.builder()
                 .memberId(visitsDetailsDTO.getMemberId() == null ? "" : visitsDetailsDTO.getMemberId())
                 .familyId(familyId)
+                .centerId(centerId)
                 .centerName(centerName)
                 .visitType(visitsDetailsDTO.getVisitType() == null ? "" : visitsDetailsDTO.getVisitType())
                 .visitFor(visitsDetailsDTO.getVisitFor() == null ? "" : visitsDetailsDTO.getVisitFor())
@@ -627,12 +651,13 @@ public class FamilyServiceImpl implements FamilyService {
     public List<WeightRecordsDTO> getAllChildWeightRecords(String centerId) {
 
         if (StringUtils.isEmpty(centerId.trim())) {
-            throw new CustomException("center Details Are Missed, Please Check!!");
+            throw new CustomException("center Name Is Missed, Please Check!!");
         }
 
         LocalDateTime minus6Years = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(minus6Years, ZoneId.systemDefault());
         long convertToMills = zdt.toInstant().toEpochMilli();
+
 
         HashSet<String> uniqueChildId = new HashSet<>();
         List<WeightRecordsDTO> addInList = new ArrayList<>();
@@ -641,28 +666,46 @@ public class FamilyServiceImpl implements FamilyService {
         for (FamilyMember tracking : findAllChildRecords) {
 
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            List<WeightTracking> findChildDetails = weightTrackingRepository.findAllByChildId(tracking.getId(),Sort.by(Sort.Direction.DESC, "createdDate"));
 
+            List<WeightTracking> findChildDetails = weightTrackingRepository.findAllByChildId(tracking.getId(), Sort.by(Sort.Direction.DESC, "createdDate"));
             Date date = new Date();
-            for(WeightTracking weightDetails :  findChildDetails) {
-                date = new Date(weightDetails.getDate());
+            String weight = "", height = "";
+
+            for (WeightTracking wt : findChildDetails) {
+                date = new Date(wt.getDate());
+
+                if (wt.getWeight().length() > 0) {
+                    weight = wt.getWeight().trim();
+                    break;
+                }
+            }
+
+            for (WeightTracking wt : findChildDetails) {
+                date = new Date(wt.getDate());
+
+                if (wt.getHeight().length() > 0) {
+                    height = wt.getHeight().trim();
+                    break;
+                }
             }
 
 
-            if (uniqueChildId.add(tracking.getChildId())) {
+            Family findFamilyDetails = familyRepository.findByFamilyId(tracking.getFamilyId());
+
+            if (uniqueChildId.add(tracking.getId())) {
                 WeightRecordsDTO singleEntry = WeightRecordsDTO.builder()
                         .familyId(tracking.getFamilyId() == null ? "" : tracking.getFamilyId())
-                        .childId(tracking.getChildId() == null ? "" : tracking.getChildId())
-                        .name(findChildDetails.getName())
+                        .childId(tracking.getId() == null ? "" : tracking.getId())
+                        .name(tracking.getName())
                         .houseNo(findFamilyDetails.getHouseNo() == null ? "" : findFamilyDetails.getHouseNo())
-                        .gender(findChildDetails.getGender())
-                        .motherName(findChildDetails.getMotherName())
-                        .dob(df.format(findChildDetails.getDob()))
-                        .photo(findChildDetails.getPhoto())
+                        .gender(tracking.getGender())
+                        .motherName(tracking.getMotherName())
+                        .dob(df.format(tracking.getDob()))
+                        .photo(tracking.getPhoto())
                         .date(df.format(date))
-                        .centerName(centerName)
-                        .weight(tracking.getWeight() == null ? "" : tracking.getWeight())
-                        .height(tracking.getHeight() == null ? "" : tracking.getHeight())
+                        .centerName(tracking.getCenterName())
+                        .weight(weight)
+                        .height(height)
                         .build();
 
                 addInList.add(singleEntry);
@@ -955,32 +998,39 @@ public class FamilyServiceImpl implements FamilyService {
     public List<GetVaccinationDTO> getVaccinationRecords(String vaccineCode, String centerId) {
 
         List<GetVaccinationDTO> addList = new ArrayList<>();
-        List<Vaccination> vaccinationList = new ArrayList<>();
+        List<Visits> vaccinationList = new ArrayList<>();
         HashSet<String> uniqueFamilyId = new HashSet<>();
         String code = vaccineCode == null ? "" : vaccineCode;
 
         if (code.trim().length() > 0) {
-            vaccinationList = vaccinationRepository.findAllByVaccinationCodeAndCenterId(vaccineCode, centerId, Sort.by(Sort.Direction.ASC, "createdDate"));
+            vaccinationList = visitsRepository.findAllByVisitForSearchCriteria(vaccineCode, centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
         } else {
-            vaccinationList = vaccinationRepository.findAllByCenterId(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
+            vaccinationList = visitsRepository.findAllByVisitForAndCenterId(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
         }
 
-        for (Vaccination vaccDetails : vaccinationList) {
-            FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getChildId()).get();
+        for (Visits vaccDetails : vaccinationList) {
+            FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getMemberId()).get();
+            Family findHouse = familyRepository.findByFamilyId(fmd.getFamilyId());
             long getMills = fmd.getDob();
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date date = new Date(getMills);
 
+            if (uniqueFamilyId.add(fmd.getId())) {
                 GetVaccinationDTO addSingle = GetVaccinationDTO.builder()
                         .name(fmd.getName())
                         .gender(fmd.getGender())
-                        .vaccinationCode(vaccDetails.getVaccinationCode())
-                        .vaccinationName(vaccDetails.getVaccinationName())
+                        .childId(vaccDetails.getMemberId())
+                        .centerId(centerId)
+                        .centerName(findCenterName(centerId))
+                        .houseNo(findHouse.getHouseNo())
+                        .vaccinationCode(vaccDetails.getVisitFor())
+                        .vaccinationName("")
                         .age(df.format(date))
                         .photo(fmd.getPhoto())
                         .motherName(fmd.getMotherName())
                         .build();
                 addList.add(addSingle);
+            }
             }
 
 
@@ -1992,22 +2042,309 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public List<PerVaccineRecord> getVaccinationByChildId(String childId) {
 
-        List<Vaccination> findRecords = vaccinationRepository.findAllByChildId(childId, Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<Visits> findRecords = visitsRepository.findAllByVisitForCriteria(childId, Sort.by(Sort.Direction.ASC, "createdDate"));
         List<PerVaccineRecord> addInSingle = new ArrayList<>();
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-        for (Vaccination lists : findRecords) {
-            Date date = new Date(lists.getDate());
+        for (Visits lists : findRecords) {
+            Date date = new Date(lists.getVisitDateTime());
             PerVaccineRecord singleList = PerVaccineRecord.builder()
-                    .vaccinationCode(lists.getVaccinationCode())
-                    .vaccinationName(lists.getVaccinationName())
+                    .vaccinationCode(lists.getVisitFor())
+                    .vaccinationName("")
                     .date(df.format(date))
                     .build();
             addInSingle.add(singleList);
         }
 
         return addInSingle;
+    }
+
+    @Override
+    public HouseholdsDTO deleteHouseHold(String familyId, String id) {
+
+        try {
+
+            User verifyUser = userRepository.findById(id).get();
+            if (verifyUser.getId().length() > 0 && verifyUser.getRole().equals(ApplicationConstants.USER_ADMIN)) {
+                Family findFamily = familyRepository.findByFamilyId(familyId);
+                String primaryId = findFamily.getId() == null ? "" : findFamily.getId();
+                String centerName = findFamily.getCenterName() == null ? "" : findFamily.getCenterName();
+                String centerId = findFamily.getCenterId() == null ? "" : findFamily.getCenterId();
+                String category = findFamily.getCategory() == null ? "" : findFamily.getCategory();
+                String religion = findFamily.getReligion() == null ? "" : findFamily.getReligion();
+                String isMinority = findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority();
+                String icdsService = findFamily.getIcdsService() == null ? "" : findFamily.getIcdsService();
+
+                findFamily.setDeleted(true);
+                familyRepository.save(findFamily);
+                boolean deletedStatus = findFamily.isDeleted();
+
+
+                List<FamilyMember> findMembers = familyMemberRepository.findAllByFamilyId(familyId, Sort.by(Sort.Direction.DESC, "createdDate"));
+                String headName = "", headPic = "", headGender = "", headMobile = "";
+                Date dob = new Date();
+
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                long totalMembers = findMembers.size();
+
+                if (findMembers.size() > 0) {
+
+                    for (FamilyMember deleteMember : findMembers) {
+                        deleteMember.setDeleted(true);
+                        familyMemberRepository.save(deleteMember);
+
+                        removeFromAnganwadiChildren(deleteMember.getId());
+                        removeFromAttendance(deleteMember.getId());
+                    }
+
+                    for (FamilyMember findHod : findMembers) {
+
+                        if (findHod.getRelationWithOwner().trim().equals("0")) {
+                            headName = findHod.getName();
+                            dob = new Date(findHod.getDob());
+                            headPic = findHod.getPhoto();
+                            headGender = findHod.getGender();
+                            headMobile = findHod.getMobileNumber();
+                            break;
+                        } else {
+                            headName = findHod.getName();
+                            dob = new Date(findHod.getDob());
+                            headPic = findHod.getPhoto();
+                            headGender = findHod.getGender();
+                            headMobile = findHod.getMobileNumber();
+                        }
+
+                    }
+
+                    for (FamilyMember finalStep : findMembers) {
+                        familyMemberRepository.deleteById(finalStep.getId());
+                    }
+                }
+
+                familyRepository.deleteById(primaryId);
+
+
+                return HouseholdsDTO.builder()
+                        .id(primaryId)
+                        .centerName(centerName)
+                        .uniqueCode("")
+                        .uniqueId("")
+                        .headName(headName)
+                        .headDob(df.format(dob))
+                        .totalMembers(String.valueOf(totalMembers))
+                        .headPic(headPic)
+                        .centerId(centerId)
+                        .headGender(headGender)
+                        .houseNo(findFamily.getHouseNo())
+                        .mobileNumber(headMobile)
+                        .uniqueIdType("")
+                        .deleted(deletedStatus)
+                        .category(category)
+                        .religion(religion)
+                        .isMinority(isMinority)
+                        .icdsService(icdsService)
+                        .build();
+
+
+            } else {
+                throw new CustomException("Un-Authorized Access");
+            }
+
+        } catch (NullPointerException e) {
+            throw new CustomException("Family Not Found or Already Deleted, Please Check Again");
+        }
+    }
+
+    private void removeFromAnganwadiChildren(String primaryId) {
+
+        List<AnganwadiChildren> removeChild = anganwadiChildrenRepository.findAllByChildId(primaryId);
+
+        if (removeChild.size() > 0) {
+            anganwadiChildrenRepository.deleteAllByChildId(primaryId);
+        }
+
+    }
+
+    private void removeFromAttendance(String primaryId) {
+
+        List<Attendance> removeAttendance = attendanceRepository.findAllByChildId(primaryId);
+        if (removeAttendance.size() > 0) {
+            attendanceRepository.deleteAllByChildId(primaryId);
+        }
+    }
+
+    @Override
+    public FamilyMemberDTO deleteFamilyMembers(String memberId, String id) {
+
+        try {
+            User verifyUser = userRepository.findById(id).get();
+            if (verifyUser.getId().length() > 0 && verifyUser.getRole().equals(ApplicationConstants.USER_ADMIN)) {
+
+
+                FamilyMember checkMember = familyMemberRepository.findById(memberId).get();
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+
+                String primaryId = checkMember.getId();
+                String category = checkMember.getCategory() == null ? "" : checkMember.getCategory();
+                String name = checkMember.getName() == null ? "" : checkMember.getName();
+                String relationWithOwner = checkMember.getRelationWithOwner() == null ? "" : checkMember.getRelationWithOwner();
+                String gender = checkMember.getGender() == null ? "" : checkMember.getGender();
+                String centerName = checkMember.getCenterName() == null ? "" : checkMember.getCenterName();
+                String memberCode = checkMember.getMemberCode() == null ? "" : checkMember.getMemberCode();
+                String familyId = checkMember.getFamilyId() == null ? "" : checkMember.getFamilyId();
+                String mobileNo = checkMember.getMobileNumber() == null ? "" : checkMember.getMobileNumber();
+                String idType = checkMember.getIdType() == null ? "" : checkMember.getIdType();
+                String idNumber = checkMember.getIdNumber() == null ? "" : checkMember.getIdNumber();
+                String dob = df.format(new Date(checkMember.getDob()));
+                String handicap = checkMember.getHandicap() == null ? "" : checkMember.getHandicap();
+                String maritalStatus = checkMember.getMaritalStatus() == null ? "" : checkMember.getMaritalStatus();
+                String stateCode = checkMember.getStateCode() == null ? "" : checkMember.getStateCode();
+                String handicapType = checkMember.getHandicapType() == null ? "" : checkMember.getHandicapType();
+                String motherName = checkMember.getMotherName() == null ? "" : checkMember.getMotherName();
+                String fatherName = checkMember.getFatherName() == null ? "" : checkMember.getFatherName();
+                String residentArea = checkMember.getResidentArea() == null ? "" : checkMember.getResidentArea();
+                String dateOfArrival = checkMember.getDateOfArrival() == null ? "" : checkMember.getDateOfArrival();
+                String dateOfLeaving = checkMember.getDateOfLeaving() == null ? "" : checkMember.getDateOfLeaving();
+                String dateOfMortality = checkMember.getDateOfMortality() == null ? "" : checkMember.getDateOfMortality();
+                String photo = checkMember.getPhoto() == null ? "" : checkMember.getPhoto();
+
+                familyMemberRepository.deleteById(primaryId);
+                removeFromAnganwadiChildren(primaryId);
+                removeFromAttendance(primaryId);
+
+                return FamilyMemberDTO.builder()
+                        .id(primaryId)
+                        .category(category)
+                        .name(name)
+                        .relationWithOwner(relationWithOwner)
+                        .gender(gender)
+                        .centerName(centerName)
+                        .memberCode(memberCode)
+                        .familyId(familyId)
+                        .mobileNumber(mobileNo)
+                        .idType(idType)
+                        .idNumber(idType)
+                        .dob(dob)
+                        .handicap(handicap)
+                        .maritalStatus(maritalStatus)
+                        .stateCode(stateCode)
+                        .handicapType(handicapType)
+                        .motherName(motherName)
+                        .fatherName(fatherName)
+                        .residentArea(residentArea)
+                        .dateOfArrival(dateOfArrival)
+                        .dateOfLeaving(dateOfLeaving)
+                        .dateOfMortality(dateOfMortality)
+                        .photo(photo)
+                        .build();
+
+            } else {
+                throw new CustomException("Un-Authorized Access");
+            }
+
+        } catch (NullPointerException | NoSuchElementException e) {
+            throw new CustomException("Member Not Found or Already Deleted, Please Check Again");
+        }
+    }
+
+    @Override
+    public List<BeneficiaryList> getAllBeneficiaryList(String centerId) {
+        List<FamilyMember> findFemales = new ArrayList<>();
+        List<FamilyMember> findChildren = new ArrayList<>();
+
+        if (centerId != null && centerId.trim().length() > 0) {
+
+            findFemales = familyMemberRepository.findAllGenderByCenterId("2", centerId.trim());
+
+            LocalDateTime date = LocalDateTime.now().minusYears(7);
+            ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+            long convertToMills = zdt.toInstant().toEpochMilli();
+
+            findChildren = familyMemberRepository.findAllChildrenUnder7YearsByCenterId(convertToMills, centerId.trim());
+        } else {
+            findFemales = familyMemberRepository.findAllByGender("2");
+
+            LocalDateTime date = LocalDateTime.now().minusYears(7);
+            ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+            long convertToMills = zdt.toInstant().toEpochMilli();
+
+            findChildren = familyMemberRepository.findAllByChildrenUnder7Years(convertToMills);
+        }
+
+
+        List<BeneficiaryList> addInList = new ArrayList<>();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        for (FamilyMember familyMember : findFemales) {
+
+            List<Visits> checkInVisits = visitsRepository.findAllByLadiesBeneficiaryCriteria(familyMember.getId());
+            Family findHouseholds = familyRepository.findByFamilyId(familyMember.getFamilyId());
+
+            if (checkInVisits.size() > 0) {
+
+                BeneficiaryList addSingle = BeneficiaryList.builder()
+                        .category(familyMember.getCategory() == null ? "" : familyMember.getCategory())
+                        .id(familyMember.getId() == null ? "" : familyMember.getId())
+                        .name(familyMember.getName() == null ? "" : familyMember.getName())
+                        .dob(df.format(new Date(familyMember.getDob())))
+                        .centerName(familyMember.getCenterName() == null ? "" : familyMember.getCenterName())
+                        .uniqueCode(familyMember.getMemberCode() == null ? "" : familyMember.getMemberCode())
+                        .houseNo(findHouseholds.getHouseNo() == null ? "" : findHouseholds.getHouseNo())
+                        .centerId(familyMember.getCenterId() == null ? "" : familyMember.getCenterId())
+                        .uniqueIdType(familyMember.getIdType() == null ? "" : familyMember.getIdType())
+                        .uniqueId(familyMember.getIdNumber() == null ? "" : familyMember.getIdNumber())
+                        .religion(findHouseholds.getReligion() == null ? "" : findHouseholds.getReligion())
+                        .mobileNumber(familyMember.getMobileNumber() == null ? "" : familyMember.getMobileNumber())
+                        .isMinority(findHouseholds.getIsMinority() == null ? "" : findHouseholds.getIsMinority())
+                        .icdsService(findHouseholds.getIcdsService() == null ? "" : findHouseholds.getIcdsService())
+                        .totalMembers("")
+                        .headName("")
+                        .headGender("")
+                        .headDob("")
+                        .headPic("")
+                        .build();
+
+                addInList.add(addSingle);
+
+            }
+
+        }
+
+
+        if (findChildren.size() > 0) {
+
+            for (FamilyMember fc : findChildren) {
+                Family findHouseholds = familyRepository.findByFamilyId(fc.getFamilyId());
+                BeneficiaryList addSingle = BeneficiaryList.builder()
+                        .category(fc.getCategory() == null ? "" : fc.getCategory())
+                        .name(fc.getName() == null ? "" : fc.getName())
+                        .id(fc.getId() == null ? "" : fc.getId())
+                        .dob(df.format(new Date(fc.getDob())))
+                        .centerName(fc.getCenterName() == null ? "" : fc.getCenterName())
+                        .uniqueCode(fc.getMemberCode() == null ? "" : fc.getMemberCode())
+                        .houseNo(findHouseholds.getHouseNo() == null ? "" : findHouseholds.getHouseNo())
+                        .centerId(fc.getCenterId() == null ? "" : fc.getCenterId())
+                        .uniqueIdType(fc.getIdType() == null ? "" : fc.getIdType())
+                        .uniqueId(fc.getIdNumber() == null ? "" : fc.getIdNumber())
+                        .religion(findHouseholds.getReligion() == null ? "" : findHouseholds.getReligion())
+                        .mobileNumber(fc.getMobileNumber() == null ? "" : fc.getMobileNumber())
+                        .isMinority(findHouseholds.getIsMinority() == null ? "" : findHouseholds.getIsMinority())
+                        .icdsService(findHouseholds.getIcdsService() == null ? "" : findHouseholds.getIcdsService())
+                        .totalMembers("")
+                        .headName("")
+                        .headGender("")
+                        .headDob("")
+                        .headPic("")
+                        .build();
+
+                addInList.add(addSingle);
+
+            }
+        }
+
+        return addInList;
     }
 
 

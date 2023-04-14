@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OtpDTO {
 
+    private String id;
     private String centerId;
     private String otp;
     private String status;
+    private String role;
     private String centerName;
     private String uniqueCode;
     private String name;

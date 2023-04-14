@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HouseholdsDTO {
+public class BeneficiaryList {
 
     private String id;
+    private String name;
+    private String dob;
     private String centerName;
     private String uniqueCode;
     private String headName;
@@ -27,8 +29,5 @@ public class HouseholdsDTO {
     private String headDob;
     private String totalMembers;
     private String headPic;
-    private boolean deleted;
     private String category;
-
-
 }

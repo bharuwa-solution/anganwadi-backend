@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.Visits;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -36,8 +37,18 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     @Query("{$or:[{'visitType':'1'},{'visitType':'2'}],'createdDate':{$gte:?0,$lte:?1}}")
     List<Visits> findAllByPregnancyCriteria(Date startDate, Date endDate);
 
-    @Query("{$or:[{'visitType':'1'},{'visitType':'2'}],}")
+    @Query("{$or:[{'visitType':'1'},{'visitType':'2'}]}")
     List<Visits> findAllByPregnancySearchCriteria(String search);
 
+    @Query("{'visitFor':{$ne:'16'},'memberId':?0}")
+    List<Visits> findAllByVisitForCriteria(String childId, Sort createdDate);
 
+    @Query("{$and:[{'visitFor':{$ne:'16'}},{'visitFor':{$regex:?0}}],'centerId':?1}")
+    List<Visits> findAllByVisitForSearchCriteria(String vaccineCode, String centerId, Sort createdDate);
+
+    @Query("{$and:[{'visitFor':{$ne:'16'}},{'centerId':?0}]}")
+    List<Visits> findAllByVisitForAndCenterId(String centerId, Sort createdDate);
+
+    @Query("{$or:[{'visitType':'1'},{'visitType':'2'}],'memberId':?0}")
+    List<Visits> findAllByLadiesBeneficiaryCriteria(String id);
 }

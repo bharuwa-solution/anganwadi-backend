@@ -23,4 +23,6 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
     List<WeightTracking> findAllByMonthCriteria(Date startTime, Date endTime, Sort createdDate);
 
     List<WeightTracking> findAllByCenterId(String centerId, Sort createdDate);
+
+    List<WeightTracking> findAllByCenterName(String centerName, Sort createdDate);
 }

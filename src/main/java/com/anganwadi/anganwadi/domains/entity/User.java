@@ -24,7 +24,7 @@ public class User extends BaseObject {
     private String email;
     private String dob;
     private String userPic;
-    private Role role;
+    private String  role;
     private String authToken;
 
 

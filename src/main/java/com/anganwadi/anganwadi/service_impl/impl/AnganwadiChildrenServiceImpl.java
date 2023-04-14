@@ -57,7 +57,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerName) throws ParseException {
+    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId, String centerName) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
@@ -79,6 +79,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 .motherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName())
                 .isRegistered(isRegistered)
                 .centerName(centerName)
+                .centerId(centerId)
                 .dob(df.format(dob))
                 .gender(saveAdmissionDTO.getGender() == null ? "" : saveAdmissionDTO.getGender())
                 .mobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber())
@@ -121,6 +122,90 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 .handicap(findId.getHandicap() == null ? "" : findId.getHandicap())
                 .profilePic(findId.getProfilePic() == null ? "" : findId.getProfilePic())
                 .build();
+    }
+
+    @Override
+    public List<AttendanceDTO> makeAttendanceManual(List<AttendanceDTO> attendanceDTO, String centerId) throws ParseException {
+        List<AttendanceDTO> addInList = new ArrayList<>();
+
+        for (AttendanceDTO list : attendanceDTO) {
+            List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByChildIdAndRegisteredTrue(list.getChildId());
+
+
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date currentTime = new Date();
+            String formatToString = df.format(currentTime.getTime());
+            Date formatToTime = df.parse(formatToString);
+            long timestamp = formatToTime.getTime();
+
+            List<Attendance> findAttRecords = attendanceRepository.findByDateAndChildId(timestamp, list.getChildId());
+
+            if (findAttRecords.size() > 0) {
+
+                for (Attendance updateStatus : findAttRecords) {
+
+                    updateStatus.setAttendance(list.getAtt());
+                    attendanceRepository.save(updateStatus);
+
+                    AttendanceDTO singleEntry = AttendanceDTO.builder()
+                            .centerName(updateStatus.getCenterName() == null ? "" : updateStatus.getCenterName())
+                            .centerId(centerId == null ? "" : centerId)
+                            .childId(updateStatus.getChildId() == null ? "" : updateStatus.getChildId())
+                            .dob(updateStatus.getDob() == null ? "" : updateStatus.getDob())
+                            .name(updateStatus.getName() == null ? "" : updateStatus.getName())
+                            .latitude(updateStatus.getLatitude() == null ? "" : updateStatus.getLatitude())
+                            .longitude(updateStatus.getLongitude() == null ? "" : updateStatus.getLongitude())
+                            .photo(updateStatus.getPhoto() == null ? "" : updateStatus.getPhoto())
+                            .gender(updateStatus.getGender() == null ? "" : updateStatus.getGender())
+                            .date(timestamp)
+                            .attType(list.getAttType() == null ? "" : list.getAttType())
+                            .att(list.getAtt() == null ? "" : list.getAtt())
+                            .attendance(list.getAtt() == null ? "" : list.getAtt())
+                            .build();
+                    addInList.add(singleEntry);
+
+                }
+            }
+            if (findAttRecords.size() <= 0) {
+                for (AnganwadiChildren sc : findChildren) {
+                    Attendance saveStatus = Attendance.builder()
+                            .centerName(sc.getCenterName() == null ? "" : sc.getCenterName())
+                            .centerId(centerId == null ? "" : centerId)
+                            .childId(sc.getChildId() == null ? "" : sc.getChildId())
+                            .dob(sc.getDob() == null ? "" : sc.getDob())
+                            .name(sc.getName() == null ? "" : sc.getName())
+                            .latitude(list.getLatitude() == null ? "" : list.getLatitude())
+                            .longitude(list.getLongitude() == null ? "" : list.getLongitude())
+                            .photo(sc.getProfilePic() == null ? "" : sc.getProfilePic())
+                            .gender(sc.getGender() == null ? "" : sc.getGender())
+                            .date(timestamp)
+                            .attType(list.getAttType() == null ? "" : list.getAttType())
+                            .attendance(list.getAtt() == null ? "" : list.getAtt())
+                            .attType(list.getAttType() == null ? "" : list.getAttType())
+                            .build();
+                    attendanceRepository.save(saveStatus);
+
+
+                    AttendanceDTO singleEntry = AttendanceDTO.builder()
+                            .centerName(saveStatus.getCenterName())
+                            .childId(saveStatus.getChildId())
+                            .dob(saveStatus.getDob())
+                            .name(saveStatus.getName())
+                            .latitude(saveStatus.getLatitude())
+                            .longitude(saveStatus.getLongitude())
+                            .photo(saveStatus.getPhoto())
+                            .gender(saveStatus.getGender())
+                            .date(timestamp)
+                            .attType(list.getAttType())
+                            .att(list.getAtt())
+                            .attendance(list.getAtt())
+                            .build();
+                    addInList.add(singleEntry);
+                }
+            }
+        }
+
+        return addInList;
     }
 
     @Override
@@ -171,13 +256,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         for (Attendance singleRecord : findRecords) {
             AttendanceDTO dailyRecord = AttendanceDTO.builder()
-                    .childId(singleRecord.getChildId())
-                    .name(singleRecord.getName())
+                    .childId(singleRecord.getChildId() == null ? "" : singleRecord.getChildId())
+                    .centerId(singleRecord.getCenterId() == null ? "" : singleRecord.getCenterId())
+                    .latitude(singleRecord.getLatitude() == null ? "" : singleRecord.getLatitude())
+                    .longitude(singleRecord.getLongitude() == null ? "" : singleRecord.getLongitude())
+                    .name(singleRecord.getName() == null ? "" : singleRecord.getName())
+                    .attType(singleRecord.getAttType() == null ? "" : singleRecord.getAttType())
+                    .att(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
                     .centerName(centerName)
-                    .gender(singleRecord.getGender())
+                    .gender(singleRecord.getGender() == null ? "" : singleRecord.getGender())
                     .dob(singleRecord.getDob())
-                    .photo(singleRecord.getPhoto())
-                    .attendance(singleRecord.getAttendance())
+                    .photo(singleRecord.getPhoto() == null ? "" : singleRecord.getPhoto())
+                    .attendance(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
                     .date(singleRecord.getDate())
                     .build();
 
@@ -296,7 +386,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             AttendanceDTO singleEntry = AttendanceDTO
                     .builder()
                     .centerName(centerName)
+                    .centerId(fetchDetails.getCenterId() == null ? "" : fetchDetails.getCenterId())
                     .childId(fetchDetails.getChildId())
+                    .attType("System")
                     .dob(fetchDetails.getDob())
                     .name(fetchDetails.getName())
                     .latitude(attendanceDTO.getLatitude())
