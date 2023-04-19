@@ -17,16 +17,25 @@ public class PregnantAndDelivery extends BaseObject {
 
 
     private String familyId;
-    private String memberId;
+    private String motherMemberId;
     private String motherName;
-    private Date regDate;
+    private long dob;
+    private String husbandName;
+    private String profilePic;
+    private String childName;
+    private String category;
+    private String religion;
+    private String houseNumber;
+    private long regDate;
     private int noOfChild;
-    private Date lastMissedPeriodDate;
-    private Date dateOfDelivery;
+    private long lastMissedPeriodDate;
+    private long  dateOfDelivery;
     private Date tentitiveDeliveryDate;
     private String placeOfDelivery;
     private String childGender;
     private String childWeight;
     private String birthStatus;
+    private String centerId;
+    private String centerName;
 
 }

@@ -3,6 +3,7 @@ package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.BirthPlaceDTO;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.ParseException;
 import java.util.List;
@@ -32,15 +33,15 @@ public interface FamilyService {
 
     List<HouseholdsChildren> getAllHouseholdsChildren(String centerId) throws ParseException;
 
-    List<FemaleMembersDTO> getHouseholdsFemaleDetails(String centerName);
+    List<FemaleMembersDTO> getHouseholdsFemaleDetails(String centerId);
 
-    List<HouseVisitDTO> getHouseVisitListing(String centerName);
+    List<HouseVisitDTO> getHouseVisitListing(String centerId);
 
     List<MemberVisits> getMemberVisitDetails(String memberId,String centerName);
 
-    List<MemberVisits> getMemberVisitDetailsLatest(String memberId,String centerName);
+    List<MemberVisits> getMemberVisitDetailsLatest(String memberId,String centerId, String centerName);
 
-    List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerName) throws ParseException;
+    List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerId, String centerName) throws ParseException;
 
     SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId, String centerName);
 
@@ -71,6 +72,19 @@ public interface FamilyService {
     List<BeneficiaryList> getAllBeneficiaryList(String centerId);
 
     FamilyMemberDTO deleteFamilyMembers(String memberId, String id);
+
+    HouseholdWomenDetails getHouseholdWomenDetails();
+
+    PregnantAndDeliveryDTO registerPregnantWomen(PregnantAndDeliveryDTO pregnantAndDeliveryDTO, String centerId) throws ParseException;
+
+    List<PregnantAndDeliveryDTO> getAllPregnantWomenDetails(String centerId);
+
+    PregnantAndDeliveryDTO updatePregnantWomenDetails(@RequestBody PregnantAndDeliveryDTO pregnantAndDeliveryDTO, String centerId) throws ParseException;
+
+    PregnantAndDeliveryDTO deletePregnantWomenDetails(String id);
+
+    List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(String centerId);
+
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }

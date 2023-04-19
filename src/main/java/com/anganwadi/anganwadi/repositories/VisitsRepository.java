@@ -24,7 +24,7 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
 
     List<Visits> findAllByCenterName(String centerName);
 
-    List<Visits> findAllByMemberIdAndCenterNameAndVisitType(String memberId, String centerName, String valueOf);
+    List<Visits> findAllByMemberIdAndCenterIdAndVisitType(String memberId, String centerId, String valueOf);
 
     List<Visits> findAllByMemberIdAndCenterName(String memberId, String centerName);
 
@@ -51,4 +51,6 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
 
     @Query("{$or:[{'visitType':'1'},{'visitType':'2'}],'memberId':?0}")
     List<Visits> findAllByLadiesBeneficiaryCriteria(String id);
+
+    List<Visits> findAllByCenterId(String centerId);
 }

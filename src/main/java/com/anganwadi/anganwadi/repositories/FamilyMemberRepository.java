@@ -24,8 +24,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'relationWithOwner':'Self'}")
     List<FamilyMember> findAllByHusband();
 
-    @Query("{'gender':'2','centerName':?0}")
-    List<FamilyMember> findAllByGenderAndCenterName(String centerName);
+    @Query("{'gender':'2','centerId':?0}")
+    List<FamilyMember> findAllByGenderAndCenterId(String centerName);
 
     @Query("{'dob':{$gte:?0},'centerName':?1}")
     List<FamilyMember> findAllByDobAndCenterName(long convertToMills, String centerName);
@@ -59,4 +59,6 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'dob':{$gte:?0}, 'centerId':?1}")
     List<FamilyMember> findAllChildrenUnder7YearsByCenterId(long convertToMills, String centerId);
+
+    List<FamilyMember> findAllByCenterId(String centerId);
 }

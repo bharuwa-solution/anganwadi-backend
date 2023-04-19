@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class FemaleMembersDTO {
 
     private String name;
+    private String familyId;
     private String profilePic;
     private String memberId;
     private String husbandName;

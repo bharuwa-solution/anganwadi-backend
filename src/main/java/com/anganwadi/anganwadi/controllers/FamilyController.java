@@ -98,5 +98,34 @@ public class FamilyController {
         return familyService.getAllBeneficiaryList(centerId);
     }
 
+//    @GetMapping("/getHouseholdWomenDetails")
+//    private HouseholdWomenDetails getHouseholdWomenDetails(){
+//        return familyService.getHouseholdWomenDetails();
+//    }
+
+    @PostMapping("/registerPregnantWomen")
+    private PregnantAndDeliveryDTO registerPregnantWomen(@RequestBody PregnantAndDeliveryDTO pregnantAndDeliveryDTO, @RequestHeader String centerId) throws ParseException {
+        return familyService.registerPregnantWomen(pregnantAndDeliveryDTO, centerId);
+    }
+
+    @GetMapping("/getAllPregnantWomenDetails")
+    private List<PregnantAndDeliveryDTO> getAllPregnantWomenDetails(@RequestHeader String centerId) {
+        return familyService.getAllPregnantWomenDetails(centerId);
+    }
+
+    @PutMapping("/updatePregnantWomenDetails")
+    private PregnantAndDeliveryDTO updatePregnantWomenDetails(@RequestBody PregnantAndDeliveryDTO pregnantAndDeliveryDTO, @RequestHeader String centerId) throws ParseException {
+        return familyService.updatePregnantWomenDetails(pregnantAndDeliveryDTO, centerId);
+    }
+
+    @PostMapping("/deletePregnantWomenDetails")
+    private PregnantAndDeliveryDTO deletePregnantWomenDetails(@RequestParam String  id)  {
+        return familyService.deletePregnantWomenDetails(id);
+    }
+
+    @GetMapping("/getWomenListByPeriodDate")
+    private List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(@RequestHeader String centerId){
+        return familyService.getWomenListByPeriodDate(centerId);
+    }
 }
 

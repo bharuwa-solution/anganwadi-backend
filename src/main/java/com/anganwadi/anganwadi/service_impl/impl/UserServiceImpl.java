@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
                     .id(user.getId()==null?"":user.getId())
-                    .centerId(user.getUniqueCode()==null?"":user.getUniqueCode())
+                    .centerId(user.getCenterId()==null?"":user.getCenterId())
                     .centerName(user.getCenterName()==null?"":user.getCenterName())
                     .userPic(user.getUserPic()==null?"":user.getUserPic())
                     .mobileNumber(user.getMobileNumber()==null?"":user.getMobileNumber())

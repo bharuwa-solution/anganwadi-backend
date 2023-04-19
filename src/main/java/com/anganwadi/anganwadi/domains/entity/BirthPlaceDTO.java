@@ -19,6 +19,7 @@ public class BirthPlaceDTO {
     private String relationWithOwner;
     private String dob;
     private String centerId;
+    private String centerName;
     private String birthType;
     private String gender;
     private String firstWeight;

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
@@ -73,6 +74,15 @@ public class MainExceptionController implements ErrorController {
         setBodyError.put("status", HttpStatus.PARTIAL_CONTENT);
         setBodyError.put("message", "Some Parameters Are Missing, Please Check");
         return new ResponseEntity<>(setBodyError, HttpStatus.PARTIAL_CONTENT);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    private ResponseEntity<?> handleHeadersError(MissingRequestHeaderException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.BAD_REQUEST);
+        setBodyError.put("message", error.getHeaderName()+" Is Missing, Please Check !!!");
+        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
 
 

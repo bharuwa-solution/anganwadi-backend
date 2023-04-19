@@ -131,7 +131,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (AttendanceDTO list : attendanceDTO) {
             List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByChildIdAndRegisteredTrue(list.getChildId());
 
-
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date currentTime = new Date();
             String formatToString = df.format(currentTime.getTime());
@@ -143,8 +142,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             if (findAttRecords.size() > 0) {
 
                 for (Attendance updateStatus : findAttRecords) {
-
+                    updateStatus.setAttType(list.getAttType());
                     updateStatus.setAttendance(list.getAtt());
+
                     attendanceRepository.save(updateStatus);
 
                     AttendanceDTO singleEntry = AttendanceDTO.builder()
@@ -178,6 +178,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             .longitude(list.getLongitude() == null ? "" : list.getLongitude())
                             .photo(sc.getProfilePic() == null ? "" : sc.getProfilePic())
                             .gender(sc.getGender() == null ? "" : sc.getGender())
+                            .isRegistered(sc.isRegistered())
                             .date(timestamp)
                             .attType(list.getAttType() == null ? "" : list.getAttType())
                             .attendance(list.getAtt() == null ? "" : list.getAtt())
@@ -292,7 +293,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
 
-    private void markAsAbsent(String centerName) throws ParseException {
+    private void markAsAbsent(String childId, String centerName) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();
@@ -315,6 +316,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .isRegistered(getId.isRegistered())
                         .longitude("")
                         .latitude("")
+                        .attType("System")
                         .centerName(centerName)
                         .name(getId.getName())
                         .photo(getId.getProfilePic())
@@ -342,6 +344,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
                 for (Attendance markAttendance : findChildInRecord) {
                     markAttendance.setLatitude(latitude);
+                    markAttendance.setAttType("System");
                     markAttendance.setLongitude(longitude);
                     markAttendance.setAttendance("P");
                     attendanceRepository.save(markAttendance);
@@ -373,7 +376,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<Attendance> checkDailyAttendance = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // updating if not exists
-        markAsAbsent(centerName);
+        markAsAbsent(attendanceDTO.getChildId(),centerName);
 
         // After updating Above fields
 
@@ -389,6 +392,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .centerId(fetchDetails.getCenterId() == null ? "" : fetchDetails.getCenterId())
                     .childId(fetchDetails.getChildId())
                     .attType("System")
+                    .att("")
                     .dob(fetchDetails.getDob())
                     .name(fetchDetails.getName())
                     .latitude(attendanceDTO.getLatitude())
@@ -516,7 +520,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerName) throws ParseException {
+    public List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId, String centerName) throws ParseException {
 
         List<StockItemsDTO> addInList = new ArrayList<>();
 
@@ -533,6 +537,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             String currentMonth = spiltMonth[1].replace("0", "");
 
             AssetsStock saveStocks = AssetsStock.builder()
+                    .centerId(centerId)
                     .centerName(centerName)
                     .qtyUnit(assetsList.getUnit())
                     .itemCode(assetsList.getItemCode())
@@ -546,6 +551,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
             StockItemsDTO addSingleItem = StockItemsDTO.builder()
+                    .centerId(centerId)
                     .centerName(centerName)
                     .unit(assetsList.getUnit())
                     .itemCode(assetsList.getItemCode())

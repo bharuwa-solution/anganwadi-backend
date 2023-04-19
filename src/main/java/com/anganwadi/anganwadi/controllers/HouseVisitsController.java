@@ -26,13 +26,13 @@ public class HouseVisitsController {
     }
 
     @GetMapping("/getHouseholdsFemaleDetails")
-    private List<FemaleMembersDTO> getHouseholdsFemaleDetails(@RequestHeader String centerName) {
-        return familyService.getHouseholdsFemaleDetails(centerName);
+    private List<FemaleMembersDTO> getHouseholdsFemaleDetails(@RequestHeader String centerId) {
+        return familyService.getHouseholdsFemaleDetails(centerId);
     }
 
     @GetMapping("/getHouseVisitListing")
-    private List<HouseVisitDTO> getHouseVisitListing(@RequestHeader String centerName) {
-        return familyService.getHouseVisitListing(centerName);
+    private List<HouseVisitDTO> getHouseVisitListing(@RequestHeader String centerId) {
+        return familyService.getHouseVisitListing(centerId);
     }
 
     @GetMapping("/getMemberVisitDetails")
@@ -41,13 +41,13 @@ public class HouseVisitsController {
     }
 
     @GetMapping("/getMemberVisitDetailsLatest")
-    private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId, @RequestHeader String centerName) {
-        return familyService.getMemberVisitDetailsLatest(memberId, centerName);
+    private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId, @RequestHeader String centerId, @RequestHeader String centerName) {
+        return familyService.getMemberVisitDetailsLatest(memberId, centerId, centerName);
     }
 
     @PostMapping("/saveBirthDetails")
-    private List<BirthPlaceDTO> saveBirthDetails(@RequestBody BirthPlaceDTO birthDetails, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveBirthDetails(birthDetails, centerName);
+    private List<BirthPlaceDTO> saveBirthDetails(@RequestBody BirthPlaceDTO birthDetails, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveBirthDetails(birthDetails, centerId, centerName);
     }
 
 }

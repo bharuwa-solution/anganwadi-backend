@@ -28,8 +28,8 @@ public class StockController {
     }
 
     @PostMapping("addStocks")
-    private List<StockItemsDTO> addStocks(@RequestBody List<StockItemsDTO> assetsStock, @RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.addStocks(assetsStock, centerName);
+    private List<StockItemsDTO> addStocks(@RequestBody List<StockItemsDTO> assetsStock, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return anganwadiChildrenService.addStocks(assetsStock, centerId, centerName);
     }
 
 
