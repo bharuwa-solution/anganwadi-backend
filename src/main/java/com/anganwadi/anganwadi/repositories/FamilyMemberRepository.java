@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.FamilyMember;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -61,4 +62,17 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     List<FamilyMember> findAllChildrenUnder7YearsByCenterId(long convertToMills, String centerId);
 
     List<FamilyMember> findAllByCenterId(String centerId);
+
+    @Query("{'dob':{$gte:?0},'centerName':?1,'deleted':false}")
+    List<FamilyMember> findAllByDobCriteria(long convertToMills, String centerId);
+
+    @Query("{'familyId':?0,'name':?1}")
+    List<FamilyMember> findByFamilyIdAndName(String familyId, String motherName);
+
+    @Query("{'centerName':?0,'dob':{$gte:?1}}")
+    List<FamilyMember> findAllFamilyChildrenByCenterId(String centerName, long convertToMills, Sort createdDate);
+
+
+
+
 }

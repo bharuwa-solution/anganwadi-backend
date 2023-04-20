@@ -1,4 +1,4 @@
-package com.anganwadi.anganwadi.domains.entity;
+package com.anganwadi.anganwadi.domains.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BirthPlaceDTO {
 
+    private String id;
     private String name;
     private String birthPlace;
     private String visitFor;

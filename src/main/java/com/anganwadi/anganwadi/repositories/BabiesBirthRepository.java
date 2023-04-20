@@ -13,4 +13,11 @@ public interface BabiesBirthRepository extends MongoRepository<BabiesBirth, Stri
 
     @Query("{'createdDate':{$gte:?0,$lte:?1}}")
     List<BabiesBirth> findAllByMonth(Date startDate, Date endDate);
+
+    @Query("{'dob':{$gte:?0},'deleted':false}")
+    List<BabiesBirth> findAllByDobCriteria(long convertToMills);
+
+    BabiesBirth findByChildIdAndDeletedIsFalse(String id);
+
+    List<BabiesBirth> findAllByChildId(String id);
 }

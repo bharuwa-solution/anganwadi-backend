@@ -1403,6 +1403,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .birthPlace(birthDetails.getBirthPlace() == null ? "" : birthDetails.getBirthPlace())
                 .birthType(birthDetails.getBirthType() == null ? "" : birthDetails.getBirthType())
                 .familyId(searchFamilyId.getFamilyId())
+                .dob(mills)
                 .motherMemberId(birthDetails.getMotherMemberId() == null ? "" : birthDetails.getMotherMemberId())
                 .gender(birthDetails.getGender() == null ? "" : birthDetails.getGender())
                 .centerId(centerId)
@@ -2251,11 +2252,28 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public HouseholdWomenDetails getHouseholdWomenDetails() {
+    public HouseholdWomenDetails getHouseholdWomenDetails(String centerId, String centerName) {
+
+        // Count Pregnant Women
+        List<PregnantAndDelivery> findPW = pregnantAndDeliveryRepository.findAllByCenterId(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        HashSet<String> uniqueWomen = new HashSet<>();
+
+        for (PregnantAndDelivery pd : findPW) {
+            uniqueWomen.add(pd.getMotherMemberId().trim());
+        }
+
+        // Count New Born Children
+
+        LocalDateTime date = LocalDateTime.now().minusMonths(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+        long convertToMills = zdt.toInstant().toEpochMilli();
+
+        List<FamilyMember> findChild = familyMemberRepository.findAllByDobCriteria(convertToMills, centerName);
+
 
         return HouseholdWomenDetails.builder()
-                .newBornBabies(0)
-                .newBornBabies(0)
+                .pregnantWomen(uniqueWomen.size())
+                .newBornBabies(findChild.size())
                 .build();
     }
 
@@ -2321,12 +2339,17 @@ public class FamilyServiceImpl implements FamilyService {
 
     @Override
     public List<PregnantAndDeliveryDTO> getAllPregnantWomenDetails(String centerId) {
-        List<PregnantAndDelivery> findPD = pregnantAndDeliveryRepository.findAllByCenterId(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<PregnantAndDelivery> findPD = pregnantAndDeliveryRepository.findAllByCenterIdAndDateOfDelivery(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<PregnantAndDeliveryDTO> addInList = new ArrayList<>();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
         if (findPD.size() > 0) {
             for (PregnantAndDelivery pd : findPD) {
+                String dod = "";
+                if (pd.getDateOfDelivery() > 0) {
+                    dod = df.format(pd.getDateOfDelivery());
+                }
+
                 PregnantAndDeliveryDTO singleEntry = PregnantAndDeliveryDTO.builder()
                         .id(pd.getId())
                         .familyId(pd.getFamilyId() == null ? "" : pd.getFamilyId())
@@ -2345,7 +2368,7 @@ public class FamilyServiceImpl implements FamilyService {
                         .category(pd.getCategory() == null ? "" : pd.getCategory())
                         .religion(pd.getReligion() == null ? "" : pd.getReligion())
                         .houseNumber(pd.getHouseNumber() == null ? "" : pd.getHouseNumber())
-                        .dateOfDelivery(df.format(pd.getDateOfDelivery()))
+                        .dateOfDelivery(dod)
                         .lastMissedPeriodDate(df.format(pd.getLastMissedPeriodDate()))
                         .build();
                 addInList.add(singleEntry);
@@ -2519,6 +2542,161 @@ public class FamilyServiceImpl implements FamilyService {
             }
 
         }
+        return addInList;
+    }
+
+    @Override
+    public List<NewBornChildDTO> getNewBornChildRecords(String centerName) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String birthType = "", birthPlace = "", motherMeemberId = "", motherPhoto = "";
+        LocalDateTime date = LocalDateTime.now().minusMonths(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+        long convertToMills = zdt.toInstant().toEpochMilli();
+
+        List<FamilyMember> findChild = familyMemberRepository.findAllByDobCriteria(convertToMills, centerName);
+        List<NewBornChildDTO> addInList = new ArrayList<>();
+
+        try {
+            if (findChild.size() > 0) {
+                for (FamilyMember bb : findChild) {
+
+                    List<BabiesBirth> birthList = babiesBirthRepository.findAllByChildId(bb.getId());
+
+                    for (BabiesBirth lists : birthList) {
+                        birthPlace = lists.getBirthPlace();
+                        birthType = lists.getBirthType();
+                        motherMeemberId = lists.getMotherMemberId();
+                    }
+
+                    List<FamilyMember> findMotherDetails = familyMemberRepository.findByFamilyIdAndName(bb.getFamilyId().trim(), bb.getMotherName().trim());
+
+                    for (FamilyMember fm : findMotherDetails) {
+                        motherPhoto = fm.getPhoto().trim();
+                    }
+
+                    Family familyDetails = familyRepository.findByFamilyId(bb.getFamilyId());
+
+                    NewBornChildDTO singleEntry = NewBornChildDTO.builder()
+                            .id(bb.getId())
+                            .name(bb.getName() == null ? "" : bb.getName())
+                            .motherPhoto(motherPhoto)
+                            .motherName(bb.getMotherName() == null ? "" : bb.getMotherName())
+                            .houseNumber(familyDetails.getHouseNo() == null ? "" : familyDetails.getHouseNo())
+                            .relationWithOwner(bb.getRelationWithOwner() == null ? "" : bb.getRelationWithOwner())
+                            .dob(df.format(bb.getDob()))
+                            .birthPlace(birthPlace)
+                            .birthType(birthType)
+                            .familyId(bb.getFamilyId() == null ? "" : bb.getFamilyId())
+                            .motherMemberId(motherMeemberId)
+                            .gender(bb.getGender() == null ? "" : bb.getGender())
+                            .centerId(bb.getCenterId() == null ? "" : bb.getCenterId())
+                            .centerName(bb.getCenterName())
+                            .visitFor("")
+                            .visitType("")
+                            .firstWeight("")
+                            .visitRound("")
+                            .height("")
+                            .build();
+                    addInList.add(singleEntry);
+                }
+
+            }
+        } catch (Exception e) {
+
+        }
+
+        return addInList;
+    }
+
+    @Override
+    public BirthPlaceDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO) {
+
+        if (StringUtils.isEmpty(birthPlaceDTO.getId())) {
+            throw new CustomException("Id Not Passed, Please Check");
+        }
+
+        try {
+            BabiesBirth bb = babiesBirthRepository.findByChildIdAndDeletedIsFalse(birthPlaceDTO.getId());
+
+
+        } catch (NullPointerException | NoSuchElementException e) {
+            throw new CustomException("Child Not Found.");
+        }
+
+
+        return null;
+    }
+
+    @Override
+    public List<PregnantAndDeliveryDTO> getDhatriDetails(String centerId) {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        LocalDateTime date = LocalDateTime.now().minusMonths(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        List<PregnantAndDeliveryDTO> addInList = new ArrayList<>();
+
+        List<PregnantAndDelivery> findPD = pregnantAndDeliveryRepository.findAllByDeliveryCriteria(centerId, convertToMills, Sort.by(Sort.Direction.DESC, "dateOfDelivery"));
+
+        for (PregnantAndDelivery pd : findPD) {
+
+            PregnantAndDeliveryDTO singleEntry = PregnantAndDeliveryDTO.builder()
+                    .id(pd.getId())
+                    .familyId(pd.getFamilyId() == null ? "" : pd.getFamilyId())
+                    .centerId(pd.getCenterId() == null ? "" : pd.getCenterId())
+                    .centerName(pd.getCenterName() == null ? "" : pd.getCenterName())
+                    .regDate(df.format(pd.getRegDate()))
+                    .noOfChild(pd.getNoOfChild())
+                    .isDeleted(pd.isDeleted())
+                    .motherMemberId(pd.getMotherMemberId() == null ? "" : pd.getMotherMemberId())
+                    .motherName(pd.getMotherName() == null ? "" : pd.getMotherName())
+                    .dob(df.format(new Date(pd.getDob())))
+                    .husbandName(pd.getHusbandName() == null ? "" : pd.getHusbandName())
+                    .profilePic(pd.getProfilePic() == null ? "" : pd.getProfilePic())
+                    .childName(pd.getChildName() == null ? "" : pd.getChildName())
+                    .childGender(pd.getChildGender() == null ? "" : pd.getChildGender())
+                    .category(pd.getCategory() == null ? "" : pd.getCategory())
+                    .religion(pd.getReligion() == null ? "" : pd.getReligion())
+                    .houseNumber(pd.getHouseNumber() == null ? "" : pd.getHouseNumber())
+                    .dateOfDelivery(df.format(pd.getDateOfDelivery()))
+                    .lastMissedPeriodDate(df.format(pd.getLastMissedPeriodDate()))
+                    .build();
+            addInList.add(singleEntry);
+
+        }
+        return addInList;
+    }
+
+    @Override
+    public List<FamilyChildrenDetails> getAllChildrenDetails(String centerName) {
+
+        LocalDateTime date = LocalDateTime.now().minusYears(7);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        List<FamilyChildrenDetails> addInList = new ArrayList<>();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        List<FamilyMember> findChildren = familyMemberRepository.findAllFamilyChildrenByCenterId(centerName, convertToMills, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        for (FamilyMember fm : findChildren) {
+
+            Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
+
+            FamilyChildrenDetails singleChild = FamilyChildrenDetails.builder()
+                    .name(fm.getName()==null ? "" :fm.getName())
+                    .dob(df.format(fm.getDob()))
+                    .photo(fm.getPhoto()==null?"":fm.getPhoto())
+                    .gender(fm.getGender()==null ? "" :fm.getGender())
+                    .motherName(fm.getMotherName()==null ? "" :fm.getMotherName())
+                    .fatherName(fm.getFatherName()==null ? "" :fm.getFatherName())
+                    .houseNo(findFamily.getHouseNo()==null ? "" :findFamily.getHouseNo())
+                    .category(findFamily.getCategory()==null ? "" :findFamily.getCategory())
+                    .religion(findFamily.getReligion()==null ? "" :findFamily.getReligion())
+                    .build();
+            addInList.add(singleChild);
+        }
+
+
         return addInList;
     }
 

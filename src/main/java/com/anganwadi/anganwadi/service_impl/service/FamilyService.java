@@ -2,7 +2,7 @@ package com.anganwadi.anganwadi.service_impl.service;
 
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.BirthPlaceDTO;
+import com.anganwadi.anganwadi.domains.dto.BirthPlaceDTO;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.ParseException;
@@ -73,7 +73,7 @@ public interface FamilyService {
 
     FamilyMemberDTO deleteFamilyMembers(String memberId, String id);
 
-    HouseholdWomenDetails getHouseholdWomenDetails();
+    HouseholdWomenDetails getHouseholdWomenDetails(String centerId, String centerName);
 
     PregnantAndDeliveryDTO registerPregnantWomen(PregnantAndDeliveryDTO pregnantAndDeliveryDTO, String centerId) throws ParseException;
 
@@ -84,6 +84,14 @@ public interface FamilyService {
     PregnantAndDeliveryDTO deletePregnantWomenDetails(String id);
 
     List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(String centerId);
+
+    List<NewBornChildDTO> getNewBornChildRecords(String centerName) throws ParseException;
+
+    BirthPlaceDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO);
+
+    List<PregnantAndDeliveryDTO> getDhatriDetails(String centerId);
+
+    List<FamilyChildrenDetails> getAllChildrenDetails(String centerName);
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);

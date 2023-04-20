@@ -89,19 +89,19 @@ public class FamilyController {
     }
 
     @GetMapping("/getHouseholdById")
-    private HouseholdsDTO getHouseholdById(@RequestParam String id){
+    private HouseholdsDTO getHouseholdById(@RequestParam String id) {
         return familyService.getHouseholdById(id);
     }
 
     @GetMapping("/getAllBeneficiaryList")
-    private List<BeneficiaryList> getAllBeneficiaryList(@RequestParam(required = false) String centerId){
+    private List<BeneficiaryList> getAllBeneficiaryList(@RequestParam(required = false) String centerId) {
         return familyService.getAllBeneficiaryList(centerId);
     }
 
-//    @GetMapping("/getHouseholdWomenDetails")
-//    private HouseholdWomenDetails getHouseholdWomenDetails(){
-//        return familyService.getHouseholdWomenDetails();
-//    }
+    @GetMapping("/getHouseholdWomenDetails")
+    private HouseholdWomenDetails getHouseholdWomenDetails(@RequestHeader String centerId, @RequestHeader String centerName) {
+        return familyService.getHouseholdWomenDetails(centerId,centerName);
+    }
 
     @PostMapping("/registerPregnantWomen")
     private PregnantAndDeliveryDTO registerPregnantWomen(@RequestBody PregnantAndDeliveryDTO pregnantAndDeliveryDTO, @RequestHeader String centerId) throws ParseException {
@@ -119,13 +119,39 @@ public class FamilyController {
     }
 
     @PostMapping("/deletePregnantWomenDetails")
-    private PregnantAndDeliveryDTO deletePregnantWomenDetails(@RequestParam String  id)  {
+    private PregnantAndDeliveryDTO deletePregnantWomenDetails(@RequestParam String id) {
         return familyService.deletePregnantWomenDetails(id);
     }
 
     @GetMapping("/getWomenListByPeriodDate")
-    private List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(@RequestHeader String centerId){
+    private List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(@RequestHeader String centerId) {
         return familyService.getWomenListByPeriodDate(centerId);
+    }
+
+    @GetMapping("/getNewBornChildRecords")
+    private List<NewBornChildDTO> getNewBornChildRecords(@RequestHeader String centerName) throws ParseException {
+        return familyService.getNewBornChildRecords(centerName);
+    }
+
+    @PutMapping("/updateNewBornChildRecords")
+    private BirthPlaceDTO updateNewBornChildRecords(@RequestBody BirthPlaceDTO birthPlaceDTO) {
+        return familyService.updateNewBornChildRecords(birthPlaceDTO);
+    }
+
+    @PostMapping("/deleteNewBornChildRecords")
+    private PregnantAndDeliveryDTO deleteNewBornChildRecords(@RequestParam String id) {
+        return null;
+        //        return familyService.deleteNewBornChildRecords(id);
+    }
+
+    @GetMapping("/getDhatriDetails")
+    private List<PregnantAndDeliveryDTO> getDhatriDetails(@RequestHeader String centerId)  {
+        return familyService.getDhatriDetails(centerId);
+    }
+
+    @GetMapping("/getAllChildrenDetails")
+    private List<FamilyChildrenDetails> getAllChildrenDetails(@RequestHeader String centerName) throws ParseException {
+        return familyService.getAllChildrenDetails(centerName);
     }
 }
 
