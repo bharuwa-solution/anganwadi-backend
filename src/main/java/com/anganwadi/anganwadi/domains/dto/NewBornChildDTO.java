@@ -16,6 +16,7 @@ public class NewBornChildDTO {
     private String birthPlace;
     private String visitFor;
     private String visitType;
+    private String fatherName;
     private String visitRound;
     private String relationWithOwner;
     private String dob;

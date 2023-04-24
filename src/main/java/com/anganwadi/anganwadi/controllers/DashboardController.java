@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.FamilyMember;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,4 +82,17 @@ public class DashboardController {
     private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestParam String startDate, @RequestParam String endDate, @RequestParam(required = false) String search) throws ParseException {
         return anganwadiChildrenService.getAnganwadiChildrenDetails(startDate,endDate, search);
     }
+
+
+    @GetMapping("convertUnixToDate")
+    private List<FamilyMemberConverted> convertUnixToDate() {
+        return anganwadiChildrenService.convertUnixToDate();
+    }
+
+
+    @GetMapping("convertAttendanceUnixToDate")
+    private List<AttendanceConverted> convertAttendanceUnixToDate() {
+        return anganwadiChildrenService.convertAttendanceUnixToDate();
+    }
+
 }

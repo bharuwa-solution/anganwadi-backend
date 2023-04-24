@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface AnganwadiChildrenService {
 
-
     SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId, String centerName) throws ParseException, IOException;
 
     List<ChildrenDTO> getTotalChildren(String centerName);
@@ -51,4 +50,8 @@ public interface AnganwadiChildrenService {
     SaveAdmissionDTO updateRegisteredValue(String id, boolean isRegistered);
 
     List<AttendanceDTO> makeAttendanceManual(List<AttendanceDTO> attendanceDTO, String centerId) throws ParseException;
+
+    List<FamilyMemberConverted> convertUnixToDate();
+
+    List<AttendanceConverted> convertAttendanceUnixToDate();
 }

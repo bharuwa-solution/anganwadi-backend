@@ -2548,7 +2548,7 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public List<NewBornChildDTO> getNewBornChildRecords(String centerName) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        String birthType = "", birthPlace = "", motherMeemberId = "", motherPhoto = "";
+        String birthType = "", birthPlace = "", motherMeemberId = "", motherPhoto = "", primaryId = "";
         LocalDateTime date = LocalDateTime.now().minusMonths(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
         long convertToMills = zdt.toInstant().toEpochMilli();
@@ -2565,6 +2565,7 @@ public class FamilyServiceImpl implements FamilyService {
                     for (BabiesBirth lists : birthList) {
                         birthPlace = lists.getBirthPlace();
                         birthType = lists.getBirthType();
+                        primaryId = lists.getId();
                         motherMeemberId = lists.getMotherMemberId();
                     }
 
@@ -2577,10 +2578,11 @@ public class FamilyServiceImpl implements FamilyService {
                     Family familyDetails = familyRepository.findByFamilyId(bb.getFamilyId());
 
                     NewBornChildDTO singleEntry = NewBornChildDTO.builder()
-                            .id(bb.getId())
+                            .id(primaryId)
                             .name(bb.getName() == null ? "" : bb.getName())
                             .motherPhoto(motherPhoto)
                             .motherName(bb.getMotherName() == null ? "" : bb.getMotherName())
+                            .fatherName(bb.getFatherName() == null ? "":bb.getFatherName())
                             .houseNumber(familyDetails.getHouseNo() == null ? "" : familyDetails.getHouseNo())
                             .relationWithOwner(bb.getRelationWithOwner() == null ? "" : bb.getRelationWithOwner())
                             .dob(df.format(bb.getDob()))
@@ -2609,22 +2611,87 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public BirthPlaceDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO) {
+    public NewBornChildDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO) {
 
         if (StringUtils.isEmpty(birthPlaceDTO.getId())) {
             throw new CustomException("Id Not Passed, Please Check");
         }
-
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            BabiesBirth bb = babiesBirthRepository.findByChildIdAndDeletedIsFalse(birthPlaceDTO.getId());
+            HashSet<String > uniqueWeight = new HashSet<>();
+            BabiesBirth bb = babiesBirthRepository.findByIdAndDeletedIsFalse(birthPlaceDTO.getId());
+            Date date = df.parse(birthPlaceDTO.getDob());
+            long miils = date.getTime();
 
 
-        } catch (NullPointerException | NoSuchElementException e) {
+            // Saving in Birth Table
+
+            bb.setBirthPlace(birthPlaceDTO.getBirthPlace());
+            bb.setBirthType(birthPlaceDTO.getBirthType());
+            bb.setGender(birthPlaceDTO.getGender());
+            bb.setHeight(birthPlaceDTO.getHeight());
+            bb.setFirstWeight(birthPlaceDTO.getFirstWeight());
+            bb.setName(birthPlaceDTO.getName());
+            bb.setDob(miils);
+
+            babiesBirthRepository.save(bb);
+
+            // Saving in Family Member Table
+
+            FamilyMember findChild = familyMemberRepository.findById(bb.getChildId()).get();
+
+            findChild.setName(birthPlaceDTO.getName());
+            findChild.setDob(miils);
+            findChild.setRelationWithOwner(birthPlaceDTO.getRelationWithOwner());
+            findChild.setGender(birthPlaceDTO.getGender());
+
+            familyMemberRepository.save(findChild);
+
+            // Saving in Weight Tracking Table
+
+            List<WeightTracking> wt = weightTrackingRepository.findByChildId(bb.getChildId(),Sort.by(Sort.Direction.ASC, "createdDate"));
+
+            for(WeightTracking tracking :  wt){
+                if(uniqueWeight.add(tracking.getChildId())) {
+                    tracking.setHeight(birthPlaceDTO.getHeight());
+                    tracking.setWeight(birthPlaceDTO.getFirstWeight());
+                    weightTrackingRepository.save(tracking);
+                }
+            }
+
+
+            FamilyMember findMotherDetails = familyMemberRepository.findById(bb.getMotherMemberId()).get();
+            Family family = familyRepository.findByFamilyId(bb.getFamilyId());
+
+            return NewBornChildDTO.builder()
+                    .id(bb.getId())
+                    .name(bb.getName() == null ? "" : bb.getName())
+                    .motherPhoto(findMotherDetails.getPhoto())
+                    .motherName(findMotherDetails.getName() == null ? "" : findMotherDetails.getName())
+                    .houseNumber(family.getHouseNo() == null ? "" : family.getHouseNo())
+                    .relationWithOwner(findChild.getRelationWithOwner() == null ? "" : findChild.getRelationWithOwner())
+                    .dob(df.format(bb.getDob()))
+                    .birthPlace(bb.getBirthPlace())
+                    .birthType(bb.getBirthType())
+                    .familyId(bb.getFamilyId() == null ? "" : bb.getFamilyId())
+                    .motherMemberId(bb.getMotherMemberId())
+                    .gender(bb.getGender() == null ? "" : bb.getGender())
+                    .centerId(bb.getCenterId() == null ? "" : bb.getCenterId())
+                    .centerName(bb.getCenterName())
+                    .visitFor("")
+                    .visitType("")
+                    .firstWeight("")
+                    .visitRound("")
+                    .height("")
+                    .build();
+
+
+        } catch (NullPointerException | NoSuchElementException | ParseException e) {
             throw new CustomException("Child Not Found.");
         }
 
 
-        return null;
+
     }
 
     @Override

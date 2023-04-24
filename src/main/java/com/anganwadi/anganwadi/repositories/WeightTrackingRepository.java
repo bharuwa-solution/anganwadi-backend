@@ -2,6 +2,7 @@ package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.WeightTracking;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,7 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
     List<WeightTracking> findAllByCenterId(String centerId, Sort createdDate);
 
     List<WeightTracking> findAllByCenterName(String centerName, Sort createdDate);
+
+
+    List<WeightTracking> findByChildId(String childId, Sort createdDate);
 }

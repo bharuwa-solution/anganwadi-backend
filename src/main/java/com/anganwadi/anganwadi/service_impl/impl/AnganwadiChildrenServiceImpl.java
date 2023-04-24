@@ -210,6 +210,86 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
+    public List<FamilyMemberConverted> convertUnixToDate() {
+
+        List<FamilyMember> convertToDate = familyMemberRepository.findAll();
+        List<FamilyMemberConverted> list = new ArrayList<>();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        for (FamilyMember fm : convertToDate) {
+
+            Date formatToTime = new Date(fm.getDob());
+
+            FamilyMemberConverted singleEntry = FamilyMemberConverted.builder()
+                    .id(fm.getId())
+                    .familyId(fm.getFamilyId())
+                    .name(fm.getName())
+                    .photo(fm.getPhoto())
+                    .category(fm.getCategory())
+                    .isRegistered(fm.isRegistered())
+                    .motherName(fm.getMotherName())
+                    .fatherName(fm.getFatherName())
+                    .mobileNumber(fm.getMobileNumber())
+                    .stateCode(fm.getStateCode())
+                    .idType(fm.getIdType())
+                    .idNumber(fm.getIdNumber())
+                    .centerId(fm.getCenterId())
+                    .centerName(fm.getCenterName())
+                    .relationWithOwner(fm.getRelationWithOwner())
+                    .gender(fm.getGender())
+                    .dob(df.format(formatToTime))
+                    .maritalStatus(fm.getMaritalStatus())
+                    .memberCode(fm.getMemberCode())
+                    .handicap(fm.getHandicap())
+                    .handicapType(fm.getHandicapType())
+                    .residentArea(fm.getResidentArea())
+                    .dateOfArrival(fm.getDateOfArrival())
+                    .dateOfLeaving(fm.getDateOfLeaving())
+                    .dateOfMortality(fm.getDateOfMortality())
+                    .recordForMonth(fm.getRecordForMonth())
+                    .build();
+
+            list.add(singleEntry);
+
+        }
+
+        return list;
+
+    }
+
+    @Override
+    public List<AttendanceConverted> convertAttendanceUnixToDate() {
+
+        List<Attendance> getData = attendanceRepository.findAll();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<AttendanceConverted> addInList = new ArrayList<>();
+
+        for (Attendance list : getData) {
+
+            Date date = new Date(list.getDate());
+
+            AttendanceConverted attendance = AttendanceConverted.builder()
+                    .id(list.getId())
+                    .centerId(list.getCenterId())
+                    .centerName(list.getCenterName())
+                    .name(list.getName())
+                    .isRegistered(list.isRegistered())
+                    .childId(list.getChildId())
+                    .date(df.format(date))
+                    .attType(list.getAttType())
+                    .latitude(list.getLatitude())
+                    .longitude(list.getLongitude())
+                    .dob(list.getDob())
+                    .gender(list.getGender())
+                    .photo(list.getPhoto())
+                    .attendance(list.getAttendance())
+                    .build();
+
+            addInList.add(attendance);
+        }
+        return addInList;
+    }
+
+    @Override
     public List<ChildrenDTO> getTotalChildren(String centerName) {
 
         List<ChildrenDTO> addInList = new ArrayList<>();

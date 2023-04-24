@@ -134,7 +134,7 @@ public class FamilyController {
     }
 
     @PutMapping("/updateNewBornChildRecords")
-    private BirthPlaceDTO updateNewBornChildRecords(@RequestBody BirthPlaceDTO birthPlaceDTO) {
+    private NewBornChildDTO updateNewBornChildRecords(@RequestBody BirthPlaceDTO birthPlaceDTO) {
         return familyService.updateNewBornChildRecords(birthPlaceDTO);
     }
 

@@ -87,7 +87,7 @@ public interface FamilyService {
 
     List<NewBornChildDTO> getNewBornChildRecords(String centerName) throws ParseException;
 
-    BirthPlaceDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO);
+    NewBornChildDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO);
 
     List<PregnantAndDeliveryDTO> getDhatriDetails(String centerId);
 
