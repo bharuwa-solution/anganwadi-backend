@@ -393,6 +393,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 Attendance saveAttendance = Attendance.builder()
                         .childId(getId.getChildId())
                         .dob(getId.getDob())
+                        .centerId(getId.getCenterId())
                         .isRegistered(getId.isRegistered())
                         .longitude("")
                         .latitude("")

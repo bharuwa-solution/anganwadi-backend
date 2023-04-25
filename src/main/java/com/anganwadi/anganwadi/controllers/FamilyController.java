@@ -139,9 +139,8 @@ public class FamilyController {
     }
 
     @PostMapping("/deleteNewBornChildRecords")
-    private PregnantAndDeliveryDTO deleteNewBornChildRecords(@RequestParam String id) {
-        return null;
-        //        return familyService.deleteNewBornChildRecords(id);
+    private DeleteBornChildDTO deleteNewBornChildRecords(@RequestParam String id) {
+         return familyService.deleteNewBornChildRecords(id);
     }
 
     @GetMapping("/getDhatriDetails")

@@ -24,6 +24,11 @@ public class WeightController {
         return familyService.saveWeightRecords(weightRecordsDTO,centerId, centerName);
     }
 
+    @PostMapping("/saveWeightRecordsCloned")
+    private WeightRecordsDTO saveWeightRecordsCloned(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveWeightRecordsCloned(weightRecordsDTO,centerId, centerName);
+    }
+
     @GetMapping("/getChildWeightRecords")
     private List<WeightRecordsDTO> getWeightRecords( @RequestParam String childId) {
         return familyService.getWeightRecords(childId);

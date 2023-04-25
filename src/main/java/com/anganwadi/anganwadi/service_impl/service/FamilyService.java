@@ -93,6 +93,10 @@ public interface FamilyService {
 
     List<FamilyChildrenDetails> getAllChildrenDetails(String centerName);
 
+    DeleteBornChildDTO deleteNewBornChildRecords(String id);
+
+    WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName) throws ParseException;
+
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }

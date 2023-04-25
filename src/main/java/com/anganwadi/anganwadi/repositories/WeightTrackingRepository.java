@@ -29,4 +29,6 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
 
 
     List<WeightTracking> findByChildId(String childId, Sort createdDate);
+
+    void deleteAllByChildId(String childId);
 }
