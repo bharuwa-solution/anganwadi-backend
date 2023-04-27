@@ -33,6 +33,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final StockDistributionRepository stockDistributionRepository;
     private final MealsRepository mealsRepository;
     private final WeightTrackingRepository weightTrackingRepository;
+    private final CommonMethodsService commonMethodsService;
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
@@ -40,7 +41,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                                         FamilyRepository familyRepository, FamilyMemberRepository familyMemberRepository,
                                         FamilyServiceImpl familyServiceImpl, AssetsStockRepository assetsStockRepository,
                                         StockListRepository stockListRepository, StockDistributionRepository stockDistributionRepository,
-                                        MealsRepository mealsRepository, WeightTrackingRepository weightTrackingRepository) {
+                                        MealsRepository mealsRepository, WeightTrackingRepository weightTrackingRepository,
+                                        CommonMethodsService commonMethodsService) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
@@ -53,6 +55,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.stockDistributionRepository = stockDistributionRepository;
         this.mealsRepository = mealsRepository;
         this.weightTrackingRepository = weightTrackingRepository;
+        this.commonMethodsService = commonMethodsService;
     }
 
 
@@ -915,49 +918,72 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 //    }
 
 
-
     @Override
-    public List<AnganwadiAahaarData> getAnganwadiAahaarData(String startDate, String endDate) throws ParseException {
+    public List<AnganwadiAahaarData> getAnganwadiAahaarData(DashboardFilter dashboardFilter) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         List<AnganwadiAahaarData> addInList = new ArrayList<>();
+        HashSet<String> uniqueFood = new HashSet<>();
 
-        long item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0, item6 = 0, item7 = 0, item8 = 0, item9 = 0, item10 = 0, item11 = 0;
 
-        Date startTime = df.parse(startDate);
-        Date endTime = df.parse(endDate);
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
 
         List<Meals> findMeals = mealsRepository.findAllByMonthCriteria(startTime, endTime, Sort.by(Sort.Direction.ASC, "date"));
         List<AnganwadiAahaarData> dataList = new ArrayList<>();
         HashSet<Integer> uniqueMonth = new HashSet<>();
 
         for (Meals meals : findMeals) {
-
-
             AnganwadiAahaarData singleList = AnganwadiAahaarData.builder()
-                        .foodName(meals.getFoodName())
-                        .foodCode(meals.getFoodCode())
-                        .quantity(meals.getQuantity())
-                        .quantityUnit(meals.getQuantityUnit())
-                        .date(df.format(new Date(meals.getDate())))
-                        .mealType(meals.getMealType())
-                        .build();
+                    .foodName(meals.getFoodName())
+                    .foodCode(meals.getFoodCode())
+                    .quantity(meals.getQuantity())
+                    .quantityUnit(meals.getQuantityUnit())
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
+                    .date(df.format(new Date(meals.getDate())))
+                    .mealType(meals.getMealType())
+                    .build();
                 addInList.add(singleList);
-            }
+        }
         return addInList;
     }
 
     @Override
-    public List<WeightTrackingDTO> getChildrenWeightData(String startDate, String endDate) throws ParseException {
+    public List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        Date startTime = df.parse(startDate);
-        Date endTime = df.parse(endDate);
 
-        List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonthCriteria(startTime, endTime,Sort.by(Sort.Direction.ASC, "createdDate"));
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
+
+        List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonthCriteria(startTime, endTime, Sort.by(Sort.Direction.ASC, "createdDate"));
         List<WeightTrackingDTO> addInList = new ArrayList<>();
 
         for (WeightTracking tracking : findChildren) {
-
             long getMills = tracking.getDate();
             Date date = new Date(getMills);
 
@@ -965,6 +991,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .familyId(tracking.getFamilyId())
                     .childId(tracking.getChildId())
                     .date(df.format(date))
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
                     .height(tracking.getHeight())
                     .weight(tracking.getWeight())
                     .build();

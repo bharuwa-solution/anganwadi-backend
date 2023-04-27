@@ -34,11 +34,11 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'centerName':{$regex:?0},'recordForMonth':{$regex:?1},'category':{$regex:?2}}")
     List<FamilyMember> findAllByCenterNameAndRecordForMonthAndCategory(String centerName, String month, String category);
 
-    @Query("{'category':{$regex:?0},'gender':{$regex:?1}, 'createdDate':{$gte:?2,$lte:?3}}")
-    List<FamilyMember> findAllByChildrenCriteria(String caste, String gender, Date startTime, Date endTime);
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'dob':{$gte:?2}}")
+    List<FamilyMember> findAllByChildrenCriteria(Date startTime, Date endTime, long millis);
 
-    @Query("{'gender':{$regex:?0}}")
-    List<FamilyMember> findByCategoryCriteria(String type);
+    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
+    List<FamilyMember> findByCategoryCriteria(Date startTime, Date endTime);
 
     @Query("{'familyId':?0,'relationWithOwner':'0'}")
     FamilyMember findByHead(String familyId);
@@ -72,7 +72,6 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'centerName':?0,'dob':{$gte:?1}}")
     List<FamilyMember> findAllFamilyChildrenByCenterId(String centerName, long convertToMills, Sort createdDate);
 
-
-
-
+    @Query("{'dob':{$gte:?0}}")
+    List<FamilyMember> findAllBeneficiaryChildren(long millis);
 }

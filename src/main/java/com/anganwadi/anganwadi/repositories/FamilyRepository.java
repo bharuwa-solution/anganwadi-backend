@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -18,4 +19,7 @@ public interface FamilyRepository extends MongoRepository<Family, String> {
     Family findByFamilyId(String familyId);
 
     List<Family> findAllByCenterId(String centerId, Sort createdDate);
+
+    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
+    List<Family> findByCategoryCriteria(Date startTime, Date endTime);
 }

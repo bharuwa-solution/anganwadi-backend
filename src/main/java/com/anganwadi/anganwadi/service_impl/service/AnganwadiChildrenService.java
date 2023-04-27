@@ -37,9 +37,9 @@ public interface AnganwadiChildrenService {
 
     List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth);
 
-    List<AnganwadiAahaarData> getAnganwadiAahaarData(String startDate, String endDate) throws ParseException;
+    List<AnganwadiAahaarData> getAnganwadiAahaarData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<WeightTrackingDTO> getChildrenWeightData(String startDate, String endDate) throws ParseException;
+    List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException;
 
     List<DashboardAttendanceDTO> getAttendanceData(String month) throws ParseException;
 

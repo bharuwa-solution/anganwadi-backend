@@ -14,7 +14,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 @EnableMongoAuditing
 @EnableCaching
-@EnableAsync
+@EnableAsync(proxyTargetClass = true)
 @SpringBootApplication
 public class AnganwadiApplication extends SpringBootServletInitializer {
 

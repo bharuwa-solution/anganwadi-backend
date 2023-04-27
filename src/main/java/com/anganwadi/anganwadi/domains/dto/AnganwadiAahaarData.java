@@ -16,4 +16,6 @@ public class AnganwadiAahaarData {
     private String quantityUnit;
     private String date;
     private String mealType;
+    private String startDate;
+    private String endDate;
 }

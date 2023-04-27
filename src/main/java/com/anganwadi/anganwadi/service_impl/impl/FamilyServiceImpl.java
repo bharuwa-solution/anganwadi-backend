@@ -12,14 +12,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -39,14 +37,14 @@ public class FamilyServiceImpl implements FamilyService {
     private final AnganwadiCenterRepository anganwadiCenterRepository;
     private final UserRepository userRepository;
     private final AttendanceRepository attendanceRepository;
-
+    private final CommonMethodsService commonMethodsService;
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
                              VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
                              PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
                              AnganwadiChildrenRepository anganwadiChildrenRepository, AnganwadiCenterRepository anganwadiCenterRepository,
-                             UserRepository userRepository, AttendanceRepository attendanceRepository) {
+                             UserRepository userRepository, AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
@@ -59,14 +57,9 @@ public class FamilyServiceImpl implements FamilyService {
         this.anganwadiCenterRepository = anganwadiCenterRepository;
         this.userRepository = userRepository;
         this.attendanceRepository = attendanceRepository;
+        this.commonMethodsService=commonMethodsService;
     }
 
-    private String findCenterName(String centerId) {
-        AnganwadiCenter centers = anganwadiCenterRepository.findById(centerId).get();
-
-        return centers.getCenterName().trim();
-
-    }
 
 
     public int totalHouseholdsMale(String familyId) {
@@ -656,6 +649,52 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
+    public List<HouseholdReligionData> getHouseholdReligionData(DashboardFilter dashboardFilter) throws ParseException {
+
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<HouseholdReligionData> addInList = new ArrayList<>();
+
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
+
+        List<FamilyMember> findByCategory = familyMemberRepository.findByCategoryCriteria(startTime, endTime);
+
+        for (FamilyMember fm : findByCategory) {
+            Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
+
+            HouseholdReligionData singleEntry = HouseholdReligionData.builder()
+                    .religion(findFamily.getReligion() == null ? "" : findFamily.getReligion())
+                    .name(fm.getName() == null ? "" : fm.getName())
+                    .dob(df.format(new Date(fm.getDob())))
+                    .centerId(fm.getCenterId() == null ? "" : fm.getCenterId())
+                    .centerName(fm.getCenterName() == null ? "" : fm.getCenterName())
+                    .gender(fm.getGender() == null ? "" : fm.getGender())
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
+                    .build();
+
+            addInList.add(singleEntry);
+
+        }
+
+        return addInList;
+    }
+
+    @Override
     public List<WeightRecordsDTO> getWeightRecords(String childId) {
 
         if (StringUtils.isEmpty(childId.trim())) {
@@ -1066,7 +1105,7 @@ public class FamilyServiceImpl implements FamilyService {
                         .gender(fmd.getGender())
                         .childId(vaccDetails.getMemberId())
                         .centerId(centerId)
-                        .centerName(findCenterName(centerId))
+                        .centerName(commonMethodsService.findCenterName(centerId))
                         .houseNo(findHouse.getHouseNo())
                         .vaccinationCode(vaccDetails.getVisitFor())
                         .vaccinationName("")
@@ -1258,7 +1297,7 @@ public class FamilyServiceImpl implements FamilyService {
 
                 FemaleMembersDTO addMember = FemaleMembersDTO.builder()
                         .name(checkAge.getName() == null ? "" : checkAge.getName())
-                        .centerName(findCenterName(centerId))
+                        .centerName(commonMethodsService.findCenterName(centerId))
                         .husbandName(husbandName)
                         .familyId(familyId)
                         .houseNo(houseNo)
@@ -1306,7 +1345,7 @@ public class FamilyServiceImpl implements FamilyService {
                         .husbandName(husband_FatherName == null ? "" : husband_FatherName)
                         .houseNo(houseNo)
                         .memberId(checkMembers.getId())
-                        .centerName(findCenterName(centerId))
+                        .centerName(commonMethodsService.findCenterName(centerId))
                         .profilePic(checkMembers.getPhoto() == null ? "" : checkMembers.getPhoto())
                         .visits(visitRounds(visitsDetails.getMemberId()))
                         .build();
@@ -1499,6 +1538,21 @@ public class FamilyServiceImpl implements FamilyService {
 
         visitsRepository.save(updateRecord);
 
+
+        // Update in PregnantAndDelivery Table
+
+        PregnantAndDelivery pdd = pregnantAndDeliveryRepository.findTopOneByMotherMemberId(birthDetails.getMotherMemberId());
+
+        if (pdd != null) {
+
+            pdd.setChildName(birthDetails.getName());
+            pdd.setChildGender(birthDetails.getGender());
+            pdd.setDateOfDelivery(mills);
+            pregnantAndDeliveryRepository.save(pdd);
+
+        }
+
+
         BirthPlaceDTO singleEntry = BirthPlaceDTO.builder()
                 .name(birthDetails.getName() == null ? "" : birthDetails.getName())
                 .relationWithOwner(birthDetails.getRelationWithOwner() == null ? "" : birthDetails.getRelationWithOwner())
@@ -1596,6 +1650,29 @@ public class FamilyServiceImpl implements FamilyService {
                 .build();
     }
 
+    private long dashboardBeneficiaryCounts() {
+
+        // Beneficiary Children
+
+        LocalDateTime date = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+        long convertToMills = zdt.toInstant().toEpochMilli();
+
+        // Beneficiary dharti
+        LocalDateTime dhartiDate = LocalDateTime.now().minusYears(6);
+        ZonedDateTime dhartiZdt = ZonedDateTime.of(dhartiDate, ZoneId.systemDefault());
+        long convertToMills2 = dhartiZdt.toInstant().toEpochMilli();
+
+        // Beneficiary Pregnant Women
+        List<PregnantAndDelivery> pdd = pregnantAndDeliveryRepository.findAllByDateOfDelivery();
+        List<FamilyMember> fm = familyMemberRepository.findAllBeneficiaryChildren(convertToMills);
+        List<PregnantAndDelivery> dhartiWomen = pregnantAndDeliveryRepository.findAllBeneficiaryDharti(convertToMills2);
+
+        return pdd.size() + fm.size() + dhartiWomen.size();
+
+    }
+
+
     @Override
     public DashboardFamilyData getDashboardFamilyData(LocationFilter filter) {
 
@@ -1623,220 +1700,175 @@ public class FamilyServiceImpl implements FamilyService {
         return DashboardFamilyData.builder()
                 .households(findData.size())
                 .population(fm.size())
-                .totalBeneficiary(uniqueFamilyId.size())
+                .totalBeneficiary(dashboardBeneficiaryCounts())
                 .children(totalChildren)
                 .build();
     }
 
     @Override
-    public TotalChildrenData getTotalChildrenData(String caste, String gender, String startDate, String endDate) throws ParseException {
+    public List<TotalChildrenData> getTotalChildrenData(DashboardFilter dashboardFilter) throws ParseException {
 
-        TotalChildrenData childrenData = new TotalChildrenData();
-        String childrenCaste = caste == null ? "" : caste;
+        List<TotalChildrenData> childrenData = new ArrayList<>();
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
         Date currentDate = new Date();
         long currentMillis = currentDate.getTime();
+        Date startTime = null, endTime = null;
 
-        Date startTime = df.parse(startDate);
-        Date endTime = df.parse(endDate);
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
 
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
 
-        List<FamilyMember> findChildrenRecords = familyMemberRepository.findAllByChildrenCriteria(childrenCaste, gender, startTime, endTime);
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
 
-        long zeroToOne = 0, oneToTwo = 0, twoToThree = 0, threeToFour = 0, fourToFive = 0, fiveToSix = 0;
-
-        LocalDateTime firstDate = LocalDateTime.now().minusYears(1);
-        ZonedDateTime firstZdt = ZonedDateTime.of(firstDate, ZoneId.systemDefault());
-        long firstMills = firstZdt.toInstant().toEpochMilli();
-
-        LocalDateTime secondDate = LocalDateTime.now().minusYears(2);
-        ZonedDateTime secondZdt = ZonedDateTime.of(secondDate, ZoneId.systemDefault());
-        long secondMills = secondZdt.toInstant().toEpochMilli();
-
-        LocalDateTime thirdDate = LocalDateTime.now().minusYears(3);
-        ZonedDateTime thirdZdt = ZonedDateTime.of(thirdDate, ZoneId.systemDefault());
-        long thirdMills = thirdZdt.toInstant().toEpochMilli();
-
-        LocalDateTime fourDate = LocalDateTime.now().minusYears(4);
-        ZonedDateTime fourZdt = ZonedDateTime.of(fourDate, ZoneId.systemDefault());
-        long fourMills = fourZdt.toInstant().toEpochMilli();
-
-        LocalDateTime fifthDate = LocalDateTime.now().minusYears(5);
-        ZonedDateTime fifthZdt = ZonedDateTime.of(fifthDate, ZoneId.systemDefault());
-        long fifthMills = fifthZdt.toInstant().toEpochMilli();
 
         LocalDateTime sixthDate = LocalDateTime.now().minusYears(6);
         ZonedDateTime sixthZdt = ZonedDateTime.of(sixthDate, ZoneId.systemDefault());
         long sixthMills = sixthZdt.toInstant().toEpochMilli();
 
+        List<FamilyMember> findChildrenRecords = familyMemberRepository.findAllByChildrenCriteria(startTime, endTime, sixthMills);
 
         for (FamilyMember fm : findChildrenRecords) {
-
-
-            if (fm.getDob() >= firstMills && fm.getDob() < currentMillis) {
-                zeroToOne++;
-            }
-
-            if (fm.getDob() >= secondMills && fm.getDob() < firstMills) {
-                oneToTwo++;
-            }
-
-            if (fm.getDob() >= thirdMills && fm.getDob() < secondMills) {
-                twoToThree++;
-            }
-
-            if (fm.getDob() >= fourMills && fm.getDob() < thirdMills) {
-                threeToFour++;
-            }
-
-            if (fm.getDob() >= fifthMills && fm.getDob() < fourMills) {
-                fourToFive++;
-            }
-
-            if (fm.getDob() >= sixthMills && fm.getDob() < fifthMills) {
-                fiveToSix++;
-            }
-
-
+            Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
+            String minority = findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority();
+            childrenData.add(TotalChildrenData.builder()
+                    .caste(fm.getCategory() == null ? "" : fm.getCategory())
+                    .gender(fm.getGender() == null ? "" : fm.getGender())
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
+                    .isMinority(minority)
+                    .name(fm.getName() == null ? "" : fm.getName())
+                    .centerId(fm.getCenterId() == null ? "" : fm.getCenterId())
+                    .centerName(fm.getCenterName() == null ? "" : fm.getCenterName())
+                    .build());
         }
 
 
-        childrenData = TotalChildrenData.builder()
-                .caste(childrenCaste)
-                .gender(gender)
-                .startDate(startDate)
-                .endDate(endDate)
-                .zeroToOne(zeroToOne)
-                .oneToTwo(oneToTwo)
-                .twoToThree(twoToThree)
-                .threeToFour(threeToFour)
-                .fourToFive(fourToFive)
-                .fiveToSix(fiveToSix)
-                .build();
+
 
         return childrenData;
     }
 
     @Override
-    public HouseholdCategoryData getHouseholdCategoryData(String type, String month) {
-
-        long general = 0, obc = 0, sc = 0, st = 0, others = 0;
-        String categoryType = type == null ? "" : type;
-
-        LocalDateTime date = LocalDateTime.now().minusYears(6);
-        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
-        String[] splitType = categoryType.split(",");
-        for (String fetchCat : splitType) {
-            List<FamilyMember> findByCategory = familyMemberRepository.findByCategoryCriteria(fetchCat.trim());
-
-            for (FamilyMember fm : findByCategory) {
-
-                switch (fm.getCategory().trim()) {
-                    case  "1":
-                        general++;
-                        break;
-
-                    case  "2":
-                        obc++;
-                        break;
-
-                    case  "3":
-                        sc++;
-                        break;
-
-                    case  "4":
-                        st++;
-                        break;
-
-                    case  "5":
-                        others++;
-                        break;
-
-                }
-            }
-        }
-
-        return HouseholdCategoryData.builder()
-                .type(categoryType)
-                .month(month)
-                .general(general)
-                .sc(sc)
-                .st(st)
-                .others(others)
-                .obc(obc)
-                .build();
-
-    }
-
-    @Override
-    public PregnancyData getPregnancyData(String startDate, String endDate) throws ParseException {
-
-
-        HashSet<String> uniqueMemberId = new HashSet<>();
-
-        long gen = 0, st = 0, sc = 0, obc = 0, others = 0;
+    public List<HouseholdCategoryData> getHouseholdCategoryData(DashboardFilter dashboardFilter) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<HouseholdCategoryData> addInList = new ArrayList<>();
 
-        Date startTime = df.parse(startDate);
-        Date endTime = df.parse(endDate);
+        Date startTime = null, endTime = null;
 
-        List<Visits> findPregnancyData = visitsRepository.findAllByPregnancyCriteria(startTime, endTime);
-        for (Visits cat : findPregnancyData) {
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
 
-            switch (cat.getCategory().trim()) {
-                case "1":
-                    gen++;
-                    break;
-            }
-
-            if (cat.getCategory().trim().equals("2")) {
-                obc++;
-            }
-
-            if (cat.getCategory().trim().equals("3")) {
-                sc++;
-            }
-
-            if (cat.getCategory().trim().equals("4")) {
-                st++;
-            }
-
-            if (cat.getCategory().trim().equals("5")) {
-                others++;
-            }
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
         }
 
-        return PregnancyData.builder()
-                .general(gen)
-                .st(st)
-                .sc(sc)
-                .obc(obc)
-                .others(others)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
+
+        List<FamilyMember> findByCategory = familyMemberRepository.findByCategoryCriteria(startTime, endTime);
+
+        for (FamilyMember fm : findByCategory) {
+
+            HouseholdCategoryData singleEntry = HouseholdCategoryData.builder()
+                    .category(fm.getCategory())
+                    .name(fm.getName())
+                    .dob(df.format(new Date(fm.getDob())))
+                    .centerId(fm.getCenterId())
+                    .centerName(fm.getCenterName())
+                    .gender(fm.getGender())
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
+                    .build();
+
+            addInList.add(singleEntry);
+
+        }
+
+        return addInList;
 
     }
 
     @Override
-    public List<PregnantWomenDetails> getPregnantWomenDetails(String startDate, String endDate, String search) throws ParseException {
+    public List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<PregnancyData> addInList = new ArrayList<>();
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
+        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
+        for (PregnantAndDelivery cat : findPdd) {
+
+
+            PregnancyData singleEntry = PregnancyData.builder()
+                    .lastMissedPeriodDate(df.format(new Date(cat.getLastMissedPeriodDate())))
+                    .motherId(cat.getMotherMemberId())
+                    .motherName(cat.getMotherName())
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
+                    .build();
+            addInList.add(singleEntry);
+        }
+
+        return addInList;
+
+    }
+
+    @Override
+    public List<PregnantWomenDetails> getPregnantWomenDetails(DashboardFilter dashboardFilter) throws ParseException {
 
         List<PregnantWomenDetails> addInList = new ArrayList<>();
         HashSet<String> uniqueMemberId = new HashSet<>();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        String searchKeyword = search == null ? "" : search;
-        Date startTime = df.parse(startDate);
-        Date endTime = df.parse(endDate);
 
-        List<Visits> findPregnancyData = visitsRepository.findAllByPregnancyCriteria(startTime, endTime);
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
+        List<PregnantAndDelivery> findPregnancyData = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
 
         try {
-            for (Visits visits : findPregnancyData) {
+            for (PregnantAndDelivery visits : findPregnancyData) {
 
-                if (uniqueMemberId.add(visits.getMemberId())) {
-                    List<FamilyMember> searchNames = familyMemberRepository.findAllByIdAndNameSearch(visits.getMemberId(), searchKeyword.trim());
+                if (uniqueMemberId.add(visits.getMotherMemberId())) {
+                    List<FamilyMember> searchNames = familyMemberRepository.findAllByIdAndNameSearch(visits.getMotherMemberId(), dashboardFilter.getSearch().trim());
 
                     if (searchNames.size() > 0) {
                         for (FamilyMember searchResults : searchNames) {
@@ -2301,7 +2333,7 @@ public class FamilyServiceImpl implements FamilyService {
     public HouseholdWomenDetails getHouseholdWomenDetails(String centerId, String centerName) {
 
         // Count Pregnant Women
-        List<PregnantAndDelivery> findPW = pregnantAndDeliveryRepository.findAllByCenterId(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<PregnantAndDelivery> findPW = pregnantAndDeliveryRepository.findAllByCenterIdAndDateOfDelivery(centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
         HashSet<String> uniqueWomen = new HashSet<>();
 
         for (PregnantAndDelivery pd : findPW) {
@@ -2352,7 +2384,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .profilePic(fm.getPhoto() == null ? "" : fm.getPhoto())
                 .regDate(timestamp)
                 .centerId(centerId)
-                .centerName(findCenterName(centerId))
+                .centerName(commonMethodsService.findCenterName(centerId))
                 .noOfChild(pregnantAndDeliveryDTO.getNoOfChild())
                 .lastMissedPeriodDate(missedPeriodDate)
                 .dateOfDelivery(0)
@@ -2376,7 +2408,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .regDate(df.format(formatToTime))
                 .centerId(centerId)
                 .isDeleted(pd.isDeleted())
-                .centerName(findCenterName(centerId))
+                .centerName(commonMethodsService.findCenterName(centerId))
                 .noOfChild(pregnantAndDeliveryDTO.getNoOfChild())
                 .lastMissedPeriodDate(df.format(missedPeriodDate))
                 .dateOfDelivery(pregnantAndDeliveryDTO.getDateOfDelivery() == null ? "" : pregnantAndDeliveryDTO.getDateOfDelivery())

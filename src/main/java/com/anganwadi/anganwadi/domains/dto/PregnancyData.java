@@ -11,12 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PregnancyData {
 
-    private String month;
-    private long sc;
-    private long st;
-    private long obc;
-    private long general;
-    private long others;
+   private String motherName;
+   private String motherId;
+   private String lastMissedPeriodDate;
     private String startDate;
     private String endDate;
 }

@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WeightTrackingDTO {
+public class DashboardFilter {
 
-    private String familyId;
     private String startDate;
     private String endDate;
-    private String childId;
-    private String date;
-    private String height;
-    private String weight;
-
+    private String search;
+    private String district;
+    private String tehsil;
+    private String block;
+    private String village;
 }

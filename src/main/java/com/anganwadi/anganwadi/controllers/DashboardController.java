@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.FamilyMember;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,34 +27,40 @@ public class DashboardController {
         return familyService.getDashboardFamilyData(filter);
     }
 
-    @GetMapping("getTotalChildrenData")
-    private TotalChildrenData getTotalChildrenData(@RequestParam(required = false) String caste, @RequestParam String gender, @RequestParam String startDate, @RequestParam String endDate) throws ParseException {
-        return familyService.getTotalChildrenData(caste, gender, startDate, endDate);
+    @PostMapping("getTotalChildrenData")
+    private List<TotalChildrenData> getTotalChildrenData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getTotalChildrenData(dashboardFilter);
     }
 
-    @GetMapping("getHouseholdCategoryData")
-    private HouseholdCategoryData getHouseholdCategoryData(@RequestParam(required = false) String type, @RequestParam String month) throws ParseException {
-        return familyService.getHouseholdCategoryData(type, month);
+    @PostMapping("getHouseholdReligionData")
+    private List<HouseholdReligionData> getHouseholdReligionData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getHouseholdReligionData(dashboardFilter);
     }
 
-    @GetMapping("getPregnancyData")
-    private PregnancyData getPregnancyData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
-        return familyService.getPregnancyData(startDate,endDate);
+    @PostMapping("getHouseholdCategoryData")
+    private List<HouseholdCategoryData> getHouseholdCategoryData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getHouseholdCategoryData(dashboardFilter);
     }
 
-    @GetMapping("getPregnantWomenDetails")
-    private List<PregnantWomenDetails> getPregnantWomenDetails(@RequestParam String startDate, @RequestParam String endDate, @RequestParam(required = false) String search) throws ParseException {
-        return familyService.getPregnantWomenDetails(startDate,endDate, search);
+
+    @PostMapping("getPregnancyData")
+    private List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getPregnancyData(dashboardFilter);
     }
 
-    @GetMapping("getAnganwadiAahaarData")
-    private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
-        return anganwadiChildrenService.getAnganwadiAahaarData(startDate,endDate);
+    @PostMapping("getPregnantWomenDetails")
+    private List<PregnantWomenDetails> getPregnantWomenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getPregnantWomenDetails(dashboardFilter);
     }
 
-    @GetMapping("getChildrenWeightData")
-    private List<WeightTrackingDTO> getChildrenWeightData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
-        return anganwadiChildrenService.getChildrenWeightData(startDate,endDate);
+    @PostMapping("getAnganwadiAahaarData")
+    private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return anganwadiChildrenService.getAnganwadiAahaarData(dashboardFilter);
+    }
+
+    @PostMapping("getChildrenWeightData")
+    private List<WeightTrackingDTO> getChildrenWeightData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return anganwadiChildrenService.getChildrenWeightData(dashboardFilter);
     }
 
     @GetMapping("getDeliveryData")
@@ -82,7 +87,6 @@ public class DashboardController {
     private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestParam String startDate, @RequestParam String endDate, @RequestParam(required = false) String search) throws ParseException {
         return anganwadiChildrenService.getAnganwadiChildrenDetails(startDate,endDate, search);
     }
-
 
     @GetMapping("convertUnixToDate")
     private List<FamilyMemberConverted> convertUnixToDate() {

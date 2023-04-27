@@ -11,14 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TotalChildrenData {
 
-    private long zeroToOne;
-    private long oneToTwo;
-    private long twoToThree;
-    private long threeToFour;
-    private long fourToFive;
-    private long fiveToSix;
     private String caste;
     private String gender;
+    private String isMinority;
+    private String name;
+    private String centerId;
+    private String centerName;
     private String startDate;
     private String endDate;
 }

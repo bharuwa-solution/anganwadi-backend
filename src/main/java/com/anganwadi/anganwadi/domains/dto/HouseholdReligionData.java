@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WeightTrackingDTO {
+public class HouseholdReligionData {
 
-    private String familyId;
     private String startDate;
     private String endDate;
-    private String childId;
-    private String date;
-    private String height;
-    private String weight;
-
+    private String name;
+    private String centerId;
+    private String centerName;
+    private String religion;
+    private String gender;
+    private String dob;
 }

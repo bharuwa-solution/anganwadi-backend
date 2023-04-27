@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class HouseholdCategoryData {
 
-    private String month;
-    private String type;
-    private long general;
-    private long sc;
-    private long st;
-    private long obc;
-    private long others;
+    private String startDate;
+    private String endDate;
+    private String name;
+    private String centerId;
+    private String centerName;
+    private String category;
+    private String gender;
+    private String dob;
 }

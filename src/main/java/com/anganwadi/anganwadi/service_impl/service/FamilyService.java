@@ -47,13 +47,13 @@ public interface FamilyService {
 
     DashboardFamilyData getDashboardFamilyData(LocationFilter filter);
 
-    TotalChildrenData getTotalChildrenData(String caste, String gender, String startDate, String endDate) throws ParseException;
+    List<TotalChildrenData> getTotalChildrenData(DashboardFilter dashboardFilter) throws ParseException;
 
-    HouseholdCategoryData getHouseholdCategoryData(String type, String month);
+    List<HouseholdCategoryData> getHouseholdCategoryData(DashboardFilter dashboardFilter) throws ParseException;
 
-    PregnancyData getPregnancyData(String startDate, String endDate) throws ParseException;
+    List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException;
 
-    List<PregnantWomenDetails> getPregnantWomenDetails(String startDate, String endDate, String search) throws ParseException;
+    List<PregnantWomenDetails> getPregnantWomenDetails(DashboardFilter dashboardFilter) throws ParseException;
 
     DeliveryDTO getDeliveryData(String startDate, String endDate) throws ParseException;
 
@@ -96,6 +96,8 @@ public interface FamilyService {
     DeleteBornChildDTO deleteNewBornChildRecords(String id);
 
     WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName) throws ParseException;
+
+    List<HouseholdReligionData> getHouseholdReligionData(DashboardFilter dashboardFilter) throws ParseException;
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
