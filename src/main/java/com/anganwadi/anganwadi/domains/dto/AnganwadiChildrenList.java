@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 public class AnganwadiChildrenList {
 
     private String name;
+    private String childId;
+    private String startDate;
+    private String endDate;
     private String motherName;
     private String fatherName;
     private String dob;

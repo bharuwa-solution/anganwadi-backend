@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class DashboardAttendanceDTO {
 
     private String childId;
+    private String startDate;
+    private String endDate;
     private String centerName;
     private String date;
     private String attendance;

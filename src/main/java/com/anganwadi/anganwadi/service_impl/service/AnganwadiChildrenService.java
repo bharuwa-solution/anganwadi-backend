@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.dto.AttendancePhotoDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,11 +42,11 @@ public interface AnganwadiChildrenService {
 
     List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<DashboardAttendanceDTO> getAttendanceData(String month) throws ParseException;
+    List<DashboardAttendanceDTO> getAttendanceData(DashboardFilter dashboardFilter) throws ParseException;
 
-    AnganwadiChildrenDTO getAnganwadiChildrenData(String month) throws ParseException;
+    List<AnganwadiChildrenDTO> getAnganwadiChildrenData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<AnganwadiChildrenList> getAnganwadiChildrenDetails(String startDate, String endDate, String search) throws ParseException;
+    List<AnganwadiChildrenList> getAnganwadiChildrenDetails(DashboardFilter dashboardFilter) throws ParseException;
 
     SaveAdmissionDTO updateRegisteredValue(String id, boolean isRegistered);
 
@@ -54,4 +55,6 @@ public interface AnganwadiChildrenService {
     List<FamilyMemberConverted> convertUnixToDate();
 
     List<AttendanceConverted> convertAttendanceUnixToDate();
+
+    AttendancePhotoDTO saveAttendancePhoto(AttendancePhotoDTO attendancePhotoDTO);
 }

@@ -63,29 +63,29 @@ public class DashboardController {
         return anganwadiChildrenService.getChildrenWeightData(dashboardFilter);
     }
 
-    @GetMapping("getDeliveryData")
-    private DeliveryDTO getDeliveryData(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
-        return familyService.getDeliveryData(startDate, endDate);
+    @PostMapping("getDeliveryData")
+    private List<DeliveryDTO> getDeliveryData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getDeliveryData(dashboardFilter);
     }
 
-    @GetMapping("getVaccinationData")
-    private List<VaccinationRecordsDTO> getVaccinationDa(@RequestParam String startDate, @RequestParam String endDate) throws ParseException {
-        return familyService.getVaccinationData(startDate, endDate);
+    @PostMapping("getVaccinationData")
+    private List<VaccinationRecordsDTO> getVaccinationData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getVaccinationData(dashboardFilter);
     }
 
-    @GetMapping("getAttendanceData")
-    private List<DashboardAttendanceDTO> getAttendanceData(@RequestParam(required = false) String month) throws ParseException {
-        return anganwadiChildrenService.getAttendanceData(month);
+    @PostMapping("getAttendanceData")
+    private List<DashboardAttendanceDTO> getAttendanceData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return anganwadiChildrenService.getAttendanceData(dashboardFilter);
     }
 
-    @GetMapping("getAnganwadiChildrenData")
-    private AnganwadiChildrenDTO getAnganwadiChildrenData(@RequestParam(required = false) String month) throws ParseException {
-        return anganwadiChildrenService.getAnganwadiChildrenData(month);
+    @PostMapping("getAnganwadiChildrenData")
+    private List<AnganwadiChildrenDTO> getAnganwadiChildrenData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return anganwadiChildrenService.getAnganwadiChildrenData(dashboardFilter);
     }
 
-    @GetMapping("getAnganwadiChildrenDetails")
-    private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestParam String startDate, @RequestParam String endDate, @RequestParam(required = false) String search) throws ParseException {
-        return anganwadiChildrenService.getAnganwadiChildrenDetails(startDate,endDate, search);
+    @PostMapping("getAnganwadiChildrenDetails")
+    private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return anganwadiChildrenService.getAnganwadiChildrenDetails(dashboardFilter);
     }
 
     @GetMapping("convertUnixToDate")

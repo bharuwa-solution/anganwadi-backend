@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AnganwadiChildrenDTO {
 
-    private long gen;
-    private long obc;
-    private long sc;
-    private long st;
-    private long minority;
-    private String month;
+    private String category;
+    private String startDate;
+    private String endDate;
+    private String childId;
+    private String minority;
 
 }

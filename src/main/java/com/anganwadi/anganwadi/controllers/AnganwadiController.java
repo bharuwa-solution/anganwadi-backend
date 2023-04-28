@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.dto.AttendancePhotoDTO;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,5 +78,9 @@ public class AnganwadiController {
         return anganwadiChildrenService.getRegisteredHouseholdsList(centerName);
     }
 
+    @PostMapping("saveAttendancePhoto")
+    private AttendancePhotoDTO saveAttendancePhoto(@RequestBody AttendancePhotoDTO attendancePhotoDTO){
+        return anganwadiChildrenService.saveAttendancePhoto(attendancePhotoDTO);
+    }
 
 }

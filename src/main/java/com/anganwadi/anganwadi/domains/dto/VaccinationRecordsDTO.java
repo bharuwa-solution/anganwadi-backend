@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VaccinationRecordsDTO {
 
-    private String childId;
+    private String memberId;
+    private String startDate;
+    private String endDate;
     private String centerName;
     private String vaccinationCode;
 

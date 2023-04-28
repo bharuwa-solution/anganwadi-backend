@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -1544,12 +1547,10 @@ public class FamilyServiceImpl implements FamilyService {
         PregnantAndDelivery pdd = pregnantAndDeliveryRepository.findTopOneByMotherMemberId(birthDetails.getMotherMemberId());
 
         if (pdd != null) {
-
             pdd.setChildName(birthDetails.getName());
             pdd.setChildGender(birthDetails.getGender());
             pdd.setDateOfDelivery(mills);
             pregnantAndDeliveryRepository.save(pdd);
-
         }
 
 
@@ -1729,7 +1730,6 @@ public class FamilyServiceImpl implements FamilyService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
-
         LocalDateTime sixthDate = LocalDateTime.now().minusYears(6);
         ZonedDateTime sixthZdt = ZonedDateTime.of(sixthDate, ZoneId.systemDefault());
         long sixthMills = sixthZdt.toInstant().toEpochMilli();
@@ -1897,53 +1897,73 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public DeliveryDTO getDeliveryData(String startDate, String endDate) throws ParseException {
+    public List<DeliveryDTO> getDeliveryData(DashboardFilter dashboardFilter) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<DeliveryDTO> addInList = new ArrayList<>();
 
-        Date startTime = df.parse(startDate);
-        Date endTime = df.parse(endDate);
-        long inHome = 0, inHospital = 0;
+        Date startTime = null, endTime = null;
 
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
 
         List<BabiesBirth> birthList = babiesBirthRepository.findAllByMonth(startTime, endTime);
 
-
         for (BabiesBirth bb : birthList) {
-
-            if (bb.getBirthType().trim().equals("1")) {
-                inHome++;
-            }
-            if (bb.getBirthType().trim().equals("2")) {
-                inHospital++;
-            }
-
-
+            DeliveryDTO singleEntry = DeliveryDTO.builder()
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
+                    .birthType(bb.getBirthType() == null ? "" : bb.getBirthType())
+                    .birthPlace(bb.getBirthPlace() == null ? "" : bb.getBirthPlace())
+                    .motherId(bb.getMotherMemberId() == null ? "" : bb.getMotherMemberId())
+                    .build();
+            addInList.add(singleEntry);
         }
-        return DeliveryDTO.builder()
-                .startDate(startDate)
-                .endDate(endDate)
-                .inHome(inHome)
-                .inHospital(inHospital)
-                .build();
+
+        return addInList;
     }
 
     @Override
-    public List<VaccinationRecordsDTO> getVaccinationData(String startDate, String endDate) throws ParseException {
+    public List<VaccinationRecordsDTO> getVaccinationData(DashboardFilter dashboardFilter) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-        Date startTime = df.parse(startDate);
-        Date endTime = df.parse(endDate);
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
 
         List<VaccinationRecordsDTO> addInList = new ArrayList<>();
-        List<Vaccination> vaccinationList = vaccinationRepository.findAllByMonthCriteria(startDate, endDate);
+        List<Visits> vaccinationList = visitsRepository.findAllByVaccinationCriteria(startTime, endTime);
 
-        for (Vaccination details : vaccinationList) {
+        for (Visits details : vaccinationList) {
             VaccinationRecordsDTO singleEntry = VaccinationRecordsDTO.builder()
-                    .vaccinationCode(details.getVaccinationCode())
+                    .vaccinationCode(details.getVisitType())
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
                     .centerName(details.getCenterName())
-                    .childId(details.getChildId())
+                    .memberId(details.getMemberId())
                     .build();
 
             addInList.add(singleEntry);

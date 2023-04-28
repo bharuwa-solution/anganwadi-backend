@@ -53,4 +53,7 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     List<Visits> findAllByLadiesBeneficiaryCriteria(String id);
 
     List<Visits> findAllByCenterId(String centerId);
+
+    @Query("{'visitType':{$ne:'3'},'createdDate':{$gte:?0,$lte:?1}}")
+    List<Visits> findAllByVaccinationCriteria(Date startTime, Date endTime);
 }

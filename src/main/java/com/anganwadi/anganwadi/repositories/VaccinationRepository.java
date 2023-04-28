@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -15,7 +16,7 @@ public interface VaccinationRepository extends MongoRepository<Vaccination, Stri
     List<Vaccination> findAllByCenterId(String centerName, Sort createdDate);
 
     @Query("{'createdDate':{$gte:?0,$lte:?1}}")
-    List<Vaccination> findAllByMonthCriteria(String startDate, String endDate);
+    List<Vaccination> findAllByMonthCriteria(Date startDate, Date endDate);
 
     List<Vaccination> findAllByChildId(String childId, Sort createdDate);
 }

@@ -55,9 +55,9 @@ public interface FamilyService {
 
     List<PregnantWomenDetails> getPregnantWomenDetails(DashboardFilter dashboardFilter) throws ParseException;
 
-    DeliveryDTO getDeliveryData(String startDate, String endDate) throws ParseException;
+    List<DeliveryDTO> getDeliveryData(DashboardFilter dashboardFiltere) throws ParseException;
 
-    List<VaccinationRecordsDTO> getVaccinationData(String startDate, String endDate) throws ParseException;
+    List<VaccinationRecordsDTO> getVaccinationData(DashboardFilter dashboardFilter) throws ParseException;
 
     HouseholdsDTO updateHouseHold(HouseholdsDTO householdsDTO);
 
