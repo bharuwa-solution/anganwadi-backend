@@ -99,4 +99,10 @@ public class DashboardController {
         return anganwadiChildrenService.convertAttendanceUnixToDate();
     }
 
+    @GetMapping("getDashboardMasterDetails")
+    private List<DashboardMaster> getDashboardMasterDetails() throws ParseException {
+            return anganwadiChildrenService.getDashboardMasterDetails();
+    }
+
+
 }

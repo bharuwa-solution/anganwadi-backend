@@ -57,4 +57,6 @@ public interface AnganwadiChildrenService {
     List<AttendanceConverted> convertAttendanceUnixToDate();
 
     AttendancePhotoDTO saveAttendancePhoto(AttendancePhotoDTO attendancePhotoDTO);
+
+    List<DashboardMaster> getDashboardMasterDetails() throws ParseException;
 }

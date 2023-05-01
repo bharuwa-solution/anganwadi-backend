@@ -74,4 +74,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'dob':{$gte:?0}}")
     List<FamilyMember> findAllBeneficiaryChildren(long millis);
+
+    @Query(value = "{'dob':{$gte:?0}, 'centerId':?1}",count = true)
+    long countChildrenByCenterId(long convertToMills, String centerId);
 }

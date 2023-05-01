@@ -39,6 +39,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final WeightTrackingRepository weightTrackingRepository;
     private final CommonMethodsService commonMethodsService;
     private final AttendancePhotoRepository attendancePhotoRepository;
+    private final AnganwadiCenterRepository anganwadiCenterRepository;
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
@@ -47,7 +48,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                                         FamilyServiceImpl familyServiceImpl, AssetsStockRepository assetsStockRepository,
                                         StockListRepository stockListRepository, StockDistributionRepository stockDistributionRepository,
                                         MealsRepository mealsRepository, WeightTrackingRepository weightTrackingRepository,
-                                        CommonMethodsService commonMethodsService, AttendancePhotoRepository attendancePhotoRepository) {
+                                        CommonMethodsService commonMethodsService, AttendancePhotoRepository attendancePhotoRepository,
+                                        AnganwadiCenterRepository anganwadiCenterRepository) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
@@ -62,6 +64,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.weightTrackingRepository = weightTrackingRepository;
         this.commonMethodsService = commonMethodsService;
         this.attendancePhotoRepository = attendancePhotoRepository;
+        this.anganwadiCenterRepository = anganwadiCenterRepository;
     }
 
 
@@ -314,6 +317,31 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         attendancePhotoRepository.save(saveAP);
         return modelMapper.map(saveAP, AttendancePhotoDTO.class);
+    }
+
+
+    @Override
+    public List<DashboardMaster> getDashboardMasterDetails() throws ParseException {
+
+        List<AnganwadiCenter> listCenters = anganwadiCenterRepository.findAll();
+        List<DashboardMaster> addInList = new ArrayList<>();
+
+        for (AnganwadiCenter ac : listCenters) {
+
+            DashboardMaster singleEntry = DashboardMaster.builder()
+                    .centerId(ac.getId())
+                    .centerName(ac.getCenterName())
+                    .pregnantWomenCount(commonMethodsService.pregnantWomenCount(ac.getId()))
+                    .dhatriWomenCount(commonMethodsService.dhartiWomenCount(ac.getId()))
+                    .childrenCount(commonMethodsService.childrenCount(ac.getId()))
+                    .todayAttendance(commonMethodsService.todayAttendance(ac.getId()))
+                    .build();
+
+            addInList.add(singleEntry);
+        }
+
+
+        return addInList;
     }
 
     @Override
