@@ -59,4 +59,6 @@ public interface AnganwadiChildrenService {
     AttendancePhotoDTO saveAttendancePhoto(AttendancePhotoDTO attendancePhotoDTO);
 
     List<DashboardMaster> getDashboardMasterDetails() throws ParseException;
+
+    UpdateStudentDTO updateStudentDetails(UpdateStudentDTO updateStudentDTO) throws ParseException;
 }

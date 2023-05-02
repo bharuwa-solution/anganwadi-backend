@@ -64,10 +64,9 @@ public class CommonMethodsService {
         LocalDateTime date = LocalDateTime.now().minusMonths(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
         long convertToMills = zdt.toInstant().toEpochMilli();
-
+        System.out.println();
         return pregnantAndDeliveryRepository.countDhartiWomenByCenterId(convertToMills, centerId);
     }
-
     public long childrenCount(String centerId) {
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());

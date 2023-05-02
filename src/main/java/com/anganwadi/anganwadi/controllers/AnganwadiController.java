@@ -63,6 +63,11 @@ public class AnganwadiController {
         return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO,centerId, centerName);
     }
 
+    @PutMapping("updateStudentDetails")
+    private UpdateStudentDTO updateStudentDetails(@RequestBody UpdateStudentDTO updateStudentDTO) throws ParseException {
+        return anganwadiChildrenService.updateStudentDetails(updateStudentDTO);
+    }
+
     @PutMapping("updateRegisteredValue")
     private SaveAdmissionDTO updateRegisteredValue(@RequestParam String id, @RequestParam boolean isRegistered) {
         return anganwadiChildrenService.updateRegisteredValue(id, isRegistered);
@@ -82,5 +87,7 @@ public class AnganwadiController {
     private AttendancePhotoDTO saveAttendancePhoto(@RequestBody AttendancePhotoDTO attendancePhotoDTO){
         return anganwadiChildrenService.saveAttendancePhoto(attendancePhotoDTO);
     }
+
+
 
 }

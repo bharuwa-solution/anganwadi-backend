@@ -9,16 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChildrenDTO {
+public class UpdateStudentDTO {
 
     private String id;
     private String childId;
     private String name;
+    private String profilePic;
     private String gender;
     private String dob;
-    private boolean isRegistered;
-    private String profilePic;
-    private String category;
-
-
 }

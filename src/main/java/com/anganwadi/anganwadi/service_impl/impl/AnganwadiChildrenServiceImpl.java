@@ -345,6 +345,55 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
+    public UpdateStudentDTO updateStudentDetails(UpdateStudentDTO updateStudentDTO) throws ParseException {
+
+        if (StringUtils.isEmpty(updateStudentDTO.getId().trim())) {
+            throw new CustomException("Id Not Passed");
+        }
+
+        if (anganwadiChildrenRepository.findById(updateStudentDTO.getId().trim()).isPresent()) {
+            AnganwadiChildren ac = anganwadiChildrenRepository.findById(updateStudentDTO.getId().trim()).get();
+
+            ac.setProfilePic(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic());
+            ac.setDob(updateStudentDTO.getDob() == null ? "" : updateStudentDTO.getDob());
+            ac.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
+            ac.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
+
+            anganwadiChildrenRepository.save(ac);
+
+            if (familyMemberRepository.findById(updateStudentDTO.getChildId().trim()).isPresent()) {
+                FamilyMember findChild = familyMemberRepository.findById(updateStudentDTO.getChildId().trim()).get();
+
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                Date formatToTime = df.parse(updateStudentDTO.getDob().trim());
+                long dob = formatToTime.getTime();
+
+                findChild.setDob(dob);
+                findChild.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
+                findChild.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
+
+                familyMemberRepository.save(findChild);
+
+            }
+
+            return UpdateStudentDTO.builder()
+                    .childId(updateStudentDTO.getChildId() == null ? "" : updateStudentDTO.getChildId())
+                    .dob(updateStudentDTO.getDob() == null ? "" : updateStudentDTO.getDob())
+                    .gender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender())
+                    .profilePic(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic())
+                    .id(updateStudentDTO.getId())
+                    .name(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName())
+                    .build();
+
+
+        } else {
+            throw new CustomException("Child Not Found");
+        }
+
+
+    }
+
+    @Override
     public List<ChildrenDTO> getTotalChildren(String centerName) {
 
         List<ChildrenDTO> addInList = new ArrayList<>();
@@ -352,6 +401,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         for (AnganwadiChildren getChildren : childrenList) {
             ChildrenDTO childrenDTO = ChildrenDTO.builder()
+                    .id(getChildren.getId())
+                    .childId(getChildren.getChildId())
                     .dob(getChildren.getDob())
                     .isRegistered(getChildren.isRegistered())
                     .category(getChildren.getCategory())
