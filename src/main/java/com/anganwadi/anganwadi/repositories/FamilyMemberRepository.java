@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.FamilyMember;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -75,6 +74,6 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'dob':{$gte:?0}}")
     List<FamilyMember> findAllBeneficiaryChildren(long millis);
 
-    @Query(value = "{'dob':{$gte:?0}, 'centerId':?1}",count = true)
+    @Query(value = "{'dob':{$gte:?0}, 'centerId':?1}", count = true)
     long countChildrenByCenterId(long convertToMills, String centerId);
 }

@@ -101,7 +101,7 @@ public class DashboardController {
 
     @GetMapping("getDashboardMasterDetails")
     private List<DashboardMaster> getDashboardMasterDetails() throws ParseException {
-            return anganwadiChildrenService.getDashboardMasterDetails();
+        return anganwadiChildrenService.getDashboardMasterDetails();
     }
 
 

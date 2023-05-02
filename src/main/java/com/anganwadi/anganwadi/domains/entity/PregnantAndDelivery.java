@@ -29,7 +29,7 @@ public class PregnantAndDelivery extends BaseObject {
     private long regDate;
     private int noOfChild;
     private long lastMissedPeriodDate;
-    private long  dateOfDelivery;
+    private long dateOfDelivery;
     private Date tentitiveDeliveryDate;
     private String placeOfDelivery;
     private String childGender;

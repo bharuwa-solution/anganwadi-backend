@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.dto.AttendancePhotoDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

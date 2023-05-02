@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -38,6 +37,6 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
 
     List<Attendance> findByDateAndChildId(long format, String childId);
 
-    @Query(value = "{'date':?0,'centerName':?1,'attendance':'P','isRegistered':true}",count = true)
+    @Query(value = "{'date':?0,'centerName':?1,'attendance':'P','isRegistered':true}", count = true)
     long countByDateAndCenterName(long parseLong, String trim, Sort createdDate);
 }

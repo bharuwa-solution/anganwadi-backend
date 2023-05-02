@@ -27,12 +27,12 @@ public class FamilyController {
 
 
     @PostMapping("/saveHouseholds")
-    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO, @RequestHeader String centerId,@RequestHeader String centerName) throws ParseException {
+    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
         return familyService.saveHouseholds(householdsDTO, centerId, centerName);
     }
 
     @PostMapping("/saveFamilyMembers")
-    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO,@RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
         return familyService.saveFamilyMembers(familyMemberDTO, centerId, centerName);
     }
 
@@ -68,23 +68,23 @@ public class FamilyController {
     }
 
     @PutMapping("/updateHouseHold")
-    private HouseholdsDTO updateHouseHold(@RequestBody HouseholdsDTO householdsDTO){
+    private HouseholdsDTO updateHouseHold(@RequestBody HouseholdsDTO householdsDTO) {
         return familyService.updateHouseHold(householdsDTO);
     }
 
     @PutMapping("/deleteHouseHold")
-    private HouseholdsDTO deleteHouseHold(@RequestParam String familyId, @RequestParam String id){
+    private HouseholdsDTO deleteHouseHold(@RequestParam String familyId, @RequestParam String id) {
         return familyService.deleteHouseHold(familyId, id);
     }
 
     @PutMapping("/deleteFamilyMembers")
-    private FamilyMemberDTO deleteFamilyMembers(@RequestParam String memberId, @RequestParam String id){
+    private FamilyMemberDTO deleteFamilyMembers(@RequestParam String memberId, @RequestParam String id) {
         return familyService.deleteFamilyMembers(memberId, id);
     }
 
 
     @PutMapping("/updateHouseHoldMember")
-    private FamilyMemberDTO updateHouseHoldMember(@RequestBody FamilyMemberDTO familyMemberDTO){
+    private FamilyMemberDTO updateHouseHoldMember(@RequestBody FamilyMemberDTO familyMemberDTO) {
         return familyService.updateHouseHoldMember(familyMemberDTO);
     }
 
@@ -100,7 +100,7 @@ public class FamilyController {
 
     @GetMapping("/getHouseholdWomenDetails")
     private HouseholdWomenDetails getHouseholdWomenDetails(@RequestHeader String centerId, @RequestHeader String centerName) {
-        return familyService.getHouseholdWomenDetails(centerId,centerName);
+        return familyService.getHouseholdWomenDetails(centerId, centerName);
     }
 
     @PostMapping("/registerPregnantWomen")
@@ -140,11 +140,11 @@ public class FamilyController {
 
     @PostMapping("/deleteNewBornChildRecords")
     private DeleteBornChildDTO deleteNewBornChildRecords(@RequestParam String id) {
-         return familyService.deleteNewBornChildRecords(id);
+        return familyService.deleteNewBornChildRecords(id);
     }
 
     @GetMapping("/getDhatriDetails")
-    private List<PregnantAndDeliveryDTO> getDhatriDetails(@RequestHeader String centerId)  {
+    private List<PregnantAndDeliveryDTO> getDhatriDetails(@RequestHeader String centerId) {
         return familyService.getDhatriDetails(centerId);
     }
 

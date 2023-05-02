@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantAndDelivery, String > {
+public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantAndDelivery, String> {
     List<PregnantAndDelivery> findByFamilyId(String familyId);
 
     List<PregnantAndDelivery> findAllByCenterId(String centerId, Sort createdDate);
@@ -36,10 +36,10 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query("{'dateOfDelivery':{$eq:0},'createdDate':{$gte:?0,$lte:?1}}")
     List<PregnantAndDelivery> findAllByPregnancyCriteria(Date startTime, Date endTime);
 
-    @Query(value = "{'dateOfDelivery':{$eq:0},'centerId':?0}",count = true)
+    @Query(value = "{'dateOfDelivery':{$eq:0},'centerId':?0}", count = true)
     long countPregnantWomenByCenterId(String centerId);
 
-    @Query(value = "{'dateOfDelivery':{$gte:?0},'centerId':?1}",count = true)
+    @Query(value = "{'dateOfDelivery':{$gte:?0},'centerId':?1}", count = true)
     long countDhartiWomenByCenterId(long convertToMills, String centerId);
 
 

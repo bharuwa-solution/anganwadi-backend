@@ -25,7 +25,7 @@ public class UserController {
     @Autowired
     public UserController(UserService userService, AnganwadiCenterRepository anganwadiCentersRepository) {
         this.userService = userService;
-        this.anganwadiCentersRepository=anganwadiCentersRepository;
+        this.anganwadiCentersRepository = anganwadiCentersRepository;
     }
 
 
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping("/registerUser")
-    private UserDTO registerUser(@RequestBody UserDTO userDTO){
+    private UserDTO registerUser(@RequestBody UserDTO userDTO) {
         return userService.registerUser(userDTO);
     }
 

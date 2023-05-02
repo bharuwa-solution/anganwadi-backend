@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.dto.BirthPlaceDTO;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +20,8 @@ public class HouseVisitsController {
     }
 
     @PostMapping("/saveVisitsDetails")
-    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO,@RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveVisitsDetails(visitsDetailsDTO,centerId,centerName);
+    private VisitsDetailsDTO saveVisitsDetails(@RequestBody VisitsDetailsDTO visitsDetailsDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return familyService.saveVisitsDetails(visitsDetailsDTO, centerId, centerName);
     }
 
     @GetMapping("/getHouseholdsFemaleDetails")
@@ -36,8 +35,8 @@ public class HouseVisitsController {
     }
 
     @GetMapping("/getMemberVisitDetails")
-    private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId,@RequestHeader String centerName) {
-        return familyService.getMemberVisitDetails(memberId,centerName);
+    private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId, @RequestHeader String centerName) {
+        return familyService.getMemberVisitDetails(memberId, centerName);
     }
 
     @GetMapping("/getMemberVisitDetailsLatest")

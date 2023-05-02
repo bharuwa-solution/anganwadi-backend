@@ -38,6 +38,6 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
     @Query("{'childId':{$in:[?0]}, 'centerName':?1,'isRegistered':true}")
     List<AnganwadiChildren> findAllByChildIdAndCenterNameAndRegisteredTrue(String childId, String centerName);
 
-    @Query(value = "{'centerName':?0,'isRegistered':true}",count = true)
+    @Query(value = "{'centerName':?0,'isRegistered':true}", count = true)
     long countByCenterNameAndRegisteredTrue(String centerName);
 }

@@ -81,7 +81,7 @@ public class MainExceptionController implements ErrorController {
         log.error(error.getMessage());
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.BAD_REQUEST);
-        setBodyError.put("message", error.getHeaderName()+" Is Missing, Please Check !!!");
+        setBodyError.put("message", error.getHeaderName() + " Is Missing, Please Check !!!");
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
 

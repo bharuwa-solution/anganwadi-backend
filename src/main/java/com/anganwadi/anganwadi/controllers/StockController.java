@@ -1,8 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.AssetsStock;
-import com.anganwadi.anganwadi.domains.entity.StockList;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +33,7 @@ public class StockController {
 
     @GetMapping("getStocks")
     private StockOutputItemsDTO getStocks(@RequestHeader String centerName, @RequestParam String selectedMonth) {
-        return anganwadiChildrenService.getStocks(centerName,selectedMonth);
+        return anganwadiChildrenService.getStocks(centerName, selectedMonth);
     }
 
     @GetMapping("getStocksLists")

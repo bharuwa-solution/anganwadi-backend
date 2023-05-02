@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OtpDetailsRepository extends MongoRepository<OtpDetails, String > {
+public interface OtpDetailsRepository extends MongoRepository<OtpDetails, String> {
     List<OtpDetails> findTopOneByMobileNumberAndOtp(String mobileNumber, String otp);
 }

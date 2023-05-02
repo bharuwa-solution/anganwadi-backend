@@ -13,5 +13,5 @@ import java.util.List;
 public interface MealsRepository extends MongoRepository<Meals, String> {
 
     @Query("{'createdDate':{$gte:?0,$lte:?1}}")
-    List<Meals> findAllByMonthCriteria(Date startDate, Date endDate,Sort date);
+    List<Meals> findAllByMonthCriteria(Date startDate, Date endDate, Sort date);
 }

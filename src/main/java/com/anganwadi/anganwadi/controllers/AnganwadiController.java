@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.dto.AttendancePhotoDTO;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +41,8 @@ public class AnganwadiController {
 
 
     @GetMapping("getAttendanceByDate")
-    private List<AttendanceDTO> getAttendanceByDate(@RequestParam String  date, @RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.getAttendanceByDate(date,centerName);
+    private List<AttendanceDTO> getAttendanceByDate(@RequestParam String date, @RequestHeader String centerName) throws ParseException {
+        return anganwadiChildrenService.getAttendanceByDate(date, centerName);
     }
 
 
@@ -60,7 +59,7 @@ public class AnganwadiController {
 
     @PostMapping("saveChildrenRecord")
     private SaveAdmissionDTO saveChildrenRecord(@RequestBody SaveAdmissionDTO saveAdmissionDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException, IOException {
-        return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO,centerId, centerName);
+        return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO, centerId, centerName);
     }
 
     @PutMapping("updateStudentDetails")
@@ -84,10 +83,9 @@ public class AnganwadiController {
     }
 
     @PostMapping("saveAttendancePhoto")
-    private AttendancePhotoDTO saveAttendancePhoto(@RequestBody AttendancePhotoDTO attendancePhotoDTO){
+    private AttendancePhotoDTO saveAttendancePhoto(@RequestBody AttendancePhotoDTO attendancePhotoDTO) {
         return anganwadiChildrenService.saveAttendancePhoto(attendancePhotoDTO);
     }
-
 
 
 }
