@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
+import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +39,17 @@ public class CommonMethodsService {
     }
 
     public String findCenterName(String centerId) {
-        AnganwadiCenter centers = anganwadiCenterRepository.findById(centerId).get();
-        return centers.getCenterName().trim();
-
+        try {
+            AnganwadiCenter centers = anganwadiCenterRepository.findById(centerId).get();
+            return centers.getCenterName().trim();
+        } catch (Exception e) {
+            throw new CustomException("Error With CenterId, Please Contact Support Team");
+        }
     }
-
 
     public String startDateOfMonth() {
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return formatters.format(LocalDate.now().withDayOfMonth(1));
-
     }
 
     public String endDateOfMonth() {
@@ -89,4 +91,13 @@ public class CommonMethodsService {
            return todayAttendance+"/"+totalStudents;
 
     }
+
+    public long checkAgeCriteria(long criteria){
+
+        LocalDateTime date = LocalDateTime.now().minusYears(criteria);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+
+        return zdt.toInstant().toEpochMilli();
+    }
+
 }

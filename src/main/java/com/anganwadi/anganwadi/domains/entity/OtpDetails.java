@@ -22,6 +22,7 @@ public class OtpDetails extends BaseObject {
     private String message;
     private String messageResponse;
     private String statusCode;
+    private String version;
     private Date expiryTime;
 
 }

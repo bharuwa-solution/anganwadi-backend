@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.Visits;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -152,5 +153,11 @@ public class FamilyController {
     private List<FamilyChildrenDetails> getAllChildrenDetails(@RequestHeader String centerName) throws ParseException {
         return familyService.getAllChildrenDetails(centerName);
     }
+
+    @PutMapping("/updateMissingFields")
+    private List<Visits> updateMissingFields(){
+        return familyService.updateMissingFields();
+    }
+
 }
 

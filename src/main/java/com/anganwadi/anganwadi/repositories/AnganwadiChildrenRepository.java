@@ -24,7 +24,7 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
     @Query("{'createdDate':{$gte:?0,$lte:?1},'name':{$regex:?2,'$options':i}}")
     List<AnganwadiChildren> findAllByCreatedDateAndSearch(Date startDate, Date endDate, String search);
 
-    @Query("{'centerName':?0,'isRegistered':true}")
+    @Query("{'centerName':?0,'isRegistered':true,'deleted':false}")
     List<AnganwadiChildren> findAllByCenterNameAndRegisteredTrue(String centerName);
 
     @Query("{'centerName':?0,'isRegistered':false}")
@@ -40,4 +40,7 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
 
     @Query(value = "{'centerName':?0,'isRegistered':true}", count = true)
     long countByCenterNameAndRegisteredTrue(String centerName);
+
+    @Query("{'childId':?0,$or:[{'isRegistered':true,'deleted':false}]}")
+    List<AnganwadiChildren> findAllByChildIdAndRegisteredTrueAndDeletedFalse(String id);
 }

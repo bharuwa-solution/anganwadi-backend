@@ -67,13 +67,18 @@ public class AnganwadiController {
         return anganwadiChildrenService.updateStudentDetails(updateStudentDTO);
     }
 
+    @PutMapping("deleteStudentDetails")
+    private UpdateStudentDTO deleteStudentDetails(@RequestParam String id) throws ParseException {
+        return anganwadiChildrenService.deleteStudentDetails(id);
+    }
+
     @PutMapping("updateRegisteredValue")
     private SaveAdmissionDTO updateRegisteredValue(@RequestParam String id, @RequestParam boolean isRegistered) {
         return anganwadiChildrenService.updateRegisteredValue(id, isRegistered);
     }
 
     @GetMapping("getTotalChildren")
-    private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerName) {
+    private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerName) throws ParseException {
         return anganwadiChildrenService.getTotalChildren(centerName);
     }
 

@@ -11,7 +11,7 @@ public interface AnganwadiChildrenService {
 
     SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId, String centerName) throws ParseException, IOException;
 
-    List<ChildrenDTO> getTotalChildren(String centerName);
+    List<ChildrenDTO> getTotalChildren(String centerName) throws ParseException;
 
     UploadDTO uploadPic(MultipartFile file) throws IOException;
 
@@ -33,7 +33,7 @@ public interface AnganwadiChildrenService {
 
     List<StockListDTO> getStocksLists();
 
-    List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerName) throws ParseException;
+    List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId, String centerName) throws ParseException;
 
     List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth);
 
@@ -60,4 +60,6 @@ public interface AnganwadiChildrenService {
     List<DashboardMaster> getDashboardMasterDetails() throws ParseException;
 
     UpdateStudentDTO updateStudentDetails(UpdateStudentDTO updateStudentDTO) throws ParseException;
+
+    UpdateStudentDTO deleteStudentDetails(String id);
 }

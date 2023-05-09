@@ -2,6 +2,7 @@ package com.anganwadi.anganwadi.service_impl.service;
 
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.Visits;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.ParseException;
@@ -97,6 +98,8 @@ public interface FamilyService {
     WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName) throws ParseException;
 
     List<HouseholdReligionData> getHouseholdReligionData(DashboardFilter dashboardFilter) throws ParseException;
+
+    List<Visits> updateMissingFields();
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);

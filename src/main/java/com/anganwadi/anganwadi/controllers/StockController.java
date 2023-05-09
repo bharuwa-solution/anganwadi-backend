@@ -42,8 +42,8 @@ public class StockController {
     }
 
     @PostMapping("saveDistributionList")
-    private List<StockDistributionDTO> saveDistributionList(@RequestBody List<StockDistributionDTO> stockDistributionDTOS, @RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.saveDistributionList(stockDistributionDTOS, centerName);
+    private List<StockDistributionDTO> saveDistributionList(@RequestBody List<StockDistributionDTO> stockDistributionDTOS, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return anganwadiChildrenService.saveDistributionList(stockDistributionDTOS, centerId, centerName);
     }
 
     @GetMapping("getDistributionList")

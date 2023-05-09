@@ -16,5 +16,7 @@ public class UpdateStudentDTO {
     private String name;
     private String profilePic;
     private String gender;
+    private String handicap;
     private String dob;
+    private boolean deleted;
 }

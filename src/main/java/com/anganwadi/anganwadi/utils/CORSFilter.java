@@ -1,6 +1,8 @@
 package com.anganwadi.anganwadi.utils;
 
+import com.anganwadi.anganwadi.service_impl.impl.CommonMethodsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -11,6 +13,8 @@ import java.io.IOException;
 @Component
 public class CORSFilter implements Filter {
 
+    @Autowired
+    private CommonMethodsService commonMethodsService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -29,6 +33,13 @@ public class CORSFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
 
     }
+
+    public void validateCenterId(HttpServletResponse httpServletResponse){
+
+        commonMethodsService.findCenterName(httpServletResponse.getHeader("centerId"));
+
+    }
+
 
     @Override
     public void destroy() {

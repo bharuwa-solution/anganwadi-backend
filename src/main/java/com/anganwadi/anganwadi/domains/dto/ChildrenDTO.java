@@ -14,7 +14,12 @@ public class ChildrenDTO {
     private String id;
     private String childId;
     private String name;
+    private String motherName;
+    private String fatherName;
+    private String mobileNumber;
+    private String handicap;
     private String gender;
+    private boolean deleted;
     private String dob;
     private boolean isRegistered;
     private String profilePic;

@@ -22,6 +22,7 @@ public class OtpDTO {
     private String mobileNumber;
     private String gender;
     private String email;
+    private String version;
     private String dob;
     private String userPic;
 }

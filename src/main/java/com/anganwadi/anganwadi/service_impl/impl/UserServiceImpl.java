@@ -34,16 +34,19 @@ public class UserServiceImpl implements UserService {
     private final OtpDetailsRepository otpDetailsRepository;
     private final AnganwadiCenterRepository anganwadiCentersRepository;
     private final ModelMapper modelMapper;
+    private final CommonMethodsService commonMethodsService;
 
     @Autowired
     private UserServiceImpl(UserRepository userRepository, OtpDetailsRepository otpDetailsRepository,
-                            AnganwadiCenterRepository anganwadiCentersRepository, ModelMapper modelMapper
+                            AnganwadiCenterRepository anganwadiCentersRepository, ModelMapper modelMapper,
+                            CommonMethodsService commonMethodsService
 
     ) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.otpDetailsRepository = otpDetailsRepository;
         this.anganwadiCentersRepository = anganwadiCentersRepository;
+        this.commonMethodsService = commonMethodsService;
 
     }
 
@@ -121,24 +124,33 @@ public class UserServiceImpl implements UserService {
         if (verifyotp.size()>0 || otpDTO.getOtp().trim().equals("1105")) {
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
-                    .id(user.getId()==null?"":user.getId())
-                    .centerId(user.getCenterId()==null?"":user.getCenterId())
-                    .centerName(user.getCenterName()==null?"":user.getCenterName())
-                    .userPic(user.getUserPic()==null?"":user.getUserPic())
-                    .mobileNumber(user.getMobileNumber()==null?"":user.getMobileNumber())
-                    .gender(user.getGender()==null?"":user.getGender())
-                    .name(user.getName()==null?"":user.getName())
+                    .id(user.getId() == null ? "" : user.getId())
+                    .centerId(user.getCenterId() == null ? "" : user.getCenterId())
+                    .centerName(user.getCenterName() == null ? "" : user.getCenterName())
+                    .userPic(user.getUserPic() == null ? "" : user.getUserPic())
+                    .mobileNumber(user.getMobileNumber() == null ? "" : user.getMobileNumber())
+                    .gender(user.getGender() == null ? "" : user.getGender())
+                    .name(user.getName() == null ? "" : user.getName())
                     .role(user.getRole())
+                    .version(otpDTO.getVersion() == null ? "" : otpDTO.getVersion())
                     .status("success")
-                    .uniqueCode(user.getUniqueCode()==null?"":user.getUniqueCode())
-                    .dob(user.getDob()==null?"":otpDTO.getDob())
-                    .email(user.getEmail()==null?"":user.getEmail())
+                    .uniqueCode(user.getUniqueCode() == null ? "" : user.getUniqueCode())
+                    .dob(user.getDob() == null ? "" : otpDTO.getDob())
+                    .email(user.getEmail() == null ? "" : user.getEmail())
                     .build();
 
             User findUser = userRepository.findByMobileNumber(otpDTO.getMobileNumber());
 
+            // Update in User Table
             findUser.setLastLogin(new Date().getTime());
             userRepository.save(findUser);
+
+            // Update in Otp Table
+
+            for (OtpDetails otp : verifyotp) {
+                otp.setVersion(otpDTO.getVersion() == null ? "" : otpDTO.getVersion());
+                otpDetailsRepository.save(otp);
+            }
 
 
         } else {
@@ -174,6 +186,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO registerUser(UserDTO userDTO) {
 
+        commonMethodsService.findCenterName(userDTO.getCenterId());
         User passUserData = modelMapper.map(userDTO, User.class);
 
         userRepository.save(passUserData);

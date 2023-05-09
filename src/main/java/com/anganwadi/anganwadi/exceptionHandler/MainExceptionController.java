@@ -72,7 +72,7 @@ public class MainExceptionController implements ErrorController {
         log.error(error.getMessage());
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.PARTIAL_CONTENT);
-        setBodyError.put("message", "Some Parameters Are Missing, Please Check");
+        setBodyError.put("message", "Parameters "+error.getHttpInputMessage()+"Are Missing, Please Check");
         return new ResponseEntity<>(setBodyError, HttpStatus.PARTIAL_CONTENT);
     }
 

@@ -18,6 +18,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -68,42 +71,94 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
 
+    private void checkAbove3Yrs(SaveAdmissionDTO saveAdmissionDTO) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date date = df.parse(saveAdmissionDTO.getDob());
+        long dob = date.getTime();
+
+        LocalDateTime check3YrsCriteria = LocalDateTime.now().minusYears(3);
+        ZonedDateTime zdt = ZonedDateTime.of(check3YrsCriteria, ZoneId.systemDefault());
+
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        log.info("Dob : " + dob);
+        log.info("Age Limit : " + convertToMills);
+        if (dob >= convertToMills) {
+            throw new CustomException("Children Below 3 Years, Can't be Added");
+        }
+
+    }
+
     @Override
     public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId, String centerName) throws ParseException {
+
+        commonMethodsService.findCenterName(centerId);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
         df.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
 
-
         String finalDate = saveAdmissionDTO.getDob();
         Date dob = df2.parse(finalDate);
-        boolean isRegistered = false;
-        if (saveAdmissionDTO.isRegistered()) {
-            isRegistered = true;
+        log.info("reg " + saveAdmissionDTO.isRegistered());
+
+        AnganwadiChildren saveAdmission = new AnganwadiChildren();
+        SaveAdmissionDTO admissionDTO = new SaveAdmissionDTO();
+
+        checkAbove3Yrs(saveAdmissionDTO);
+
+        try {
+            Family findFamily = familyRepository.findByFamilyId(saveAdmissionDTO.getFamilyId());
+            List<AnganwadiChildren> findExistingRecord = anganwadiChildrenRepository.findAllByChildId(saveAdmissionDTO.getChildId());
+
+            if (findExistingRecord.size() > 0) {
+                for (AnganwadiChildren ac : findExistingRecord) {
+                    ac.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
+                    ac.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
+                    ac.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
+                    ac.setFatherName(saveAdmissionDTO.getFatherName() == null ? "" : saveAdmissionDTO.getFatherName());
+                    ac.setMotherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName());
+                    ac.setCenterName(commonMethodsService.findCenterName(centerId));
+                    ac.setCenterId(centerId);
+                    ac.setDob(df.format(dob));
+                    ac.setGender(saveAdmissionDTO.getGender() == null ? "" : saveAdmissionDTO.getGender());
+                    ac.setMobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber());
+                    ac.setCategory(findFamily.getCategory() == null ? "" : findFamily.getCategory());
+                    ac.setMinority(findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority());
+                    ac.setHandicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap());
+                    ac.setProfilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic());
+                    ac.setRegistered(saveAdmissionDTO.isRegistered());
+                    ac.setDeleted(false);
+                    anganwadiChildrenRepository.save(ac);
+                    admissionDTO = modelMapper.map(ac, SaveAdmissionDTO.class);
+                }
+            } else {
+                saveAdmission = AnganwadiChildren.builder()
+                        .name(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName())
+                        .familyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId())
+                        .childId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId())
+                        .fatherName(saveAdmissionDTO.getFatherName() == null ? "" : saveAdmissionDTO.getFatherName())
+                        .motherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName())
+                        .isRegistered(saveAdmissionDTO.isRegistered())
+                        .centerName(centerName)
+                        .centerId(centerId)
+                        .dob(df.format(dob))
+                        .gender(saveAdmissionDTO.getGender() == null ? "" : saveAdmissionDTO.getGender())
+                        .mobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber())
+                        .category(findFamily.getCategory() == null ? "" : findFamily.getCategory())
+                        .minority(findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority())
+                        .handicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap())
+                        .profilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
+                        .build();
+
+                anganwadiChildrenRepository.save(saveAdmission);
+                admissionDTO = modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
+            }
+            return admissionDTO;
+
+        } catch (Exception e) {
+            throw new CustomException("Their is Some Error, Please Contact Support Team");
         }
-
-        AnganwadiChildren saveAdmission = AnganwadiChildren.builder()
-                .name(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName())
-                .familyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId())
-                .childId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId())
-                .fatherName(saveAdmissionDTO.getFatherName() == null ? "" : saveAdmissionDTO.getFatherName())
-                .motherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName())
-                .isRegistered(isRegistered)
-                .centerName(centerName)
-                .centerId(centerId)
-                .dob(df.format(dob))
-                .gender(saveAdmissionDTO.getGender() == null ? "" : saveAdmissionDTO.getGender())
-                .mobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber())
-                .category(saveAdmissionDTO.getCategory() == null ? "" : saveAdmissionDTO.getCategory())
-                .minority(saveAdmissionDTO.getMinority() == null ? "" : saveAdmissionDTO.getMinority())
-                .handicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap())
-                .profilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
-                .build();
-
-        anganwadiChildrenRepository.save(saveAdmission);
-
-        return modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
     }
 
 
@@ -351,6 +406,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             throw new CustomException("Id Not Passed");
         }
 
+        // Update in Anganwadi Children
         if (anganwadiChildrenRepository.findById(updateStudentDTO.getId().trim()).isPresent()) {
             AnganwadiChildren ac = anganwadiChildrenRepository.findById(updateStudentDTO.getId().trim()).get();
 
@@ -358,8 +414,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             ac.setDob(updateStudentDTO.getDob() == null ? "" : updateStudentDTO.getDob());
             ac.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
             ac.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
+            ac.setHandicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap());
 
             anganwadiChildrenRepository.save(ac);
+
+            // Update in Family Children
 
             if (familyMemberRepository.findById(updateStudentDTO.getChildId().trim()).isPresent()) {
                 FamilyMember findChild = familyMemberRepository.findById(updateStudentDTO.getChildId().trim()).get();
@@ -371,6 +430,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 findChild.setDob(dob);
                 findChild.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
                 findChild.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
+                findChild.setHandicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap());
 
                 familyMemberRepository.save(findChild);
 
@@ -380,9 +440,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .childId(updateStudentDTO.getChildId() == null ? "" : updateStudentDTO.getChildId())
                     .dob(updateStudentDTO.getDob() == null ? "" : updateStudentDTO.getDob())
                     .gender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender())
+                    .handicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap())
                     .profilePic(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic())
                     .id(updateStudentDTO.getId())
                     .name(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName())
+                    .deleted(ac.isDeleted())
                     .build();
 
 
@@ -394,25 +456,72 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<ChildrenDTO> getTotalChildren(String centerName) {
+    public UpdateStudentDTO deleteStudentDetails(String id) {
+
+        if (anganwadiChildrenRepository.findById(id).isPresent()) {
+            AnganwadiChildren findStudent = anganwadiChildrenRepository.findById(id).get();
+
+            findStudent.setDeleted(true);
+            findStudent.setRegistered(false);
+            anganwadiChildrenRepository.save(findStudent);
+
+            return UpdateStudentDTO.builder()
+                    .childId(findStudent.getChildId() == null ? "" : findStudent.getChildId())
+                    .dob(findStudent.getDob() == null ? "" : findStudent.getDob())
+                    .gender(findStudent.getGender() == null ? "" : findStudent.getGender())
+                    .profilePic(findStudent.getProfilePic() == null ? "" : findStudent.getProfilePic())
+                    .id(findStudent.getId())
+                    .name(findStudent.getName() == null ? "" : findStudent.getName())
+                    .deleted(findStudent.isDeleted())
+                    .build();
+
+        } else {
+            throw new CustomException("Student Not Found");
+        }
+    }
+
+    @Override
+    public List<ChildrenDTO> getTotalChildren(String centerName) throws ParseException {
 
         List<ChildrenDTO> addInList = new ArrayList<>();
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterNameAndRegisteredTrue(centerName);
 
-        for (AnganwadiChildren getChildren : childrenList) {
-            ChildrenDTO childrenDTO = ChildrenDTO.builder()
-                    .id(getChildren.getId())
-                    .childId(getChildren.getChildId())
-                    .dob(getChildren.getDob())
-                    .isRegistered(getChildren.isRegistered())
-                    .category(getChildren.getCategory())
-                    .name(getChildren.getName())
-                    .gender(getChildren.getGender())
-                    .profilePic(getChildren.getProfilePic())
-                    .build();
-            addInList.add(childrenDTO);
-        }
+        // Check 3 Years Criteria
+        LocalDateTime date = LocalDateTime.now().minusYears(3);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 
+        long convertToMills = zdt.toInstant().toEpochMilli();
+//        log.info("millis " + convertToMills);
+        for (AnganwadiChildren getChildren : childrenList) {
+
+            // Convert Dob to Millis
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date dob_date = df.parse(getChildren.getDob());
+
+            long dob = dob_date.getTime();
+
+            if (dob <=convertToMills) {
+//                log.info("Name " + getChildren.getName());
+//                log.info("dob " + dob);
+
+                ChildrenDTO childrenDTO = ChildrenDTO.builder()
+                        .id(getChildren.getId())
+                        .childId(getChildren.getChildId() == null ? "" : getChildren.getChildId())
+                        .dob(getChildren.getDob() == null ? "" : getChildren.getDob())
+                        .motherName(getChildren.getMotherName() == null ? "" : getChildren.getMotherName())
+                        .fatherName(getChildren.getFatherName() == null ? "" : getChildren.getFatherName())
+                        .mobileNumber(getChildren.getMobileNumber() == null ? "" : getChildren.getMobileNumber())
+                        .handicap(getChildren.getHandicap() == null ? "" : getChildren.getHandicap())
+                        .isRegistered(getChildren.isRegistered())
+                        .category(getChildren.getCategory() == null ? "" : getChildren.getCategory())
+                        .name(getChildren.getName() == null ? "" : getChildren.getName())
+                        .gender(getChildren.getGender() == null ? "" : getChildren.getGender())
+                        .profilePic(getChildren.getProfilePic() == null ? "" : getChildren.getProfilePic())
+                        .deleted(getChildren.isDeleted())
+                        .build();
+                addInList.add(childrenDTO);
+            }
+        }
         return addInList;
     }
 
@@ -438,27 +547,34 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 //        markAsAbsent(centerName);
 
+        long convertToMills = commonMethodsService.checkAgeCriteria(3);
+
         List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterNameAndRegistered(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
         List<AttendanceDTO> addList = new ArrayList<>();
 
         for (Attendance singleRecord : findRecords) {
-            AttendanceDTO dailyRecord = AttendanceDTO.builder()
-                    .childId(singleRecord.getChildId() == null ? "" : singleRecord.getChildId())
-                    .centerId(singleRecord.getCenterId() == null ? "" : singleRecord.getCenterId())
-                    .latitude(singleRecord.getLatitude() == null ? "" : singleRecord.getLatitude())
-                    .longitude(singleRecord.getLongitude() == null ? "" : singleRecord.getLongitude())
-                    .name(singleRecord.getName() == null ? "" : singleRecord.getName())
-                    .attType(singleRecord.getAttType() == null ? "" : singleRecord.getAttType())
-                    .att(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
-                    .centerName(centerName)
-                    .gender(singleRecord.getGender() == null ? "" : singleRecord.getGender())
-                    .dob(singleRecord.getDob())
-                    .photo(singleRecord.getPhoto() == null ? "" : singleRecord.getPhoto())
-                    .attendance(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
-                    .date(singleRecord.getDate())
-                    .build();
 
-            addList.add(dailyRecord);
+            long millis = df.parse(singleRecord.getDob()).getTime();
+
+            if (millis <= convertToMills) {
+                AttendanceDTO dailyRecord = AttendanceDTO.builder()
+                        .childId(singleRecord.getChildId() == null ? "" : singleRecord.getChildId())
+                        .centerId(singleRecord.getCenterId() == null ? "" : singleRecord.getCenterId())
+                        .latitude(singleRecord.getLatitude() == null ? "" : singleRecord.getLatitude())
+                        .longitude(singleRecord.getLongitude() == null ? "" : singleRecord.getLongitude())
+                        .name(singleRecord.getName() == null ? "" : singleRecord.getName())
+                        .attType(singleRecord.getAttType() == null ? "" : singleRecord.getAttType())
+                        .att(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
+                        .centerName(centerName)
+                        .gender(singleRecord.getGender() == null ? "" : singleRecord.getGender())
+                        .dob(singleRecord.getDob())
+                        .photo(singleRecord.getPhoto() == null ? "" : singleRecord.getPhoto())
+                        .attendance(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
+                        .date(singleRecord.getDate())
+                        .build();
+
+                addList.add(dailyRecord);
+            }
         }
 
         return addList;
@@ -490,12 +606,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCenterNameAndRegisteredTrue(centerName);
         String attendance = "A";
 
+         long millis = commonMethodsService.checkAgeCriteria(3);
 
         for (AnganwadiChildren getId : findChildren) {
+
+            long dob = df.parse(getId.getDob()).getTime();
+
             List<Attendance> lastVerify = attendanceRepository.findAllByChildIdAndDateAndCenterName(getId.getChildId(), timestamp, centerName);
             String verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, centerName);
-            if (lastVerify.size() <= 0) {
-
+            if (lastVerify.size() <= 0 && dob<=millis) {
                 Attendance saveAttendance = Attendance.builder()
                         .childId(getId.getChildId())
                         .dob(getId.getDob())
@@ -547,6 +666,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         log.error("Child Id : " + attendanceDTO.getChildId());
         log.error("Center Name : " + centerName);
         // convert date to millis
+
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();
@@ -725,7 +845,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             AssetsStock saveStocks = AssetsStock.builder()
                     .centerId(centerId)
-                    .centerName(centerName)
+                    .centerName(commonMethodsService.findCenterName(centerId))
                     .qtyUnit(assetsList.getUnit())
                     .itemCode(assetsList.getItemCode())
                     .itemName(assetsList.getItemName())
@@ -739,7 +859,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             StockItemsDTO addSingleItem = StockItemsDTO.builder()
                     .centerId(centerId)
-                    .centerName(centerName)
+                    .centerName(commonMethodsService.findCenterName(centerId))
                     .unit(assetsList.getUnit())
                     .itemCode(assetsList.getItemCode())
                     .itemName(assetsList.getItemName())
@@ -760,9 +880,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             for (AssetsStock fs : findCenterItems) {
                 itemInFloat = itemInFloat + Float.parseFloat(fs.getQty());
-
             }
-
         }
 
         itemSum = String.valueOf(itemInFloat);
@@ -843,7 +961,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerName) throws ParseException {
+    public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId, String centerName) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
@@ -855,7 +973,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (StockDistributionDTO stockList : stockDistributionDTOS) {
 
             StockDistribution saveEntry = StockDistribution.builder()
-                    .centerName(centerName)
+                    .centerName(commonMethodsService.findCenterName(centerId))
                     .date(mills)
                     .month(currentMonth)
                     .familyId(stockList.getFamilyId())
@@ -868,7 +986,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             stockDistributionRepository.save(saveEntry);
 
             StockDistributionDTO singleEntry = StockDistributionDTO.builder()
-                    .centerName(centerName)
+                    .centerName(commonMethodsService.findCenterName(centerId))
                     .date(df.format(date))
                     .familyId(stockList.getFamilyId())
                     .itemCode(stockList.getItemCode())
@@ -876,7 +994,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .quantity(stockList.getQuantity())
                     .unit(stockList.getUnit())
                     .build();
-
 
             addInList.add(singleEntry);
 

@@ -15,10 +15,13 @@ public class BirthPlaceDTO {
     private String name;
     private String birthPlace;
     private String visitFor;
+    private String srNo;
     private String visitType;
     private String visitRound;
     private String relationWithOwner;
     private String dob;
+    private String latitude;
+    private String longitude;
     private String centerId;
     private String centerName;
     private String birthType;

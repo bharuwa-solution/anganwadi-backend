@@ -17,6 +17,7 @@ public class BabiesBirth extends BaseObject {
     private String birthPlace;
     private String childId;
     private long dob;
+    private String srNo;
     private String birthType;
     private String month;
     private String centerId;
