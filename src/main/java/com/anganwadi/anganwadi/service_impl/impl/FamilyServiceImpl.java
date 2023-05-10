@@ -1588,6 +1588,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 
         BirthPlaceDTO singleEntry = BirthPlaceDTO.builder()
+                .id(saveDetails.getId())
                 .name(birthDetails.getName() == null ? "" : birthDetails.getName())
                 .relationWithOwner(birthDetails.getRelationWithOwner() == null ? "" : birthDetails.getRelationWithOwner())
                 .dob(birthDetails.getDob())
