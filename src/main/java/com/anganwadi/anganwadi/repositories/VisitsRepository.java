@@ -56,4 +56,6 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
 
     @Query("{'visitType':{$ne:'3'},'createdDate':{$gte:?0,$lte:?1}}")
     List<Visits> findAllByVaccinationCriteria(Date startTime, Date endTime);
+
+    void deleteByMemberId(String primaryId);
 }

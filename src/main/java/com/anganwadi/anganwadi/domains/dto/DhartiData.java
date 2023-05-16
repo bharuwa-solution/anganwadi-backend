@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DashboardFamilyData {
+public class DhartiData {
 
-    private long nursingMothers;
-    private long pregnantWomen;
-    private long totalBeneficiary;
-    private long children;
-
+    private String motherName;
+    private String motherId;
+    private String dateOfDelivery;
+    private String startDate;
+    private String endDate;
 }

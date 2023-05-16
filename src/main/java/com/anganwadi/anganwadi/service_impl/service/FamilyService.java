@@ -101,6 +101,8 @@ public interface FamilyService {
 
     List<Visits> updateMissingFields();
 
+    List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException;
+
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }

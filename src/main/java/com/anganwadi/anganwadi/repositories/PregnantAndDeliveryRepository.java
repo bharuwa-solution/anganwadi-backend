@@ -42,5 +42,6 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query(value = "{'dateOfDelivery':{$gte:?0},'centerId':?1}", count = true)
     long countDhartiWomenByCenterId(long convertToMills, String centerId);
 
-
+    @Query("{'centerName':{$regex:?0},'category':{$regex:?1},'createdDate':{$gte:?2,$lte:?3}}")
+    List<PregnantAndDelivery> findAllByCenterNameAndCategoryAndCreatedDate(String centerName, String category, Date startDate, Date endDate);
 }

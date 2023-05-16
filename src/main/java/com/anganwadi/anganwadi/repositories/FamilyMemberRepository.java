@@ -30,8 +30,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'dob':{$gte:?0},'centerName':?1}")
     List<FamilyMember> findAllByDobAndCenterName(long convertToMills, String centerName);
 
-    @Query("{'centerName':{$regex:?0},'recordForMonth':{$regex:?1},'category':{$regex:?2}}")
-    List<FamilyMember> findAllByCenterNameAndRecordForMonthAndCategory(String centerName, String month, String category);
+    @Query("{'centerName':{$regex:?0},'createdDate':{$gte:?1,$lte:?2},'category':{$regex:?3}}")
+    List<FamilyMember> findAllByCenterNameAndRecordForMonthAndCategory(String centerName, Date startDate, Date endDate, String category);
 
     @Query("{'createdDate':{$gte:?0,$lte:?1},'dob':{$gte:?2}}")
     List<FamilyMember> findAllByChildrenCriteria(Date startTime, Date endTime, long millis);

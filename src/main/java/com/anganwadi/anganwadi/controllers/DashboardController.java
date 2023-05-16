@@ -22,10 +22,14 @@ public class DashboardController {
         this.anganwadiChildrenService = anganwadiChildrenService;
     }
 
+
+    // Checked
     @PostMapping("getDashboardFamilyData")
     private DashboardFamilyData getDashboardFamilyData(@RequestBody LocationFilter filter) {
         return familyService.getDashboardFamilyData(filter);
     }
+
+
 
     @PostMapping("getTotalChildrenData")
     private List<TotalChildrenData> getTotalChildrenData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
@@ -43,6 +47,7 @@ public class DashboardController {
     }
 
 
+    // Checked
     @PostMapping("getPregnancyData")
     private List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getPregnancyData(dashboardFilter);
@@ -52,6 +57,12 @@ public class DashboardController {
     private List<PregnantWomenDetails> getPregnantWomenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getPregnantWomenDetails(dashboardFilter);
     }
+
+    @PostMapping("getDhartiData")
+    private List<DhartiData> getDhartiData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getDhartiData(dashboardFilter);
+    }
+
 
     @PostMapping("getAnganwadiAahaarData")
     private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
