@@ -5,7 +5,6 @@ import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
-import com.sun.org.apache.xpath.internal.operations.String;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -91,13 +90,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId, String centerName) throws ParseException {
-
+    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId, java.lang.String centerName) throws ParseException, IOException {
         commonMethodsService.findCenterName(centerId);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
         df.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+
+
 
         String finalDate = saveAdmissionDTO.getDob();
         Date dob = df2.parse(finalDate);
@@ -490,25 +490,25 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<PartialStudentList> addInList = new ArrayList<>();
 
 
-//            String[] splitComma = partialStudentList.getChildId().trim().split(",");
-//
-//            for (String childId : splitComma) {
-//
-//                List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByChildIdAndRegisteredTrue(childId.trim());
-//
-//                for (AnganwadiChildren ac : childrenList) {
-//
-//                    PartialStudentList singeList = PartialStudentList.builder()
-//                            .childId(ac.getChildId()==null?"":ac.getChildId())
-//                            .name(ac.getName()==null?"":ac.getName())
-//                            .build();
-//
-//                    addInList.add(singeList);
-//                }
-//
-//            }
-//
-//        return addInList;
+            String[] splitComma = partialStudentList.getChildId().trim().split(",");
+
+            for (String childId : splitComma) {
+
+                List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByChildIdAndRegisteredTrue(childId.trim());
+
+                for (AnganwadiChildren ac : childrenList) {
+
+                    PartialStudentList singeList = PartialStudentList.builder()
+                            .childId(ac.getChildId()==null?"":ac.getChildId())
+                            .name(ac.getName()==null?"":ac.getName())
+                            .build();
+
+                    addInList.add(singeList);
+                }
+
+            }
+
+        return addInList;
     }
 
     @Override
