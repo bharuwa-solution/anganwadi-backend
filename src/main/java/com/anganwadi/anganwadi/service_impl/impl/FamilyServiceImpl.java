@@ -733,7 +733,7 @@ public class FamilyServiceImpl implements FamilyService {
     public List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        List<PregnancyData> addInList = new ArrayList<>();
+        List<DhartiData> addInList = new ArrayList<>();
         Date startTime = null, endTime = null;
 
         if (dashboardFilter.getStartDate().trim().length() > 0) {
@@ -748,17 +748,11 @@ public class FamilyServiceImpl implements FamilyService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
-        LocalDateTime minus6Months = endTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().minusMonths(6);
-        ZonedDateTime zdt = ZonedDateTime.of(minus6Months, ZoneId.systemDefault());
-        long convertToMills = zdt.toInstant().toEpochMilli();
-
-
-        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllBeneficiaryDharti(convertToMills);
+        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime);
         for (PregnantAndDelivery cat : findPdd) {
 
-
-            PregnancyData singleEntry = PregnancyData.builder()
-                    .lastMissedPeriodDate(df.format(new Date(cat.getLastMissedPeriodDate())))
+            DhartiData singleEntry = DhartiData.builder()
+                    .dateOfDelivery(df.format(new Date(cat.getDateOfDelivery())))
                     .motherId(cat.getMotherMemberId())
                     .motherName(cat.getMotherName())
                     .startDate(df.format(startTime))
@@ -768,7 +762,64 @@ public class FamilyServiceImpl implements FamilyService {
         }
 
 
-        return null;
+        return addInList;
+    }
+
+    @Override
+    public List<PregnantWomenDetails> getDhartiWomenDetails(DashboardFilter dashboardFilter) throws ParseException {
+
+        List<PregnantWomenDetails> addInList = new ArrayList<>();
+        HashSet<String> uniqueMemberId = new HashSet<>();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
+        List<PregnantAndDelivery> findPregnancyData = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime);
+
+        try {
+            for (PregnantAndDelivery visits : findPregnancyData) {
+
+                if (uniqueMemberId.add(visits.getMotherMemberId())) {
+                    List<FamilyMember> searchNames = familyMemberRepository.findAllByIdAndNameSearch(visits.getMotherMemberId(), dashboardFilter.getSearch().trim());
+
+                    if (searchNames.size() > 0) {
+                        for (FamilyMember searchResults : searchNames) {
+                            Family households = familyRepository.findByFamilyId(searchResults.getFamilyId());
+
+                            PregnantWomenDetails addSingle = PregnantWomenDetails.builder()
+                                    .name(searchResults.getName())
+                                    .husbandName(searchResults.getFatherName())
+                                    .dob(df.format(searchResults.getDob()))
+                                    .category(searchResults.getCategory())
+                                    .minority(households.getIsMinority())
+                                    .religion(households.getReligion())
+                                    .duration("")
+                                    .build();
+
+                            addInList.add(addSingle);
+                        }
+                    }
+
+                }
+            }
+
+        } catch (NullPointerException ignored) {
+
+        }
+        return addInList;
     }
 
     @Override
@@ -1927,6 +1978,7 @@ public class FamilyServiceImpl implements FamilyService {
                                     .husbandName(searchResults.getFatherName())
                                     .dob(df.format(searchResults.getDob()))
                                     .category(searchResults.getCategory())
+                                    .minority(households.getIsMinority())
                                     .religion(households.getReligion())
                                     .duration("")
                                     .build();

@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PregnantWomenDetails {
+public class PartialStudentList {
+    private String childId;
     private String name;
-    private String husbandName;
-    private String dob;
-    private String minority;
-    private String category;
-    private String religion;
-    private String duration;
 }

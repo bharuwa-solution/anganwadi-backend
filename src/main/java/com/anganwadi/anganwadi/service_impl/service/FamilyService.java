@@ -103,6 +103,8 @@ public interface FamilyService {
 
     List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException;
 
+    List<PregnantWomenDetails> getDhartiWomenDetails(DashboardFilter dashboardFilter) throws ParseException;
+
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }

@@ -63,6 +63,10 @@ public class DashboardController {
         return familyService.getDhartiData(dashboardFilter);
     }
 
+    @PostMapping("getDhartiWomenDetails")
+    private List<PregnantWomenDetails> getDhartiWomenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getDhartiWomenDetails(dashboardFilter);
+    }
 
     @PostMapping("getAnganwadiAahaarData")
     private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {

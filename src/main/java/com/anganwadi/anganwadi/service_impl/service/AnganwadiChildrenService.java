@@ -62,4 +62,6 @@ public interface AnganwadiChildrenService {
     UpdateStudentDTO updateStudentDetails(UpdateStudentDTO updateStudentDTO) throws ParseException;
 
     UpdateStudentDTO deleteStudentDetails(String id);
+
+    List<PartialStudentList> getStudentListByChildId(PartialStudentList partialStudentList);
 }

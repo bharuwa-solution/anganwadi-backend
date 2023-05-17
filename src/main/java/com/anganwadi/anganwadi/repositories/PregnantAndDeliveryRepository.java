@@ -44,4 +44,7 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     @Query("{'centerName':{$regex:?0},'category':{$regex:?1},'createdDate':{$gte:?2,$lte:?3}}")
     List<PregnantAndDelivery> findAllByCenterNameAndCategoryAndCreatedDate(String centerName, String category, Date startDate, Date endDate);
+
+    @Query("{'dateOfDelivery':{$gt:0},'createdDate':{$gte:?0,$lte:?1}}")
+    List<PregnantAndDelivery> findAllDhartiCriteria(Date startTime, Date endTime);
 }

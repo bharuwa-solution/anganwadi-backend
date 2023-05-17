@@ -92,5 +92,9 @@ public class AnganwadiController {
         return anganwadiChildrenService.saveAttendancePhoto(attendancePhotoDTO);
     }
 
+    @PostMapping("getStudentListByChildId")
+    private List<PartialStudentList> getStudentListByChildId(@RequestBody PartialStudentList partialStudentList) {
+        return anganwadiChildrenService.getStudentListByChildId(partialStudentList);
+    }
 
 }
