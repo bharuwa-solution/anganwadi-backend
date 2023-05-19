@@ -64,4 +64,6 @@ public interface AnganwadiChildrenService {
     UpdateStudentDTO deleteStudentDetails(String id);
 
     List<PartialStudentList> getStudentListByChildId(PartialStudentList partialStudentList);
+
+    List<RationDistribution> getRationDistributionData(DashboardFilter dashboardFilter) throws ParseException;
 }

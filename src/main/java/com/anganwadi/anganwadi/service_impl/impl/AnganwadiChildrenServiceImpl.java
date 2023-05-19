@@ -489,7 +489,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         }
         List<PartialStudentList> addInList = new ArrayList<>();
 
-
             String[] splitComma = partialStudentList.getChildId().trim().split(",");
 
             for (String childId : splitComma) {
@@ -500,13 +499,77 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
                     PartialStudentList singeList = PartialStudentList.builder()
                             .childId(ac.getChildId()==null?"":ac.getChildId())
-                            .name(ac.getName()==null?"":ac.getName())
+                            .name(ac.getName() == null ? "" : ac.getName())
                             .build();
 
                     addInList.add(singeList);
                 }
 
             }
+
+        return addInList;
+    }
+
+    private long getRationQty(String itemCode, List<StockDistribution> stockDistributionList) {
+        long totalQty = 0;
+
+        for (StockDistribution qty : stockDistributionList) {
+            if (qty.getItemCode().trim().equals(itemCode)) {
+
+                totalQty += Long.parseLong(qty.getQuantity());
+            }
+        }
+        return totalQty;
+    }
+
+
+    @Override
+    public List<RationDistribution> getRationDistributionData(DashboardFilter dashboardFilter) throws ParseException {
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<RationDistribution> addInList = new ArrayList<>();
+        HashSet<String> uniqueFood = new HashSet<>();
+
+
+        Date startTime = null, endTime = null;
+
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim());
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth());
+        }
+
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim());
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth());
+        }
+
+        Calendar addOneDay = Calendar.getInstance();
+        addOneDay.setTime(endTime);
+        addOneDay.add(Calendar.DATE,1);
+        endTime = addOneDay.getTime();
+
+        List<StockDistribution> stockDistributionList = stockDistributionRepository.findAllByDistributionCriteria(startTime, endTime);
+
+        addOneDay.add(Calendar.DATE,-1);
+        endTime = addOneDay.getTime();
+
+        for (StockDistribution sc : stockDistributionList) {
+            if (uniqueFood.add(sc.getItemCode().trim())) {
+                RationDistribution rd = RationDistribution.builder()
+                        .itemName(sc.getItemName())
+                        .itemCode(sc.getItemCode())
+                        .quantityUnit(sc.getUnit())
+                        .distribution(String.valueOf(getRationQty(sc.getItemCode().trim(), stockDistributionList)))
+                        .allocated("")
+                        .shorted("")
+                        .access("")
+                        .build();
+                addInList.add(rd);
+            }
+        }
+
 
         return addInList;
     }
@@ -1190,10 +1253,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
+        Calendar addOneDay = Calendar.getInstance();
+        addOneDay.setTime(endTime);
+        addOneDay.add(Calendar.DATE,1);
+        endTime = addOneDay.getTime();
 
         List<Meals> findMeals = mealsRepository.findAllByMonthCriteria(startTime, endTime, Sort.by(Sort.Direction.ASC, "date"));
-        List<AnganwadiAahaarData> dataList = new ArrayList<>();
-        HashSet<Integer> uniqueMonth = new HashSet<>();
+
+        addOneDay.add(Calendar.DATE,-1);
+        endTime = addOneDay.getTime();
 
         for (Meals meals : findMeals) {
             AnganwadiAahaarData singleList = AnganwadiAahaarData.builder()
@@ -1230,9 +1298,16 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
+        Calendar addOneDay = Calendar.getInstance();
+        addOneDay.setTime(endTime);
+        addOneDay.add(Calendar.DATE,1);
+        endTime = addOneDay.getTime();
 
         List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonthCriteria(startTime, endTime, Sort.by(Sort.Direction.ASC, "createdDate"));
         List<WeightTrackingDTO> addInList = new ArrayList<>();
+
+        addOneDay.add(Calendar.DATE,-1);
+        endTime = addOneDay.getTime();
 
         for (WeightTracking tracking : findChildren) {
             long getMills = tracking.getDate();
@@ -1275,9 +1350,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         if (dashboardFilter.getEndDate().trim().length() > 0) {
             endTime = df.parse(dashboardFilter.getEndDate().trim()).getTime();
         } else {
-            endTime = Long.parseLong(df.format(new Date().getTime()));
+            String convertToString = df.format(new Date());
+            Date date = df.parse(convertToString);
+            endTime = date.getTime();
         }
-
 
         List<Attendance> findAllList = attendanceRepository.findAllByDateRange(startTime, endTime);
 
@@ -1320,7 +1396,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
+        Calendar addOneDay = Calendar.getInstance();
+        addOneDay.setTime(endTime);
+        addOneDay.add(Calendar.DATE,1);
+        endTime = addOneDay.getTime();
+
+
         List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCreatedDate(startTime, endTime);
+        addOneDay.add(Calendar.DATE,-1);
+        endTime = addOneDay.getTime();
 
         for (AnganwadiChildren childrenList : findChildren) {
             if (childrenList.isRegistered()) {

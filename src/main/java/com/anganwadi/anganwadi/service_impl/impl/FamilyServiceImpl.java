@@ -1834,7 +1834,15 @@ public class FamilyServiceImpl implements FamilyService {
         ZonedDateTime sixthZdt = ZonedDateTime.of(sixthDate, ZoneId.systemDefault());
         long sixthMills = sixthZdt.toInstant().toEpochMilli();
 
+        Calendar addOneDay = Calendar.getInstance();
+        addOneDay.setTime(endTime);
+        addOneDay.add(Calendar.DATE, 1);
+        endTime = addOneDay.getTime();
+
         List<FamilyMember> findChildrenRecords = familyMemberRepository.findAllByChildrenCriteria(startTime, endTime, sixthMills);
+
+        addOneDay.add(Calendar.DATE, -1);
+        endTime = addOneDay.getTime();
 
         for (FamilyMember fm : findChildrenRecords) {
             Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
@@ -1850,10 +1858,6 @@ public class FamilyServiceImpl implements FamilyService {
                     .centerName(fm.getCenterName() == null ? "" : fm.getCenterName())
                     .build());
         }
-
-
-
-
         return childrenData;
     }
 
@@ -2017,12 +2021,21 @@ public class FamilyServiceImpl implements FamilyService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
+        Calendar addOneDay = Calendar.getInstance();
+        addOneDay.setTime(endTime);
+        addOneDay.add(Calendar.DATE, 1);
+        endTime = addOneDay.getTime();
+
         List<BabiesBirth> birthList = babiesBirthRepository.findAllByMonth(startTime, endTime);
+
+        addOneDay.add(Calendar.DATE, -1);
+        endTime = addOneDay.getTime();
 
         for (BabiesBirth bb : birthList) {
             DeliveryDTO singleEntry = DeliveryDTO.builder()
                     .startDate(df.format(startTime))
                     .endDate(df.format(endTime))
+                    .childId(bb.getChildId() == null ? "" : bb.getChildId())
                     .birthType(bb.getBirthType() == null ? "" : bb.getBirthType())
                     .birthPlace(bb.getBirthPlace() == null ? "" : bb.getBirthPlace())
                     .motherId(bb.getMotherMemberId() == null ? "" : bb.getMotherMemberId())
@@ -2053,9 +2066,16 @@ public class FamilyServiceImpl implements FamilyService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
+        Calendar addOneDay = Calendar.getInstance();
+        addOneDay.setTime(endTime);
+        addOneDay.add(Calendar.DATE,1);
+        endTime = addOneDay.getTime();
 
         List<VaccinationRecordsDTO> addInList = new ArrayList<>();
         List<Visits> vaccinationList = visitsRepository.findAllByVaccinationCriteria(startTime, endTime);
+
+        addOneDay.add(Calendar.DATE,-1);
+        endTime = addOneDay.getTime();
 
         for (Visits details : vaccinationList) {
             VaccinationRecordsDTO singleEntry = VaccinationRecordsDTO.builder()
