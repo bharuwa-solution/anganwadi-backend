@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -661,11 +662,10 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<HouseholdReligionData> getHouseholdReligionData(DashboardFilter dashboardFilter) throws ParseException {
-
+    public List<HouseholdRelCatData> getReligionCategoryData(DashboardFilter dashboardFilter) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        List<HouseholdReligionData> addInList = new ArrayList<>();
+        List<HouseholdRelCatData> addInList = new ArrayList<>();
 
         Date startTime = null, endTime = null;
 
@@ -688,7 +688,8 @@ public class FamilyServiceImpl implements FamilyService {
         for (FamilyMember fm : findByCategory) {
             Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
 
-            HouseholdReligionData singleEntry = HouseholdReligionData.builder()
+            HouseholdRelCatData singleEntry = HouseholdRelCatData.builder()
+                    .category(fm.getCategory()== null ? "" : fm.getCategory())
                     .religion(findFamily.getReligion() == null ? "" : findFamily.getReligion())
                     .name(fm.getName() == null ? "" : fm.getName())
                     .dob(df.format(new Date(fm.getDob())))
@@ -705,6 +706,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         return addInList;
     }
+
 
     @Override
     public List<Visits> updateMissingFields() {
@@ -1537,8 +1539,6 @@ public class FamilyServiceImpl implements FamilyService {
                         .visitType(String.valueOf(i))
                         .visitArray(Collections.emptyList())
                         .build();
-
-
             }
             addInList.add(memberVisits);
         }
@@ -1859,50 +1859,6 @@ public class FamilyServiceImpl implements FamilyService {
                     .build());
         }
         return childrenData;
-    }
-
-    @Override
-    public List<HouseholdCategoryData> getHouseholdCategoryData(DashboardFilter dashboardFilter) throws ParseException {
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        List<HouseholdCategoryData> addInList = new ArrayList<>();
-
-        Date startTime = null, endTime = null;
-
-        if (dashboardFilter.getStartDate().trim().length() > 0) {
-            startTime = df.parse(dashboardFilter.getStartDate().trim());
-
-        } else {
-            startTime = df.parse(commonMethodsService.startDateOfMonth());
-        }
-
-        if (dashboardFilter.getEndDate().trim().length() > 0) {
-            endTime = df.parse(dashboardFilter.getEndDate().trim());
-        } else {
-            endTime = df.parse(commonMethodsService.endDateOfMonth());
-        }
-
-
-        List<FamilyMember> findByCategory = familyMemberRepository.findByCategoryCriteria(startTime, endTime);
-
-        for (FamilyMember fm : findByCategory) {
-
-            HouseholdCategoryData singleEntry = HouseholdCategoryData.builder()
-                    .category(fm.getCategory())
-                    .name(fm.getName())
-                    .dob(df.format(new Date(fm.getDob())))
-                    .centerId(fm.getCenterId())
-                    .centerName(fm.getCenterName())
-                    .gender(fm.getGender())
-                    .startDate(df.format(startTime))
-                    .endDate(df.format(endTime))
-                    .build();
-
-            addInList.add(singleEntry);
-
-        }
-
-        return addInList;
-
     }
 
     @Override

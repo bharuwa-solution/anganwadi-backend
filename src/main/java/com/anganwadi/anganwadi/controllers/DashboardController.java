@@ -29,24 +29,28 @@ public class DashboardController {
         return familyService.getDashboardFamilyData(filter);
     }
 
-
-
     @PostMapping("getTotalChildrenData")
     private List<TotalChildrenData> getTotalChildrenData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getTotalChildrenData(dashboardFilter);
     }
 
-    // Checked
-    @PostMapping("getHouseholdReligionData")
-    private List<HouseholdReligionData> getHouseholdReligionData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-        return familyService.getHouseholdReligionData(dashboardFilter);
+    @PostMapping("getReligionCategoryData")
+    private List<HouseholdRelCatData> getReligionCategoryData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getReligionCategoryData(dashboardFilter);
     }
 
-    @PostMapping("getHouseholdCategoryData")
-    private List<HouseholdCategoryData> getHouseholdCategoryData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-        return familyService.getHouseholdCategoryData(dashboardFilter);
-    }
 
+
+//     Checked
+//    @PostMapping("getHouseholdReligionData")
+//    private List<HouseholdReligionData> getHouseholdReligionData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+//        return familyService.getHouseholdReligionData(dashboardFilter);
+//    }
+//
+//    @PostMapping("getHouseholdCategoryData")
+//    private List<HouseholdCategoryData> getHouseholdCategoryData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+//        return familyService.getHouseholdCategoryData(dashboardFilter);
+//    }
 
     // Checked
     @PostMapping("getPregnancyData")
@@ -93,6 +97,7 @@ public class DashboardController {
         return familyService.getDeliveryData(dashboardFilter);
     }
 
+    // Checked
     @PostMapping("getVaccinationData")
     private List<VaccinationRecordsDTO> getVaccinationData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getVaccinationData(dashboardFilter);
