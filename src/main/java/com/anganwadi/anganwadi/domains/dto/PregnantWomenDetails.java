@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class PregnantWomenDetails {
     private String name;
     private String husbandName;
+    private String motherId;
+    private String lastMissedPeriodDate;
     private String dob;
     private String minority;
     private String category;

@@ -11,19 +11,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -757,6 +754,7 @@ public class FamilyServiceImpl implements FamilyService {
                     .dateOfDelivery(df.format(new Date(cat.getDateOfDelivery())))
                     .motherId(cat.getMotherMemberId())
                     .motherName(cat.getMotherName())
+                    .category(cat.getCategory())
                     .startDate(df.format(startTime))
                     .endDate(df.format(endTime))
                     .build();
@@ -1884,7 +1882,6 @@ public class FamilyServiceImpl implements FamilyService {
         List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
         for (PregnantAndDelivery cat : findPdd) {
 
-
             PregnancyData singleEntry = PregnancyData.builder()
                     .lastMissedPeriodDate(df.format(new Date(cat.getLastMissedPeriodDate())))
                     .motherId(cat.getMotherMemberId())
@@ -1897,6 +1894,16 @@ public class FamilyServiceImpl implements FamilyService {
 
         return addInList;
 
+    }
+
+    private String calDuration(long missedPeriod){
+        long currentMillis = new Date().getTime();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        LocalDate startTime = Instant.ofEpochMilli(currentMillis).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endTime = Instant.ofEpochMilli(missedPeriod).atZone(ZoneId.systemDefault()).toLocalDate();
+        Period diff = Period.between(startTime,endTime);
+        log.error("gap "+Math.abs(diff.getMonths()));
+       return String.valueOf(Math.abs(diff.getMonths()));
     }
 
     @Override
@@ -1935,18 +1942,19 @@ public class FamilyServiceImpl implements FamilyService {
 
                             PregnantWomenDetails addSingle = PregnantWomenDetails.builder()
                                     .name(searchResults.getName())
+                                    .motherId(searchResults.getId())
+                                    .lastMissedPeriodDate(df.format(visits.getLastMissedPeriodDate()))
                                     .husbandName(searchResults.getFatherName())
                                     .dob(df.format(searchResults.getDob()))
                                     .category(searchResults.getCategory())
                                     .minority(households.getIsMinority())
                                     .religion(households.getReligion())
-                                    .duration("")
+                                    .duration(calDuration(visits.getLastMissedPeriodDate()))
                                     .build();
 
                             addInList.add(addSingle);
                         }
                     }
-
                 }
             }
 
@@ -2052,7 +2060,6 @@ public class FamilyServiceImpl implements FamilyService {
     public HouseholdsDTO updateHouseHold(HouseholdsDTO householdsDTO) {
 
         try {
-
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date date = df.parse(householdsDTO.getHeadDob());
             long mills = date.getTime();

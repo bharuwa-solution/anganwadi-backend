@@ -1453,6 +1453,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     AnganwadiChildrenList addSingle = AnganwadiChildrenList.builder()
                             .name(dataList.getName() == null ? "" : dataList.getName())
                             .startDate(df.format(startTime))
+                            .minority(dataList.getMinority() == null ? "" : dataList.getMinority())
                             .houseNo(findReligion.getHouseNo() == null ? "" : findReligion.getHouseNo())
                             .childId(dataList.getChildId() == null ? "" : dataList.getChildId())
                             .endDate(df.format(endTime))

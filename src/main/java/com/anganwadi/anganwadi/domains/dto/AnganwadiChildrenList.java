@@ -15,6 +15,7 @@ public class AnganwadiChildrenList {
     private String childId;
     private String startDate;
     private String endDate;
+    private String minority;
     private String motherName;
     private String fatherName;
     private String dob;

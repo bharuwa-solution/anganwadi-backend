@@ -13,6 +13,7 @@ public class DhartiData {
 
     private String motherName;
     private String motherId;
+    private String category;
     private String dateOfDelivery;
     private String startDate;
     private String endDate;
