@@ -13,6 +13,7 @@ public class AnganwadiChildrenList {
 
     private String name;
     private String childId;
+    private String centerId;
     private String startDate;
     private String endDate;
     private String minority;

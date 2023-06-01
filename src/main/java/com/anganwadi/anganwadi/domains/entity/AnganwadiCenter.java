@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -12,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Document(collection = "AnganwadiCenter")
 public class AnganwadiCenter extends BaseObject {
-
 
     private String centerName;
     private String uniqueCode;

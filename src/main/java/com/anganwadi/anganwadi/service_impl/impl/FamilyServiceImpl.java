@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -39,13 +37,15 @@ public class FamilyServiceImpl implements FamilyService {
     private final UserRepository userRepository;
     private final AttendanceRepository attendanceRepository;
     private final CommonMethodsService commonMethodsService;
+    private final VaccinationScheduleRepository vaccinationScheduleRepository;
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
                              VisitsRepository visitsRepository, WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
                              PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
                              AnganwadiChildrenRepository anganwadiChildrenRepository, AnganwadiCenterRepository anganwadiCenterRepository,
-                             UserRepository userRepository, AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService) {
+                             UserRepository userRepository, AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService,
+                             VaccinationScheduleRepository vaccinationScheduleRepository) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
@@ -58,7 +58,8 @@ public class FamilyServiceImpl implements FamilyService {
         this.anganwadiCenterRepository = anganwadiCenterRepository;
         this.userRepository = userRepository;
         this.attendanceRepository = attendanceRepository;
-        this.commonMethodsService=commonMethodsService;
+        this.commonMethodsService = commonMethodsService;
+        this.vaccinationScheduleRepository = vaccinationScheduleRepository;
     }
 
 
@@ -680,7 +681,7 @@ public class FamilyServiceImpl implements FamilyService {
         }
 
 
-        List<FamilyMember> findByCategory = familyMemberRepository.findByCategoryCriteria(startTime, endTime);
+        List<FamilyMember> findByCategory = familyMemberRepository.findByCategoryCriteria(startTime, endTime,dashboardFilter.getCenterId().trim());
 
         for (FamilyMember fm : findByCategory) {
             Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
@@ -697,6 +698,150 @@ public class FamilyServiceImpl implements FamilyService {
                     .endDate(df.format(endTime))
                     .build();
 
+            addInList.add(singleEntry);
+
+        }
+
+        return addInList;
+    }
+
+
+    private long findColumnValue(List<VaccinationSchedule> scheduleList, long startTime, long endTime) {
+
+        long val = 0;
+        for(VaccinationSchedule list :  scheduleList){
+
+            if(list.getPregnantVisit1()>=startTime && list.getPregnantVisit1()<=endTime ){
+                val = list.getPregnantVisit1();
+            }
+            else if(list.getPregnantVisit2()>=startTime && list.getPregnantVisit2()<=endTime) {
+                val = list.getPregnantVisit2();
+            }
+            else if(list.getDeliveryDayVisit()>=startTime && list.getDeliveryDayVisit()<=endTime) {
+                val = list.getDeliveryDayVisit();
+            }
+            else if(list.getBirthVisit1()>=startTime && list.getBirthVisit1()<=endTime) {
+                val = list.getBirthVisit1();
+            }
+            else if(list.getBirthVisit2()>=startTime && list.getBirthVisit2()<=endTime) {
+                val = list.getBirthVisit2();
+            }
+            else if(list.getBirthVisit3()>=startTime && list.getBirthVisit3()<=endTime) {
+                val = list.getBirthVisit3();
+            }
+            else if(list.getBirthVisit4()>=startTime && list.getBirthVisit4()<=endTime) {
+                val = list.getBirthVisit4();
+            }
+            else if(list.getBirthVisit5()>=startTime && list.getBirthVisit5()<=endTime) {
+                val = list.getBirthVisit5();
+            }
+            else if(list.getBirthVisit6()>=startTime && list.getBirthVisit6()<=endTime) {
+                val = list.getBirthVisit6();
+            }
+            else if(list.getBirthVisit7()>=startTime && list.getBirthVisit7()<=endTime) {
+                val = list.getBirthVisit7();
+            }
+            else if(list.getPolioOPB()>=startTime && list.getPolioOPB()<=endTime) {
+                val = list.getPolioOPB();
+            }
+            else if(list.getHipB0()>=startTime && list.getHipB0()<=endTime) {
+                val = list.getHipB0();
+            }
+            else if(list.getBcg()>=startTime && list.getBcg()<=endTime) {
+                val = list.getBcg();
+            }
+            else if(list.getDpt1()>=startTime && list.getDpt1()<=endTime) {
+                val = list.getDpt1();
+            }
+            else if(list.getHipB1()>=startTime && list.getHipB1()<=endTime) {
+                val = list.getHipB1();
+            }
+            else if(list.getPolio1()>=startTime && list.getPolio1()<=endTime) {
+                val = list.getPolio1();
+            }
+            else if(list.getDpt2()>=startTime && list.getDpt2()<=endTime) {
+                val = list.getDpt2();
+            }
+            else if(list.getHipB2()>=startTime && list.getHipB2()<=endTime) {
+                val = list.getHipB2();
+            }
+            else if(list.getPolio2()>=startTime && list.getPolio2()<=endTime) {
+                val = list.getPolio2();
+            }
+            else if(list.getDpt3()>=startTime && list.getDpt3()<=endTime) {
+                val = list.getDpt3();
+            }
+            else if(list.getHipB3()>=startTime && list.getHipB3()<=endTime) {
+                val = list.getHipB3();
+            }
+            else if(list.getPolio3()>=startTime && list.getPolio3()<=endTime) {
+                val = list.getPolio3();
+            }
+            else if(list.getKhasra1()>=startTime && list.getKhasra1()<=endTime) {
+                val = list.getKhasra1();
+            }
+            else if(list.getVitamin1()>=startTime && list.getVitamin1()<=endTime) {
+                val = list.getVitamin1();
+            }
+            else if(list.getDptBooster()>=startTime && list.getDptBooster()<=endTime) {
+                val = list.getDptBooster();
+            }
+            else if(list.getKhasra2()>=startTime && list.getKhasra2()<=endTime) {
+                val = list.getKhasra2();
+            }
+        }
+        return val;
+    }
+
+
+
+
+    private long getSuccessCounts() {
+    return 0;
+    }
+
+
+    private VaccinationStatusDTO getStatus() {
+        return VaccinationStatusDTO.builder()
+                .success(new Random().nextInt(5))
+                .missed(new Random().nextInt(5))
+                .scheduled(new Random().nextInt(15))
+                .build();
+    }
+
+
+    @Override
+    public List<VaccinationScheduleDTO> getVaccinationSchedule(String month) throws ParseException {
+        List<VaccinationScheduleDTO> addInList = new ArrayList<>();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        HashSet<Long> nums = new HashSet<>();
+
+        long startTime = 0, endTime = 0;
+
+        String firstDay = "01-0" + month.trim() + "-" + LocalDate.now().getYear();
+
+        if (month.trim().length() > 0) {
+            Date day = df.parse(firstDay);
+            startTime = day.getTime();
+
+        }
+
+        if (month.trim().length() > 0) {
+            String convertToString = commonMethodsService.getEndDateOfMonth(month.trim());
+            Date day = df.parse(convertToString);
+            endTime = day.getTime();
+        }
+
+        List<VaccinationSchedule> scheduleList = vaccinationScheduleRepository.findAllByDateRange(startTime, endTime);
+
+        for (VaccinationSchedule vs : scheduleList) {
+
+            VaccinationScheduleDTO singleEntry = VaccinationScheduleDTO.builder()
+                    .date(df.format(findColumnValue(scheduleList, startTime, endTime)))
+                    .deliveryDetails(getStatus())
+                    .vaccinationDetails(getStatus())
+                    .houseVisitsDetails(getStatus())
+                    .build();
             addInList.add(singleEntry);
 
         }
@@ -728,47 +873,45 @@ public class FamilyServiceImpl implements FamilyService {
         return checkMissing;
     }
 
-    @Override
-    public List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException {
+//    @Override
+//    public List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException {
+//
+//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        List<DhartiData> addInList = new ArrayList<>();
+//        Date startTime = null, endTime = null;
+//
+//        if (dashboardFilter.getStartDate().trim().length() > 0) {
+//            startTime = df.parse(dashboardFilter.getStartDate().trim());
+//        } else {
+//            startTime = df.parse(commonMethodsService.startDateOfMonth());
+//        }
+//
+//        if (dashboardFilter.getEndDate().trim().length() > 0) {
+//            endTime = df.parse(dashboardFilter.getEndDate().trim());
+//        } else {
+//            endTime = df.parse(commonMethodsService.endDateOfMonth());
+//        }
+//
+//        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime);
+//        for (PregnantAndDelivery cat : findPdd) {
+//            DhartiData singleEntry = DhartiData.builder()
+//                    .dateOfDelivery(df.format(new Date(cat.getDateOfDelivery())))
+//                    .motherId(cat.getMotherMemberId())
+//                    .category(cat.getCategory())
+//                    .startDate(df.format(startTime))
+//                    .endDate(df.format(endTime))
+//                    .build();
+//            addInList.add(singleEntry);
+//        }
+//
+//
+//        return addInList;
+//    }
 
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+    @Override
+    public List<DhartiData> getDhartiWomenDetails(DashboardFilter dashboardFilter) throws ParseException {
+
         List<DhartiData> addInList = new ArrayList<>();
-        Date startTime = null, endTime = null;
-
-        if (dashboardFilter.getStartDate().trim().length() > 0) {
-            startTime = df.parse(dashboardFilter.getStartDate().trim());
-        } else {
-            startTime = df.parse(commonMethodsService.startDateOfMonth());
-        }
-
-        if (dashboardFilter.getEndDate().trim().length() > 0) {
-            endTime = df.parse(dashboardFilter.getEndDate().trim());
-        } else {
-            endTime = df.parse(commonMethodsService.endDateOfMonth());
-        }
-
-        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime);
-        for (PregnantAndDelivery cat : findPdd) {
-
-            DhartiData singleEntry = DhartiData.builder()
-                    .dateOfDelivery(df.format(new Date(cat.getDateOfDelivery())))
-                    .motherId(cat.getMotherMemberId())
-                    .motherName(cat.getMotherName())
-                    .category(cat.getCategory())
-                    .startDate(df.format(startTime))
-                    .endDate(df.format(endTime))
-                    .build();
-            addInList.add(singleEntry);
-        }
-
-
-        return addInList;
-    }
-
-    @Override
-    public List<PregnantWomenDetails> getDhartiWomenDetails(DashboardFilter dashboardFilter) throws ParseException {
-
-        List<PregnantWomenDetails> addInList = new ArrayList<>();
         HashSet<String> uniqueMemberId = new HashSet<>();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -787,7 +930,7 @@ public class FamilyServiceImpl implements FamilyService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
-        List<PregnantAndDelivery> findPregnancyData = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime);
+        List<PregnantAndDelivery> findPregnancyData = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime,dashboardFilter.getCenterId().trim());
 
         try {
             for (PregnantAndDelivery visits : findPregnancyData) {
@@ -799,13 +942,19 @@ public class FamilyServiceImpl implements FamilyService {
                         for (FamilyMember searchResults : searchNames) {
                             Family households = familyRepository.findByFamilyId(searchResults.getFamilyId());
 
-                            PregnantWomenDetails addSingle = PregnantWomenDetails.builder()
+                            DhartiData addSingle = DhartiData.builder()
                                     .name(searchResults.getName())
+                                    .centerId(searchResults.getCenterId())
                                     .husbandName(searchResults.getFatherName())
                                     .dob(df.format(searchResults.getDob()))
+                                    .motherId(visits.getMotherMemberId())
+                                    .lastMissedPeriodDate(df.format(visits.getLastMissedPeriodDate()))
                                     .category(searchResults.getCategory())
                                     .minority(households.getIsMinority())
                                     .religion(households.getReligion())
+                                    .dateOfDelivery(df.format(visits.getDateOfDelivery()))
+                                    .startDate(dashboardFilter.getStartDate())
+                                    .endDate(dashboardFilter.getEndDate())
                                     .duration("")
                                     .build();
 
@@ -1859,42 +2008,40 @@ public class FamilyServiceImpl implements FamilyService {
         return childrenData;
     }
 
-    @Override
-    public List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-
-
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        List<PregnancyData> addInList = new ArrayList<>();
-        Date startTime = null, endTime = null;
-
-        if (dashboardFilter.getStartDate().trim().length() > 0) {
-            startTime = df.parse(dashboardFilter.getStartDate().trim());
-        } else {
-            startTime = df.parse(commonMethodsService.startDateOfMonth());
-        }
-
-        if (dashboardFilter.getEndDate().trim().length() > 0) {
-            endTime = df.parse(dashboardFilter.getEndDate().trim());
-        } else {
-            endTime = df.parse(commonMethodsService.endDateOfMonth());
-        }
-
-        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
-        for (PregnantAndDelivery cat : findPdd) {
-
-            PregnancyData singleEntry = PregnancyData.builder()
-                    .lastMissedPeriodDate(df.format(new Date(cat.getLastMissedPeriodDate())))
-                    .motherId(cat.getMotherMemberId())
-                    .motherName(cat.getMotherName())
-                    .startDate(df.format(startTime))
-                    .endDate(df.format(endTime))
-                    .build();
-            addInList.add(singleEntry);
-        }
-
-        return addInList;
-
-    }
+//    @Override
+//    public List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+//
+//
+//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        List<PregnancyData> addInList = new ArrayList<>();
+//        Date startTime = null, endTime = null;
+//
+//        if (dashboardFilter.getStartDate().trim().length() > 0) {
+//            startTime = df.parse(dashboardFilter.getStartDate().trim());
+//        } else {
+//            startTime = df.parse(commonMethodsService.startDateOfMonth());
+//        }
+//
+//        if (dashboardFilter.getEndDate().trim().length() > 0) {
+//            endTime = df.parse(dashboardFilter.getEndDate().trim());
+//        } else {
+//            endTime = df.parse(commonMethodsService.endDateOfMonth());
+//        }
+//
+//        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
+//        for (PregnantAndDelivery cat : findPdd) {
+//
+//            PregnancyData singleEntry = PregnancyData.builder()
+//                    .lastMissedPeriodDate(df.format(new Date(cat.getLastMissedPeriodDate())))
+//                    .motherId(cat.getMotherMemberId())
+//                    .motherName(cat.getMotherName())
+//                    .startDate(df.format(startTime))
+//                    .endDate(df.format(endTime))
+//                    .build();
+//            addInList.add(singleEntry);
+//        }
+//        return addInList;
+//    }
 
     private String calDuration(long missedPeriod){
         long currentMillis = new Date().getTime();
@@ -1928,7 +2075,7 @@ public class FamilyServiceImpl implements FamilyService {
             endTime = df.parse(commonMethodsService.endDateOfMonth());
         }
 
-        List<PregnantAndDelivery> findPregnancyData = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
+        List<PregnantAndDelivery> findPregnancyData = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime,dashboardFilter.getCenterId().trim());
 
         try {
             for (PregnantAndDelivery visits : findPregnancyData) {
@@ -1943,6 +2090,7 @@ public class FamilyServiceImpl implements FamilyService {
                             PregnantWomenDetails addSingle = PregnantWomenDetails.builder()
                                     .name(searchResults.getName())
                                     .motherId(searchResults.getId())
+                                    .centerId(searchResults.getCenterId())
                                     .lastMissedPeriodDate(df.format(visits.getLastMissedPeriodDate()))
                                     .husbandName(searchResults.getFatherName())
                                     .dob(df.format(searchResults.getDob()))
@@ -1990,7 +2138,7 @@ public class FamilyServiceImpl implements FamilyService {
         addOneDay.add(Calendar.DATE, 1);
         endTime = addOneDay.getTime();
 
-        List<BabiesBirth> birthList = babiesBirthRepository.findAllByMonth(startTime, endTime);
+        List<BabiesBirth> birthList = babiesBirthRepository.findAllByMonth(startTime, endTime,dashboardFilter.getCenterId().trim());
 
         addOneDay.add(Calendar.DATE, -1);
         endTime = addOneDay.getTime();
@@ -1999,6 +2147,7 @@ public class FamilyServiceImpl implements FamilyService {
             DeliveryDTO singleEntry = DeliveryDTO.builder()
                     .startDate(df.format(startTime))
                     .endDate(df.format(endTime))
+                    .centerId(bb.getCenterId())
                     .childId(bb.getChildId() == null ? "" : bb.getChildId())
                     .birthType(bb.getBirthType() == null ? "" : bb.getBirthType())
                     .birthPlace(bb.getBirthPlace() == null ? "" : bb.getBirthPlace())
@@ -2036,7 +2185,7 @@ public class FamilyServiceImpl implements FamilyService {
         endTime = addOneDay.getTime();
 
         List<VaccinationRecordsDTO> addInList = new ArrayList<>();
-        List<Visits> vaccinationList = visitsRepository.findAllByVaccinationCriteria(startTime, endTime);
+        List<Visits> vaccinationList = visitsRepository.findAllByVaccinationCriteria(startTime, endTime,dashboardFilter.getCenterId().trim());
 
         addOneDay.add(Calendar.DATE,-1);
         endTime = addOneDay.getTime();
@@ -2044,6 +2193,7 @@ public class FamilyServiceImpl implements FamilyService {
         for (Visits details : vaccinationList) {
             VaccinationRecordsDTO singleEntry = VaccinationRecordsDTO.builder()
                     .vaccinationCode(details.getVisitType())
+                    .centerId(details.getCenterId())
                     .startDate(df.format(startTime))
                     .endDate(df.format(endTime))
                     .centerName(details.getCenterName())

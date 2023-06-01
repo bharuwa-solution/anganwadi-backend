@@ -9,13 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AnganwadiChildrenDTO {
+public class VaccinationStatusDTO {
 
-    private String category;
-    private String centerId;
-    private String startDate;
-    private String endDate;
-    private String childId;
-    private String minority;
-
+    private long success;
+    private long missed;
+    private long scheduled;
 }

@@ -18,11 +18,11 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
 
     List<AnganwadiChildren> findAllByCenterName(String centerName);
 
-    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
-    List<AnganwadiChildren> findAllByCreatedDate(Date startDate, Date lastDay);
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    List<AnganwadiChildren> findAllByCreatedDate(Date startDate, Date lastDay, String centerId);
 
-    @Query("{'createdDate':{$gte:?0,$lte:?1},'name':{$regex:?2,'$options':i}}")
-    List<AnganwadiChildren> findAllByCreatedDateAndSearch(Date startDate, Date endDate, String search);
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'name':{$regex:?2,'$options':i},'centerId':{$regex:?3}}")
+    List<AnganwadiChildren> findAllByCreatedDateAndSearch(Date startDate, Date endDate, String search, String centerId);
 
     @Query("{'centerName':?0,'isRegistered':true,'deleted':false}")
     List<AnganwadiChildren> findAllByCenterNameAndRegisteredTrue(String centerName);

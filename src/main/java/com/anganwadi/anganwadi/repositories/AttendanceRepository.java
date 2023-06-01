@@ -27,8 +27,8 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
 
     List<Attendance> findAllByChildIdAndDateAndCenterName(String childId, long date, String centerName);
 
-    @Query("{'date':{$gte:?0,$lte:?1}}")
-    List<Attendance> findAllByDateRange(long startDayMillis, long lastDayMillis);
+    @Query("{'date':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    List<Attendance> findAllByDateRange(long startDayMillis, long lastDayMillis, String centerId);
 
     @Query("{'date':?0,'centerName':?1,'isRegistered':true}")
     List<Attendance> findAllByDateAndCenterNameAndRegistered(long timestamp, String centerName, Sort createdDate);

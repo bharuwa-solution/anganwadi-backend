@@ -88,16 +88,41 @@ public class CommonMethodsService {
        long totalStudents = anganwadiChildrenRepository.countByCenterNameAndRegisteredTrue(findCenterName(centerId).trim());
        long todayAttendance = attendanceRepository.countByDateAndCenterName(date.getTime(),findCenterName(centerId).trim(), Sort.by(Sort.Direction.DESC, "createdDate"));
 
-           return todayAttendance+"/"+totalStudents;
+       return todayAttendance+"/"+totalStudents;
 
     }
 
     public long checkAgeCriteria(long criteria){
-
         LocalDateTime date = LocalDateTime.now().minusYears(criteria);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
-
         return zdt.toInstant().toEpochMilli();
     }
+
+
+
+    public String getEndDateOfMonth(String month){
+        String endDate = "";
+
+        if(month.equals("1") || month.equals("3")  || month.equals("5") || month.equals("7") || month.equals("8") || month.equals("10") || month.equals("12")){
+
+            endDate = "31-0"+month+"-"+ LocalDate.now().getYear();
+        }
+        else if(month.equals("2")){
+
+            if(LocalDate.now().isLeapYear()){
+                endDate = "29-0"+month+"-"+LocalDate.now().getYear();
+            }
+            else {
+                endDate = "28-03"+LocalDate.now().getYear();
+            }
+
+        }
+        else {
+            endDate = "30-0"+month+"-"+ LocalDate.now().getYear();
+        }
+
+        return endDate;
+    }
+
 
 }

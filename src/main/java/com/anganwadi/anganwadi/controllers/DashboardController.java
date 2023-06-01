@@ -23,7 +23,7 @@ public class DashboardController {
     }
 
 
-    // Checked
+
     @PostMapping("getDashboardFamilyData")
     private DashboardFamilyData getDashboardFamilyData(@RequestBody LocationFilter filter) {
         return familyService.getDashboardFamilyData(filter);
@@ -40,8 +40,7 @@ public class DashboardController {
     }
 
 
-
-//     Checked
+//
 //    @PostMapping("getHouseholdReligionData")
 //    private List<HouseholdReligionData> getHouseholdReligionData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
 //        return familyService.getHouseholdReligionData(dashboardFilter);
@@ -52,68 +51,68 @@ public class DashboardController {
 //        return familyService.getHouseholdCategoryData(dashboardFilter);
 //    }
 
-    // Checked
-    @PostMapping("getPregnancyData")
-    private List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-        return familyService.getPregnancyData(dashboardFilter);
-    }
+
+//    @PostMapping("getPregnancyData")
+//    private List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+//        return familyService.getPregnancyData(dashboardFilter);
+//    }
 
     @PostMapping("getPregnantWomenDetails")
     private List<PregnantWomenDetails> getPregnantWomenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getPregnantWomenDetails(dashboardFilter);
     }
 
-    @PostMapping("getDhartiData")
-    private List<DhartiData> getDhartiData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-        return familyService.getDhartiData(dashboardFilter);
-    }
+//    @PostMapping("getDhartiData")
+//    private List<DhartiData> getDhartiData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+//        return familyService.getDhartiData(dashboardFilter);
+//    }
 
     @PostMapping("getDhartiWomenDetails")
-    private List<PregnantWomenDetails> getDhartiWomenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+    private List<DhartiData> getDhartiWomenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getDhartiWomenDetails(dashboardFilter);
     }
 
-    // Checked
+
     @PostMapping("getAnganwadiAahaarData")
     private List<AnganwadiAahaarData> getAnganwadiAahaarData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return anganwadiChildrenService.getAnganwadiAahaarData(dashboardFilter);
     }
 
-    // Checked
+
     @PostMapping("getRationDistributionData")
     private List<RationDistribution> getRationDistributionData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return anganwadiChildrenService.getRationDistributionData(dashboardFilter);
     }
 
-    // Checked
+
     @PostMapping("getChildrenWeightData")
     private List<WeightTrackingDTO> getChildrenWeightData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return anganwadiChildrenService.getChildrenWeightData(dashboardFilter);
     }
 
-    // Checked
+
     @PostMapping("getDeliveryData")
     private List<DeliveryDTO> getDeliveryData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getDeliveryData(dashboardFilter);
     }
 
-    // Checked
+
     @PostMapping("getVaccinationData")
     private List<VaccinationRecordsDTO> getVaccinationData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getVaccinationData(dashboardFilter);
     }
 
-    // Checked
+
     @PostMapping("getAttendanceData")
-    private List<DashboardAttendanceDTO> getAttendanceData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-        return anganwadiChildrenService.getAttendanceData(dashboardFilter);
+    private List<DashboardAttendanceDTO> getAttendanceData(@RequestBody DashboardFilter dashboardFilter,@RequestParam String month,@RequestParam String centerId) throws ParseException {
+        return anganwadiChildrenService.getAttendanceData(dashboardFilter, month, centerId);
     }
 
-    // Checked
-    @PostMapping("getAnganwadiChildrenData")
-    private List<AnganwadiChildrenDTO> getAnganwadiChildrenData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-        return anganwadiChildrenService.getAnganwadiChildrenData(dashboardFilter);
-    }
+//
+//    @PostMapping("getAnganwadiChildrenData")
+//    private List<AnganwadiChildrenDTO> getAnganwadiChildrenData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+//        return anganwadiChildrenService.getAnganwadiChildrenData(dashboardFilter);
+//    }
 
     @PostMapping("getAnganwadiChildrenDetails")
     private List<AnganwadiChildrenList> getAnganwadiChildrenDetails(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
@@ -134,6 +133,11 @@ public class DashboardController {
     @GetMapping("getDashboardMasterDetails")
     private List<DashboardMaster> getDashboardMasterDetails() throws ParseException {
         return anganwadiChildrenService.getDashboardMasterDetails();
+    }
+
+    @GetMapping("/getVaccinationSchedule")
+    private List<VaccinationScheduleDTO> getVaccinationSchedule(@RequestParam String month) throws ParseException {
+        return familyService.getVaccinationSchedule(month);
     }
 
 

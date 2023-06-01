@@ -172,12 +172,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<AnganwadiCenterDTO> getAnganwadiCenters() {
 
-        List<AnganwadiCenter> centersDTOList = anganwadiCentersRepository.findAll(Sort.by(Sort.Direction.DESC, "centerName"));
+        List<AnganwadiCenter> centersDTOList = anganwadiCentersRepository.findAll(Sort.by(Sort.Direction.ASC, "centerName"));
         List<AnganwadiCenterDTO> addInList = new ArrayList<>();
 
         for (AnganwadiCenter fetchDetails : centersDTOList) {
-            AnganwadiCenterDTO singleCenterDetail = modelMapper.map(fetchDetails, AnganwadiCenterDTO.class);
-            addInList.add(singleCenterDetail);
+            addInList.add(AnganwadiCenterDTO.builder()
+                    .centerId(fetchDetails.getId())
+                    .centerName(fetchDetails.getCenterName())
+                    .villageName("")
+                    .tahsilName("")
+                    .blockName("")
+                    .districtName("")
+                    .stateName("")
+                    .villageCode("")
+                    .tahsilCode("")
+                    .blockCode("")
+                    .districtCode("")
+                    .stateCode("")
+                    .build());
         }
 
         return addInList;

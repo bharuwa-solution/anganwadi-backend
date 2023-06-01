@@ -19,6 +19,6 @@ public interface StockDistributionRepository extends MongoRepository<StockDistri
 
     List<StockDistribution> findAllByFamilyIdAndItemCodeAndMonth(String familyId, String itemCode, String selectedMonth, Sort itemCode1);
 
-    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
-    List<StockDistribution> findAllByDistributionCriteria(Date startTime, Date endTime);
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    List<StockDistribution> findAllByDistributionCriteria(Date startTime, Date endTime, String centerId);
 }

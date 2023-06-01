@@ -14,6 +14,7 @@ public class RationDistribution {
     private String itemName;
     private String itemCode;
     private String allocated;
+    private String centerId;
     private String distribution;
     private String shorted;
     private String access;

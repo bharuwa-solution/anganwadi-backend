@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AnganwadiCenterDTO {
 
     private String centerName;
+    private String centerId;
     private String villageName;
     private String tahsilName;
     private String blockName;

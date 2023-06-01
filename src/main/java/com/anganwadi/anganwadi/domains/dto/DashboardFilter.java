@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class DashboardFilter {
 
     private String startDate;
+    private String centerId;
     private String endDate;
     private String search;
     private String district;

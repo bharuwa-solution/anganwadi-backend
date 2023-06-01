@@ -36,8 +36,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'createdDate':{$gte:?0,$lte:?1},'dob':{$gte:?2}}")
     List<FamilyMember> findAllByChildrenCriteria(Date startTime, Date endTime, long millis);
 
-    @Query("{'createdDate':{$gte:?0,$lte:?1}}")
-    List<FamilyMember> findByCategoryCriteria(Date startTime, Date endTime);
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    List<FamilyMember> findByCategoryCriteria(Date startTime, Date endTime, String centerId);
 
     @Query("{'familyId':?0,'relationWithOwner':'0'}")
     FamilyMember findByHead(String familyId);

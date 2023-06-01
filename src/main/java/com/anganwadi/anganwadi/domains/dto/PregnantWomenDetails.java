@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PregnantWomenDetails {
     private String name;
+    private String centerId;
     private String husbandName;
     private String motherId;
     private String lastMissedPeriodDate;

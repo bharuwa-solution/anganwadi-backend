@@ -13,6 +13,7 @@ public class AnganwadiAahaarData {
     private String foodName;
     private String foodCode;
     private String quantity;
+    private String centerId;
     private String quantityUnit;
     private String date;
     private String mealType;

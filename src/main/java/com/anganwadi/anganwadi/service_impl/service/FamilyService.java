@@ -50,7 +50,7 @@ public interface FamilyService {
     List<TotalChildrenData> getTotalChildrenData(DashboardFilter dashboardFilter) throws ParseException;
 
 
-    List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException;
+//    List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException;
 
     List<PregnantWomenDetails> getPregnantWomenDetails(DashboardFilter dashboardFilter) throws ParseException;
 
@@ -99,11 +99,13 @@ public interface FamilyService {
 
     List<Visits> updateMissingFields();
 
-    List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException;
+//    List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<PregnantWomenDetails> getDhartiWomenDetails(DashboardFilter dashboardFilter) throws ParseException;
+    List<DhartiData> getDhartiWomenDetails(DashboardFilter dashboardFilter) throws ParseException;
 
     List<HouseholdRelCatData> getReligionCategoryData(DashboardFilter dashboardFilter) throws ParseException;
+
+    List<VaccinationScheduleDTO> getVaccinationSchedule(String month) throws ParseException;
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);

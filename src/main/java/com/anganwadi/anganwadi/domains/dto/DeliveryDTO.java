@@ -14,6 +14,7 @@ public class DeliveryDTO {
     private String startDate;
     private String endDate;
     private String childId;
+    private String centerId;
     private String motherId;
     private String birthType;
     private String birthPlace;

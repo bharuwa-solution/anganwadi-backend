@@ -9,13 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DashboardAttendanceDTO {
+public class VaccinationScheduleDTO {
 
-    private String childId;
-    private String startDate;
-    private String centerId;
-    private String endDate;
-    private String centerName;
     private String date;
-    private String attendance;
+    private VaccinationStatusDTO deliveryDetails;
+    private VaccinationStatusDTO vaccinationDetails;
+    private VaccinationStatusDTO houseVisitsDetails;
 }
