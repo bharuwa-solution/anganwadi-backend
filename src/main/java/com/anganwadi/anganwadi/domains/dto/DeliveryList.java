@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VaccinationStatusDTO {
+public class DeliveryList {
 
-    private long success;
-    private long missed;
-    private long scheduled;
+    private String LMPDate;
+    private String exceptedDeliveryDate;
+    private String actualDeliveryDate;
 }
