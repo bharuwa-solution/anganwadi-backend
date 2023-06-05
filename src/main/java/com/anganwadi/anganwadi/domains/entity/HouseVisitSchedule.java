@@ -10,17 +10,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "VaccinationSchedule")
-public class VaccinationSchedule extends BaseObject {
+@Document(collection = "HouseVisitSchedule")
+public class HouseVisitSchedule extends BaseObject {
 
-    private String familyId;
+    private String visitType;
     private String memberId;
     private String centerId;
     private String centerName;
-    private String vaccinationName;
-    private String code;
+    private String visitName;
+    private String visitRound;
+    private String comments;
+    private String latitude;
+    private String longitude;
     private long dueDate;
-    private long vaccinationDate;
-
-
+    private long visitDate;
 }

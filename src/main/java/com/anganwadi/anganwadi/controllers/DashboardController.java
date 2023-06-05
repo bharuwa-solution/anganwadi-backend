@@ -22,11 +22,9 @@ public class DashboardController {
         this.anganwadiChildrenService = anganwadiChildrenService;
     }
 
-
-
     @PostMapping("getDashboardFamilyData")
-    private DashboardFamilyData getDashboardFamilyData(@RequestBody LocationFilter filter) {
-        return familyService.getDashboardFamilyData(filter);
+    private DashboardFamilyData getDashboardFamilyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+            return familyService.getDashboardFamilyData(dashboardFilter);
     }
 
     @PostMapping("getTotalChildrenData")
@@ -38,7 +36,6 @@ public class DashboardController {
     private List<HouseholdRelCatData> getReligionCategoryData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getReligionCategoryData(dashboardFilter);
     }
-
 
 //
 //    @PostMapping("getHouseholdReligionData")
@@ -104,8 +101,8 @@ public class DashboardController {
 
 
     @PostMapping("getAttendanceData")
-    private List<DashboardAttendanceDTO> getAttendanceData(@RequestBody DashboardFilter dashboardFilter,@RequestParam String month,@RequestParam String centerId) throws ParseException {
-        return anganwadiChildrenService.getAttendanceData(dashboardFilter, month, centerId);
+    private List<DashboardAttendanceDTO> getAttendanceData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return anganwadiChildrenService.getAttendanceData(dashboardFilter);
     }
 
 //
@@ -135,9 +132,9 @@ public class DashboardController {
         return anganwadiChildrenService.getDashboardMasterDetails();
     }
 
-    @GetMapping("/getVaccinationSchedule")
-    private List<VaccinationScheduleDTO> getVaccinationSchedule(@RequestParam String month) throws ParseException {
-        return familyService.getVaccinationSchedule(month);
+    @PostMapping("/getVaccinationSchedule")
+    private List<VaccinationScheduleDTO> getVaccinationSchedule(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getVaccinationSchedule(dashboardFilter);
     }
 
 

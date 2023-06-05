@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VaccinationScheduleDTO {
+public class VaccinationList {
 
-    private String date;
-    private List<MemberDetails> members;
+    private String name;
+    private String code;
+    private String dueDate;
+    private String vaccinatedDate;
 }

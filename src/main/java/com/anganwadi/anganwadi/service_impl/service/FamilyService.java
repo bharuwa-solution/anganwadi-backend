@@ -45,7 +45,7 @@ public interface FamilyService {
 
     SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId, String centerName);
 
-    DashboardFamilyData getDashboardFamilyData(LocationFilter filter);
+    DashboardFamilyData getDashboardFamilyData(DashboardFilter dashboardFilter) throws ParseException;
 
     List<TotalChildrenData> getTotalChildrenData(DashboardFilter dashboardFilter) throws ParseException;
 
@@ -105,7 +105,7 @@ public interface FamilyService {
 
     List<HouseholdRelCatData> getReligionCategoryData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<VaccinationScheduleDTO> getVaccinationSchedule(String month) throws ParseException;
+    List<VaccinationScheduleDTO> getVaccinationSchedule(@RequestBody DashboardFilter dashboardFilter) throws ParseException;
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);

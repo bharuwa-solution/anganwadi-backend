@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice
 @Slf4j
@@ -82,6 +83,15 @@ public class MainExceptionController implements ErrorController {
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.BAD_REQUEST);
         setBodyError.put("message", error.getHeaderName() + " Is Missing, Please Check !!!");
+        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    private ResponseEntity<?> handleHeadersError(NoSuchElementException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.BAD_REQUEST);
+        setBodyError.put("message","Some Data is Missing or Deleted,Please Check With Team!!!");
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
 

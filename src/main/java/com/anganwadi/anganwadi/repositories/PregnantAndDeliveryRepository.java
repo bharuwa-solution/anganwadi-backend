@@ -30,11 +30,11 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query("{'dateOfDelivery':{$eq:0}}")
     List<PregnantAndDelivery> findAllByDateOfDelivery();
 
-    @Query("{'dateOfDelivery':{$gte:?0}}")
-    List<PregnantAndDelivery> findAllBeneficiaryDharti(long millis);
+    @Query("{'regDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dateOfDelivery':{$gte:?3}}")
+    List<PregnantAndDelivery> findAllBeneficiaryDharti(Long startTime, Long endTime, String centerId,long millis);
 
-    @Query("{'dateOfDelivery':{$eq:0},'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
-    List<PregnantAndDelivery> findAllByPregnancyCriteria(Date startTime, Date endTime, String centerId);
+    @Query("{'dateOfDelivery':{$eq:0},'regDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    List<PregnantAndDelivery> findAllByPregnancyCriteria(Long startTime, Long endTime, String centerId);
 
     @Query(value = "{'dateOfDelivery':{$eq:0},'centerId':?0}", count = true)
     long countPregnantWomenByCenterId(String centerId);

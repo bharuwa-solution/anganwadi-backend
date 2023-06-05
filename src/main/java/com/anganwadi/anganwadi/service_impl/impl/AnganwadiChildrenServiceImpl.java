@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -1360,7 +1359,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<DashboardAttendanceDTO> getAttendanceData(DashboardFilter dashboardFilter, String month, String centerId) throws ParseException {
+    public List<DashboardAttendanceDTO> getAttendanceData(DashboardFilter dashboardFilter) throws ParseException {
 
         List<DashboardAttendanceDTO> addInList = new ArrayList<>();
 
@@ -1368,20 +1367,19 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         long startTime = 0, endTime = 0;
 
-        String firstDay = "01-0" + month.trim() + "-" + LocalDate.now().getYear();
-
-        if (month.trim().length() > 0) {
-            Date day = df.parse(firstDay);
-            startTime = day.getTime();
-
-        }
-        if (month.trim().length() > 0) {
-            String convertToString = commonMethodsService.getEndDateOfMonth(month.trim());
-            Date day = df.parse(convertToString);
-            endTime = day.getTime();
+        if (dashboardFilter.getStartDate().trim().length() > 0) {
+            startTime = df.parse(dashboardFilter.getStartDate().trim()).getTime();
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth()).getTime();
         }
 
-        List<Attendance> findAllList = attendanceRepository.findAllByDateRange(startTime, endTime, centerId.trim());
+        if (dashboardFilter.getEndDate().trim().length() > 0) {
+            endTime = df.parse(dashboardFilter.getEndDate().trim()).getTime();
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
+        }
+
+        List<Attendance> findAllList = attendanceRepository.findAllByDateRange(startTime, endTime, dashboardFilter.getCenterId().trim());
 
         for (Attendance attend : findAllList) {
             Date attendanceDate = new Date(attend.getDate());

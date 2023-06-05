@@ -41,7 +41,7 @@ public interface AnganwadiChildrenService {
 
     List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<DashboardAttendanceDTO> getAttendanceData(DashboardFilter dashboardFilter, String month, String centerId) throws ParseException;
+    List<DashboardAttendanceDTO> getAttendanceData(DashboardFilter dashboardFilter) throws ParseException;
 
 //    List<AnganwadiChildrenDTO> getAnganwadiChildrenData(DashboardFilter dashboardFilter) throws ParseException;
 
