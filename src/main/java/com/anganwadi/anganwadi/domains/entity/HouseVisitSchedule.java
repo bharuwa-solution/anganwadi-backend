@@ -18,10 +18,6 @@ public class HouseVisitSchedule extends BaseObject {
     private String centerId;
     private String centerName;
     private String visitName;
-    private String visitRound;
-    private String comments;
-    private String latitude;
-    private String longitude;
     private long dueDate;
-    private long visitDate;
+
 }

@@ -17,7 +17,7 @@ public interface AnganwadiChildrenService {
 
 //    DashboardDetails getDashboardDetails();
 
-    List<AttendanceDTO> getAttendanceByDate(String date,String centerName) throws ParseException;
+    List<AttendanceDTO> getAttendanceByDate(String date, String centerName) throws ParseException;
 
     List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException;
 

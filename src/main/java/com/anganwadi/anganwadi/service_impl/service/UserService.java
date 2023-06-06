@@ -11,7 +11,6 @@ import java.util.List;
 public interface UserService {
 
 
-
     OtpDTO sendOtp(SendOtpDTO sendOtpDTO) throws IOException;
 
     OtpDTO verifyOtp(OtpDTO otpDTO);

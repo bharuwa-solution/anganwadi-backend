@@ -5,19 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HouseVisitsList {
-
-    private String visitType;
-    private String title;
-    private String dueDate;
-    private String visitRound;
-    private List<HouseVisitRounds> round;
+public class HouseVisitRounds {
     private String visitDate;
     private String comments;
     private String latitude;

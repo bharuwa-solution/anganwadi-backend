@@ -13,6 +13,7 @@ public class VisitsDetailsDTO {
 
     private String memberId;
     private String centerName;
+    private long vaccinationDate;
     private String visitType;
     private String visitFor;
     private String visitRound;
