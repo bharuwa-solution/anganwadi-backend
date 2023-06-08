@@ -15,7 +15,7 @@ public class AnganwadiChildren extends StateObject {
 
     private String profilePic;
     private String familyId;
-    private boolean isSchoolGoing;
+    private String isGoingSchool;
     private String childId;
     private String centerId;
     private String centerName;

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class UpdateStudentDTO {
 
     private String id;
+    private String isGoingSchool;
     private String childId;
     private String name;
     private String profilePic;

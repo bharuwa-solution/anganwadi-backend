@@ -13,6 +13,7 @@ public class ChildrenDTO {
 
     private String id;
     private String childId;
+    private String isGoingSchool;
     private String name;
     private String motherName;
     private String fatherName;

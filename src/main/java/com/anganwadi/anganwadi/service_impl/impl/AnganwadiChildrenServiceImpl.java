@@ -120,6 +120,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     ac.setMotherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName());
                     ac.setCenterName(commonMethodsService.findCenterName(centerId));
                     ac.setCenterId(centerId);
+                    ac.setIsGoingSchool("0");
                     ac.setDob(df.format(dob));
                     ac.setGender(saveAdmissionDTO.getGender() == null ? "" : saveAdmissionDTO.getGender());
                     ac.setMobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber());
@@ -142,6 +143,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .isRegistered(saveAdmissionDTO.isRegistered())
                         .centerName(centerName)
                         .centerId(centerId)
+                        .isGoingSchool("0")
                         .dob(df.format(dob))
                         .gender(saveAdmissionDTO.getGender() == null ? "" : saveAdmissionDTO.getGender())
                         .mobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber())
@@ -415,7 +417,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             ac.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
             ac.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
             ac.setHandicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap());
-
+            ac.setIsGoingSchool(updateStudentDTO.getIsGoingSchool()==null?"0":updateStudentDTO.getIsGoingSchool());
             anganwadiChildrenRepository.save(ac);
 
             // Update in Family Children
@@ -431,9 +433,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 findChild.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
                 findChild.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
                 findChild.setHandicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap());
-
                 familyMemberRepository.save(findChild);
-
             }
 
             return UpdateStudentDTO.builder()
@@ -443,6 +443,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .handicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap())
                     .profilePic(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic())
                     .id(updateStudentDTO.getId())
+                    .isGoingSchool(updateStudentDTO.getIsGoingSchool())
                     .name(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName())
                     .deleted(ac.isDeleted())
                     .build();
@@ -583,6 +584,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterNameAndRegisteredTrue(centerName);
 
         // Check 3 Years Criteria
+        // Initially all the age group was added, but currently is was stop from backend && to avoid those old records, below ,condition is added"
         LocalDateTime date = LocalDateTime.now().minusYears(3);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 
@@ -596,12 +598,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             long dob = dob_date.getTime();
 
-            if (dob <=convertToMills) {
+            if (dob <=convertToMills && getChildren.getIsGoingSchool().trim().equals("0")) {
 //                log.info("Name " + getChildren.getName());
 //                log.info("dob " + dob);
 
                 ChildrenDTO childrenDTO = ChildrenDTO.builder()
                         .id(getChildren.getId())
+                        .isGoingSchool(getChildren.getIsGoingSchool()== null ? "" : getChildren.getIsGoingSchool())
                         .childId(getChildren.getChildId() == null ? "" : getChildren.getChildId())
                         .dob(getChildren.getDob() == null ? "" : getChildren.getDob())
                         .motherName(getChildren.getMotherName() == null ? "" : getChildren.getMotherName())

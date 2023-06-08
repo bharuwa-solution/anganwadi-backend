@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
+import com.anganwadi.anganwadi.domains.entity.FamilyMember;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
 import lombok.extern.slf4j.Slf4j;
@@ -107,21 +108,30 @@ public class CommonMethodsService {
 
             endDate = "31-0"+month+"-"+ LocalDate.now().getYear();
         }
-        else if(month.equals("2")){
+        else if (month.equals("2")) {
 
-            if(LocalDate.now().isLeapYear()){
-                endDate = "29-0"+month+"-"+LocalDate.now().getYear();
-            }
-            else {
-                endDate = "28-03"+LocalDate.now().getYear();
+            if (LocalDate.now().isLeapYear()) {
+                endDate = "29-0" + month + "-" + LocalDate.now().getYear();
+            } else {
+                endDate = "28-03" + LocalDate.now().getYear();
             }
 
-        }
-        else {
-            endDate = "30-0"+month+"-"+ LocalDate.now().getYear();
+        } else {
+            endDate = "30-0" + month + "-" + LocalDate.now().getYear();
         }
 
         return endDate;
+    }
+
+    public Boolean checkMortalityDate(String memberId) {
+        boolean isDead = false;
+
+        if (familyMemberRepository.findById(memberId).isPresent()) {
+            FamilyMember member = familyMemberRepository.findById(memberId).get();
+            if (member.getDateOfMortality().length() > 0) {
+                isDead = true;
+            }        }
+        return isDead;
     }
 
 
