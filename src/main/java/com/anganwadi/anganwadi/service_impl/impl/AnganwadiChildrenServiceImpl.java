@@ -1,6 +1,5 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
-import com.anganwadi.anganwadi.config.ApplicationConstants;
 import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
@@ -8,6 +7,7 @@ import com.anganwadi.anganwadi.repositories.*;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.LazyBSONList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -42,6 +42,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final CommonMethodsService commonMethodsService;
     private final AttendancePhotoRepository attendancePhotoRepository;
     private final AnganwadiCenterRepository anganwadiCenterRepository;
+    private final AnganwadiActivitiesRepository anganwadiActivitiesRepository;
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
@@ -51,7 +52,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                                         StockListRepository stockListRepository, StockDistributionRepository stockDistributionRepository,
                                         MealsRepository mealsRepository, WeightTrackingRepository weightTrackingRepository,
                                         CommonMethodsService commonMethodsService, AttendancePhotoRepository attendancePhotoRepository,
-                                        AnganwadiCenterRepository anganwadiCenterRepository) {
+                                        AnganwadiCenterRepository anganwadiCenterRepository, AnganwadiActivitiesRepository anganwadiActivitiesRepository) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
@@ -67,6 +68,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.commonMethodsService = commonMethodsService;
         this.attendancePhotoRepository = attendancePhotoRepository;
         this.anganwadiCenterRepository = anganwadiCenterRepository;
+        this.anganwadiActivitiesRepository = anganwadiActivitiesRepository;
     }
 
 
@@ -578,6 +580,61 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
+    public List<AnganwadiActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId, String centerName) throws ParseException {
+
+        List<AnganwadiActivitiesDTO> addList = new ArrayList<>();
+
+        if (anganwadiActivitiesRepository.findById(anganwadiActivitiesDTO.getId()).isPresent()) {
+            AnganwadiActivities ac = anganwadiActivitiesRepository.findById(anganwadiActivitiesDTO.getId()).get();
+
+            ac.setSelectedActivity(anganwadiActivitiesDTO.getSelectedActivity());
+            ac.setChildId(anganwadiActivitiesDTO.getChildId() == null ? "" : anganwadiActivitiesDTO.getChildId());
+            anganwadiActivitiesRepository.save(ac);
+
+        }
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        long startTime = 0, endTime = 0;
+
+        if (anganwadiActivitiesDTO.getStartDate().trim().length() > 0) {
+            startTime = df.parse(anganwadiActivitiesDTO.getStartDate().trim()).getTime();
+        } else {
+            startTime = df.parse(commonMethodsService.startDateOfMonth()).getTime();
+        }
+
+        if (anganwadiActivitiesDTO.getEndDate().trim().length() > 0) {
+            endTime = df.parse(anganwadiActivitiesDTO.getEndDate().trim()).getTime();
+        } else {
+            endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
+        }
+
+        List<AnganwadiActivities> findAc = anganwadiActivitiesRepository.findAllByDateRange(startTime,endTime,centerId.trim());
+
+        for(AnganwadiActivities activities :  findAc) {
+            addList.add(AnganwadiActivitiesDTO.builder()
+                    .id(activities.getId())
+                    .centerId(activities.getCenterId())
+                    .centerName(activities.getCenterName())
+                    .childrenCount(0)
+                    .childId(activities.getChildId())
+                    .date(df.format(activities.getDate()))
+                    .startDate(df.format(startTime))
+                    .endDate(df.format(endTime))
+                    .build());
+        }
+
+
+        return addList;
+    }
+
+    @Override
+    public List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId) {
+
+        return null;
+    }
+
+    @Override
     public List<ChildrenDTO> getTotalChildren(String centerName) throws ParseException {
 
         List<ChildrenDTO> addInList = new ArrayList<>();
@@ -713,7 +770,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             List<Attendance> lastVerify = attendanceRepository.findAllByChildIdAndDateAndCenterName(getId.getChildId(), timestamp, centerName);
             String verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, centerName);
-            if (lastVerify.size() <= 0 && dob<=millis) {
+            if (lastVerify.size() <= 0 && dob <= millis && getId.getIsGoingSchool().equals("0")) {
                 Attendance saveAttendance = Attendance.builder()
                         .childId(getId.getChildId())
                         .dob(getId.getDob())
@@ -1241,10 +1298,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     public List<AnganwadiAahaarData> getAnganwadiAahaarData(DashboardFilter dashboardFilter) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         List<AnganwadiAahaarData> addInList = new ArrayList<>();
-        HashSet<String> uniqueFood = new HashSet<>();
 
 
-        Date startTime = null, endTime = null;
+        Date startTime, endTime;
 
         if (dashboardFilter.getStartDate().trim().length() > 0) {
             startTime = df.parse(dashboardFilter.getStartDate().trim());
@@ -1341,8 +1397,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (WeightTracking tracking : findChildren) {
             long getMills = tracking.getDate();
             Date date = new Date(getMills);
-
-            int index = (int) (Math.random() * ApplicationConstants.BMI.length);
 
             WeightTrackingDTO addSingle = WeightTrackingDTO.builder()
                     .familyId(tracking.getFamilyId())
@@ -1476,7 +1530,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCreatedDateAndSearch(startTime, endTime, searchKeyword.trim(),dashboardFilter.getCenterId().trim());
 
         for (AnganwadiChildren dataList : childrenList) {
-            if (dataList.isRegistered()) {
+            if (dataList.isRegistered() && dataList.getIsGoingSchool().equals("0")) {
                 if (uniqueStudent.add(dataList.getChildId())) {
                     Family findReligion = familyRepository.findByFamilyId(dataList.getFamilyId());
                     AnganwadiChildrenList addSingle = AnganwadiChildrenList.builder()

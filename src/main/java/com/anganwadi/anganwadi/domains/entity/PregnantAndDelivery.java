@@ -19,7 +19,7 @@ public class PregnantAndDelivery extends BaseObject {
     private String familyId;
     private String motherMemberId;
     private String motherName;
-    private String yojana;
+    private String[] yojana;
     private long dob;
     private String husbandName;
     private String profilePic;

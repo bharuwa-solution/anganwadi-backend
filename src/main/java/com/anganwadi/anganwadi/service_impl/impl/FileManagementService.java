@@ -30,7 +30,7 @@ public class FileManagementService {
         Path path = Paths.get(ApplicationConstants.serverUploadPath + fileSeparator + "uploads" + fileSeparator + fileName);
         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-        String fileUrl = ApplicationConstants.baseUrl + fileSeparator + "uploads" + fileSeparator + fileName;
+        String fileUrl = ApplicationConstants.baseUrlTesting + fileSeparator + "uploads" + fileSeparator + fileName;
         log.info("File Path " + fileUrl);
 
         return fileUrl;

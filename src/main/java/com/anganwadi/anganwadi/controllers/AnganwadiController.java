@@ -97,4 +97,15 @@ public class AnganwadiController {
         return anganwadiChildrenService.getStudentListByChildId(partialStudentList);
     }
 
+    @PutMapping("saveActivity")
+    private List<AnganwadiActivitiesDTO> saveActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+        return anganwadiChildrenService.saveActivity(anganwadiActivitiesDTO, centerId, centerName);
+
+    }
+
+    @PostMapping("getAllActivity")
+    private List<AnganwadiActivitiesDTO>getAllActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId){
+        return anganwadiChildrenService.getAllActivity(anganwadiActivitiesDTO,centerId);
+    }
+
 }

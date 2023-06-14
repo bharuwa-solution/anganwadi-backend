@@ -25,5 +25,4 @@ public class ApplicationConstants {
     public static final String baseUrlTesting = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().replaceAll("anganwadi-0.0.1-TESTING", "");
     public static final String serverUploadPath = "/data/apache-tomcat-9.0.38/webapps";
     public static final String localUploadPath = "C:/Prabeer/project/Anganwadi/code";
-    public static final String[] BMI = {"OVER_WEIGHT", "UNDER_WEIGHT", "NORMAL"};
 }

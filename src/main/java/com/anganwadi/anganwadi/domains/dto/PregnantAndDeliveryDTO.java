@@ -13,7 +13,7 @@ public class PregnantAndDeliveryDTO {
 
     private String id;
     private String familyId;
-    private String yojana;
+    private String[] yojana;
     private String motherMemberId;
     private String profilePic;
     private String motherName;

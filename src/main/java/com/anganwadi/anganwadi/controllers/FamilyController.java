@@ -83,7 +83,6 @@ public class FamilyController {
         return familyService.deleteFamilyMembers(memberId, id);
     }
 
-
     @PutMapping("/updateHouseHoldMember")
     private FamilyMemberDTO updateHouseHoldMember(@RequestBody FamilyMemberDTO familyMemberDTO) {
         return familyService.updateHouseHoldMember(familyMemberDTO);

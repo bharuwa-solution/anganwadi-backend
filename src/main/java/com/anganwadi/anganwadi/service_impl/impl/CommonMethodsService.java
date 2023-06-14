@@ -106,18 +106,18 @@ public class CommonMethodsService {
 
         if(month.equals("1") || month.equals("3")  || month.equals("5") || month.equals("7") || month.equals("8") || month.equals("10") || month.equals("12")){
 
-            endDate = "31-0"+month+"-"+ LocalDate.now().getYear();
+            endDate = "31-" + month + "-" + LocalDate.now().getYear();
         }
         else if (month.equals("2")) {
 
             if (LocalDate.now().isLeapYear()) {
-                endDate = "29-0" + month + "-" + LocalDate.now().getYear();
+                endDate = "29-" + month + "-" + LocalDate.now().getYear();
             } else {
                 endDate = "28-03" + LocalDate.now().getYear();
             }
 
         } else {
-            endDate = "30-0" + month + "-" + LocalDate.now().getYear();
+            endDate = "30-" + month + "-" + LocalDate.now().getYear();
         }
 
         return endDate;
