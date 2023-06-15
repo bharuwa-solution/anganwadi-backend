@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AnganwadiActivitiesDTO {
+public class SaveActivitiesDTO {
 
     private String id;
     private String centerName;
@@ -19,6 +19,4 @@ public class AnganwadiActivitiesDTO {
     private boolean gaming;
     private boolean cleaning;
     private boolean preEducation;
-    private String startDate;
-    private String endDate;
 }

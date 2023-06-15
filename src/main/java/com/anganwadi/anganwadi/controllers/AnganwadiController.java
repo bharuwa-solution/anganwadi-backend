@@ -98,13 +98,12 @@ public class AnganwadiController {
     }
 
     @PutMapping("saveActivity")
-    private List<AnganwadiActivitiesDTO> saveActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+    private List<SaveActivitiesDTO> saveActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
         return anganwadiChildrenService.saveActivity(anganwadiActivitiesDTO, centerId, centerName);
-
     }
 
     @PostMapping("getAllActivity")
-    private List<AnganwadiActivitiesDTO>getAllActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId){
+    private List<AnganwadiActivitiesDTO>getAllActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId) throws ParseException {
         return anganwadiChildrenService.getAllActivity(anganwadiActivitiesDTO,centerId);
     }
 

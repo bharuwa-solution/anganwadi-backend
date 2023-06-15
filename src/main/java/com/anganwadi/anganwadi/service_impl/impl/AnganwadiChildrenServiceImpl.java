@@ -7,7 +7,6 @@ import com.anganwadi.anganwadi.repositories.*;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.bson.LazyBSONList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -580,22 +579,80 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<AnganwadiActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId, String centerName) throws ParseException {
-
-        List<AnganwadiActivitiesDTO> addList = new ArrayList<>();
-
-        if (anganwadiActivitiesRepository.findById(anganwadiActivitiesDTO.getId()).isPresent()) {
-            AnganwadiActivities ac = anganwadiActivitiesRepository.findById(anganwadiActivitiesDTO.getId()).get();
-
-            ac.setSelectedActivity(anganwadiActivitiesDTO.getSelectedActivity());
-            ac.setChildId(anganwadiActivitiesDTO.getChildId() == null ? "" : anganwadiActivitiesDTO.getChildId());
-            anganwadiActivitiesRepository.save(ac);
-
-        }
+    public List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId, String centerName) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentTime = new Date();
+        String formatToString = df.format(currentTime.getTime());
+        Date formatToTime = df.parse(formatToString);
+        long timestamp = formatToTime.getTime();
+
+        List<SaveActivitiesDTO> addList = new ArrayList<>();
+
+        AnganwadiActivities ac = anganwadiActivitiesRepository.findByCenterIdAndDate(centerId, timestamp);
+
+        if (ac != null) {
+            ac.setCleaning(anganwadiActivitiesDTO.isCleaning());
+            ac.setGaming(anganwadiActivitiesDTO.isGaming());
+            ac.setPreEducation(anganwadiActivitiesDTO.isPreEducation());
+            anganwadiActivitiesRepository.save(ac);
+        } else {
+            anganwadiActivitiesRepository.save(AnganwadiActivities.builder()
+                    .centerId(centerId)
+                    .centerName(centerName)
+                    .gaming(anganwadiActivitiesDTO.isGaming())
+                    .preEducation(anganwadiActivitiesDTO.isPreEducation())
+                    .cleaning(anganwadiActivitiesDTO.isCleaning())
+                    .date(timestamp)
+                    .build());
+        }
 
         long startTime = 0, endTime = 0;
+
+        startTime = df.parse(commonMethodsService.startDateOfMonth()).getTime();
+
+        endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
+
+        List<AnganwadiActivities> findAc = anganwadiActivitiesRepository.findAllByDateRange(startTime,endTime,centerId.trim());
+
+        for(AnganwadiActivities activities :  findAc) {
+            addList.add(SaveActivitiesDTO.builder()
+                    .id(activities.getId())
+                    .centerId(activities.getCenterId())
+                    .centerName(activities.getCenterName())
+                    .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
+                    .gaming(activities.isGaming())
+                    .preEducation(activities.isPreEducation())
+                    .cleaning(activities.isCleaning())
+                    .date(df.format(activities.getDate()))
+                    .build());
+        }
+
+        return addList;
+    }
+
+    private long getChildrenPresentCounts(String centerName, long date) {
+
+        Set<String> uniqueStudents = new HashSet<>();
+        List<Attendance> findPresentCounts = attendanceRepository.findAllByDateAndCenterName(date, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
+
+        if (findPresentCounts.size() > 0) {
+            for (Attendance counts : findPresentCounts) {
+                if (counts.isRegistered() && counts.getAttendance().trim().equals("P")) {
+                    uniqueStudents.add(counts.getChildId());
+                }
+            }
+        }
+
+        return uniqueStudents.size();
+    }
+
+    @Override
+    public List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        long startTime = 0, endTime = 0;
+        List<AnganwadiActivitiesDTO> addList = new ArrayList<>();
+
 
         if (anganwadiActivitiesDTO.getStartDate().trim().length() > 0) {
             startTime = df.parse(anganwadiActivitiesDTO.getStartDate().trim()).getTime();
@@ -609,29 +666,28 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
         }
 
-        List<AnganwadiActivities> findAc = anganwadiActivitiesRepository.findAllByDateRange(startTime,endTime,centerId.trim());
+        List<AnganwadiActivities> findTodayActivities = anganwadiActivitiesRepository.findAllByDateRange(startTime, endTime, centerId);
 
-        for(AnganwadiActivities activities :  findAc) {
-            addList.add(AnganwadiActivitiesDTO.builder()
-                    .id(activities.getId())
-                    .centerId(activities.getCenterId())
-                    .centerName(activities.getCenterName())
-                    .childrenCount(0)
-                    .childId(activities.getChildId())
-                    .date(df.format(activities.getDate()))
-                    .startDate(df.format(startTime))
-                    .endDate(df.format(endTime))
-                    .build());
+        if (findTodayActivities.size() > 0) {
+            for (AnganwadiActivities activities : findTodayActivities) {
+                addList.add(AnganwadiActivitiesDTO.builder()
+                        .id(activities.getId())
+                        .centerId(activities.getCenterId())
+                        .centerName(activities.getCenterName())
+                        .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
+                        .gaming(activities.isGaming())
+                        .preEducation(activities.isPreEducation())
+                        .cleaning(activities.isCleaning())
+                        .date(df.format(activities.getDate()))
+                        .startDate(df.format(startTime))
+                        .endDate(df.format(endTime))
+                        .build());
+            }
+
         }
 
 
         return addList;
-    }
-
-    @Override
-    public List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId) {
-
-        return null;
     }
 
     @Override

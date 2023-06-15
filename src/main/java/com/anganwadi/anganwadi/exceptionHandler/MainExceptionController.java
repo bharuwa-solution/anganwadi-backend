@@ -19,15 +19,15 @@ import java.util.NoSuchElementException;
 @Slf4j
 public class MainExceptionController implements ErrorController {
 
-    @ExceptionHandler(NullPointerException.class)
-    private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
-        log.error(nullError.getMessage());
-        Map<String, Object> setNullError = new HashMap<>();
-        setNullError.put("status", HttpStatus.BAD_REQUEST);
-        setNullError.put("message", "Error Occurred, Please Try Again Later & Contact Support Team");
-        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
-
-    }
+//    @ExceptionHandler(NullPointerException.class)
+//    private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
+//        log.error(nullError.getMessage());
+//        Map<String, Object> setNullError = new HashMap<>();
+//        setNullError.put("status", HttpStatus.BAD_REQUEST);
+//        setNullError.put("message", "Error Occurred, Please Try Again Later & Contact Support Team");
+//        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
+//
+//    }
 
     @ExceptionHandler(CustomException.class)
     private ResponseEntity<?> handleNullPointerException(CustomException nullError) {

@@ -15,7 +15,8 @@ public class AnganwadiActivities extends BaseObject {
 
     private String centerName;
     private String centerId;
-    private String childId;
-    private String[] selectedActivity;
+    private boolean gaming = false;
+    private boolean cleaning = false;
+    private boolean preEducation = false;
     private long date;
 }

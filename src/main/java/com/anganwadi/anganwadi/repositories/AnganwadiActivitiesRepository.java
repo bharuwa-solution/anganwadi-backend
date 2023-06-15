@@ -12,4 +12,6 @@ public interface AnganwadiActivitiesRepository extends MongoRepository<Anganwadi
 
     @Query("{'date':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<AnganwadiActivities> findAllByDateRange(long startTime, long endTime, String centerId);
+
+    AnganwadiActivities findByCenterIdAndDate(String centerId, long millis);
 }

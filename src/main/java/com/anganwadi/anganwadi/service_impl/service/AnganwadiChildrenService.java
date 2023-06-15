@@ -67,7 +67,7 @@ public interface AnganwadiChildrenService {
 
     List<RationDistribution> getRationDistributionData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<AnganwadiActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId, String centerName) throws ParseException;
+    List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId, String centerName) throws ParseException;
 
-    List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId);
+    List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId) throws ParseException;
 }
