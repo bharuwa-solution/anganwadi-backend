@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.MealsType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -70,4 +71,6 @@ public interface AnganwadiChildrenService {
     List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId, String centerName) throws ParseException;
 
     List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId) throws ParseException;
+
+    MealTypeDTO getMealsItems();
 }

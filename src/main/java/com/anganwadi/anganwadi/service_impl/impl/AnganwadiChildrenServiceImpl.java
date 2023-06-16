@@ -42,6 +42,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     private final AttendancePhotoRepository attendancePhotoRepository;
     private final AnganwadiCenterRepository anganwadiCenterRepository;
     private final AnganwadiActivitiesRepository anganwadiActivitiesRepository;
+    private final MealsTypeRepository mealsTypeRepository;
 
     @Autowired
     public AnganwadiChildrenServiceImpl(AnganwadiChildrenRepository anganwadiChildrenRepository, FileManagementService fileManagementService,
@@ -51,7 +52,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                                         StockListRepository stockListRepository, StockDistributionRepository stockDistributionRepository,
                                         MealsRepository mealsRepository, WeightTrackingRepository weightTrackingRepository,
                                         CommonMethodsService commonMethodsService, AttendancePhotoRepository attendancePhotoRepository,
-                                        AnganwadiCenterRepository anganwadiCenterRepository, AnganwadiActivitiesRepository anganwadiActivitiesRepository) {
+                                        AnganwadiCenterRepository anganwadiCenterRepository, AnganwadiActivitiesRepository anganwadiActivitiesRepository,
+                                        MealsTypeRepository mealsTypeRepository) {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.fileManagementService = fileManagementService;
         this.attendanceRepository = attendanceRepository;
@@ -68,6 +70,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.attendancePhotoRepository = attendancePhotoRepository;
         this.anganwadiCenterRepository = anganwadiCenterRepository;
         this.anganwadiActivitiesRepository = anganwadiActivitiesRepository;
+        this.mealsTypeRepository = mealsTypeRepository;
     }
 
 
@@ -558,8 +561,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         for (StockDistribution sc : stockDistributionList) {
             if (uniqueFood.add(sc.getItemCode().trim())) {
-
-
                 RationDistribution rd = RationDistribution.builder()
                         .itemName(sc.getItemName())
                         .centerId(sc.getCenterId())
@@ -573,8 +574,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 addInList.add(rd);
             }
         }
-
-
         return addInList;
     }
 
@@ -613,9 +612,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
 
-        List<AnganwadiActivities> findAc = anganwadiActivitiesRepository.findAllByDateRange(startTime,endTime,centerId.trim());
+        List<AnganwadiActivities> findAc = anganwadiActivitiesRepository.findAllByDateRange(startTime, endTime, centerId.trim());
 
-        for(AnganwadiActivities activities :  findAc) {
+        for (AnganwadiActivities activities : findAc) {
             addList.add(SaveActivitiesDTO.builder()
                     .id(activities.getId())
                     .centerId(activities.getCenterId())
@@ -653,7 +652,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         long startTime = 0, endTime = 0;
         List<AnganwadiActivitiesDTO> addList = new ArrayList<>();
 
-
         if (anganwadiActivitiesDTO.getStartDate().trim().length() > 0) {
             startTime = df.parse(anganwadiActivitiesDTO.getStartDate().trim()).getTime();
         } else {
@@ -688,6 +686,57 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
         return addList;
+    }
+
+    private List<BreakFastList> getBreakFastItems(List<MealsType> mealsTypes) {
+
+        List<BreakFastList> breakFastLists = new ArrayList<>();
+
+        for (MealsType breakFast : mealsTypes) {
+
+            if (breakFast.getMealType().trim().equals("1")) {
+                breakFastLists.add(BreakFastList.builder()
+                        .itemName(breakFast.getItemName())
+                        .itemCode(breakFast.getItemCode())
+                        .build());
+
+            }
+
+        }
+
+        return breakFastLists;
+    }
+
+    private List<MealsList> getMealsList(List<MealsType> mealsTypes) {
+
+        List<MealsList> MealsLists = new ArrayList<>();
+
+        for (MealsType meals : mealsTypes) {
+
+            if (meals.getMealType().trim().equals("2")) {
+                MealsLists.add(MealsList.builder()
+                        .itemName(meals.getItemName())
+                        .itemCode(meals.getItemCode())
+                        .build());
+            }
+
+        }
+
+        return MealsLists;
+    }
+
+
+    @Override
+    public MealTypeDTO getMealsItems() {
+
+        List<MealsType> mealsTypes = mealsTypeRepository.findAll();
+
+        return MealTypeDTO.builder()
+                .breakFastLists(getBreakFastItems(mealsTypes))
+                .mealsLists(getMealsList(mealsTypes))
+                .build();
+
+
     }
 
     @Override
@@ -1502,6 +1551,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .childId(attend.getChildId())
                     .startDate(df.format(startTime))
                     .endDate(df.format(endTime))
+                    .attendanceType(attend.getAttType()==null?"":attend.getAttType())
                     .date(df.format(attendanceDate))
                     .attendance(attend.getAttendance())
                     .build();

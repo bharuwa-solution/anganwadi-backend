@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.MealsType;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +107,11 @@ public class AnganwadiController {
     private List<AnganwadiActivitiesDTO>getAllActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId) throws ParseException {
         return anganwadiChildrenService.getAllActivity(anganwadiActivitiesDTO,centerId);
     }
+
+    @GetMapping("getMealsItems")
+    private MealTypeDTO getMealsItems(){
+        return anganwadiChildrenService.getMealsItems();
+    }
+
 
 }

@@ -18,4 +18,5 @@ public class DashboardAttendanceDTO {
     private String centerName;
     private String date;
     private String attendance;
+    private String attendanceType;
 }
