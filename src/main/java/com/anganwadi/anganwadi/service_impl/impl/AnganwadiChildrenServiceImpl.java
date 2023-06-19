@@ -440,15 +440,17 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 familyMemberRepository.save(findChild);
             }
 
+            
+            
             return UpdateStudentDTO.builder()
-                    .childId(updateStudentDTO.getChildId() == null ? "" : updateStudentDTO.getChildId())
-                    .dob(updateStudentDTO.getDob() == null ? "" : updateStudentDTO.getDob())
-                    .gender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender())
-                    .handicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap())
-                    .profilePic(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic())
-                    .id(updateStudentDTO.getId())
-                    .isGoingSchool(updateStudentDTO.getIsGoingSchool())
-                    .name(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName())
+                    .childId(ac.getChildId() == null ? "" : ac.getChildId())
+                    .dob(ac.getDob() == null ? "" : ac.getDob())
+                    .gender(ac.getGender() == null ? "" : ac.getGender())
+                    .handicap(ac.getHandicap() == null ? "" : ac.getHandicap())
+                    .profilePic(ac.getProfilePic() == null ? "" : ac.getProfilePic())
+                    .id(ac.getId())
+                    .isGoingSchool(ac.getIsGoingSchool())
+                    .name(ac.getName() == null ? "" : ac.getName())
                     .deleted(ac.isDeleted())
                     .build();
 
@@ -498,7 +500,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             for (String childId : splitComma) {
 
                 List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByChildIdAndRegisteredTrue(childId.trim());
-
+               // System.out.println(childrenList);
                 for (AnganwadiChildren ac : childrenList) {
 
                     PartialStudentList singeList = PartialStudentList.builder()
@@ -811,6 +813,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         long convertToMills = commonMethodsService.checkAgeCriteria(3);
 
         List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterNameAndRegistered(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
+        //System.out.println("Records of attandence are--  "+findRecords);
         List<AttendanceDTO> addList = new ArrayList<>();
 
         for (Attendance singleRecord : findRecords) {
