@@ -751,44 +751,54 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public SaveMeals saveMeals(SaveMeals saveMeals, String centerId) throws ParseException {
+    public List<SaveMeals> saveMeals(List<SaveMeals> saveMeals, String centerId) throws ParseException {
+
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();
         String formatToString = df.format(currentTime.getTime());
         Date formatToTime = df.parse(formatToString);
         long timestamp = formatToTime.getTime();
 
-        List<Meals> checkMeals = mealsRepository.findAllByMealTypeAndCenterIdAndDate(saveMeals.getMealType(), centerId, timestamp);
-        Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(saveMeals.getItemCode().trim());
+        List<SaveMeals> addInList = new ArrayList<>();
 
-        if (checkItemCode.isPresent()) {
-            if (checkMeals.size() > 0) {
-                for (Meals meals : checkMeals) {
-                    mealsRepository.deleteById(meals.getId());
+        for (SaveMeals mealsData : saveMeals) {
 
+            List<Meals> checkMeals = mealsRepository.findAllByMealTypeAndCenterIdAndDate(mealsData.getMealType(), centerId, timestamp);
+            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(mealsData.getItemCode().trim());
+            String qty = mealsData.getQuantity() == null ? "" : mealsData.getQuantity();
+
+            if (checkItemCode.isPresent()) {
+                if (checkMeals.size() > 0) {
+                    for (Meals meals : checkMeals) {
+                        mealsRepository.deleteById(meals.getId());
+
+                    }
                 }
+                mealsRepository.save(Meals.builder()
+                        .date(timestamp)
+                        .itemCode(checkItemCode.get().getItemCode())
+                        .quantity(mealsData.getQuantity() == null ? "" : mealsData.getQuantity())
+                        .mealType(checkItemCode.get().getMealType())
+                        .centerId(centerId)
+                        .build());
+            } else {
+                log.error("Item Code " + mealsData.getItemCode().trim());
+                throw new CustomException("Selected Food Item Is Not Available, Please Contact Anganwadi To Add In List");
             }
-            mealsRepository.save(Meals.builder()
-                    .date(timestamp)
+
+            addInList.add(SaveMeals.builder()
+                    .date(df.format(timestamp))
+                    .itemName(checkItemCode.get().getItemName())
                     .itemCode(checkItemCode.get().getItemCode())
-                    .quantity(saveMeals.getQuantity())
-                    .mealType(checkItemCode.get().getMealType())
+                    .quantityUnit(checkItemCode.get().getQuantityUnit())
+                    .quantity(mealsData.getQuantity() == null ? "" : mealsData.getQuantity())
                     .centerId(centerId)
+                    .centerName(commonMethodsService.findCenterName(centerId))
+                    .mealType(checkItemCode.get().getMealType())
                     .build());
-        } else {
-            throw new CustomException("Selected Food Item Is Not Avaiable, Please Contact Anganwadi To Add In List");
         }
 
-        return SaveMeals.builder()
-                .date(df.format(timestamp))
-                .itemName(checkItemCode.get().getItemName())
-                .itemCode(checkItemCode.get().getItemCode())
-                .quantityUnit(checkItemCode.get().getQuantityUnit())
-                .quantity(saveMeals.getQuantity())
-                .centerId(centerId)
-                .centerName(commonMethodsService.findCenterName(centerId))
-                .mealType(checkItemCode.get().getMealType())
-                .build();
+        return addInList;
     }
 
     @Override

@@ -115,7 +115,7 @@ public class AnganwadiController {
     }
 
     @PostMapping("saveMeals")
-    private SaveMeals saveMeals(@RequestBody SaveMeals saveMeals, @RequestHeader String centerId) throws ParseException {
+    private List<SaveMeals> saveMeals(@RequestBody List<SaveMeals> saveMeals, @RequestHeader String centerId) throws ParseException {
         return anganwadiChildrenService.saveMeals(saveMeals,centerId);
     }
 

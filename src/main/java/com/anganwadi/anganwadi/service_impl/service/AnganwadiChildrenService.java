@@ -73,7 +73,7 @@ public interface AnganwadiChildrenService {
 
     MealTypeDTO getMealsItems();
 
-    SaveMeals saveMeals(SaveMeals saveMeals, String centerId) throws ParseException;
+    List<SaveMeals> saveMeals(List<SaveMeals> saveMeals, String centerId) throws ParseException;
 
     List<SaveMeals> getMonthlyDistributedMeals(DashboardFilter dashboardFilter, String centerId) throws ParseException;
 }
