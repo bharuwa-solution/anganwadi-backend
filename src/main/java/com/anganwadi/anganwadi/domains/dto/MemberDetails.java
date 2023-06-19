@@ -14,6 +14,9 @@ import java.util.List;
 public class MemberDetails {
 
     private String id;
+    private String dob;
+    private String motherName;
+    private String fatherHusbandName;
     private String name;
     private String houseNo;
     private String category;

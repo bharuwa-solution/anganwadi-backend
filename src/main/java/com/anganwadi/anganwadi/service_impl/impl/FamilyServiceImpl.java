@@ -1116,7 +1116,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     private List<MemberDetails> getMembersDetails(long dates, List<VaccinationSchedule> vs, List<HouseVisitSchedule> hs) {
         List<MemberDetails> addInList = new ArrayList<>();
-
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Set<String> uniqueMember = new TreeSet<>();
 
         for (VaccinationSchedule vaccinationList : vs) {
@@ -1138,6 +1138,9 @@ public class FamilyServiceImpl implements FamilyService {
 
                 MemberDetails member = MemberDetails.builder()
                         .id(findMember.getId())
+                        .dob(df.format(findMember.getDob()))
+                        .fatherHusbandName(findMember.getFatherName()==null?"":findMember.getFatherName())
+                        .motherName(findMember.getMotherName()==null?"":findMember.getMotherName())
                         .name(findMember.getName() == null ? "" : findMember.getName())
                         .category(findFamily.getCategory())
                         .religion(findFamily.getReligion())

@@ -13,13 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "Meals")
 public class Meals extends StateObject {
 
-    private String foodName;
-    private String foodCode;
+    private String itemCode;
     private String quantity;
-    private String centerId;
-    private String centerName;
-    private String quantityUnit;
-    private String month;
-    private long date;
     private String mealType;
+    private String centerId;
+    private long date;
+
 }

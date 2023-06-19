@@ -9,8 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BreakFastList {
+public class SaveMeals {
 
     private String itemName;
     private String itemCode;
+    private String quantity;
+    private String centerId;
+    private String centerName;
+    private String quantityUnit;
+    private String mealType;
+    private String date;
+
 }

@@ -19,15 +19,16 @@ import java.util.NoSuchElementException;
 @Slf4j
 public class MainExceptionController implements ErrorController {
 
-//    @ExceptionHandler(NullPointerException.class)
-//    private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
-//        log.error(nullError.getMessage());
-//        Map<String, Object> setNullError = new HashMap<>();
-//        setNullError.put("status", HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(NullPointerException.class)
+    private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
+        log.error(nullError.getMessage());
+        Map<String, Object> setNullError = new HashMap<>();
+        setNullError.put("status", HttpStatus.BAD_REQUEST);
+        setNullError.put("message", nullError.getMessage());
 //        setNullError.put("message", "Error Occurred, Please Try Again Later & Contact Support Team");
-//        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
-//
-//    }
+        return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
+
+    }
 
     @ExceptionHandler(CustomException.class)
     private ResponseEntity<?> handleNullPointerException(CustomException nullError) {
@@ -95,5 +96,13 @@ public class MainExceptionController implements ErrorController {
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(IndexOutOfBoundsException.class)
+    private ResponseEntity<?> handleOutOfBondsException(IndexOutOfBoundsException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.BAD_REQUEST);
+        setBodyError.put("message",error.getMessage());
+        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
+    }
 
 }

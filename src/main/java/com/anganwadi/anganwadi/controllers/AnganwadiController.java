@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.Meals;
 import com.anganwadi.anganwadi.domains.entity.MealsType;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
@@ -111,6 +112,16 @@ public class AnganwadiController {
     @GetMapping("getMealsItems")
     private MealTypeDTO getMealsItems(){
         return anganwadiChildrenService.getMealsItems();
+    }
+
+    @PostMapping("saveMeals")
+    private SaveMeals saveMeals(@RequestBody SaveMeals saveMeals, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.saveMeals(saveMeals,centerId);
+    }
+
+    @PostMapping("getMonthlyDistributedMeals")
+    private List<SaveMeals> getMonthlyDistributedMeals(@RequestBody DashboardFilter dashboardFilter, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.getMonthlyDistributedMeals(dashboardFilter,centerId);
     }
 
 

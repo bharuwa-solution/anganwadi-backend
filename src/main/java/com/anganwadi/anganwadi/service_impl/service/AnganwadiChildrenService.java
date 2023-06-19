@@ -1,7 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.service;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.MealsType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -68,9 +67,13 @@ public interface AnganwadiChildrenService {
 
     List<RationDistribution> getRationDistributionData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId, String centerName) throws ParseException;
+    List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId, String centerName) throws ParseException;
 
-    List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO,String centerId) throws ParseException;
+    List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId) throws ParseException;
 
     MealTypeDTO getMealsItems();
+
+    SaveMeals saveMeals(SaveMeals saveMeals, String centerId) throws ParseException;
+
+    List<SaveMeals> getMonthlyDistributedMeals(DashboardFilter dashboardFilter, String centerId) throws ParseException;
 }
