@@ -19,4 +19,6 @@ public interface HouseVisitScheduleRepository extends MongoRepository<HouseVisit
     List<HouseVisitSchedule> findAllByMemberIdAndVisitType(String memberId, String visitType);
 
     List<HouseVisitSchedule> findAllByMemberId(String memberId);
+
+    void deleteByMemberId(String id);
 }

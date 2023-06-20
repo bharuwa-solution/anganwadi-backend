@@ -75,5 +75,5 @@ public interface AnganwadiChildrenService {
 
     List<SaveMeals> saveMeals(List<SaveMeals> saveMeals, String centerId) throws ParseException;
 
-    List<SaveMeals> getMonthlyDistributedMeals(DashboardFilter dashboardFilter, String centerId) throws ParseException;
+    List<MealsResponseDTO> getMonthlyDistributedMeals(DashboardFilter dashboardFilter, String centerId) throws ParseException;
 }

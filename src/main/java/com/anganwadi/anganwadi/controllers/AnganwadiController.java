@@ -120,7 +120,7 @@ public class AnganwadiController {
     }
 
     @PostMapping("getMonthlyDistributedMeals")
-    private List<SaveMeals> getMonthlyDistributedMeals(@RequestBody DashboardFilter dashboardFilter, @RequestHeader String centerId) throws ParseException {
+    private List<MealsResponseDTO> getMonthlyDistributedMeals(@RequestBody DashboardFilter dashboardFilter, @RequestHeader String centerId) throws ParseException {
         return anganwadiChildrenService.getMonthlyDistributedMeals(dashboardFilter,centerId);
     }
 

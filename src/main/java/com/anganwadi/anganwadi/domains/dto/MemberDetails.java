@@ -22,6 +22,7 @@ public class MemberDetails {
     private String category;
     private String religion;
     private String gender;
+    private String profilePic;
     private List<VaccinationList> vaccination;
     private DeliveryList delivery;
     private List<HouseVisitsList> houseVisits;
