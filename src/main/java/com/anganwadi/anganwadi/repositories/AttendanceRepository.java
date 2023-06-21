@@ -39,4 +39,7 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
 
     @Query(value = "{'date':?0,'centerName':?1,'attendance':'P','isRegistered':true}", count = true)
     long countByDateAndCenterName(long parseLong, String trim, Sort createdDate);
+
+    @Query("{'date':?0,'centerId':{$regex:?1}}")
+    List<Attendance> findAllByDateAndCenterId(long date, String centerId, Sort createdDate);
 }

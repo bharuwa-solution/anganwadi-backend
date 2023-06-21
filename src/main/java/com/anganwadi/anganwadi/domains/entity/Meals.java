@@ -16,6 +16,8 @@ public class Meals extends StateObject {
     private String itemCode;
     private String quantity;
     private String mealType;
+    private String totalCalorie;
+    private String totalProtein;
     private String centerId;
     private long date;
 

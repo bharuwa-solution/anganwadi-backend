@@ -758,20 +758,35 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         String formatToString = df.format(currentTime.getTime());
         Date formatToTime = df.parse(formatToString);
         long timestamp = formatToTime.getTime();
+        long totalCalorie = 0, totalProtein = 0;
 
         List<SaveMeals> addInList = new ArrayList<>();
 
+        long checkAttendance = getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), timestamp);
+
+        if (checkAttendance <= 0) {
+            throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
+        }
+
+
         for (SaveMeals mealsData : saveMeals) {
+
+            if (mealsData.getTotalCalorie().length() > 0) {
+
+                totalCalorie = Long.parseLong(mealsData.getTotalCalorie()) * checkAttendance;
+            }
+
+            if (mealsData.getTotalProtein().length() > 0) {
+                totalProtein = Long.parseLong(mealsData.getTotalProtein()) * checkAttendance;
+            }
 
             List<Meals> checkMeals = mealsRepository.findAllByMealTypeAndCenterIdAndDate(mealsData.getMealType(), centerId, timestamp);
             Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(mealsData.getItemCode().trim());
-            String qty = mealsData.getQuantity() == null ? "" : mealsData.getQuantity();
 
             if (checkItemCode.isPresent()) {
                 if (checkMeals.size() > 0) {
                     for (Meals meals : checkMeals) {
                         mealsRepository.deleteById(meals.getId());
-
                     }
                 }
                 mealsRepository.save(Meals.builder()
@@ -779,6 +794,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .itemCode(checkItemCode.get().getItemCode())
                         .quantity(mealsData.getQuantity() == null ? "" : mealsData.getQuantity())
                         .mealType(checkItemCode.get().getMealType())
+                        .totalCalorie(String.valueOf(totalCalorie))
+                        .totalProtein(String.valueOf(totalProtein))
                         .centerId(centerId)
                         .build());
             } else {
@@ -793,6 +810,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .quantityUnit(checkItemCode.get().getQuantityUnit())
                     .quantity(mealsData.getQuantity() == null ? "" : mealsData.getQuantity())
                     .centerId(centerId)
+                    .totalCalorie(String.valueOf(totalCalorie))
+                    .totalProtein(String.valueOf(totalProtein))
                     .centerName(commonMethodsService.findCenterName(centerId))
                     .mealType(checkItemCode.get().getMealType())
                     .build());
@@ -814,10 +833,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                                 .quantityUnit(checkItemCode.get().getQuantityUnit())
                                 .quantity(ml.getQuantity() == null ? "" : ml.getQuantity())
                                 .centerId(ml.getCenterId())
+                                .totalCalorie(ml.getTotalCalorie() == null ? "" : ml.getTotalCalorie())
+                                .totalProtein(ml.getTotalProtein() == null ? "" : ml.getTotalProtein())
                                 .centerName(commonMethodsService.findCenterName(ml.getCenterId()))
                                 .mealType(checkItemCode.get().getMealType())
                                 .build()
-
                 );
             }
 
@@ -1525,6 +1545,23 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 //    }
 
 
+    private long getAnganwadiAahaarPresentCount(String centerId, long date) {
+
+        Set<String> uniqueStudents = new HashSet<>();
+        List<Attendance> findPresentCounts = attendanceRepository.findAllByDateAndCenterId(date, centerId, Sort.by(Sort.Direction.ASC, "createdDate"));
+
+        if (findPresentCounts.size() > 0) {
+            for (Attendance counts : findPresentCounts) {
+                if (counts.isRegistered() && counts.getAttendance().trim().equals("P")) {
+                    uniqueStudents.add(counts.getChildId());
+                }
+            }
+        }
+
+        return uniqueStudents.size();
+    }
+
+
     @Override
     public List<AnganwadiAahaarData> getAnganwadiAahaarData(DashboardFilter dashboardFilter) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -1563,6 +1600,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .centerId(meals.getCenterId())
                     .foodCode(meals.getItemCode())
                     .quantity(meals.getQuantity())
+                    .childrenCount(getAnganwadiAahaarPresentCount(meals.getCenterId(),meals.getDate()))
                     .quantityUnit(checkItemCode.get().getQuantityUnit())
                     .startDate(df.format(startTime))
                     .endDate(df.format(endTime))
