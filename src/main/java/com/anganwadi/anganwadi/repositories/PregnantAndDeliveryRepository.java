@@ -47,4 +47,6 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     @Query("{'dateOfDelivery':{$gt:0},'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<PregnantAndDelivery> findAllDhartiCriteria(Date startTime, Date endTime, String centerId);
+
+    void deleteByMotherMemberId(String primaryId);
 }

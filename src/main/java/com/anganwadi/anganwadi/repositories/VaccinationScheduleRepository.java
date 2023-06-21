@@ -14,4 +14,8 @@ public interface VaccinationScheduleRepository extends MongoRepository<Vaccinati
     List<VaccinationSchedule> findAllByDateRange(Long startTime, Long endTime, String centerId);
 
     List<VaccinationSchedule> findAllByMemberIdAndCode(String memberId, String visitFor);
+
+    List<VaccinationSchedule> findAllByMemberId(String id);
+
+    void deleteByMemberId(String id);
 }

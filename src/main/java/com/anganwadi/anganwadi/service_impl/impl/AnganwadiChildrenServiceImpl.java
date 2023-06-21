@@ -830,8 +830,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .centerId(centerId)
                         .build());
             } else {
-                log.error("Item Code " + mealsData.getItemCode().trim());
-                throw new CustomException("Selected Food Item Is Not Available, Please Contact Anganwadi To Add In List");
+                log.error("Item Code Not Available" + mealsData.getItemCode().trim());
+//                throw new CustomException("Selected Food Item Is Not Available, Please Contact Anganwadi To Add In List");
             }
 
             addInList.add(SaveMeals.builder()
@@ -849,10 +849,37 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addInList;
     }
 
+    private List<SaveMealsItems> getMealsDetails(long date, List<Meals> findMonthlyData) {
+        List<SaveMealsItems> addMealsList = new ArrayList<>();
+
+        for (Meals ml : findMonthlyData) {
+            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(ml.getItemCode().trim());
+            if (ml.getDate() == date) {
+                addMealsList.add(
+                        SaveMealsItems.builder()
+                                .itemName(checkItemCode.get().getItemName())
+                                .itemCode(checkItemCode.get().getItemCode())
+                                .quantityUnit(checkItemCode.get().getQuantityUnit())
+                                .quantity(ml.getQuantity() == null ? "" : ml.getQuantity())
+                                .centerId(ml.getCenterId())
+                                .centerName(commonMethodsService.findCenterName(ml.getCenterId()))
+                                .mealType(checkItemCode.get().getMealType())
+                                .build()
+
+                );
+            }
+
+
+        }
+        return addMealsList;
+
+    }
+
     @Override
-    public List<SaveMeals> getMonthlyDistributedMeals(DashboardFilter dashboardFilter, String centerId) throws ParseException {
+    public List<MealsResponseDTO> getMonthlyDistributedMeals(DashboardFilter dashboardFilter, String centerId) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        List<SaveMeals> addInList = new ArrayList<>();
+        List<MealsResponseDTO> addInList = new ArrayList<>();
+        Set<Long> uniqueDate = new TreeSet<>();
 
         long startTime, endTime;
 
@@ -872,19 +899,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         if(findMonthlyData.size()>0){
             for(Meals getMeals :  findMonthlyData) {
-                Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(getMeals.getItemCode().trim());
-                addInList.add(SaveMeals.builder()
-                        .itemName(checkItemCode.get().getItemName())
-                        .itemCode(checkItemCode.get().getItemCode())
-                        .quantityUnit(getMeals.getQuantity())
-                        .quantity(getMeals.getQuantity())
-                        .mealType(checkItemCode.get().getMealType())
-                        .centerId(centerId)
-                        .centerName(commonMethodsService.findCenterName(centerId))
-                        .date(df.format(getMeals.getDate()))
-                        .build());
+                if (uniqueDate.add(getMeals.getDate())) {
+                    addInList.add(MealsResponseDTO.builder()
+                            .date(df.format(getMeals.getDate()))
+                            .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(getMeals.getCenterId()), getMeals.getDate()))
+                            .data(getMealsDetails(getMeals.getDate(), findMonthlyData))
+                            .build());
+                }
             }
-
         }
 
 

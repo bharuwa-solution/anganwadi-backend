@@ -1139,11 +1139,12 @@ public class FamilyServiceImpl implements FamilyService {
                 MemberDetails member = MemberDetails.builder()
                         .id(findMember.getId())
                         .dob(df.format(findMember.getDob()))
-                        .fatherHusbandName(findMember.getFatherName()==null?"":findMember.getFatherName())
-                        .motherName(findMember.getMotherName()==null?"":findMember.getMotherName())
+                        .fatherHusbandName(findMember.getFatherName() == null ? "" : findMember.getFatherName())
+                        .motherName(findMember.getMotherName() == null ? "" : findMember.getMotherName())
                         .name(findMember.getName() == null ? "" : findMember.getName())
                         .category(findFamily.getCategory())
                         .religion(findFamily.getReligion())
+                        .profilePic(findMember.getPhoto() == null ? "" : findMember.getPhoto())
                         .houseNo(findFamily.getHouseNo())
                         .gender(findMember.getGender())
                         .vaccination(getVaccinationList(dates, id, vs))
@@ -2288,7 +2289,7 @@ public class FamilyServiceImpl implements FamilyService {
                     .vaccinationDate(0)
                     .centerId(babiesBirth.getCenterId())
                     .centerName(babiesBirth.getCenterName())
-                    .dueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .dueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                     .familyId(babiesBirth.getFamilyId())
                     .memberId(babiesBirth.getChildId())
                     .build());
@@ -2299,7 +2300,7 @@ public class FamilyServiceImpl implements FamilyService {
                     .vaccinationDate(0)
                     .centerId(babiesBirth.getCenterId())
                     .centerName(babiesBirth.getCenterName())
-                    .dueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .dueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                     .familyId(babiesBirth.getFamilyId())
                     .memberId(babiesBirth.getChildId())
                     .build());
@@ -3253,13 +3254,19 @@ public class FamilyServiceImpl implements FamilyService {
         }
     }
 
+    private void removeFromPregnancyTable(String primaryId) {
+        List<PregnantAndDelivery> ppd = pregnantAndDeliveryRepository.findAllByMotherMemberId(primaryId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        if (ppd.size() > 0) {
+            pregnantAndDeliveryRepository.deleteByMotherMemberId(primaryId);
+        }
+    }
+
     @Override
     public FamilyMemberDTO deleteFamilyMembers(String memberId, String id) {
 
         try {
             User verifyUser = userRepository.findById(id).get();
             if (verifyUser.getId().length() > 0 && verifyUser.getRole().equals(ApplicationConstants.USER_ADMIN)) {
-
 
                 FamilyMember checkMember = familyMemberRepository.findById(memberId).get();
                 DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -3294,6 +3301,10 @@ public class FamilyServiceImpl implements FamilyService {
                 removeFromBabiesBirth(primaryId);
                 removeFromWeightTracking(primaryId);
                 removeFromVisits(primaryId);
+                removeFromHouseVisitSchedule(memberId);
+                removeFromVaccinationSchedule(memberId);
+                removeFromPregnancyTable(primaryId);
+
 
                 return FamilyMemberDTO.builder()
                         .id(primaryId)
@@ -3531,6 +3542,42 @@ public class FamilyServiceImpl implements FamilyService {
         return addInList;
     }
 
+    private void updateFromHouseVisitSchedule(String id, String lastMissedPeriod) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        if (!StringUtils.isEmpty(id)) {
+            List<HouseVisitSchedule> hvs = houseVisitScheduleRepository.findAllByMemberId(id);
+            if (hvs.size() > 0) {
+                for (HouseVisitSchedule updateVisits : hvs) {
+
+                    Date date = df.parse(lastMissedPeriod);
+                    long missedPeriod = date.getTime();
+
+                    LocalDate localDate = Instant.ofEpochMilli(missedPeriod).atZone(ZoneId.systemDefault()).toLocalDate();
+
+                    switch (updateVisits.getVisitType().trim()) {
+                        case "1":
+                            updateVisits.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "2":
+                            updateVisits.setDueDate(localDate.plusDays(270).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "3":
+                            updateVisits.setDueDate(localDate.plusDays(280).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+                    }
+
+                    houseVisitScheduleRepository.save(updateVisits);
+
+                }
+            }
+        }
+
+    }
+
+
     @Override
     public PregnantAndDeliveryDTO updatePregnantWomenDetails(PregnantAndDeliveryDTO pregnantAndDeliveryDTO, String centerId) throws ParseException {
         if (StringUtils.isEmpty(pregnantAndDeliveryDTO.getId())) {
@@ -3555,6 +3602,9 @@ public class FamilyServiceImpl implements FamilyService {
             pregnantAndDeliveryRepository.save(findPD);
 
 
+            updateFromHouseVisitSchedule(findPD.getMotherMemberId(), pregnantAndDeliveryDTO.getLastMissedPeriodDate());
+
+
             return PregnantAndDeliveryDTO.builder()
                     .id(findPD.getId())
                     .familyId(findPD.getFamilyId() == null ? "" : findPD.getFamilyId())
@@ -3563,7 +3613,7 @@ public class FamilyServiceImpl implements FamilyService {
                     .regDate(df.format(findPD.getRegDate()))
                     .noOfChild(findPD.getNoOfChild())
                     .dob(df.format(findPD.getDob()))
-                    .husbandName(findPD.getHusbandName()== null ? "" :findPD.getHusbandName())
+                    .husbandName(findPD.getHusbandName() == null ? "" : findPD.getHusbandName())
                     .profilePic(findPD.getProfilePic()== null ? "" :findPD.getProfilePic())
                     .yojana(findPD.getYojana())
                     .motherMemberId(findPD.getMotherMemberId() == null ? "" : findPD.getMotherMemberId())
@@ -3584,6 +3634,26 @@ public class FamilyServiceImpl implements FamilyService {
 
     }
 
+    private void removeFromHouseVisitSchedule(String id) {
+        if (!StringUtils.isEmpty(id)) {
+            List<HouseVisitSchedule> hvs = houseVisitScheduleRepository.findAllByMemberId(id);
+            if (hvs.size() > 0) {
+                houseVisitScheduleRepository.deleteByMemberId(id);
+            }
+        }
+
+    }
+
+    private void removeFromVaccinationSchedule(String id) {
+        if (!StringUtils.isEmpty(id)) {
+            List<VaccinationSchedule> hs = vaccinationScheduleRepository.findAllByMemberId(id);
+            if (hs.size() > 0) {
+                vaccinationScheduleRepository.deleteByMemberId(id);
+            }
+        }
+
+    }
+
     @Override
     public PregnantAndDeliveryDTO deletePregnantWomenDetails(String id) {
 
@@ -3592,6 +3662,9 @@ public class FamilyServiceImpl implements FamilyService {
         }
 
         try {
+            removeFromHouseVisitSchedule(id);
+            removeFromVaccinationSchedule(id);
+
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             PregnantAndDelivery findPD = pregnantAndDeliveryRepository.findById(id).get();
 
@@ -3611,6 +3684,7 @@ public class FamilyServiceImpl implements FamilyService {
                     .build();
 
             pregnantAndDeliveryRepository.deleteById(id);
+
 
             return deletePD;
 
@@ -3770,6 +3844,137 @@ public class FamilyServiceImpl implements FamilyService {
         return addInList;
     }
 
+
+    private void updateNewBornHouseVisitSchedule(String id, long dob) throws ParseException {
+
+        if (!StringUtils.isEmpty(id)) {
+            List<HouseVisitSchedule> hvs = houseVisitScheduleRepository.findAllByMemberId(id);
+            if (hvs.size() > 0) {
+                for (HouseVisitSchedule updateVisits : hvs) {
+
+                    LocalDate localDate = Instant.ofEpochMilli(dob).atZone(ZoneId.systemDefault()).toLocalDate();
+
+                    switch (updateVisits.getVisitType().trim()) {
+                        case "4":
+                            updateVisits.setDueDate(localDate.plusDays(3).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "5":
+                            updateVisits.setDueDate(localDate.plusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "6":
+                            updateVisits.setDueDate(localDate.plusDays(150).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "7":
+                            updateVisits.setDueDate(localDate.plusDays(240).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "8":
+                            updateVisits.setDueDate(localDate.plusDays(330).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "9":
+                            updateVisits.setDueDate(localDate.plusDays(510).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "10":
+                            updateVisits.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+                    }
+
+                    houseVisitScheduleRepository.save(updateVisits);
+
+                }
+            }
+        }
+
+    }
+
+    private void updateNewBornVaccinationSchedule(String id, long dob) {
+        if (!StringUtils.isEmpty(id)) {
+            List<VaccinationSchedule> hs = vaccinationScheduleRepository.findAllByMemberId(id);
+            if (hs.size() > 0) {
+
+                for (VaccinationSchedule vs : hs) {
+                    LocalDate localDate = Instant.ofEpochMilli(dob).atZone(ZoneId.systemDefault()).toLocalDate();
+
+                    switch (vs.getCode().trim()) {
+                        case "1":
+                            vs.setDueDate(dob);
+                            break;
+
+                        case "22":
+                            vs.setDueDate(dob);
+                            break;
+
+                        case "8":
+                            vs.setDueDate(dob);
+                            break;
+
+                        case "9":
+                            vs.setDueDate(dob);
+                            break;
+
+                        case "5":
+                            vs.setDueDate(dob);
+                            break;
+
+                        case "2":
+                            vs.setDueDate(dob);
+                            break;
+
+                        case "10":
+                            vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "6":
+                            vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "3":
+                            vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "11":
+                            vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "7":
+                            vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "4":
+                            vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "14":
+                            vs.setDueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "13":
+                            vs.setDueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "12":
+                            vs.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                        case "15":
+                            vs.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                            break;
+
+                    }
+                    vaccinationScheduleRepository.save(vs);
+                }
+
+
+            }
+        }
+
+    }
+
     @Override
     public NewBornChildDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO) {
 
@@ -3778,7 +3983,7 @@ public class FamilyServiceImpl implements FamilyService {
         }
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            HashSet<String > uniqueWeight = new HashSet<>();
+            HashSet<String> uniqueWeight = new HashSet<>();
             BabiesBirth bb = babiesBirthRepository.findByIdAndDeletedIsFalse(birthPlaceDTO.getId());
             Date date = df.parse(birthPlaceDTO.getDob());
             long miils = date.getTime();
@@ -3810,15 +4015,19 @@ public class FamilyServiceImpl implements FamilyService {
 
             // Saving in Weight Tracking Table
 
-            List<WeightTracking> wt = weightTrackingRepository.findByChildId(bb.getChildId(),Sort.by(Sort.Direction.ASC, "createdDate"));
+            List<WeightTracking> wt = weightTrackingRepository.findByChildId(bb.getChildId(), Sort.by(Sort.Direction.ASC, "createdDate"));
 
-            for(WeightTracking tracking :  wt){
-                if(uniqueWeight.add(tracking.getChildId())) {
+            for (WeightTracking tracking : wt) {
+                if (uniqueWeight.add(tracking.getChildId())) {
                     tracking.setHeight(birthPlaceDTO.getHeight());
                     tracking.setWeight(birthPlaceDTO.getFirstWeight());
                     weightTrackingRepository.save(tracking);
                 }
             }
+
+
+            updateNewBornHouseVisitSchedule(bb.getChildId(), bb.getDob());
+            updateNewBornVaccinationSchedule(bb.getChildId(), bb.getDob());
 
 
             FamilyMember findMotherDetails = familyMemberRepository.findById(bb.getMotherMemberId()).get();
@@ -3933,6 +4142,9 @@ public class FamilyServiceImpl implements FamilyService {
         try {
             String name = "", relationWithOwner = "", dob = "", birthPlace = "", birthType = "", familyId = "", gender = "", centerId = "", firstWeight = "", height = "", centerName = "";
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+            removeFromHouseVisitSchedule(id);
+            removeFromVaccinationSchedule(id);
 
             DeleteBornChildDTO deleteRecord = new DeleteBornChildDTO();
             BabiesBirth findChild = new BabiesBirth();
