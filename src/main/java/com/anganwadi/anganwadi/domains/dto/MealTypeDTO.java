@@ -13,6 +13,6 @@ import java.util.List;
 @Builder
 public class MealTypeDTO {
 
-    private List<BreakFastList> breakFastLists;
-    private List<MealsList> mealsLists;
+    private List<FoodItemsDTO> breakFastLists;
+    private List<FoodItemsDTO> mealsLists;
 }

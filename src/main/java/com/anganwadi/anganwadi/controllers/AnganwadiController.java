@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.Meals;
 import com.anganwadi.anganwadi.domains.entity.MealsType;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
@@ -79,8 +80,8 @@ public class AnganwadiController {
     }
 
     @GetMapping("getTotalChildren")
-    private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.getTotalChildren(centerName);
+    private List<ChildrenDTO> getTotalChildren(@RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.getTotalChildren(centerId);
     }
 
     @GetMapping("getRegisteredHouseholdsList")
@@ -111,6 +112,16 @@ public class AnganwadiController {
     @GetMapping("getMealsItems")
     private MealTypeDTO getMealsItems(){
         return anganwadiChildrenService.getMealsItems();
+    }
+
+    @PostMapping("saveMeals")
+    private List<SaveMeals> saveMeals(@RequestBody List<SaveMeals> saveMeals, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.saveMeals(saveMeals,centerId);
+    }
+
+    @PostMapping("getMonthlyDistributedMeals")
+    private List<SaveMeals> getMonthlyDistributedMeals(@RequestBody DashboardFilter dashboardFilter, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.getMonthlyDistributedMeals(dashboardFilter,centerId);
     }
 
 

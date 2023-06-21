@@ -11,7 +11,9 @@ import java.util.List;
 
 @Repository
 public interface FamilyRepository extends MongoRepository<Family, String> {
-    List<Family> findAllByFamilyId(String familyId);
+    
+	
+	List<Family> findAllByFamilyId(String familyId);
 
     @Query("{'familyId':{$in:[?0]}}")
     List<Family> findAllByFamilyIdIn(String familyId);

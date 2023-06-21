@@ -18,16 +18,16 @@ public class AnganwadiChildren extends StateObject {
     private String isGoingSchool;
     private String childId;
     private String centerId;
-    private String centerName;
+   // private String centerName;
     private String name;
     private String mobileNumber;
     private boolean isRegistered;
-    private String fatherName;
-    private String motherName;
-    private String gender;
-    private String dob;
-    private String minority;
+    //private String fatherName;
+    //private String motherName;
+   // private String gender;
+   // private String dob;
+    //private String minority;
     private String handicap;
-    private String category;
+    //private String category;
 
 }

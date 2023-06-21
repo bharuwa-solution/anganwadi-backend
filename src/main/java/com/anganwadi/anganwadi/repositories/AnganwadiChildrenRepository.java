@@ -16,7 +16,7 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
 
     List<AnganwadiChildren> findAllByChildId(String attend);
 
-    List<AnganwadiChildren> findAllByCenterName(String centerName);
+   // List<AnganwadiChildren> findAllByCenterName(String centerName);
 
     @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<AnganwadiChildren> findAllByCreatedDate(Date startDate, Date lastDay, String centerId);
@@ -43,4 +43,10 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
 
     @Query("{'childId':?0,$or:[{'isRegistered':true,'deleted':false}]}")
     List<AnganwadiChildren> findAllByChildIdAndRegisteredTrueAndDeletedFalse(String id);
+
+    @Query("{'centerId':?0,'isRegistered':true,'deleted':false}")
+	List<AnganwadiChildren> findAllByCenterIdAndRegisteredTrue(String centerId);
+
+
+	List<AnganwadiChildren> findAllByCenterId(String centerId);
 }
