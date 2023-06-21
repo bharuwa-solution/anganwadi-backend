@@ -2857,13 +2857,14 @@ public class FamilyServiceImpl implements FamilyService {
 
                 // Update In Anganwadi Children
 
-                List<AnganwadiChildren> ac = anganwadiChildrenRepository.findAllByChildId(fd.getId());
-
-                for (AnganwadiChildren child : ac) {
-                    child.setMinority(householdsDTO.getIsMinority());
-                    child.setCategory(householdsDTO.getCategory());
-                    anganwadiChildrenRepository.save(child);
-                }
+              //  List<AnganwadiChildren> ac = anganwadiChildrenRepository.findAllByChildId(fd.getId());
+//                for (AnganwadiChildren child : ac) {
+////                	FamilyMember memberDetails = familyMemberRepository.getById(child.getChildId());
+////                	Family family = familyRepository.findByFamilyId(memberDetails.getFamilyId());
+//                    family.setMinority(householdsDTO.getIsMinority());
+//                    child.setCategory(householdsDTO.getCategory());
+//                    anganwadiChildrenRepository.save(child);
+//                }
                 familyMemberRepository.save(fd);
 
                 // Update In Pregnant & Delivery
@@ -2969,10 +2970,10 @@ public class FamilyServiceImpl implements FamilyService {
             if (ac.size() > 0) {
                 for (AnganwadiChildren children : ac) {
                     children.setName(familyMemberDTO.getName());
-                    children.setGender(familyMemberDTO.getGender());
-                    children.setDob(familyMemberDTO.getDob());
-                    children.setFatherName(familyMemberDTO.getFatherName());
-                    children.setMotherName(familyMemberDTO.getMotherName());
+//                    children.setGender(familyMemberDTO.getGender());
+//                    children.setDob(familyMemberDTO.getDob());
+//                    children.setFatherName(familyMemberDTO.getFatherName());
+//                    children.setMotherName(familyMemberDTO.getMotherName());
                     children.setMobileNumber(familyMemberDTO.getMobileNumber());
 
                     if (familyMember.getDateOfMortality().length() > 0) {
