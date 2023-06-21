@@ -2157,10 +2157,134 @@ public class FamilyServiceImpl implements FamilyService {
                     .vaccinationDate(0)
                     .centerId(babiesBirth.getCenterId())
                     .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
-                    .dueDate(localDate.plusDays(14).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .dueDate(babiesBirth.getDob())
                     .familyId(babiesBirth.getFamilyId())
                     .memberId(babiesBirth.getChildId())
                     .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-6")
+                    .vaccinationName("B.C.G.")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(babiesBirth.getDob())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-6")
+                    .vaccinationName("B.C.G.")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-7")
+                    .vaccinationName("OPV-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-7")
+                    .vaccinationName("OPV-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(70).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-7")
+                    .vaccinationName("OPV-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-8")
+                    .vaccinationName("PENTAVALENT-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-8")
+                    .vaccinationName("PENTAVALENT-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(70).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-8")
+                    .vaccinationName("PENTAVALENT-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-8")
+                    .vaccinationName("PENTAVALENT-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-8")
+                    .vaccinationName("PENTAVALENT-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(70).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
+            vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                    .code("V-8")
+                    .vaccinationName("PENTAVALENT-1,2&3")
+                    .vaccinationDate(0)
+                    .centerId(babiesBirth.getCenterId())
+                    .centerName(commonMethodsService.findCenterName(babiesBirth.getCenterName()))
+                    .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .familyId(babiesBirth.getFamilyId())
+                    .memberId(babiesBirth.getChildId())
+                    .build());
+
         }
 
     }
