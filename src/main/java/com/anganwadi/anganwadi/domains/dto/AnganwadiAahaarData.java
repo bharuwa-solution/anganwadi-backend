@@ -14,6 +14,7 @@ public class AnganwadiAahaarData {
     private String foodCode;
     private String quantity;
     private String centerId;
+    private long childrenCount;
     private String quantityUnit;
     private String date;
     private String mealType;

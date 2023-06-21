@@ -14,6 +14,8 @@ public class SaveMeals {
     private String itemName;
     private String itemCode;
     private String quantity;
+    private String totalCalorie;
+    private String totalProtein;
     private String centerId;
     private String centerName;
     private String quantityUnit;
