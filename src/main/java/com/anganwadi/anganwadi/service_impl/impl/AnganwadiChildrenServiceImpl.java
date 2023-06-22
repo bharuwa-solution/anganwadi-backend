@@ -219,7 +219,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 .motherName(memberDetails.getMotherName() == null ? "" : memberDetails.getMotherName())
                 .isRegistered(findId.isRegistered())
                 .centerName(memberDetails.getCenterName())
-                .dob(dateChangeToString(memberDetails.getDob()))
+                .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                 .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
                 .mobileNumber(findId.getMobileNumber() == null ? "" : findId.getMobileNumber())
                 .category(memberDetails.getCategory() == null ? "" : memberDetails.getCategory())
@@ -255,12 +255,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             .centerName(updateStatus.getCenterName() == null ? "" : updateStatus.getCenterName())
                             .centerId(centerId == null ? "" : centerId)
                             .childId(updateStatus.getChildId() == null ? "" : updateStatus.getChildId())
-                            .dob(updateStatus.getDob() == null ? "" : updateStatus.getDob())
-                            .name(updateStatus.getName() == null ? "" : updateStatus.getName())
+                            .dob(commonMethodsService.dateChangeToString(commonMethodsService.findMember(updateStatus.getChildId()).getDob()))
+                            .name(commonMethodsService.findMember(updateStatus.getChildId()).getName())
                             .latitude(updateStatus.getLatitude() == null ? "" : updateStatus.getLatitude())
                             .longitude(updateStatus.getLongitude() == null ? "" : updateStatus.getLongitude())
                             .photo(updateStatus.getPhoto() == null ? "" : updateStatus.getPhoto())
-                            .gender(updateStatus.getGender() == null ? "" : updateStatus.getGender())
+                            .gender(commonMethodsService.findMember(updateStatus.getChildId()).getGender())
                             .date(timestamp)
                             .attType(list.getAttType() == null ? "" : list.getAttType())
                             .att(list.getAtt() == null ? "" : list.getAtt())
@@ -278,8 +278,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             .centerName(memberDetails.getCenterName() == null ? "" : memberDetails.getCenterName())
                             .centerId(centerId == null ? "" : centerId)
                             .childId(sc.getChildId() == null ? "" : sc.getChildId())
-                            .dob(dateChangeToString(memberDetails.getDob()) == null ? "" : dateChangeToString(memberDetails.getDob()))
-                            .name(sc.getName() == null ? "" : sc.getName())
+                            .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()) == null ? "" : commonMethodsService.dateChangeToString(memberDetails.getDob()))
                             .latitude(list.getLatitude() == null ? "" : list.getLatitude())
                             .longitude(list.getLongitude() == null ? "" : list.getLongitude())
                             .photo(sc.getProfilePic() == null ? "" : sc.getProfilePic())
@@ -297,7 +296,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             .centerName(saveStatus.getCenterName())
                             .childId(saveStatus.getChildId())
                             .dob(saveStatus.getDob())
-                            .name(saveStatus.getName())
+                            .name(memberDetails.getName())
                             .latitude(saveStatus.getLatitude())
                             .longitude(saveStatus.getLongitude())
                             .photo(saveStatus.getPhoto())
@@ -370,20 +369,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (Attendance list : getData) {
 
             Date date = new Date(list.getDate());
+            FamilyMember findMember = familyMemberRepository.findById(list.getChildId()).get();
 
             AttendanceConverted attendance = AttendanceConverted.builder()
                     .id(list.getId())
                     .centerId(list.getCenterId())
                     .centerName(list.getCenterName())
-                    .name(list.getName())
+                    .name(findMember.getName())
                     .isRegistered(list.isRegistered())
                     .childId(list.getChildId())
                     .date(df.format(date))
                     .attType(list.getAttType())
                     .latitude(list.getLatitude())
                     .longitude(list.getLongitude())
-                    .dob(list.getDob())
-                    .gender(list.getGender())
+                    .dob(commonMethodsService.dateChangeToString(findMember.getDob()))
+                    .gender(findMember.getGender())
                     .photo(list.getPhoto())
                     .attendance(list.getAttendance())
                     .build();
@@ -449,7 +449,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             FamilyMember memberDetails = familyMemberRepository.findById(ac.getChildId()).get(); 
 
             ac.setProfilePic(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic());
-            memberDetails.setDob(updateStudentDTO.getDob() == null ? 0L : dateChangeToLong(updateStudentDTO.getDob()));
+            memberDetails.setDob(updateStudentDTO.getDob() == null ? 0L : commonMethodsService.dateChangeToLong(updateStudentDTO.getDob()));
             memberDetails.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
             ac.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
             ac.setHandicap(updateStudentDTO.getHandicap() == null ? "" : updateStudentDTO.getHandicap());
@@ -479,7 +479,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             if (findInAttend.size() > 0) {
                 for (Attendance attend : findInAttend) {
-                    attend.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
                     attend.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
                     attend.setPhoto(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic());
                     attendanceRepository.save(attend);
@@ -524,7 +523,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             return UpdateStudentDTO.builder()
                     .childId(findStudent.getChildId() == null ? "" : findStudent.getChildId())
-                    .dob(dateChangeToString(memberDetails.getDob()) == null ? "" : dateChangeToString(memberDetails.getDob()))
+                    .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()) == null ? "" : commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .gender(memberDetails.getGender()  == null ? "" : memberDetails.getGender())
                     .profilePic(findStudent.getProfilePic() == null ? "" : findStudent.getProfilePic())
                     .id(findStudent.getId())
@@ -962,7 +961,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             //System.out.println(dobInString);
             if (dob <= convertToMills && getChildren.getIsGoingSchool().trim().equals("0")) {
             	
-            	
 
                 ChildrenDTO childrenDTO = ChildrenDTO.builder()
                         .id(getChildren.getId())
@@ -1024,11 +1022,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .centerId(singleRecord.getCenterId() == null ? "" : singleRecord.getCenterId())
                         .latitude(singleRecord.getLatitude() == null ? "" : singleRecord.getLatitude())
                         .longitude(singleRecord.getLongitude() == null ? "" : singleRecord.getLongitude())
-                        .name(singleRecord.getName() == null ? "" : singleRecord.getName())
+                        .name(commonMethodsService.findMember(singleRecord.getChildId()).getName()==null?"":commonMethodsService.findMember(singleRecord.getChildId()).getName())
                         .attType(singleRecord.getAttType() == null ? "" : singleRecord.getAttType())
                         .att(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
                         .centerName(centerName)
-                        .gender(singleRecord.getGender() == null ? "" : singleRecord.getGender())
+                        .gender(commonMethodsService.findMember(singleRecord.getChildId()).getGender()==null?"":commonMethodsService.findMember(singleRecord.getChildId()).getGender())
                         .dob(singleRecord.getDob())
                         .photo(singleRecord.getPhoto() == null ? "" : singleRecord.getPhoto())
                         .attendance(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
@@ -1081,14 +1079,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             	Attendance saveAttendance = Attendance.builder()
                         .childId(getId.getChildId())
-                        .dob(dateChangeToString(memberDetails.getDob()))
+                        .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                         .centerId(getId.getCenterId())
                         .isRegistered(getId.isRegistered())
                         .longitude("")
                         .latitude("")
                         .attType("System")
                         .centerName(centerName)
-                        .name(getId.getName())
                         .photo(getId.getProfilePic())
                         //.gender(getId.getGender())
                         .date(timestamp)
@@ -1165,7 +1162,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .attType("System")
                     .att("")
                     .dob(fetchDetails.getDob())
-                    .name(fetchDetails.getName())
+                    .name(commonMethodsService.findMember(fetchDetails.getChildId()).getName())
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(fetchDetails.getPhoto())
@@ -1875,7 +1872,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             .endDate(df.format(endTime))
                             .motherName(memberDetails.getMotherName() == null ? "" : memberDetails.getMotherName())
                             .fatherName(memberDetails.getFatherName() == null ? "" : memberDetails.getFatherName())
-                            .dob(dateChangeToString(memberDetails.getDob()))
+                            .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                             .category(memberDetails.getCategory() == null ? "" : memberDetails.getCategory())
                             .religion(findReligion.getReligion() == null ? "" : findReligion.getReligion())
                             .build();
@@ -1909,8 +1906,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             Attendance saveAttendance = Attendance.builder()
                     .childId(getId.getChildId())
-                    .dob(dateChangeToString(memberDetails.getDob()))
-                    .name(getId.getName())
+                    .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(getId.getProfilePic())
@@ -1954,7 +1950,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .builder()
                     .childId(fetchDetails.getChildId())
                     .dob(fetchDetails.getDob())
-                    .name(fetchDetails.getName())
+                    .name(commonMethodsService.findMember(fetchDetails.getChildId()).getName())
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(fetchDetails.getPhoto())
@@ -1970,18 +1966,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
     
-    public String dateChangeToString(long dob) {
-    	DateFormat obj = new SimpleDateFormat("dd-MMM-yyyy");
-    	Date res = new Date(dob);  
-    	return obj.format(res);    
-    }
-    
-    public long dateChangeToLong(String dateStr) throws ParseException {
-    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-    	Date date = sdf.parse(dateStr);
 
-    	return date.getTime();
-    }
 
 
 }

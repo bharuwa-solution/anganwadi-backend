@@ -1,5 +1,6 @@
 package com.anganwadi.anganwadi;
 
+import com.anganwadi.anganwadi.config.ApiUrl;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,4 +45,10 @@ public class AnganwadiApplication extends SpringBootServletInitializer {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         return multipartResolver;
     }
+
+    @Bean
+    public ApiUrl getUrl() {
+        return new ApiUrl();
+    }
+
 }

@@ -16,7 +16,6 @@ public class Attendance extends StateObject {
     private String familyId;
     private String centerId;
     private String centerName;
-    private String name;
     private boolean isRegistered;
     private String childId;
     private long date;

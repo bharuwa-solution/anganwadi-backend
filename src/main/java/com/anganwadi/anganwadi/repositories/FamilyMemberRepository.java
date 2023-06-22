@@ -1,5 +1,6 @@
 package com.anganwadi.anganwadi.repositories;
 
+import com.anganwadi.anganwadi.domains.entity.Family;
 import com.anganwadi.anganwadi.domains.entity.FamilyMember;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -86,6 +87,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 	List<FamilyMember> findAllByCenterName(String centerName);
 
 	List<FamilyMember> findAllById(String childId);
-	
+
+    Family findByFamilyId(String familyId);
+
 //	List<FamilyMember> findAllByCenterName
 }

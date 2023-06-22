@@ -107,6 +107,8 @@ public interface FamilyService {
 
     List<VaccinationScheduleDTO> getVaccinationSchedule(@RequestBody DashboardFilter dashboardFilter) throws ParseException;
 
+    List<MemberDetails> getVisitScheduler(DashboardFilter dashboardFilter) throws ParseException;
+
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }
