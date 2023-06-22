@@ -100,8 +100,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
         df.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
 
-
-
         String finalDate = saveAdmissionDTO.getDob();
         Date dob = df2.parse(finalDate);
         log.info("reg " + saveAdmissionDTO.isRegistered());
@@ -113,14 +111,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         try {
             Family findFamily = familyRepository.findByFamilyId(saveAdmissionDTO.getFamilyId());
-            System.out.println(findFamily);
-           
-            
+
             List<AnganwadiChildren> findExistingRecord = anganwadiChildrenRepository.findAllByChildId(saveAdmissionDTO.getChildId());
-            System.out.println(findExistingRecord);
+
             //Child id not present in familyMember
             FamilyMember familyMember = familyMemberRepository.findById(saveAdmissionDTO.getChildId()).get();
-            
+
             //List<FamilyMember> members = familyMemberRepository.findAllByFamilyIdAndName(saveAdmissionDTO.getFamilyId(),saveAdmissionDTO.getName());
 
             if (findExistingRecord.size() > 0) {
@@ -141,8 +137,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             			//admissionDTO = modelMapper.map(record, SaveAdmissionDTO.class);
             		}
             		else {
-            			
-            			System.out.println("Center id is different Kindly check and update");
+            			log.error("Center id is different Kindly check and update");
             			record.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
             			record.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
             			record.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
@@ -180,18 +175,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         			.childId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId())
         			.isRegistered(saveAdmissionDTO.isRegistered())
         			.isSchoolGoing("0")
-        			.mobileNumber(saveAdmissionDTO.getMobileNumber() == null ? "" : saveAdmissionDTO.getMobileNumber())
-        			.handicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap())
+                    .profilePic(saveAdmissionDTO.getProfilePic()==null?"":saveAdmissionDTO.getProfilePic())
+        			.mobileNumber(familyMember.getMobileNumber() == null ? "" : familyMember.getMobileNumber())
+        			.handicap(familyMember.getHandicap() == null ? "" : familyMember.getHandicap())
         			.profilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
-        			.centerName(saveAdmissionDTO.getCenterName()==null ?"":saveAdmissionDTO.getCenterName())
+        			.centerName(commonMethodsService.findCenterName(centerId))
         			.fatherName(saveAdmissionDTO.getFatherName()==null?"":saveAdmissionDTO.getFatherName())
         			.motherName(saveAdmissionDTO.getMotherName()==null?"":saveAdmissionDTO.getMotherName())
-        			.minority(saveAdmissionDTO.getMinority()==null?"":saveAdmissionDTO.getMinority())
-        			.gender(saveAdmissionDTO.getGender()==null?"":saveAdmissionDTO.getGender())
-        			.dob(saveAdmissionDTO.getDob()==null?"":saveAdmissionDTO.getDob())
-        			.category(saveAdmissionDTO.getCategory()==null?"":saveAdmissionDTO.getCategory())
+        			.minority(findFamily.getIsMinority()==null?"":findFamily.getIsMinority())
+        			.gender(familyMember.getGender()==null?"":familyMember.getGender())
+        			.dob(df.format(familyMember.getDob()))
+        			.category(findFamily.getCategory()==null?"":findFamily.getCategory())
         			.build();
-            	
 
         } catch (Exception e) {
             throw new CustomException("Their is Some Error, Please Contact Support Team");
@@ -362,9 +357,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             list.add(singleEntry);
 
         }
-
         return list;
-
     }
 
     @Override
@@ -1188,10 +1181,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<householdsHeadList> getRegisteredHouseholdsList(String centerName) {
+    public List<householdsHeadList> getRegisteredHouseholdsList(String centerId) {
         List<householdsHeadList> addInList = new ArrayList<>();
-        List<FamilyMember> members = familyMemberRepository.findAllByCenterName(centerName);
-        String centerId = members.get(0).getCenterId();
         List<AnganwadiChildren> findFamilyIds = anganwadiChildrenRepository.findAllByCenterId(centerId);
         HashSet<String> uniqueFamilyIds = new HashSet<>();
 

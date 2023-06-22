@@ -23,7 +23,7 @@ public interface AnganwadiChildrenService {
 
     List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerName) throws ParseException;
 
-    List<householdsHeadList> getRegisteredHouseholdsList(String centerName);
+    List<householdsHeadList> getRegisteredHouseholdsList(String centerId);
 
     List<StockListDTO> getAvailableItems();
 

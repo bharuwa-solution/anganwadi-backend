@@ -85,8 +85,8 @@ public class AnganwadiController {
     }
 
     @GetMapping("getRegisteredHouseholdsList")
-    private List<householdsHeadList> getRegisteredHouseholdsList(@RequestHeader String centerName) {
-        return anganwadiChildrenService.getRegisteredHouseholdsList(centerName);
+    private List<householdsHeadList> getRegisteredHouseholdsList(@RequestHeader String centerId) {
+        return anganwadiChildrenService.getRegisteredHouseholdsList(centerId);
     }
 
     @PostMapping("saveAttendancePhoto")
