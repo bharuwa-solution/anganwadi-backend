@@ -93,7 +93,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId, java.lang.String centerName) throws ParseException, IOException {
+    public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId) throws ParseException, IOException {
         commonMethodsService.findCenterName(centerId);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -255,17 +255,19 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     updateStatus.setAttType(list.getAttType());
                     updateStatus.setAttendance(list.getAtt());
                     attendanceRepository.save(updateStatus);
+                    
+                    FamilyMember memberDetails = familyMemberRepository.findById(updateStatus.getChildId()).get();
 
                     AttendanceDTO singleEntry = AttendanceDTO.builder()
-                            .centerName(updateStatus.getCenterName() == null ? "" : updateStatus.getCenterName())
+                            .centerName(memberDetails.getCenterName() == null ? "" : memberDetails.getCenterName())
                             .centerId(centerId == null ? "" : centerId)
                             .childId(updateStatus.getChildId() == null ? "" : updateStatus.getChildId())
-                            .dob(updateStatus.getDob() == null ? "" : updateStatus.getDob())
-                            .name(updateStatus.getName() == null ? "" : updateStatus.getName())
+                            .dob(dateChangeToString(memberDetails.getDob()) == null ? "" : dateChangeToString(memberDetails.getDob()))
+                            .name(memberDetails.getName() == null ? "" : memberDetails.getName())
                             .latitude(updateStatus.getLatitude() == null ? "" : updateStatus.getLatitude())
                             .longitude(updateStatus.getLongitude() == null ? "" : updateStatus.getLongitude())
                             .photo(updateStatus.getPhoto() == null ? "" : updateStatus.getPhoto())
-                            .gender(updateStatus.getGender() == null ? "" : updateStatus.getGender())
+                            .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
                             .date(timestamp)
                             .attType(list.getAttType() == null ? "" : list.getAttType())
                             .att(list.getAtt() == null ? "" : list.getAtt())
@@ -280,15 +282,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     FamilyMember memberDetails = familyMemberRepository.findById(sc.getChildId()).get(); 
 
                     Attendance saveStatus = Attendance.builder()
-                            .centerName(memberDetails.getCenterName() == null ? "" : memberDetails.getCenterName())
+                            //.centerName(memberDetails.getCenterName() == null ? "" : memberDetails.getCenterName())
                             .centerId(centerId == null ? "" : centerId)
                             .childId(sc.getChildId() == null ? "" : sc.getChildId())
-                            .dob(dateChangeToString(memberDetails.getDob()) == null ? "" : dateChangeToString(memberDetails.getDob()))
-                            .name(sc.getName() == null ? "" : sc.getName())
+                           // .dob(dateChangeToString(memberDetails.getDob()) == null ? "" : dateChangeToString(memberDetails.getDob()))
+                            //.name(sc.getName() == null ? "" : sc.getName())
                             .latitude(list.getLatitude() == null ? "" : list.getLatitude())
                             .longitude(list.getLongitude() == null ? "" : list.getLongitude())
                             .photo(sc.getProfilePic() == null ? "" : sc.getProfilePic())
-                            .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
+                           // .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
                             .isRegistered(sc.isRegistered())
                             .date(timestamp)
                             .attType(list.getAttType() == null ? "" : list.getAttType())
@@ -299,14 +301,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
                     AttendanceDTO singleEntry = AttendanceDTO.builder()
-                            .centerName(saveStatus.getCenterName())
+                            .centerName(memberDetails.getCenterName())
                             .childId(saveStatus.getChildId())
-                            .dob(saveStatus.getDob())
-                            .name(saveStatus.getName())
+                            .dob(dateChangeToString(memberDetails.getDob()))
+                            .name(memberDetails.getName())
                             .latitude(saveStatus.getLatitude())
                             .longitude(saveStatus.getLongitude())
                             .photo(saveStatus.getPhoto())
-                            .gender(saveStatus.getGender())
+                            .gender(memberDetails.getGender())
                             .date(timestamp)
                             .attType(list.getAttType())
                             .att(list.getAtt())
@@ -377,20 +379,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (Attendance list : getData) {
 
             Date date = new Date(list.getDate());
+            FamilyMember memberDetails = familyMemberRepository.findById(list.getChildId()).get();
 
             AttendanceConverted attendance = AttendanceConverted.builder()
                     .id(list.getId())
                     .centerId(list.getCenterId())
-                    .centerName(list.getCenterName())
-                    .name(list.getName())
+                    .centerName(memberDetails.getCenterName())
+                    .name(memberDetails.getName())
                     .isRegistered(list.isRegistered())
                     .childId(list.getChildId())
                     .date(df.format(date))
                     .attType(list.getAttType())
                     .latitude(list.getLatitude())
                     .longitude(list.getLongitude())
-                    .dob(list.getDob())
-                    .gender(list.getGender())
+                    .dob(dateChangeToString(memberDetails.getDob()))
+                    .gender(memberDetails.getGender())
                     .photo(list.getPhoto())
                     .attendance(list.getAttendance())
                     .build();
@@ -486,8 +489,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             if (findInAttend.size() > 0) {
                 for (Attendance attend : findInAttend) {
-                    attend.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
-                    attend.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
+                    // attend.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
+                    //attend.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
                     attend.setPhoto(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic());
                     attendanceRepository.save(attend);
                 }
@@ -638,7 +641,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId, String centerName) throws ParseException {
+    public List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();
@@ -658,7 +661,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         } else {
             anganwadiActivitiesRepository.save(AnganwadiActivities.builder()
                     .centerId(centerId)
-                    .centerName(centerName)
+                    //.centerName(centerName)
                     .gaming(anganwadiActivitiesDTO.isGaming())
                     .preEducation(anganwadiActivitiesDTO.isPreEducation())
                     .cleaning(anganwadiActivitiesDTO.isCleaning())
@@ -675,10 +678,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<AnganwadiActivities> findAc = anganwadiActivitiesRepository.findAllByDateRange(startTime, endTime, centerId.trim());
 
         for (AnganwadiActivities activities : findAc) {
+        	AnganwadiCenter centerDetails = anganwadiCenterRepository.findById(activities.getCenterId()).get();
             addList.add(SaveActivitiesDTO.builder()
                     .id(activities.getId())
                     .centerId(activities.getCenterId())
-                    .centerName(activities.getCenterName())
+                    .centerName(centerDetails.getCenterName())
                     .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
                     .gaming(activities.isGaming())
                     .preEducation(activities.isPreEducation())
@@ -728,10 +732,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         if (findTodayActivities.size() > 0) {
             for (AnganwadiActivities activities : findTodayActivities) {
+            	AnganwadiCenter centerDetails = anganwadiCenterRepository.findById(activities.getCenterId()).get();
+
                 addList.add(AnganwadiActivitiesDTO.builder()
                         .id(activities.getId())
                         .centerId(activities.getCenterId())
-                        .centerName(activities.getCenterName())
+                        .centerName(centerDetails.getCenterName())
                         .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
                         .gaming(activities.isGaming())
                         .preEducation(activities.isPreEducation())
@@ -1007,23 +1013,24 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public List<AttendanceDTO> getAttendanceByDate(String date, String centerName) throws ParseException {
+    public List<AttendanceDTO> getAttendanceByDate(String date, String centerId) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date formatToTime = df.parse(date);
         long timestamp = formatToTime.getTime();
 
-//        markAsAbsent(centerName);
+//        markAsAbsent(centerId);
 
         long convertToMills = commonMethodsService.checkAgeCriteria(3);
 
-        List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterNameAndRegistered(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterIdAndRegistered(timestamp, centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
         //System.out.println("Records of attandence are--  "+findRecords);
         List<AttendanceDTO> addList = new ArrayList<>();
 
         for (Attendance singleRecord : findRecords) {
+            FamilyMember memberDetails = familyMemberRepository.findById(singleRecord.getChildId()).get();
 
-            long millis = df.parse(singleRecord.getDob()).getTime();
+            long millis = df.parse(dateChangeToString(memberDetails.getDob())).getTime();
 
             if (millis <= convertToMills) {
                 AttendanceDTO dailyRecord = AttendanceDTO.builder()
@@ -1031,12 +1038,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .centerId(singleRecord.getCenterId() == null ? "" : singleRecord.getCenterId())
                         .latitude(singleRecord.getLatitude() == null ? "" : singleRecord.getLatitude())
                         .longitude(singleRecord.getLongitude() == null ? "" : singleRecord.getLongitude())
-                        .name(singleRecord.getName() == null ? "" : singleRecord.getName())
+                        .name(memberDetails.getName() == null ? "" : memberDetails.getName())
                         .attType(singleRecord.getAttType() == null ? "" : singleRecord.getAttType())
                         .att(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
-                        .centerName(centerName)
-                        .gender(singleRecord.getGender() == null ? "" : singleRecord.getGender())
-                        .dob(singleRecord.getDob())
+                        .centerName(memberDetails.getCenterName())
+                        .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
+                        .dob(dateChangeToString(memberDetails.getDob()))
                         .photo(singleRecord.getPhoto() == null ? "" : singleRecord.getPhoto())
                         .attendance(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
                         .date(singleRecord.getDate())
@@ -1050,9 +1057,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
 
-    private String checkAttendanceOnDay(String childId, long date, String centerName) {
+    private String checkAttendanceOnDay(String childId, long date, String centerId) {
         String attendance = "";
-        List<Attendance> findChild = attendanceRepository.findAllByChildIdAndDateAndCenterName(childId, date, centerName);
+        List<Attendance> findChild = attendanceRepository.findAllByChildIdAndDateAndCenterId(childId, date, centerId);
 
         if (findChild.size() > 0) {
             for (Attendance checkAttendance : findChild) {
@@ -1064,15 +1071,16 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     }
 
-    private void markAsAbsent(String childId, String centerName) throws ParseException {
+    private void markAsAbsent(String childId, String centerId) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();
         String formatToString = df.format(currentTime.getTime());
         Date formatToTime = df.parse(formatToString);
+       
         long timestamp = formatToTime.getTime();
 
-        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCenterNameAndRegisteredTrue(centerName);
+        List<AnganwadiChildren> findChildren = anganwadiChildrenRepository.findAllByCenterIdAndRegisteredTrue(centerId);
         String attendance = "A";
 
        // long millis = commonMethodsService.checkAgeCriteria(3);
@@ -1081,21 +1089,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             //long dob = df.parse(getId.getDob()).getTime();
 
-            List<Attendance> lastVerify = attendanceRepository.findAllByChildIdAndDateAndCenterName(getId.getChildId(), timestamp, centerName);
-            String verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, centerName);
+            List<Attendance> lastVerify = attendanceRepository.findAllByChildIdAndDateAndCenterId(getId.getChildId(), timestamp, getId.getCenterId());
+            String verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, getId.getCenterId());
             if (lastVerify.size() <= 0  && getId.getIsGoingSchool().equals("0")) { //&& dob <= millis
                 FamilyMember memberDetails = familyMemberRepository.findById(getId.getChildId()).get(); 
 
             	Attendance saveAttendance = Attendance.builder()
                         .childId(getId.getChildId())
-                        .dob(dateChangeToString(memberDetails.getDob()))
+                        //.dob(dateChangeToString(memberDetails.getDob()))
                         .centerId(getId.getCenterId())
                         .isRegistered(getId.isRegistered())
                         .longitude("")
                         .latitude("")
                         .attType("System")
-                        .centerName(centerName)
-                        .name(getId.getName())
+                        //.centerName(centerName)
+                        //.name(getId.getName())
                         .photo(getId.getProfilePic())
                         //.gender(getId.getGender())
                         .date(timestamp)
@@ -1110,12 +1118,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
 
-    private void markPresent(String childId, String latitude, String longitude, long timestamp, String centerName) {
+    private void markPresent(String childId, String latitude, String longitude, long timestamp, String centerId) {
 
         String[] splitString = childId.split(",");
 
         for (String getChildId : splitString) {
-            List<Attendance> findChildInRecord = attendanceRepository.updateAttendance(getChildId.trim(), timestamp, centerName);
+            List<Attendance> findChildInRecord = attendanceRepository.updateAttendance(getChildId.trim(), timestamp, centerId);
 
             if (findChildInRecord.size() > 0) {
 
@@ -1132,10 +1140,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerName) throws ParseException {
+    public List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerId) throws ParseException {
 
         log.error("Child Id : " + attendanceDTO.getChildId());
-        log.error("Center Name : " + centerName);
+        log.error("Center Id : " + centerId);
         // convert date to millis
 
 
@@ -1154,29 +1162,30 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<Attendance> checkDailyAttendance = attendanceRepository.findAllByDate(timestamp, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // updating if not exists
-        markAsAbsent(attendanceDTO.getChildId(), centerName);
+        markAsAbsent(attendanceDTO.getChildId(), centerId);
 
         // After updating Above fields
 
-        markPresent(attendanceDTO.getChildId(), attendanceDTO.getLatitude(), attendanceDTO.getLongitude(), timestamp, centerName);
+        markPresent(attendanceDTO.getChildId(), attendanceDTO.getLatitude(), attendanceDTO.getLongitude(), timestamp,centerId);
 
-        List<Attendance> getDetails = attendanceRepository.findAllByDateAndCenterName(timestamp, centerName, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Attendance> getDetails = attendanceRepository.findAllByDateAndCenterId(timestamp, centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         for (Attendance fetchDetails : getDetails) {
+            FamilyMember memberDetails = familyMemberRepository.findById(fetchDetails.getChildId()).get();
 
             AttendanceDTO singleEntry = AttendanceDTO
                     .builder()
-                    .centerName(centerName)
+                    .centerName(memberDetails.getCenterName())
                     .centerId(fetchDetails.getCenterId() == null ? "" : fetchDetails.getCenterId())
                     .childId(fetchDetails.getChildId())
                     .attType("System")
                     .att("")
-                    .dob(fetchDetails.getDob())
-                    .name(fetchDetails.getName())
+                    .dob(dateChangeToString(memberDetails.getDob()))
+                    .name(memberDetails.getName())
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(fetchDetails.getPhoto())
-                    .gender(fetchDetails.getGender())
+                    .gender(memberDetails.getGender())
                     .date(timestamp)
                     .attendance(fetchDetails.getAttendance())
                     .build();
@@ -1188,10 +1197,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<householdsHeadList> getRegisteredHouseholdsList(String centerName) {
+    public List<householdsHeadList> getRegisteredHouseholdsList(String centerId) {
         List<householdsHeadList> addInList = new ArrayList<>();
-        List<FamilyMember> members = familyMemberRepository.findAllByCenterName(centerName);
-        String centerId = members.get(0).getCenterId();
+//        List<FamilyMember> members = familyMemberRepository.findAllByCenterName(centerName);
+//        String centerId = members.get(0).getCenterId();
         List<AnganwadiChildren> findFamilyIds = anganwadiChildrenRepository.findAllByCenterId(centerId);
         HashSet<String> uniqueFamilyIds = new HashSet<>();
 
@@ -1300,7 +1309,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     }
 
     @Override
-    public List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId, String centerName) throws ParseException {
+    public List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId) throws ParseException {
 
         List<StockItemsDTO> addInList = new ArrayList<>();
 
@@ -1777,8 +1786,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         for (Attendance attend : findAllList) {
             Date attendanceDate = new Date(attend.getDate());
+            FamilyMember memberDetails = familyMemberRepository.findById(attend.getChildId()).get();
+
             DashboardAttendanceDTO singleEntry = DashboardAttendanceDTO.builder()
-                    .centerName(attend.getCenterName())
+                    .centerName(memberDetails.getCenterName())
                     .centerId(attend.getCenterId())
                     .childId(attend.getChildId())
                     .startDate(df.format(startTime))
@@ -1918,12 +1929,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             Attendance saveAttendance = Attendance.builder()
                     .childId(getId.getChildId())
-                    .dob(dateChangeToString(memberDetails.getDob()))
-                    .name(getId.getName())
+                    //.dob(dateChangeToString(memberDetails.getDob()))
+                    //.name(getId.getName())
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(getId.getProfilePic())
-                    .gender(memberDetails.getGender())
+                   // .gender(memberDetails.getGender())
                     .date(timestamp)
                     .attendance(attendance)
                     .build();
@@ -1958,16 +1969,17 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<Attendance> getDetails = attendanceRepository.findAllByDate(currentDate, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         for (Attendance fetchDetails : getDetails) {
+            FamilyMember memberDetails = familyMemberRepository.findById(fetchDetails.getChildId()).get();
 
             AttendanceDTO singleEntry = AttendanceDTO
                     .builder()
                     .childId(fetchDetails.getChildId())
-                    .dob(fetchDetails.getDob())
-                    .name(fetchDetails.getName())
+                    .dob(dateChangeToString(memberDetails.getDob()))
+                    .name(memberDetails.getName())
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(fetchDetails.getPhoto())
-                    .gender(fetchDetails.getGender())
+                    .gender(memberDetails.getGender())
                     .date(currentDate)
                     .attendance(fetchDetails.getAttendance())
                     .build();

@@ -15,16 +15,16 @@ public class Attendance extends StateObject {
 
     private String familyId;
     private String centerId;
-    private String centerName;
-    private String name;
+   // private String centerName;
+   // private String name;
     private boolean isRegistered;
     private String childId;
     private long date;
     private String attType;
     private String latitude;
     private String longitude;
-    private String dob;
-    private String gender;
+//    private String dob;
+//    private String gender;
     private String photo;
     private String attendance;
 
