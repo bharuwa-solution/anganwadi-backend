@@ -137,5 +137,4 @@ public class DashboardController {
         return familyService.getVaccinationSchedule(dashboardFilter);
     }
 
-
 }

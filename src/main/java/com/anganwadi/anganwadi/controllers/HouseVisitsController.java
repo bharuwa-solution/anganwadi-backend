@@ -49,4 +49,8 @@ public class HouseVisitsController {
         return familyService.saveBirthDetails(birthDetails, centerId, centerName);
     }
 
+    @PostMapping("/getVisitScheduler")
+    private List<MemberDetails> getVisitScheduler(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
+        return familyService.getVisitScheduler(dashboardFilter);
+    }
 }

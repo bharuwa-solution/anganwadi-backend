@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
+import com.anganwadi.anganwadi.domains.entity.Family;
 import com.anganwadi.anganwadi.domains.entity.FamilyMember;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
@@ -27,16 +28,19 @@ public class CommonMethodsService {
     private final PregnantAndDeliveryRepository pregnantAndDeliveryRepository;
     private final FamilyMemberRepository familyMemberRepository;
     private final AttendanceRepository attendanceRepository;
+    private final FamilyRepository familyRepository;
 
     @Autowired
     public CommonMethodsService(AnganwadiCenterRepository anganwadiCenterRepository, PregnantAndDeliveryRepository pregnantAndDeliveryRepository,
                                 FamilyMemberRepository familyMemberRepository,AttendanceRepository attendanceRepository,
-                                AnganwadiChildrenRepository anganwadiChildrenRepository) {
+                                AnganwadiChildrenRepository anganwadiChildrenRepository, FamilyRepository familyRepository) {
+
         this.anganwadiCenterRepository = anganwadiCenterRepository;
         this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
         this.familyMemberRepository=familyMemberRepository;
         this.attendanceRepository=attendanceRepository;
         this.anganwadiChildrenRepository=anganwadiChildrenRepository;
+        this.familyRepository=familyRepository;
     }
 
     public String findCenterName(String centerId) {
@@ -130,9 +134,33 @@ public class CommonMethodsService {
             FamilyMember member = familyMemberRepository.findById(memberId).get();
             if (member.getDateOfMortality().length() > 0) {
                 isDead = true;
-            }        }
+            }
+        }
         return isDead;
     }
 
+    public String dateChangeToString(long dob) {
+        DateFormat obj = new SimpleDateFormat("dd-MM-yyyy");
+        Date res = new Date(dob);
+        return obj.format(res);
+    }
+
+    public long dateChangeToLong(String dateStr) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = sdf.parse(dateStr);
+
+        return date.getTime();
+    }
+
+    public FamilyMember findMember(String id) {
+        if (!familyMemberRepository.findById(id).isPresent()) {
+            throw new CustomException("Family Member Not Found");
+        }
+        return familyMemberRepository.findById(id).get();
+    }
+
+    public Family findFamily(String familyId) {
+        return familyRepository.findByFamilyId(familyId);
+    }
 
 }

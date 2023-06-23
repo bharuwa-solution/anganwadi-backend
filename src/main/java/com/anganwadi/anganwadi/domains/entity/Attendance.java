@@ -15,8 +15,12 @@ public class Attendance extends StateObject {
 
     private String familyId;
     private String centerId;
+//<<<<<<< HEAD
    // private String centerName;
    // private String name;
+//=======
+    private String centerName;
+//>>>>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
     private boolean isRegistered;
     private String childId;
     private long date;

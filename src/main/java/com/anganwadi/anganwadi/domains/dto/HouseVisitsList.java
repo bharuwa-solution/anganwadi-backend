@@ -16,10 +16,6 @@ public class HouseVisitsList {
     private String visitType;
     private String title;
     private String dueDate;
-    private String visitRound;
     private List<HouseVisitRounds> round;
-    private String visitDate;
-    private String comments;
-    private String latitude;
-    private String longitude;
+
 }
