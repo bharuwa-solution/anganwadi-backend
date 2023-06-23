@@ -20,18 +20,18 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
     List<Attendance> findAllByChildIdAndDate(String childId, long timestamp);
 
     @Query("{$and:[{'childId':{$in:[?0]}},{'date':?1},{'centerName':?2}]}}")
-    List<Attendance> updateAttendance(String childId, long timestamp, String centerName);
+    List<Attendance> updateAttendance(String childId, long timestamp, String centerId);
 
     @Query("{'date':?0,'centerName':?1}")
     List<Attendance> findAllByDateAndCenterName(long timestamp, String centerName, Sort createdDate);
 
-    List<Attendance> findAllByChildIdAndDateAndCenterName(String childId, long date, String centerName);
+    List<Attendance> findAllByChildIdAndDateAndCenterId(String childId, long date, String centerId);
 
     @Query("{'date':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<Attendance> findAllByDateRange(long startDayMillis, long lastDayMillis, String centerId);
 
-    @Query("{'date':?0,'centerName':?1,'isRegistered':true}")
-    List<Attendance> findAllByDateAndCenterNameAndRegistered(long timestamp, String centerName, Sort createdDate);
+    @Query("{'date':?0,'centerId':?1,'isRegistered':true}")
+    List<Attendance> findAllByDateAndCenterIdAndRegistered(long timestamp, String centerId, Sort createdDate);
 
     void deleteAllByChildId(String primaryId);
 

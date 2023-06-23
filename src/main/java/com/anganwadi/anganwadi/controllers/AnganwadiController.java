@@ -32,8 +32,8 @@ public class AnganwadiController {
 //    }
 
     @PostMapping("makeAttendance")
-    private List<AttendanceDTO> makeAndUpdateAttendance(@RequestBody AttendanceDTO attendanceDTO, @RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.makeAndUpdateAttendance(attendanceDTO, centerName);
+    private List<AttendanceDTO> makeAndUpdateAttendance(@RequestBody AttendanceDTO attendanceDTO, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.makeAndUpdateAttendance(attendanceDTO, centerId);
     }
 
     @PostMapping("makeAttendanceManual")
@@ -43,8 +43,8 @@ public class AnganwadiController {
 
 
     @GetMapping("getAttendanceByDate")
-    private List<AttendanceDTO> getAttendanceByDate(@RequestParam String date, @RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.getAttendanceByDate(date, centerName);
+    private List<AttendanceDTO> getAttendanceByDate(@RequestParam String date, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.getAttendanceByDate(date, centerId);
     }
 
 
@@ -60,8 +60,8 @@ public class AnganwadiController {
     }
 
     @PostMapping("saveChildrenRecord")
-    private SaveAdmissionDTO saveChildrenRecord(@RequestBody SaveAdmissionDTO saveAdmissionDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException, IOException {
-        return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO, centerId, centerName);
+    private SaveAdmissionDTO saveChildrenRecord(@RequestBody SaveAdmissionDTO saveAdmissionDTO, @RequestHeader String centerId) throws ParseException, IOException {
+        return anganwadiChildrenService.saveChildrenRecord(saveAdmissionDTO, centerId);
     }
 
     @PutMapping("updateStudentDetails")
@@ -100,8 +100,8 @@ public class AnganwadiController {
     }
 
     @PutMapping("saveActivity")
-    private List<SaveActivitiesDTO> saveActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.saveActivity(anganwadiActivitiesDTO, centerId, centerName);
+    private List<SaveActivitiesDTO> saveActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.saveActivity(anganwadiActivitiesDTO, centerId);
     }
 
     @PostMapping("getAllActivity")

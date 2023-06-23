@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "AnganwadiActivities")
 public class AnganwadiActivities extends BaseObject {
 
-    private String centerName;
+    //private String centerName;
     private String centerId;
     private boolean gaming = false;
     private boolean cleaning = false;

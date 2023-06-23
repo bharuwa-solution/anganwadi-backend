@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AnganwadiChildrenService {
 
-    SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId, String centerName) throws ParseException, IOException;
+    SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId) throws ParseException, IOException;
 
     List<ChildrenDTO> getTotalChildren(String centerName) throws ParseException;
 
@@ -17,17 +17,17 @@ public interface AnganwadiChildrenService {
 
 //    DashboardDetails getDashboardDetails();
 
-    List<AttendanceDTO> getAttendanceByDate(String date, String centerName) throws ParseException;
+    List<AttendanceDTO> getAttendanceByDate(String date, String centerId) throws ParseException;
 
     List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException;
 
-    List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerName) throws ParseException;
+    List<AttendanceDTO> makeAndUpdateAttendance(AttendanceDTO attendanceDTO, String centerId) throws ParseException;
 
     List<householdsHeadList> getRegisteredHouseholdsList(String centerId);
 
     List<StockListDTO> getAvailableItems();
 
-    List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId, String centerName) throws ParseException;
+    List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId) throws ParseException;
 
     StockOutputItemsDTO getStocks(String centerName, String selectedMonth);
 
@@ -67,7 +67,7 @@ public interface AnganwadiChildrenService {
 
     List<RationDistribution> getRationDistributionData(DashboardFilter dashboardFilter) throws ParseException;
 
-    List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId, String centerName) throws ParseException;
+    List<SaveActivitiesDTO> saveActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId) throws ParseException;
 
     List<AnganwadiActivitiesDTO> getAllActivity(AnganwadiActivitiesDTO anganwadiActivitiesDTO, String centerId) throws ParseException;
 
