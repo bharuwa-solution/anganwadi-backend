@@ -30,7 +30,7 @@ public class AnganwadiController {
 //    private DashboardDetails getDashboardDetails() {
 //        return anganwadiChildrenService.getDashboardDetails();
 //    }
-
+// new code
     @PostMapping("makeAttendance")
     private List<AttendanceDTO> makeAndUpdateAttendance(@RequestBody AttendanceDTO attendanceDTO, @RequestHeader String centerId) throws ParseException {
         return anganwadiChildrenService.makeAndUpdateAttendance(attendanceDTO, centerId);
