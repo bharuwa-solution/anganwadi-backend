@@ -40,6 +40,7 @@ public class FamilyServiceImpl implements FamilyService {
     private final CommonMethodsService commonMethodsService;
     private final VaccinationScheduleRepository vaccinationScheduleRepository;
     private final HouseVisitScheduleRepository houseVisitScheduleRepository;
+    private final BloodTestTrackingRepository bloodTestTrackingRepository;
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
@@ -47,7 +48,8 @@ public class FamilyServiceImpl implements FamilyService {
                              PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
                              AnganwadiChildrenRepository anganwadiChildrenRepository, AnganwadiCenterRepository anganwadiCenterRepository,
                              UserRepository userRepository, AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService,
-                             VaccinationScheduleRepository vaccinationScheduleRepository, HouseVisitScheduleRepository houseVisitScheduleRepository) {
+                             VaccinationScheduleRepository vaccinationScheduleRepository, HouseVisitScheduleRepository houseVisitScheduleRepository,
+                             BloodTestTrackingRepository bloodTestTrackingRepository) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
@@ -63,6 +65,7 @@ public class FamilyServiceImpl implements FamilyService {
         this.commonMethodsService = commonMethodsService;
         this.vaccinationScheduleRepository = vaccinationScheduleRepository;
         this.houseVisitScheduleRepository = houseVisitScheduleRepository;
+        this.bloodTestTrackingRepository=bloodTestTrackingRepository;
     }
 
 
@@ -1351,6 +1354,107 @@ public class FamilyServiceImpl implements FamilyService {
 
     }
 
+    private void saveBloodTestSection(VisitsDetailsDTOTemp bloodTestCases,String centerId, long currentDate, FamilyMember findFamily) throws ParseException {
+        for(BloodTestCases cases : bloodTestCases.getBloodTest()){
+            bloodTestTrackingRepository.save(BloodTestTracking.builder()
+                    .date(currentDate)
+                    .result(cases.getResult())
+                    .testCode(cases.getTestCode())
+                    .build());
+        }
+
+        saveVisitsSection(bloodTestCases,centerId,currentDate,findFamily);
+
+    }
+
+    private void saveWeightsSection(VisitsDetailsDTOTemp weightRecords,String centerId,long currentDate, FamilyMember findFamily) {
+
+            weightTrackingRepository.save(WeightTracking.builder()
+                    .familyId(findFamily.getFamilyId())
+                    .childId(weightRecords.getMemberId())
+                    .centerId(centerId)
+                    .centerName(commonMethodsService.findCenterName(centerId))
+                    .date(currentDate)
+                    .weight(weightRecords.getWeight())
+                    .height(weightRecords.getHeight())
+                    .build());
+
+
+        saveVisitsSection(weightRecords,centerId,currentDate, findFamily);
+    }
+
+    private void saveVisitsSection(VisitsDetailsDTOTemp visitDetails,String centerId,long currentDate, FamilyMember findFamily){
+
+        visitsRepository.save(Visits.builder()
+                .familyId(findFamily.getFamilyId())
+                .memberId(visitDetails.getMemberId())
+                .centerId(centerId)
+                .centerName(commonMethodsService.findCenterName(centerId))
+                .visitType(visitDetails.getVisitType())
+                .visitFor(visitDetails.getVisitFor())
+                .visitRound(visitDetails.getVisitRound())
+                .description(visitDetails.getDescription())
+                .visitDateTime(currentDate)
+                .longitude(visitDetails.getLongitude())
+                .latitude(visitDetails.getLatitude())
+                .build());
+    }
+
+    private void saveVaccinationSection(VisitsDetailsDTOTemp visitDetails,String centerId,long currentDate, FamilyMember findFamily){
+
+            vaccinationRepository.save(Vaccination.builder()
+                    .familyId(findFamily.getFamilyId())
+                    .childId(visitDetails.getMemberId())
+                    .centerId(centerId)
+                    .centerName(commonMethodsService.findCenterName(centerId))
+                    .vaccinationCode(visitDetails.getVisitFor())
+                    .date(currentDate)
+                    .build());
+
+        saveVisitsSection(visitDetails,centerId,currentDate, findFamily);
+    }
+
+    @Override
+    public VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId) throws ParseException {
+
+        if(visitsDetailsDTOTemp.getVisitCategory().length()>0) {
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+            long currentDate = df.parse(df.format(new Date())).getTime();
+
+
+            if(!familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).isPresent()){
+                throw new CustomException("Member Id Not Passed");
+            }
+
+
+            FamilyMember findMember = familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).get();
+
+            switch (visitsDetailsDTOTemp.getVisitCategory().trim()){
+                case "1":
+                    saveBloodTestSection(visitsDetailsDTOTemp,centerId,currentDate,findMember);
+                    break;
+
+                case "2":
+                    saveWeightsSection(visitsDetailsDTOTemp,centerId,currentDate,findMember);
+                    break;
+
+                case "3":
+                    saveVaccinationSection(visitsDetailsDTOTemp,centerId,currentDate,findMember);
+                    break;
+
+                case "4":
+                    saveVisitsSection(visitsDetailsDTOTemp,centerId,currentDate,findMember);
+                    break;
+            }
+
+        }
+        else {
+            throw new CustomException("Visit Category Not Passed, Please Check");
+        }
+
+        return visitsDetailsDTOTemp;
+    }
 
 
     @Override

@@ -109,6 +109,8 @@ public interface FamilyService {
 
     List<MemberDetails> getVisitScheduler(DashboardFilter dashboardFilter) throws ParseException;
 
+    VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId) throws ParseException;
+
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }
