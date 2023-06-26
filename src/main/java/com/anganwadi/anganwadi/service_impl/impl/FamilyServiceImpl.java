@@ -2259,12 +2259,12 @@ public class FamilyServiceImpl implements FamilyService {
         for (Visits findDetails : checkVisitsFor) {
 
             long millis = findDetails.getVisitDateTime();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date date = new Date(millis);
 
             VisitArray visitArray = VisitArray.builder()
                     .date(df.format(date))
-                    .visitFor(findDetails.getVisitFor())
+                    .visitFor(findDetails.getVisitFor() == null ? "" : findDetails.getVisitFor())
                     .visitRound(findDetails.getVisitRound())
                     .build();
 
@@ -2334,53 +2334,239 @@ public class FamilyServiceImpl implements FamilyService {
                     .centerName(visits.getCenterName())
                     .visitType("5")
                     .visitName("TILL_8_30_DAYS")
-                    .dueDate(localDate.plusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .dueDate(localDate.plusDays(29).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                     .build());
 
-                houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+            // Visit TILL_1_5_MONTHS
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                         .memberId(babiesBirth.getChildId())
                         .centerId(visits.getCenterId())
                         .centerName(visits.getCenterName())
                         .visitType("6")
                         .visitName("TILL_1_5_MONTHS")
-                        .dueDate(localDate.plusDays(150).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                        .dueDate(localDate.plusDays(31).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                         .build());
 
-                houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("6")
+                    .visitName("TILL_1_5_MONTHS")
+                    .dueDate(localDate.plusDays(59).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("6")
+                    .visitName("TILL_1_5_MONTHS")
+                    .dueDate(localDate.plusDays(89).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("6")
+                    .visitName("TILL_1_5_MONTHS")
+                    .dueDate(localDate.plusDays(119).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("6")
+                    .visitName("TILL_1_5_MONTHS")
+                    .dueDate(localDate.plusDays(149).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+
+            // Visit TILL_6_8_MONTHS
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                         .memberId(babiesBirth.getChildId())
                         .centerId(visits.getCenterId())
                         .centerName(visits.getCenterName())
                         .visitType("7")
                         .visitName("TILL_6_8_MONTHS")
-                        .dueDate(localDate.plusDays(240).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                        .dueDate(localDate.plusDays(179).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                         .build());
 
-                houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("7")
+                    .visitName("TILL_6_8_MONTHS")
+                    .dueDate(localDate.plusDays(209).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("7")
+                    .visitName("TILL_6_8_MONTHS")
+                    .dueDate(localDate.plusDays(239).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+
+            // Visit TILL_9_11_MONTHS
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                         .memberId(babiesBirth.getChildId())
                         .centerId(visits.getCenterId())
                         .centerName(visits.getCenterName())
                         .visitType("8")
                         .visitName("TILL_9_11_MONTHS")
-                        .dueDate(localDate.plusDays(330).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                        .dueDate(localDate.plusDays(269).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                         .build());
 
-                houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("8")
+                    .visitName("TILL_9_11_MONTHS")
+                    .dueDate(localDate.plusDays(299).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("8")
+                    .visitName("TILL_9_11_MONTHS")
+                    .dueDate(localDate.plusDays(329).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            // Visit TILL_12_17_MONTHS
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                         .memberId(babiesBirth.getChildId())
                         .centerId(visits.getCenterId())
                         .centerName(visits.getCenterName())
                         .visitType("9")
                         .visitName("TILL_12_17_MONTHS")
-                        .dueDate(localDate.plusDays(510).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                        .dueDate(localDate.plusDays(364).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                         .build());
 
-                houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("9")
+                    .visitName("TILL_12_17_MONTHS")
+                    .dueDate(localDate.plusDays(389).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("9")
+                    .visitName("TILL_12_17_MONTHS")
+                    .dueDate(localDate.plusDays(419).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("9")
+                    .visitName("TILL_12_17_MONTHS")
+                    .dueDate(localDate.plusDays(449).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("9")
+                    .visitName("TILL_12_17_MONTHS")
+                    .dueDate(localDate.plusDays(479).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("9")
+                    .visitName("TILL_12_17_MONTHS")
+                    .dueDate(localDate.plusDays(509).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+
+            // Visit TILL_18_24_MONTHS
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                         .memberId(babiesBirth.getChildId())
                         .centerId(visits.getCenterId())
                         .centerName(visits.getCenterName())
                         .visitType("10")
-                        .visitName("TILL_18_24_DAYS")
-                        .dueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                        .visitName("TILL_18_24_MONTHS")
+                        .dueDate(localDate.plusDays(539).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                         .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("10")
+                    .visitName("TILL_18_24_MONTHS")
+                    .dueDate(localDate.plusDays(569).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("10")
+                    .visitName("TILL_18_24_MONTHS")
+                    .dueDate(localDate.plusDays(599).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("10")
+                    .visitName("TILL_18_24_MONTHS")
+                    .dueDate(localDate.plusDays(629).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("10")
+                    .visitName("TILL_18_24_MONTHS")
+                    .dueDate(localDate.plusDays(659).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("10")
+                    .visitName("TILL_18_24_MONTHS")
+                    .dueDate(localDate.plusDays(689).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+            houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("10")
+                    .visitName("TILL_18_24_MONTHS")
+                    .dueDate(localDate.plusDays(719).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
+
+
         }
     }
 
@@ -3721,37 +3907,83 @@ public class FamilyServiceImpl implements FamilyService {
 
         LocalDate localDate = Instant.ofEpochMilli(pd.getLastMissedPeriodDate()).atZone(ZoneId.systemDefault()).toLocalDate();
 
+        // Visit Type 1. With in 4-6 Months
+
         HouseVisitSchedule addVisit_1 = HouseVisitSchedule.builder()
                 .visitType("1")
                 .centerId(pd.getCenterId())
                 .centerName(pd.getCenterName())
                 .visitName("TILL_04_06_MONTHS")
                 .memberId(pd.getMotherMemberId())
-                .dueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .dueDate(localDate.plusDays(119).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .build();
 
         HouseVisitSchedule addVisit_2 = HouseVisitSchedule.builder()
+                .visitType("1")
+                .centerId(pd.getCenterId())
+                .centerName(pd.getCenterName())
+                .visitName("TILL_04_06_MONTHS")
+                .memberId(pd.getMotherMemberId())
+                .dueDate(localDate.plusDays(149).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .build();
+
+
+        HouseVisitSchedule addVisit_3 = HouseVisitSchedule.builder()
+                .visitType("1")
+                .centerId(pd.getCenterId())
+                .centerName(pd.getCenterName())
+                .visitName("TILL_04_06_MONTHS")
+                .memberId(pd.getMotherMemberId())
+                .dueDate(localDate.plusDays(179).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .build();
+
+
+        // Visit Type 2. With in 7-9 Months
+
+        HouseVisitSchedule addVisit_4 = HouseVisitSchedule.builder()
                 .visitType("2")
                 .centerId(pd.getCenterId())
                 .centerName(pd.getCenterName())
                 .visitName("TILL_07_09_MONTHS")
                 .memberId(pd.getMotherMemberId())
-                .dueDate(localDate.plusDays(270).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .dueDate(localDate.plusDays(209).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .build();
 
-        HouseVisitSchedule addVisit_3 = HouseVisitSchedule.builder()
+        HouseVisitSchedule addVisit_5 = HouseVisitSchedule.builder()
+                .visitType("2")
+                .centerId(pd.getCenterId())
+                .centerName(pd.getCenterName())
+                .visitName("TILL_07_09_MONTHS")
+                .memberId(pd.getMotherMemberId())
+                .dueDate(localDate.plusDays(239).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .build();
+
+        HouseVisitSchedule addVisit_6 = HouseVisitSchedule.builder()
+                .visitType("2")
+                .centerId(pd.getCenterId())
+                .centerName(pd.getCenterName())
+                .visitName("TILL_07_09_MONTHS")
+                .memberId(pd.getMotherMemberId())
+                .dueDate(localDate.plusDays(269).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .build();
+
+        // Visit Type 3. Day Of Delivery
+        HouseVisitSchedule addVisit_7 = HouseVisitSchedule.builder()
                 .visitType("3")
                 .centerId(pd.getCenterId())
                 .centerName(pd.getCenterName())
                 .visitName("DAY_OF_DELIVERY")
                 .memberId(pd.getMotherMemberId())
-                .dueDate(localDate.plusDays(280).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .dueDate(localDate.plusDays(279).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .build();
-
 
         houseVisitScheduleRepository.save(addVisit_1);
         houseVisitScheduleRepository.save(addVisit_2);
         houseVisitScheduleRepository.save(addVisit_3);
+        houseVisitScheduleRepository.save(addVisit_4);
+        houseVisitScheduleRepository.save(addVisit_5);
+        houseVisitScheduleRepository.save(addVisit_6);
+        houseVisitScheduleRepository.save(addVisit_7);
     }
 
 
@@ -3840,9 +4072,9 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember fm = familyMemberRepository.findById(pregnantAndDeliveryDTO.getMotherMemberId()).get();
         Family family = familyRepository.findByFamilyId(fm.getFamilyId());
 
-//        if (checkPregnantWithInYear(pregnantAndDeliveryDTO, missedPeriodDate)) {
-//            throw new CustomException("The User " + fm.getName() + " had an Delivery With in 12 Months. Please Contact Support Team, For Adding the Data.");
-//        }
+        if (checkPregnantWithInYear(pregnantAndDeliveryDTO, missedPeriodDate)) {
+            throw new CustomException("The User " + fm.getName() + " had an Delivery With in 12 Months. Please Contact Support Team, For Adding the Data.");
+        }
 
         PregnantAndDelivery pd = PregnantAndDelivery.builder()
                 .familyId(pregnantAndDeliveryDTO.getFamilyId() == null ? "" : pregnantAndDeliveryDTO.getFamilyId())
