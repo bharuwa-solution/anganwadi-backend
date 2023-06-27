@@ -53,4 +53,13 @@ public class HouseVisitsController {
     private List<MemberDetails> getVisitScheduler(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getVisitScheduler(dashboardFilter);
     }
+
+    @PostMapping("/saveVisitsDetailsTemp")
+    private VisitsDetailsDTOTemp saveVisitsDetailsTemp(@RequestBody VisitsDetailsDTOTemp visitsDetailsDTOTemp, @RequestHeader String centerId) throws ParseException {
+        return familyService.saveVisitsDetailsTemp(visitsDetailsDTOTemp, centerId);
+    }
+
+
+
+
 }

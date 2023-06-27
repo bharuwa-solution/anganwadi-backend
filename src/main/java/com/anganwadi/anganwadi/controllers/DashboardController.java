@@ -5,6 +5,7 @@ import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.text.ParseException;
 import java.util.List;
@@ -116,6 +117,7 @@ public class DashboardController {
         return anganwadiChildrenService.getAnganwadiChildrenDetails(dashboardFilter);
     }
 
+    @ApiIgnore
     @GetMapping("convertUnixToDate")
     private List<FamilyMemberConverted> convertUnixToDate() {
         return anganwadiChildrenService.convertUnixToDate();
