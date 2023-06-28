@@ -42,8 +42,7 @@ public class AnganwadiApplication extends SpringBootServletInitializer {
 
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        return multipartResolver;
+        return new CommonsMultipartResolver();
     }
 
     @Bean

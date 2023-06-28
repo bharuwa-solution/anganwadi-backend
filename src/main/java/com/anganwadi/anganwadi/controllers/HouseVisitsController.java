@@ -58,8 +58,4 @@ public class HouseVisitsController {
     private VisitsDetailsDTOTemp saveVisitsDetailsTemp(@RequestBody VisitsDetailsDTOTemp visitsDetailsDTOTemp, @RequestHeader String centerId) throws ParseException {
         return familyService.saveVisitsDetailsTemp(visitsDetailsDTOTemp, centerId);
     }
-
-
-
-
 }

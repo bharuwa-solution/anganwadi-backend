@@ -111,6 +111,8 @@ public interface FamilyService {
 
     VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId) throws ParseException;
 
+    String autoUpdateCalendar();
+
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
 }
