@@ -88,7 +88,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         log.info("reg " + saveAdmissionDTO.isRegistered());
 
         AnganwadiChildren saveAdmission = new AnganwadiChildren();
-        SaveAdmissionDTO admissionDTO = new SaveAdmissionDTO();
+       String id = "";
 
        commonMethodsService.checkAbove3Yrs(saveAdmissionDTO.getDob());
        commonMethodsService.checkBelow6yrs(saveAdmissionDTO.getDob());
@@ -106,7 +106,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             if (findExistingRecord.size() > 0) {
             	for (AnganwadiChildren record : findExistingRecord) {
             		if(record.getCenterId().equals(centerId)) {
-            			
+                        throw new CustomException("Center id is different Kindly check and update");
+                    }
             			record.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
             			record.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
             			record.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
@@ -116,24 +117,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             			record.setRegistered(saveAdmissionDTO.isRegistered());
             			record.setDeleted(false);
             			anganwadiChildrenRepository.save(record);
-            			
-            			
-            			//admissionDTO = modelMapper.map(record, SaveAdmissionDTO.class);
-            		}
-            		else {
-            			log.error("Center id is different Kindly check and update");
-            			record.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
-            			record.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
-            			record.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
-            			record.setIsGoingSchool("0");
-            			record.setHandicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap());
-            			record.setProfilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic());
-            			record.setRegistered(saveAdmissionDTO.isRegistered());
-            			record.setDeleted(false);
-            			anganwadiChildrenRepository.save(record);
-            			//admissionDTO = modelMapper.map(record, SaveAdmissionDTO.class);
-            		}
-            	
+            			id = record.getId();
+
             	}
                 
             } else {
@@ -150,19 +135,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             			.build();
             	
             	anganwadiChildrenRepository.save(saveAdmission);
+                id = saveAdmission.getId();
             	//admissionDTO = modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
             }
+            log.error("id "+id);
             return SaveAdmissionDTO.builder()
-            		.id(saveAdmissionDTO.getId() == null ? "" : saveAdmissionDTO.getId())
-            		.name(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName())
-        			.familyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId())
-        			.childId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId())
+            		.id(id)
+            		.name(familyMember.getName() == null ? "" : familyMember.getName())
+        			.familyId(familyMember.getFamilyId() == null ? "" : familyMember.getFamilyId())
+        			.childId(familyMember.getId() == null ? "" : familyMember.getId())
         			.isRegistered(saveAdmissionDTO.isRegistered())
         			.isSchoolGoing("0")
-                    .profilePic(saveAdmissionDTO.getProfilePic()==null?"":saveAdmissionDTO.getProfilePic())
+                    .profilePic(saveAdmission.getProfilePic()==null?"":saveAdmission.getProfilePic())
         			.mobileNumber(familyMember.getMobileNumber() == null ? "" : familyMember.getMobileNumber())
-        			.handicap(familyMember.getHandicap() == null ? "" : familyMember.getHandicap())
-        			.profilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
+        			.handicap(saveAdmission.getHandicap() == null ? "" : saveAdmission.getHandicap())
+        			.profilePic(saveAdmission.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
         			.centerName(commonMethodsService.findCenterName(centerId))
         			.fatherName(saveAdmissionDTO.getFatherName()==null?"":saveAdmissionDTO.getFatherName())
         			.motherName(saveAdmissionDTO.getMotherName()==null?"":saveAdmissionDTO.getMotherName())
@@ -173,6 +160,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         			.build();
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CustomException("Their is Some Error, Please Contact Support Team");
         }
     }
@@ -180,7 +168,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     @Override
     public SaveAdmissionDTO updateRegisteredValue(String id, boolean isRegistered) {
-
+        log.error("child id "+id);
+        if(!anganwadiChildrenRepository.findById(id).isPresent()){
+            throw new CustomException("Child Not Found");
+        }
         AnganwadiChildren findId = anganwadiChildrenRepository.findById(id).get();
         System.out.println(findId);
         //FamilyMember member = familyMemberRepository.find
@@ -241,15 +232,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             .centerName(memberDetails.getCenterName() == null ? "" : memberDetails.getCenterName())
                             .centerId(centerId == null ? "" : centerId)
                             .childId(updateStatus.getChildId() == null ? "" : updateStatus.getChildId())
+
                             .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()) == null ? "" : commonMethodsService.dateChangeToString(memberDetails.getDob()))
                             .name(memberDetails.getName() == null ? "" : memberDetails.getName())
+
                             .dob(commonMethodsService.dateChangeToString(commonMethodsService.findMember(updateStatus.getChildId()).getDob()))
                             .name(commonMethodsService.findMember(updateStatus.getChildId()).getName())
+
                             .latitude(updateStatus.getLatitude() == null ? "" : updateStatus.getLatitude())
                             .longitude(updateStatus.getLongitude() == null ? "" : updateStatus.getLongitude())
                             .photo(updateStatus.getPhoto() == null ? "" : updateStatus.getPhoto())
+
                             .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
+
                             .gender(commonMethodsService.findMember(updateStatus.getChildId()).getGender())
+
                             .date(timestamp)
                             .attType(list.getAttType() == null ? "" : list.getAttType())
                             .att(list.getAtt() == null ? "" : list.getAtt())
@@ -267,6 +264,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             //.centerName(memberDetails.getCenterName() == null ? "" : memberDetails.getCenterName())
                             .centerId(centerId == null ? "" : centerId)
                             .childId(sc.getChildId() == null ? "" : sc.getChildId())
+
+                           // .dob(dateChangeToString(memberDetails.getDob()) == null ? "" : dateChangeToString(memberDetails.getDob()))
+                            //.name(sc.getName() == null ? "" : sc.getName())
+
+                           // .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()) == null ? "" : commonMethodsService.dateChangeToString(memberDetails.getDob()))
+
                             .latitude(list.getLatitude() == null ? "" : list.getLatitude())
                             .longitude(list.getLongitude() == null ? "" : list.getLongitude())
                             .photo(sc.getProfilePic() == null ? "" : sc.getProfilePic())
@@ -284,6 +287,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             .centerName(memberDetails.getCenterName())
                             .childId(saveStatus.getChildId())
                             .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
+                            //.dob(saveStatus.getDob())
                             .name(memberDetails.getName())
                             .latitude(saveStatus.getLatitude())
                             .longitude(saveStatus.getLongitude())
@@ -357,25 +361,35 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (Attendance list : getData) {
 
             Date date = new Date(list.getDate());
+// <<<<<<HEAD
             FamilyMember memberDetails = familyMemberRepository.findById(list.getChildId()).get();
+//==//===
             FamilyMember findMember = familyMemberRepository.findById(list.getChildId()).get();
+//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
+
             AttendanceConverted attendance = AttendanceConverted.builder()
                     .id(list.getId())
                     .centerId(list.getCenterId())
+// <<<<<<HEAD
                     .centerName(memberDetails.getCenterName())
                     .name(memberDetails.getName())
+//==//===
                     .centerName(list.getCenterName())
                     .name(findMember.getName())
+//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     .isRegistered(list.isRegistered())
                     .childId(list.getChildId())
                     .date(df.format(date))
                     .attType(list.getAttType())
                     .latitude(list.getLatitude())
                     .longitude(list.getLongitude())
+// <<<<<<HEAD
                     .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .gender(memberDetails.getGender())
+//==//===
                     .dob(commonMethodsService.dateChangeToString(findMember.getDob()))
                     .gender(findMember.getGender())
+//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     .photo(list.getPhoto())
                     .attendance(list.getAttendance())
                     .build();
@@ -471,10 +485,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             if (findInAttend.size() > 0) {
                 for (Attendance attend : findInAttend) {
+// <<<<<<HEAD
+                    // attend.setName(updateStudentDTO.getName() == null ? "" : updateStudentDTO.getName());
+                    //attend.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
+//==//===
+                    //attend.setGender(updateStudentDTO.getGender() == null ? "" : updateStudentDTO.getGender());
+//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     attend.setPhoto(updateStudentDTO.getProfilePic() == null ? "" : updateStudentDTO.getProfilePic());
                     attendanceRepository.save(attend);
                 }
             }
+            //comment
+// branch 'master' of https://github.com/BhanuBharuwa/anganwadi-backend.git
             return UpdateStudentDTO.builder()
                     .childId(ac.getChildId() == null ? "" : ac.getChildId())
                     .dob(updateStudentDTO.getDob() == null ? "" : updateStudentDTO.getDob())
@@ -486,6 +508,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .isGoingSchool(ac.getIsGoingSchool())
 
                     .isGoingSchool(ac.getIsGoingSchool() == null ? "" : ac.getIsGoingSchool())
+////>>>> branch 'master' of https://github.com/BhanuBharuwa/anganwadi-backend.git
                     .name(ac.getName() == null ? "" : ac.getName())
                     .deleted(ac.isDeleted())
                     .build();
@@ -924,8 +947,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<FamilyMember> memberList = familyMemberRepository.findAllByCenterId(centerId);
        // log.error(centerId, memberList);
         
+       // System.out.println(memberList);
+        
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterIdAndRegisteredTrue(centerId);
        // log.error(centerId, childrenList);
+        //System.out.println(childrenList);
+
+        //List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterId();
+
         // Check 3 Years Criteria
         // Initially all the age group was added, but currently is was stop from backend && to avoid those old records, below ,condition is added"
         LocalDateTime date = LocalDateTime.now().minusYears(3);
@@ -982,7 +1011,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 //    public DashboardDetails getDashboardDetails() {
 //        return null;
 //    }
-
+//
 
     @Override
     public List<AttendanceDTO> getAttendanceByDate(String date, String centerId) throws ParseException {
@@ -1010,15 +1039,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .centerId(singleRecord.getCenterId() == null ? "" : singleRecord.getCenterId())
                         .latitude(singleRecord.getLatitude() == null ? "" : singleRecord.getLatitude())
                         .longitude(singleRecord.getLongitude() == null ? "" : singleRecord.getLongitude())
+
                         .name(memberDetails.getName() == null ? "" : memberDetails.getName())
+
                         .name(commonMethodsService.findMember(singleRecord.getChildId()).getName()==null?"":commonMethodsService.findMember(singleRecord.getChildId()).getName())
+
                         .attType(singleRecord.getAttType() == null ? "" : singleRecord.getAttType())
                         .att(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
+
                         .centerName(memberDetails.getCenterName())
                         .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
                         .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
+
                         .centerName(memberDetails.getCenterName())
                         .gender(commonMethodsService.findMember(singleRecord.getChildId()).getGender()==null?"":commonMethodsService.findMember(singleRecord.getChildId()).getGender())
+                        //.dob(singleRecord.getDob())
                         .photo(singleRecord.getPhoto() == null ? "" : singleRecord.getPhoto())
                         .attendance(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
                         .date(singleRecord.getDate())
@@ -1071,12 +1106,20 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             	Attendance saveAttendance = Attendance.builder()
                         .childId(getId.getChildId())
+                        //.dob(dateChangeToString(memberDetails.getDob()))
+                       // .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                         .centerId(getId.getCenterId())
                         .isRegistered(getId.isRegistered())
                         .longitude("")
                         .latitude("")
                         .attType("System")
+                        //.centerName(centerName)
+                        //.name(getId.getName())
+
+                        //.centerName(centerName)
+//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                         .photo(getId.getProfilePic())
+                        //.gender(getId.getGender())
                         .date(timestamp)
                         .attendance(verifyAttend.equals("") ? attendance : verifyAttend)
                         .build();
@@ -1151,9 +1194,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .childId(fetchDetails.getChildId())
                     .attType("System")
                     .att("")
+// <<<<<<HEAD
                     .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .name(memberDetails.getName())
+//==//===
+                    //.dob(fetchDetails.getDob())
                     .name(commonMethodsService.findMember(fetchDetails.getChildId()).getName())
+//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(fetchDetails.getPhoto())
@@ -1171,6 +1218,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     @Override
     public List<householdsHeadList> getRegisteredHouseholdsList(String centerId) {
         List<householdsHeadList> addInList = new ArrayList<>();
+//// <<<<<<HEAD
+////        List<FamilyMember> members = familyMemberRepository.findAllByCenterName(centerName);
+////        String centerId = members.get(0).getCenterId();
+////==//===
+////>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
         List<AnganwadiChildren> findFamilyIds = anganwadiChildrenRepository.findAllByCenterId(centerId);
         HashSet<String> uniqueFamilyIds = new HashSet<>();
 
@@ -1899,9 +1951,16 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             Attendance saveAttendance = Attendance.builder()
                     .childId(getId.getChildId())
+                    //.dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
+//// <<<<<<HEAD
+                    //.dob(dateChangeToString(memberDetails.getDob()))
+                    //.name(getId.getName())
+////==//===
+////>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(getId.getProfilePic())
+                   // .gender(memberDetails.getGender())
                     .date(timestamp)
                     .attendance(attendance)
                     .build();
@@ -1943,6 +2002,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .childId(fetchDetails.getChildId())
                     .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .name(memberDetails.getName())
+                    //.dob(fetchDetails.getDob())
+                   //name(commonMethodsService.findMember(fetchDetails.getChildId()).getName())
+////>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(fetchDetails.getPhoto())

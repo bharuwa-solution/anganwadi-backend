@@ -69,7 +69,6 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
 
-
     public int totalHouseholdsMale(String familyId) {
         int totalMale = 0;
         LocalDateTime date = LocalDateTime.now().minusYears(6);
@@ -1069,18 +1068,18 @@ public class FamilyServiceImpl implements FamilyService {
         Set<String> uniqueVisitType = new TreeSet<>();
 
 
-            List<Visits> findRounds = visitsRepository.findAllByMemberIdAndVisitType(id, visitType);
-            for (Visits checkRounds : findRounds) {
-                if (uniqueVisitType.add(checkRounds.getVisitType().trim())) {
-                    HouseVisitRounds addSingleRound = HouseVisitRounds.builder()
-                            .visitDate(df.format(checkRounds.getVisitDateTime()))
-                            .comments(checkRounds.getDescription() == null ? "" : checkRounds.getDescription())
-                            .latitude(checkRounds.getLatitude() == null ? "" : checkRounds.getLatitude())
-                            .longitude(checkRounds.getLongitude() == null ? "" : checkRounds.getLongitude())
-                            .build();
+        List<Visits> findRounds = visitsRepository.findAllByMemberIdAndVisitType(id, visitType);
+        for (Visits checkRounds : findRounds) {
+            if (uniqueVisitType.add(checkRounds.getVisitType().trim())) {
+                HouseVisitRounds addSingleRound = HouseVisitRounds.builder()
+                        .visitDate(df.format(checkRounds.getVisitDateTime()))
+                        .comments(checkRounds.getDescription() == null ? "" : checkRounds.getDescription())
+                        .latitude(checkRounds.getLatitude() == null ? "" : checkRounds.getLatitude())
+                        .longitude(checkRounds.getLongitude() == null ? "" : checkRounds.getLongitude())
+                        .build();
 
-                    addVisitRounds.add(addSingleRound);
-                }
+                addVisitRounds.add(addSingleRound);
+            }
 
         }
 
@@ -1362,25 +1361,23 @@ public class FamilyServiceImpl implements FamilyService {
                     .testCode(cases.getTestCode())
                     .build());
         }
-
         saveVisitsSection(bloodTestCases,centerId,currentDate,findFamily);
-
     }
 
     private void saveWeightsSection(VisitsDetailsDTOTemp weightRecords,String centerId,long currentDate, FamilyMember findFamily) {
 
-            weightTrackingRepository.save(WeightTracking.builder()
-                    .familyId(findFamily.getFamilyId())
-                    .childId(weightRecords.getMemberId())
-                    .centerId(centerId)
-                    .centerName(commonMethodsService.findCenterName(centerId))
-                    .date(currentDate)
-                    .weight(weightRecords.getWeight())
-                    .height(weightRecords.getHeight())
-                    .build());
+        weightTrackingRepository.save(WeightTracking.builder()
+                .familyId(findFamily.getFamilyId())
+                .childId(weightRecords.getMemberId())
+                .centerId(centerId)
+                .centerName(commonMethodsService.findCenterName(centerId))
+                .date(currentDate)
+                .weight(weightRecords.getWeight())
+                .height(weightRecords.getHeight())
+                .build());
 
 
-        saveVisitsSection(weightRecords,centerId,currentDate, findFamily);
+        saveVisitsSection(weightRecords, centerId, currentDate, findFamily);
     }
 
     private void saveVisitsSection(VisitsDetailsDTOTemp visitDetails,String centerId,long currentDate, FamilyMember findFamily){
@@ -1400,18 +1397,18 @@ public class FamilyServiceImpl implements FamilyService {
                 .build());
     }
 
-    private void saveVaccinationSection(VisitsDetailsDTOTemp visitDetails,String centerId,long currentDate, FamilyMember findFamily){
+    private void saveVaccinationSection(VisitsDetailsDTOTemp visitDetails,String centerId,long currentDate, FamilyMember findFamily) {
 
-            vaccinationRepository.save(Vaccination.builder()
-                    .familyId(findFamily.getFamilyId())
-                    .childId(visitDetails.getMemberId())
-                    .centerId(centerId)
-                    .centerName(commonMethodsService.findCenterName(centerId))
-                    .vaccinationCode(visitDetails.getVisitFor())
-                    .date(currentDate)
-                    .build());
+        vaccinationRepository.save(Vaccination.builder()
+                .familyId(findFamily.getFamilyId())
+                .childId(visitDetails.getMemberId())
+                .centerId(centerId)
+                .centerName(commonMethodsService.findCenterName(centerId))
+                .vaccinationCode(visitDetails.getVisitFor())
+                .date(currentDate)
+                .build());
 
-        saveVisitsSection(visitDetails,centerId,currentDate, findFamily);
+        saveVisitsSection(visitDetails, centerId, currentDate, findFamily);
     }
 
     @Override
@@ -1427,6 +1424,8 @@ public class FamilyServiceImpl implements FamilyService {
                 throw new CustomException("Member Id Not Passed");
             }
 
+            log.error("input"+visitsDetailsDTOTemp);
+
 
             FamilyMember findMember = familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).get();
 
@@ -1440,20 +1439,345 @@ public class FamilyServiceImpl implements FamilyService {
                     break;
 
                 case "3":
-                    saveVaccinationSection(visitsDetailsDTOTemp,centerId,currentDate,findMember);
+                    saveVaccinationSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
                     break;
 
                 case "4":
-                    saveVisitsSection(visitsDetailsDTOTemp,centerId,currentDate,findMember);
+                    saveVisitsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
                     break;
             }
 
-        }
-        else {
+        } else {
             throw new CustomException("Visit Category Not Passed, Please Check");
         }
 
         return visitsDetailsDTOTemp;
+    }
+
+    private void autoUpdateBirthVaccination(List<BabiesBirth> membersList) {
+
+        Set<String> uniqueMember = new HashSet<>();
+        for (BabiesBirth members : membersList) {
+            if (Arrays.stream(ApplicationConstants.ignoreCenters).noneMatch(members.getCenterId().trim()::equals)) {
+
+                if (uniqueMember.add(members.getMotherMemberId())) {
+                    LocalDate localDate = Instant.ofEpochMilli(members.getDob()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-4")
+                            .vaccinationName("OPV-0")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(14).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-5")
+                            .vaccinationName("HEPATITIS-B")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(members.getDob())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-6")
+                            .vaccinationName("B.C.G.")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(members.getDob())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-6")
+                            .vaccinationName("B.C.G.")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-7")
+                            .vaccinationName("OPV-1,2&3")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-7")
+                            .vaccinationName("OPV-1,2&3")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(70).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-7")
+                            .vaccinationName("OPV-1,2&3")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-8")
+                            .vaccinationName("PENTAVALENT-1,2&3")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-8")
+                            .vaccinationName("PENTAVALENT-1,2&3")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(70).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-8")
+                            .vaccinationName("PENTAVALENT-1,2&3")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-9")
+                            .vaccinationName("ROTAVIRUS")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-9")
+                            .vaccinationName("ROTAVIRUS")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(70).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-9")
+                            .vaccinationName("ROTAVIRUS")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-10")
+                            .vaccinationName("FIPV")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-10")
+                            .vaccinationName("FIPV")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-11")
+                            .vaccinationName("PCV")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(42).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-11")
+                            .vaccinationName("PCV")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(98).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-12")
+                            .vaccinationName("MEASLES_RUBELLA_FIRST_DOSE")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-13")
+                            .vaccinationName("PCV_BOOSTER")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(270).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-14")
+                            .vaccinationName("VITAMIN_A_FIRST_DOSE")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(270).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-15")
+                            .vaccinationName("DPT_BOOSTER_1")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-16")
+                            .vaccinationName("MEASLES_RUBELLA_SECOND_DOSE")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-17")
+                            .vaccinationName("OPV_BOOSTER")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-18")
+                            .vaccinationName("VITAMIN_A")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-19")
+                            .vaccinationName("DPT_BOOSTER_2")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(2190).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+                    vaccinationScheduleRepository.save(VaccinationSchedule.builder()
+                            .code("V-20")
+                            .vaccinationName("TD")
+                            .vaccinationDate(0)
+                            .centerId(members.getCenterId())
+                            .centerName(commonMethodsService.findCenterName(members.getCenterId()))
+                            .dueDate(localDate.plusDays(5840).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                            .familyId(members.getFamilyId())
+                            .memberId(members.getChildId())
+                            .build());
+
+
+
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public String autoUpdateCalendar() {
+
+//        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<BabiesBirth> findBB = babiesBirthRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        if (findBB.size() > 0) {
+            // below is the temp Methods- can be deleted later
+//            autoUpdateBeforePregnantVisits(findPdd);
+//            autoUpdatePregnancyVaccination(findPdd);
+//            autoUpdateBirthVisits(findBB);
+              autoUpdateBirthVaccination(findBB);
+            return "data Updated";
+
+        } else {
+            return "No data Available to Update";
+        }
+
     }
 
 
@@ -2049,33 +2373,33 @@ public class FamilyServiceImpl implements FamilyService {
 
                 List<AnganwadiChildren> findNonRegistered = anganwadiChildrenRepository.findAllByChildIdAndRegisteredTrueAndDeletedFalse(member.getId());
 
-            if(findNonRegistered.size()<=0) {
-                Date getMillis = new Date(member.getDob());
-                List<Family> findFamilyDetails = familyRepository.findAllByFamilyId(member.getFamilyId());
-                for (Family findDetails : findFamilyDetails) {
-                    minority = findDetails.getIsMinority();
-                    category = findDetails.getCategory();
-                }
+                if (findNonRegistered.size() <= 0) {
+                    Date getMillis = new Date(member.getDob());
+                    List<Family> findFamilyDetails = familyRepository.findAllByFamilyId(member.getFamilyId());
+                    for (Family findDetails : findFamilyDetails) {
+                        minority = findDetails.getIsMinority();
+                        category = findDetails.getCategory();
+                    }
 
-                HouseholdsChildren singeEntry = HouseholdsChildren.builder()
-                        .childName(member.getName())
-                        .motherName("")
-                        .fatherName("")
-                        .familyId(member.getFamilyId())
-                        .childId(member.getId())
-                        .dob(df.format(getMillis))
-                        .motherName(member.getMotherName())
-                        .fatherName(member.getFatherName())
-                        .memberCode(member.getMemberCode())
-                        .gender(member.getGender())
-                        .mobileNumber(member.getMobileNumber())
-                        .category(category)
-                        .minority(minority)
-                        .handicap(member.getHandicapType())
-                        .photoUrl(member.getPhoto())
-                        .build();
+                    HouseholdsChildren singeEntry = HouseholdsChildren.builder()
+                            .childName(member.getName())
+                            .motherName("")
+                            .fatherName("")
+                            .familyId(member.getFamilyId())
+                            .childId(member.getId())
+                            .dob(df.format(getMillis))
+                            .motherName(member.getMotherName())
+                            .fatherName(member.getFatherName())
+                            .memberCode(member.getMemberCode())
+                            .gender(member.getGender())
+                            .mobileNumber(member.getMobileNumber())
+                            .category(category)
+                            .minority(minority)
+                            .handicap(member.getHandicapType())
+                            .photoUrl(member.getPhoto())
+                            .build();
 
-                addList.add(singeEntry);
+                    addList.add(singeEntry);
                 }
             }
 
@@ -2252,6 +2576,7 @@ public class FamilyServiceImpl implements FamilyService {
                             .build();
 
                     addInList.add(addSingle);
+
                 }
             }
         }
@@ -2279,13 +2604,11 @@ public class FamilyServiceImpl implements FamilyService {
 
             addInList.add(visitArray);
         }
-
         return addInList;
     }
 
     @Override
     public List<MemberVisits> getMemberVisitDetailsLatest(String memberId, String centerId, String centerName) {
-
 
         List<MemberVisits> addInList = new ArrayList<>();
         MemberVisits memberVisits = new MemberVisits();
@@ -2349,13 +2672,13 @@ public class FamilyServiceImpl implements FamilyService {
             // Visit TILL_1_5_MONTHS
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
-                        .memberId(babiesBirth.getChildId())
-                        .centerId(visits.getCenterId())
-                        .centerName(visits.getCenterName())
-                        .visitType("6")
-                        .visitName("TILL_1_5_MONTHS")
-                        .dueDate(localDate.plusDays(31).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
-                        .build());
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("6")
+                    .visitName("TILL_1_5_MONTHS")
+                    .dueDate(localDate.plusDays(31).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                     .memberId(babiesBirth.getChildId())
@@ -2397,13 +2720,13 @@ public class FamilyServiceImpl implements FamilyService {
             // Visit TILL_6_8_MONTHS
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
-                        .memberId(babiesBirth.getChildId())
-                        .centerId(visits.getCenterId())
-                        .centerName(visits.getCenterName())
-                        .visitType("7")
-                        .visitName("TILL_6_8_MONTHS")
-                        .dueDate(localDate.plusDays(179).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
-                        .build());
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("7")
+                    .visitName("TILL_6_8_MONTHS")
+                    .dueDate(localDate.plusDays(179).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                     .memberId(babiesBirth.getChildId())
@@ -2427,13 +2750,13 @@ public class FamilyServiceImpl implements FamilyService {
             // Visit TILL_9_11_MONTHS
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
-                        .memberId(babiesBirth.getChildId())
-                        .centerId(visits.getCenterId())
-                        .centerName(visits.getCenterName())
-                        .visitType("8")
-                        .visitName("TILL_9_11_MONTHS")
-                        .dueDate(localDate.plusDays(269).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
-                        .build());
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("8")
+                    .visitName("TILL_9_11_MONTHS")
+                    .dueDate(localDate.plusDays(269).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                     .memberId(babiesBirth.getChildId())
@@ -2456,13 +2779,13 @@ public class FamilyServiceImpl implements FamilyService {
             // Visit TILL_12_17_MONTHS
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
-                        .memberId(babiesBirth.getChildId())
-                        .centerId(visits.getCenterId())
-                        .centerName(visits.getCenterName())
-                        .visitType("9")
-                        .visitName("TILL_12_17_MONTHS")
-                        .dueDate(localDate.plusDays(364).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
-                        .build());
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("9")
+                    .visitName("TILL_12_17_MONTHS")
+                    .dueDate(localDate.plusDays(364).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                     .memberId(babiesBirth.getChildId())
@@ -2513,13 +2836,13 @@ public class FamilyServiceImpl implements FamilyService {
             // Visit TILL_18_24_MONTHS
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
-                        .memberId(babiesBirth.getChildId())
-                        .centerId(visits.getCenterId())
-                        .centerName(visits.getCenterName())
-                        .visitType("10")
-                        .visitName("TILL_18_24_MONTHS")
-                        .dueDate(localDate.plusDays(539).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
-                        .build());
+                    .memberId(babiesBirth.getChildId())
+                    .centerId(visits.getCenterId())
+                    .centerName(visits.getCenterName())
+                    .visitType("10")
+                    .visitName("TILL_18_24_MONTHS")
+                    .dueDate(localDate.plusDays(539).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .build());
 
             houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
                     .memberId(babiesBirth.getChildId())
@@ -3262,7 +3585,7 @@ public class FamilyServiceImpl implements FamilyService {
         LocalDate endTime = Instant.ofEpochMilli(missedPeriod).atZone(ZoneId.systemDefault()).toLocalDate();
         Period diff = Period.between(startTime,endTime);
         log.error("gap "+Math.abs(diff.getMonths()));
-       return String.valueOf(Math.abs(diff.getMonths()));
+        return String.valueOf(Math.abs(diff.getMonths()));
     }
 
     @Override
@@ -4695,7 +5018,6 @@ public class FamilyServiceImpl implements FamilyService {
         } catch (NullPointerException | NoSuchElementException | ParseException e) {
             throw new CustomException("Child Not Found.");
         }
-
 
 
     }

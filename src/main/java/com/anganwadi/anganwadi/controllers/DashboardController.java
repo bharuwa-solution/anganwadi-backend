@@ -123,7 +123,7 @@ public class DashboardController {
         return anganwadiChildrenService.convertUnixToDate();
     }
 
-
+    @ApiIgnore
     @GetMapping("convertAttendanceUnixToDate")
     private List<AttendanceConverted> convertAttendanceUnixToDate() {
         return anganwadiChildrenService.convertAttendanceUnixToDate();
@@ -138,5 +138,12 @@ public class DashboardController {
     private List<VaccinationScheduleDTO> getVaccinationSchedule(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
         return familyService.getVaccinationSchedule(dashboardFilter);
     }
+
+    @ApiIgnore
+    @PostMapping("/autoUpdateCalendar")
+    private String autoUpdateCalendar(){
+        return familyService.autoUpdateCalendar();
+    }
+
 
 }

@@ -13,6 +13,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+
 }
 
 repositories {
@@ -20,7 +21,6 @@ repositories {
 }
 
 project.buildDir='../Project Details/War'
-
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
@@ -30,10 +30,6 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    configurations.implementation {
-    exclude group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
-}
-    implementation 'org.springframework.boot', name:'spring-boot-starter-log4j2'
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'org.modelmapper:modelmapper:3.0.0'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.1'
