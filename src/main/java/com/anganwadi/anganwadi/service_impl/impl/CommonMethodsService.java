@@ -1,5 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
+import com.anganwadi.anganwadi.domains.dto.SaveAdmissionDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
 import com.anganwadi.anganwadi.domains.entity.Family;
 import com.anganwadi.anganwadi.domains.entity.FamilyMember;
@@ -162,5 +163,41 @@ public class CommonMethodsService {
     public Family findFamily(String familyId) {
         return familyRepository.findByFamilyId(familyId);
     }
+    
+    public void checkAbove3Yrs(String dateForCheck) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date date = df.parse(dateForCheck);
+        long dob = date.getTime();
+
+        LocalDateTime check3YrsCriteria = LocalDateTime.now().minusYears(3);
+        ZonedDateTime zdt = ZonedDateTime.of(check3YrsCriteria, ZoneId.systemDefault());
+
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        log.info("Dob : " + dob);
+        log.info("Age Limit : " + convertToMills);
+        if (dob >= convertToMills) {
+            throw new CustomException("Children Below 3 Years, Can't be Added");
+        }
+
+    }
+    
+    public void checkBelow6yrs(String dateForCheck) throws ParseException{
+    	  DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+          Date date = df.parse(dateForCheck);
+          long dob = date.getTime();
+
+          LocalDateTime check6YrsCriteria = LocalDateTime.now().minusYears(6);
+          ZonedDateTime zdt = ZonedDateTime.of(check6YrsCriteria, ZoneId.systemDefault());
+
+          long convertToMills = zdt.toInstant().toEpochMilli();
+          log.info("Dob : " + dob);
+          log.info("Age Limit : " + convertToMills);
+          if (dob <= convertToMills) {
+              throw new CustomException("Children Above 6 Years, Can't be Added");
+          }
+    }
+    
 
 }

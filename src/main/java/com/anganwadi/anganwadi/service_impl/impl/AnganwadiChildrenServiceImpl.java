@@ -73,25 +73,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.mealsTypeRepository = mealsTypeRepository;
     }
 
-
-    private void checkAbove3Yrs(SaveAdmissionDTO saveAdmissionDTO) throws ParseException {
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
-        Date date = df.parse(saveAdmissionDTO.getDob());
-        long dob = date.getTime();
-
-        LocalDateTime check3YrsCriteria = LocalDateTime.now().minusYears(3);
-        ZonedDateTime zdt = ZonedDateTime.of(check3YrsCriteria, ZoneId.systemDefault());
-
-        long convertToMills = zdt.toInstant().toEpochMilli();
-        log.info("Dob : " + dob);
-        log.info("Age Limit : " + convertToMills);
-        if (dob >= convertToMills) {
-            throw new CustomException("Children Below 3 Years, Can't be Added");
-        }
-
-    }
-
+    
+    
     @Override
     public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId) throws ParseException, IOException {
         commonMethodsService.findCenterName(centerId);
@@ -107,7 +90,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         AnganwadiChildren saveAdmission = new AnganwadiChildren();
         SaveAdmissionDTO admissionDTO = new SaveAdmissionDTO();
 
-        checkAbove3Yrs(saveAdmissionDTO);
+       commonMethodsService.checkAbove3Yrs(saveAdmissionDTO.getDob());
+       commonMethodsService.checkBelow6yrs(saveAdmissionDTO.getDob());
 
         try {
             Family findFamily = familyRepository.findByFamilyId(saveAdmissionDTO.getFamilyId());
@@ -938,10 +922,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<ChildrenDTO> addInList = new ArrayList<>();
         
         List<FamilyMember> memberList = familyMemberRepository.findAllByCenterId(centerId);
-        
+       // log.error(centerId, memberList);
         
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterIdAndRegisteredTrue(centerId);
-
+       // log.error(centerId, childrenList);
         // Check 3 Years Criteria
         // Initially all the age group was added, but currently is was stop from backend && to avoid those old records, below ,condition is added"
         LocalDateTime date = LocalDateTime.now().minusYears(3);

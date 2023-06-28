@@ -2030,7 +2030,16 @@ public class FamilyServiceImpl implements FamilyService {
 
         long convertToMills = zdt.toInstant().toEpochMilli();
         log.info("Time "+convertToMills);
-
+        
+        
+		/*
+		 * LocalDateTime dateLess3Yrs = LocalDateTime.now().minusYears(3); ZonedDateTime
+		 * zoneDate = ZonedDateTime.of(dateLess3Yrs,ZoneId.systemDefault()); DateFormat
+		 * format = new SimpleDateFormat("dd-MM-yyyy"); long timeLess3Years =
+		 * zoneDate.toInstant().toEpochMilli();
+		 * log.info("3 years less time "+timeLess3Years);
+		 * ,'dob:{$lte:?2}'}-- it is placed in method.
+		 */
         List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId);
         String gender = "";
 
