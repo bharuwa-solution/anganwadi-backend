@@ -121,17 +121,17 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             if (findExistingRecord.size() > 0) {
             	for (AnganwadiChildren record : findExistingRecord) {
-            		if(record.getCenterId().equals(centerId)) {
+                    if (!record.getCenterId().equals(centerId)) {
                         throw new CustomException("Center id is different Kindly check and update");
                     }
-            			record.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
-            			record.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
-            			record.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
-            			record.setIsGoingSchool("0");
-            			record.setHandicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap());
-            			record.setProfilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic());
-            			record.setRegistered(saveAdmissionDTO.isRegistered());
-            			record.setDeleted(false);
+                    record.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
+                    record.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
+                    record.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
+                    record.setIsGoingSchool("0");
+                    record.setHandicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap());
+                    record.setProfilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic());
+                    record.setRegistered(saveAdmissionDTO.isRegistered());
+                    record.setDeleted(false);
             			anganwadiChildrenRepository.save(record);
             			id = record.getId();
 
@@ -699,7 +699,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .id(activities.getId())
                     .centerId(activities.getCenterId())
                     .centerName(centerDetails.getCenterName())
-                    .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
+                    .childrenCount(getChildrenPresentCounts(centerId, activities.getDate()))
                     .gaming(activities.isGaming())
                     .preEducation(activities.isPreEducation())
                     .cleaning(activities.isCleaning())
@@ -710,10 +710,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addList;
     }
 
-    private long getChildrenPresentCounts(String centerName, long date) {
+    private long getChildrenPresentCounts(String centerId, long date) {
 
         Set<String> uniqueStudents = new HashSet<>();
-        List<Attendance> findPresentCounts = attendanceRepository.findAllByDateAndCenterName(date, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<Attendance> findPresentCounts = attendanceRepository.findAllByDateAndCenterId(date, centerId, Sort.by(Sort.Direction.ASC, "createdDate"));
 
         if (findPresentCounts.size() > 0) {
             for (Attendance counts : findPresentCounts) {
@@ -754,7 +754,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .id(activities.getId())
                         .centerId(activities.getCenterId())
                         .centerName(centerDetails.getCenterName())
-                        .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
+                        .childrenCount(getChildrenPresentCounts(centerId, activities.getDate()))
                         .gaming(activities.isGaming())
                         .preEducation(activities.isPreEducation())
                         .cleaning(activities.isCleaning())
@@ -832,17 +832,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         List<SaveMeals> addInList = new ArrayList<>();
 
-        long checkAttendance = getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), timestamp);
+        long checkAttendance = getChildrenPresentCounts(centerId, timestamp);
 
         if (checkAttendance <= 0) {
             throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
         }
 
-
         for (SaveMeals mealsData : saveMeals) {
-
             if (mealsData.getTotalCalorie().length() > 0) {
-
                 totalCalorie = Long.parseLong(mealsData.getTotalCalorie()) * checkAttendance;
             }
 
@@ -851,7 +848,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             }
 
             List<Meals> checkMeals = mealsRepository.findAllByMealTypeAndCenterIdAndDate(mealsData.getMealType(), centerId, timestamp);
-            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(mealsData.getItemCode().trim());
+            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCodeAndMealType(mealsData.getItemCode().trim(), mealsData.getMealType().trim());
 
             if (checkItemCode.isPresent()) {
                 if (checkMeals.size() > 0) {
@@ -870,7 +867,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .build());
             } else {
                 log.error("Item Code Not Available" + mealsData.getItemCode().trim());
-//                throw new CustomException("Selected Food Item Is Not Available, Please Contact Anganwadi To Add In List");
+                throw new CustomException("Their is Some Issues in One Or More Food Item, Please Contact Anganwadi Team");
             }
 
             addInList.add(SaveMeals.builder()
@@ -894,7 +891,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<SaveMealsItems> addMealsList = new ArrayList<>();
 
         for (Meals ml : findMonthlyData) {
-            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(ml.getItemCode().trim());
+            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCodeAndMealType(ml.getItemCode().trim(), ml.getMealType().trim());
             if (ml.getDate() == date) {
                 addMealsList.add(
                         SaveMealsItems.builder()
@@ -910,8 +907,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                                 .build()
                 );
             }
-
-
         }
         return addMealsList;
 
@@ -944,7 +939,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 if (uniqueDate.add(getMeals.getDate())) {
                     addInList.add(MealsResponseDTO.builder()
                             .date(df.format(getMeals.getDate()))
-                            .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(getMeals.getCenterId()), getMeals.getDate()))
+                            .childrenCount(getChildrenPresentCounts(getMeals.getCenterId(), getMeals.getDate()))
                             .data(getMealsDetails(getMeals.getDate(), findMonthlyData))
                             .build());
                 }
@@ -1705,7 +1700,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         endTime = addOneDay.getTime();
 
         for (Meals meals : findMeals) {
-            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(meals.getItemCode());
+            Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCodeAndMealType(meals.getItemCode(), meals.getMealType());
 
             AnganwadiAahaarData singleList = AnganwadiAahaarData.builder()
                     .foodName(checkItemCode.get().getItemName())
@@ -1750,7 +1745,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     public List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
+        Set<String> uniqueMember = new HashSet<>();
 
         Date startTime = null, endTime = null;
 
@@ -1771,28 +1766,30 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         addOneDay.add(Calendar.DATE, 1);
         endTime = addOneDay.getTime();
 
-        List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonthCriteria(startTime, endTime, Sort.by(Sort.Direction.ASC, "createdDate"), dashboardFilter.getCenterId().trim());
+        List<WeightTracking> findChildren = weightTrackingRepository.findAllByMonthCriteria(startTime, endTime, Sort.by(Sort.Direction.DESC, "createdDate"), dashboardFilter.getCenterId().trim());
         List<WeightTrackingDTO> addInList = new ArrayList<>();
 
         addOneDay.add(Calendar.DATE, -1);
         endTime = addOneDay.getTime();
 
         for (WeightTracking tracking : findChildren) {
-            long getMills = tracking.getDate();
-            Date date = new Date(getMills);
+            if (uniqueMember.add(tracking.getChildId())) {
+                long getMills = tracking.getDate();
+                Date date = new Date(getMills);
 
-            WeightTrackingDTO addSingle = WeightTrackingDTO.builder()
-                    .familyId(tracking.getFamilyId())
-                    .centerId(tracking.getCenterId())
-                    .childId(tracking.getChildId())
-                    .date(df.format(date))
-                    .startDate(df.format(startTime))
-                    .endDate(df.format(endTime))
-                    .height(tracking.getHeight())
-                    .weight(tracking.getWeight())
-                    .bmi(calBMI(tracking.getHeight(), tracking.getWeight()))
-                    .build();
-            addInList.add(addSingle);
+                WeightTrackingDTO addSingle = WeightTrackingDTO.builder()
+                        .familyId(tracking.getFamilyId())
+                        .centerId(tracking.getCenterId())
+                        .childId(tracking.getChildId())
+                        .date(df.format(date))
+                        .startDate(df.format(startTime))
+                        .endDate(df.format(endTime))
+                        .height(tracking.getHeight())
+                        .weight(tracking.getWeight())
+                        .bmi(calBMI(tracking.getHeight(), tracking.getWeight()))
+                        .build();
+                addInList.add(addSingle);
+            }
         }
 
         return addInList;

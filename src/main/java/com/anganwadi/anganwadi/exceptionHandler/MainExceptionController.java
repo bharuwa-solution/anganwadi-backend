@@ -2,6 +2,7 @@ package com.anganwadi.anganwadi.exceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -86,19 +87,28 @@ public class MainExceptionController implements ErrorController {
         setBodyError.put("message", error.getHeaderName() + " Is Missing, Please Check !!!");
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
-//
-//    @ExceptionHandler(NoSuchElementException.class)
-//    private ResponseEntity<?> handleHeadersError(NoSuchElementException error) {
-//        log.error(error.getMessage());
-//        Map<String, Object> setBodyError = new HashMap<>();
-//        setBodyError.put("status", HttpStatus.BAD_REQUEST);
-//        setBodyError.put("error",error.getMessage());
-//        setBodyError.put("message","Some Data is Missing or Deleted,Please Check With Team!!!");
-//        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
-//    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    private ResponseEntity<?> handleHeadersError(NoSuchElementException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.BAD_REQUEST);
+        setBodyError.put("error",error.getMessage());
+        setBodyError.put("message","Some Data is Missing or Deleted,Please Check With Team!!!");
+        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(IndexOutOfBoundsException.class)
     private ResponseEntity<?> handleOutOfBondsException(IndexOutOfBoundsException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.BAD_REQUEST);
+        setBodyError.put("message",error.getMessage());
+        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
+    private ResponseEntity<?> handleOutOfSizeException(IncorrectResultSizeDataAccessException error) {
         log.error(error.getMessage());
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.BAD_REQUEST);

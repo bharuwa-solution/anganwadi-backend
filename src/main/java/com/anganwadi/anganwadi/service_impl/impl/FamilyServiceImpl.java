@@ -1366,6 +1366,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     private void saveWeightsSection(VisitsDetailsDTOTemp weightRecords,String centerId,long currentDate, FamilyMember findFamily) {
 
+
         weightTrackingRepository.save(WeightTracking.builder()
                 .familyId(findFamily.getFamilyId())
                 .childId(weightRecords.getMemberId())
@@ -1751,8 +1752,6 @@ public class FamilyServiceImpl implements FamilyService {
                             .familyId(members.getFamilyId())
                             .memberId(members.getChildId())
                             .build());
-
-
 
                 }
             }

@@ -1,0 +1,100 @@
+2023-06-28 12:19:01.441+0530 INFO  ---  [restartedMain]  Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 26720 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-28 12:19:01.441+0530 INFO  ---  [restartedMain]  Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 26720 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-28 12:19:01.447+0530 DEBUG  ---  [restartedMain]  Running with Spring Boot v2.7.1, Spring v5.3.21
+2023-06-28 12:19:01.447+0530 DEBUG  ---  [restartedMain]  Running with Spring Boot v2.7.1, Spring v5.3.21
+2023-06-28 12:19:01.450+0530 INFO  ---  [restartedMain]  No active profile set, falling back to 1 default profile: "default"
+2023-06-28 12:19:01.450+0530 INFO  ---  [restartedMain]  No active profile set, falling back to 1 default profile: "default"
+2023-06-28 12:19:01.634+0530 INFO  ---  [restartedMain]  Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-28 12:19:01.634+0530 INFO  ---  [restartedMain]  For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-28 12:19:04.385+0530 INFO  ---  [restartedMain]  Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-28 12:19:04.824+0530 INFO  ---  [restartedMain]  Finished Spring Data repository scanning in 427 ms. Found 22 MongoDB repository interfaces.
+2023-06-28 12:19:07.236+0530 INFO  ---  [restartedMain]  Tomcat initialized with port(s): 8080 (http)
+2023-06-28 12:19:07.272+0530 INFO  ---  [restartedMain]  Initializing ProtocolHandler ["http-nio-8080"]
+2023-06-28 12:19:07.276+0530 INFO  ---  [restartedMain]  Starting service [Tomcat]
+2023-06-28 12:19:07.276+0530 INFO  ---  [restartedMain]  Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-28 12:19:07.512+0530 INFO  ---  [restartedMain]  Initializing Spring embedded WebApplicationContext
+2023-06-28 12:19:07.513+0530 INFO  ---  [restartedMain]  Root WebApplicationContext: initialization completed in 5878 ms
+2023-06-28 12:19:08.436+0530 INFO  ---  [restartedMain]  MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@77dfd54d]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-28 12:19:08.446+0530 INFO  ---  [cluster-ClusterId{value='649bd7e495a4864540b283b7', description='null'}-localhost:27017]  Opened connection [connectionId{localValue:2, serverValue:679}] to localhost:27017
+2023-06-28 12:19:08.446+0530 INFO  ---  [cluster-rtt-ClusterId{value='649bd7e495a4864540b283b7', description='null'}-localhost:27017]  Opened connection [connectionId{localValue:1, serverValue:680}] to localhost:27017
+2023-06-28 12:19:08.448+0530 INFO  ---  [cluster-ClusterId{value='649bd7e495a4864540b283b7', description='null'}-localhost:27017]  Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=66041500}
+2023-06-28 12:19:10.798+0530 DEBUG  ---  [restartedMain]  Filter 'getUrl' configured for use
+2023-06-28 12:19:10.798+0530 DEBUG  ---  [restartedMain]  Filter 'getUrl' configured for use
+2023-06-28 12:19:10.967+0530 INFO  ---  [restartedMain]  LiveReload server is running on port 35729
+2023-06-28 12:19:14.012+0530 INFO  ---  [restartedMain]  Adding welcome page: class path resource [static/index.html]
+2023-06-28 12:19:14.550+0530 WARN  ---  [restartedMain]  Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-28 12:19:15.679+0530 INFO  ---  [restartedMain]  Starting ProtocolHandler ["http-nio-8080"]
+2023-06-28 12:19:15.714+0530 INFO  ---  [restartedMain]  Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-28 12:19:17.945+0530 INFO  ---  [restartedMain]  Started AnganwadiApplication in 17.344 seconds (JVM running for 19.672)
+2023-06-28 12:19:17.945+0530 INFO  ---  [restartedMain]  Started AnganwadiApplication in 17.344 seconds (JVM running for 19.672)
+2023-06-28 12:19:39.042+0530 INFO  ---  [http-nio-8080-exec-1]  Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-28 12:19:39.042+0530 INFO  ---  [http-nio-8080-exec-1]  Initializing Servlet 'dispatcherServlet'
+2023-06-28 12:19:39.046+0530 INFO  ---  [http-nio-8080-exec-1]  Completed initialization in 4 ms
+2023-06-28 12:19:39.062+0530 INFO  ---  [http-nio-8080-exec-1]  API URL : /api/swagger-ui/
+2023-06-28 12:19:39.062+0530 INFO  ---  [http-nio-8080-exec-1]  API URL : /api/swagger-ui/
+2023-06-28 12:19:39.908+0530 INFO  ---  [http-nio-8080-exec-4]  API URL : /api/swagger-resources/configuration/ui
+2023-06-28 12:19:39.908+0530 INFO  ---  [http-nio-8080-exec-4]  API URL : /api/swagger-resources/configuration/ui
+2023-06-28 12:19:40.573+0530 INFO  ---  [http-nio-8080-exec-3]  API URL : /api/swagger-resources/configuration/security
+2023-06-28 12:19:40.573+0530 INFO  ---  [http-nio-8080-exec-3]  API URL : /api/swagger-resources/configuration/security
+2023-06-28 12:19:40.637+0530 INFO  ---  [http-nio-8080-exec-9]  API URL : /api/swagger-resources
+2023-06-28 12:19:40.637+0530 INFO  ---  [http-nio-8080-exec-9]  API URL : /api/swagger-resources
+2023-06-28 12:19:40.744+0530 INFO  ---  [http-nio-8080-exec-5]  API URL : /api/v2/api-docs
+2023-06-28 12:19:40.744+0530 INFO  ---  [http-nio-8080-exec-5]  API URL : /api/v2/api-docs
+2023-06-28 12:20:01.888+0530 INFO  ---  [restartedMain]  Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 23340 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-28 12:20:01.888+0530 INFO  ---  [restartedMain]  Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 23340 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-28 12:20:01.894+0530 DEBUG  ---  [restartedMain]  Running with Spring Boot v2.7.1, Spring v5.3.21
+2023-06-28 12:20:01.894+0530 DEBUG  ---  [restartedMain]  Running with Spring Boot v2.7.1, Spring v5.3.21
+2023-06-28 12:20:01.895+0530 INFO  ---  [restartedMain]  No active profile set, falling back to 1 default profile: "default"
+2023-06-28 12:20:01.895+0530 INFO  ---  [restartedMain]  No active profile set, falling back to 1 default profile: "default"
+2023-06-28 12:20:02.043+0530 INFO  ---  [restartedMain]  Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-28 12:20:02.044+0530 INFO  ---  [restartedMain]  For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-28 12:20:04.662+0530 INFO  ---  [restartedMain]  Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-28 12:20:04.937+0530 INFO  ---  [restartedMain]  Finished Spring Data repository scanning in 265 ms. Found 22 MongoDB repository interfaces.
+2023-06-28 12:20:06.289+0530 INFO  ---  [restartedMain]  Tomcat initialized with port(s): 8080 (http)
+2023-06-28 12:20:06.300+0530 INFO  ---  [restartedMain]  Initializing ProtocolHandler ["http-nio-8080"]
+2023-06-28 12:20:06.302+0530 INFO  ---  [restartedMain]  Starting service [Tomcat]
+2023-06-28 12:20:06.302+0530 INFO  ---  [restartedMain]  Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-28 12:20:06.397+0530 INFO  ---  [restartedMain]  Initializing Spring embedded WebApplicationContext
+2023-06-28 12:20:06.398+0530 INFO  ---  [restartedMain]  Root WebApplicationContext: initialization completed in 4353 ms
+2023-06-28 12:20:06.879+0530 INFO  ---  [restartedMain]  MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@631a268]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-28 12:20:06.931+0530 INFO  ---  [cluster-ClusterId{value='649bd81ee7deb16819c325ef', description='null'}-localhost:27017]  Opened connection [connectionId{localValue:1, serverValue:681}] to localhost:27017
+2023-06-28 12:20:06.931+0530 INFO  ---  [cluster-rtt-ClusterId{value='649bd81ee7deb16819c325ef', description='null'}-localhost:27017]  Opened connection [connectionId{localValue:2, serverValue:682}] to localhost:27017
+2023-06-28 12:20:06.932+0530 INFO  ---  [cluster-ClusterId{value='649bd81ee7deb16819c325ef', description='null'}-localhost:27017]  Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=83918300}
+2023-06-28 12:20:08.153+0530 DEBUG  ---  [restartedMain]  Filter 'getUrl' configured for use
+2023-06-28 12:20:08.153+0530 DEBUG  ---  [restartedMain]  Filter 'getUrl' configured for use
+2023-06-28 12:20:08.249+0530 INFO  ---  [restartedMain]  LiveReload server is running on port 35729
+2023-06-28 12:20:11.681+0530 INFO  ---  [restartedMain]  Adding welcome page: class path resource [static/index.html]
+2023-06-28 12:20:12.129+0530 WARN  ---  [restartedMain]  Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-28 12:20:13.456+0530 INFO  ---  [restartedMain]  Starting ProtocolHandler ["http-nio-8080"]
+2023-06-28 12:20:13.495+0530 INFO  ---  [restartedMain]  Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-28 12:20:16.260+0530 INFO  ---  [restartedMain]  Started AnganwadiApplication in 15.221 seconds (JVM running for 17.872)
+2023-06-28 12:20:16.260+0530 INFO  ---  [restartedMain]  Started AnganwadiApplication in 15.221 seconds (JVM running for 17.872)
+2023-06-28 12:20:55.263+0530 INFO  ---  [restartedMain]  Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 3212 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-28 12:20:55.263+0530 INFO  ---  [restartedMain]  Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 3212 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-28 12:20:55.269+0530 DEBUG  ---  [restartedMain]  Running with Spring Boot v2.7.1, Spring v5.3.21
+2023-06-28 12:20:55.269+0530 DEBUG  ---  [restartedMain]  Running with Spring Boot v2.7.1, Spring v5.3.21
+2023-06-28 12:20:55.270+0530 INFO  ---  [restartedMain]  No active profile set, falling back to 1 default profile: "default"
+2023-06-28 12:20:55.270+0530 INFO  ---  [restartedMain]  No active profile set, falling back to 1 default profile: "default"
+2023-06-28 12:20:55.428+0530 INFO  ---  [restartedMain]  Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-28 12:20:55.428+0530 INFO  ---  [restartedMain]  For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-28 12:20:58.185+0530 INFO  ---  [restartedMain]  Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-28 12:20:58.537+0530 INFO  ---  [restartedMain]  Finished Spring Data repository scanning in 342 ms. Found 22 MongoDB repository interfaces.
+2023-06-28 12:21:00.737+0530 INFO  ---  [restartedMain]  Tomcat initialized with port(s): 8080 (http)
+2023-06-28 12:21:00.754+0530 INFO  ---  [restartedMain]  Initializing ProtocolHandler ["http-nio-8080"]
+2023-06-28 12:21:00.755+0530 INFO  ---  [restartedMain]  Starting service [Tomcat]
+2023-06-28 12:21:00.756+0530 INFO  ---  [restartedMain]  Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-28 12:21:00.854+0530 INFO  ---  [restartedMain]  Initializing Spring embedded WebApplicationContext
+2023-06-28 12:21:00.854+0530 INFO  ---  [restartedMain]  Root WebApplicationContext: initialization completed in 5425 ms
+2023-06-28 12:21:01.303+0530 INFO  ---  [restartedMain]  MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@20f2fcf]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-28 12:21:01.326+0530 INFO  ---  [cluster-rtt-ClusterId{value='649bd855bdd06615f512ee5b', description='null'}-localhost:27017]  Opened connection [connectionId{localValue:1, serverValue:683}] to localhost:27017
+2023-06-28 12:21:01.326+0530 INFO  ---  [cluster-ClusterId{value='649bd855bdd06615f512ee5b', description='null'}-localhost:27017]  Opened connection [connectionId{localValue:2, serverValue:684}] to localhost:27017
+2023-06-28 12:21:01.327+0530 INFO  ---  [cluster-ClusterId{value='649bd855bdd06615f512ee5b', description='null'}-localhost:27017]  Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=50899500}
+2023-06-28 12:21:02.774+0530 DEBUG  ---  [restartedMain]  Filter 'getUrl' configured for use
+2023-06-28 12:21:02.774+0530 DEBUG  ---  [restartedMain]  Filter 'getUrl' configured for use
+2023-06-28 12:21:02.871+0530 INFO  ---  [restartedMain]  LiveReload server is running on port 35729
+2023-06-28 12:21:05.163+0530 INFO  ---  [restartedMain]  Adding welcome page: class path resource [static/index.html]
+2023-06-28 12:21:05.463+0530 WARN  ---  [restartedMain]  Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-28 12:21:06.204+0530 INFO  ---  [restartedMain]  Starting ProtocolHandler ["http-nio-8080"]
+2023-06-28 12:21:06.230+0530 INFO  ---  [restartedMain]  Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-28 12:21:07.973+0530 INFO  ---  [restartedMain]  Started AnganwadiApplication in 13.648 seconds (JVM running for 15.864)
+2023-06-28 12:21:07.973+0530 INFO  ---  [restartedMain]  Started AnganwadiApplication in 13.648 seconds (JVM running for 15.864)
