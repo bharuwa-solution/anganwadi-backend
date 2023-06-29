@@ -77,7 +77,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     
     @Override
     public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId) throws ParseException, IOException {
-        commonMethodsService.findCenterName(centerId);
+        //commonMethodsService.findCenterName(centerId);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
@@ -150,7 +150,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         			.mobileNumber(familyMember.getMobileNumber() == null ? "" : familyMember.getMobileNumber())
         			.handicap(saveAdmission.getHandicap() == null ? "" : saveAdmission.getHandicap())
         			.profilePic(saveAdmission.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
-        			.centerName(commonMethodsService.findCenterName(centerId))
+        			.centerName(familyMember.getCenterName())
         			.fatherName(saveAdmissionDTO.getFatherName()==null?"":saveAdmissionDTO.getFatherName())
         			.motherName(saveAdmissionDTO.getMotherName()==null?"":saveAdmissionDTO.getMotherName())
         			.minority(findFamily.getIsMinority()==null?"":findFamily.getIsMinority())

@@ -24,22 +24,22 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
     @Query("{'createdDate':{$gte:?0,$lte:?1},'name':{$regex:?2,'$options':i},'centerId':{$regex:?3}}")
     List<AnganwadiChildren> findAllByCreatedDateAndSearch(Date startDate, Date endDate, String search, String centerId);
 
-    @Query("{'centerName':?0,'isRegistered':true,'deleted':false}")
+  /*  @Query("{'centerName':?0,'isRegistered':true,'deleted':false}")
     List<AnganwadiChildren> findAllByCenterNameAndRegisteredTrue(String centerName);
-
-    @Query("{'centerName':?0,'isRegistered':false}")
+*/
+   /* @Query("{'centerName':?0,'isRegistered':false}")
     List<AnganwadiChildren> findAllByCenterNameAndRegisteredFalse(String centerName);
-
+*/
     @Query("{'childId':?0,'isRegistered':true}")
     List<AnganwadiChildren> findAllByChildIdAndRegisteredTrue(String id);
 
     void deleteAllByChildId(String primaryId);
 
-    @Query("{'childId':{$in:[?0]}, 'centerName':?1,'isRegistered':true}")
+  /*  @Query("{'childId':{$in:[?0]}, 'centerName':?1,'isRegistered':true}")
     List<AnganwadiChildren> findAllByChildIdAndCenterNameAndRegisteredTrue(String childId, String centerName);
-
-    @Query(value = "{'centerName':?0,'isRegistered':true}", count = true)
-    long countByCenterNameAndRegisteredTrue(String centerName);
+*/
+    @Query(value = "{'centerId':?0,'isRegistered':true}", count = true)
+    long countByCenterIdAndRegisteredTrue(String centerId);
 
     @Query("{'childId':?0,$or:[{'isRegistered':true,'deleted':false}]}")
     List<AnganwadiChildren> findAllByChildIdAndRegisteredTrueAndDeletedFalse(String id);

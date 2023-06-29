@@ -53,6 +53,7 @@ public class CommonMethodsService {
         }
     }
 
+
     public String startDateOfMonth() {
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return formatters.format(LocalDate.now().withDayOfMonth(1));
@@ -91,8 +92,8 @@ public class CommonMethodsService {
        Date date = df.parse(convertToString);
 
        log.info("Date : "+date.getTime());
-       long totalStudents = anganwadiChildrenRepository.countByCenterNameAndRegisteredTrue(findCenterName(centerId).trim());
-       long todayAttendance = attendanceRepository.countByDateAndCenterName(date.getTime(),findCenterName(centerId).trim(), Sort.by(Sort.Direction.DESC, "createdDate"));
+       long totalStudents = anganwadiChildrenRepository.countByCenterIdAndRegisteredTrue(centerId);
+       long todayAttendance = attendanceRepository.countByDateAndCenterId(date.getTime(),centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
 
        return todayAttendance+"/"+totalStudents;
 
