@@ -77,7 +77,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     
     @Override
     public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId) throws ParseException, IOException {
-        commonMethodsService.findCenterName(centerId);
+        //commonMethodsService.findCenterName(centerId);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
@@ -150,7 +150,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         			.mobileNumber(familyMember.getMobileNumber() == null ? "" : familyMember.getMobileNumber())
         			.handicap(saveAdmission.getHandicap() == null ? "" : saveAdmission.getHandicap())
         			.profilePic(saveAdmission.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
-        			.centerName(commonMethodsService.findCenterName(centerId))
+        			.centerName(familyMember.getCenterName())
         			.fatherName(saveAdmissionDTO.getFatherName()==null?"":saveAdmissionDTO.getFatherName())
         			.motherName(saveAdmissionDTO.getMotherName()==null?"":saveAdmissionDTO.getMotherName())
         			.minority(findFamily.getIsMinority()==null?"":findFamily.getIsMinority())
@@ -683,7 +683,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .id(activities.getId())
                     .centerId(activities.getCenterId())
                     .centerName(centerDetails.getCenterName())
-                    .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
+                    .childrenCount(getChildrenPresentCounts(centerId, activities.getDate()))
                     .gaming(activities.isGaming())
                     .preEducation(activities.isPreEducation())
                     .cleaning(activities.isCleaning())
@@ -694,10 +694,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addList;
     }
 
-    private long getChildrenPresentCounts(String centerName, long date) {
+    private long getChildrenPresentCounts(String centerId, long date) {
 
         Set<String> uniqueStudents = new HashSet<>();
-        List<Attendance> findPresentCounts = attendanceRepository.findAllByDateAndCenterName(date, centerName, Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<Attendance> findPresentCounts = attendanceRepository.findAllByDateAndCenterId(date, centerId, Sort.by(Sort.Direction.ASC, "createdDate"));
 
         if (findPresentCounts.size() > 0) {
             for (Attendance counts : findPresentCounts) {
@@ -738,7 +738,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .id(activities.getId())
                         .centerId(activities.getCenterId())
                         .centerName(centerDetails.getCenterName())
-                        .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), activities.getDate()))
+                        .childrenCount(getChildrenPresentCounts(centerId, activities.getDate()))
                         .gaming(activities.isGaming())
                         .preEducation(activities.isPreEducation())
                         .cleaning(activities.isCleaning())
@@ -816,7 +816,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         List<SaveMeals> addInList = new ArrayList<>();
 
-        long checkAttendance = getChildrenPresentCounts(commonMethodsService.findCenterName(centerId), timestamp);
+        long checkAttendance = getChildrenPresentCounts(centerId, timestamp);
 
         if (checkAttendance <= 0) {
             throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
@@ -928,7 +928,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 if (uniqueDate.add(getMeals.getDate())) {
                     addInList.add(MealsResponseDTO.builder()
                             .date(df.format(getMeals.getDate()))
-                            .childrenCount(getChildrenPresentCounts(commonMethodsService.findCenterName(getMeals.getCenterId()), getMeals.getDate()))
+                            .childrenCount(getChildrenPresentCounts(getMeals.getCenterId(), getMeals.getDate()))
                             .data(getMealsDetails(getMeals.getDate(), findMonthlyData))
                             .build());
                 }

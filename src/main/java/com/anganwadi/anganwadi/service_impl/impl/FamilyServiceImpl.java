@@ -241,7 +241,7 @@ public class FamilyServiceImpl implements FamilyService {
         String icdsService = householdsDTO.getIcdsService() == null ? "" : householdsDTO.getIcdsService();
         String headGender = householdsDTO.getHeadGender() == null ? "" : householdsDTO.getHeadGender();
 
-        commonMethodsService.findCenterName(centerID);
+        //commonMethodsService.findCenterName(centerID);
 
 
         long currentTime = System.currentTimeMillis();
@@ -343,7 +343,7 @@ public class FamilyServiceImpl implements FamilyService {
         log.info("centerId " + centerId);
         log.info("centerName " + centerName);
 
-        commonMethodsService.findCenterName(centerId);
+        //commonMethodsService.findCenterName(centerId);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = df.parse(familyMemberDTO.getDob());
@@ -2356,20 +2356,23 @@ public class FamilyServiceImpl implements FamilyService {
         log.info("Time "+convertToMills);
         
         
-		/*
-		 * LocalDateTime dateLess3Yrs = LocalDateTime.now().minusYears(3); ZonedDateTime
-		 * zoneDate = ZonedDateTime.of(dateLess3Yrs,ZoneId.systemDefault()); DateFormat
-		 * format = new SimpleDateFormat("dd-MM-yyyy"); long timeLess3Years =
-		 * zoneDate.toInstant().toEpochMilli();
-		 * log.info("3 years less time "+timeLess3Years);
-		 * ,'dob:{$lte:?2}'}-- it is placed in method.
-		 */
+         LocalDateTime dateLess3Yrs = LocalDateTime.now().minusYears(3); ZonedDateTime
+		  zoneDate = ZonedDateTime.of(dateLess3Yrs,ZoneId.systemDefault()); DateFormat
+		  format = new SimpleDateFormat("dd-MM-yyyy");
+		  long timeLess3Years = zoneDate.toInstant().toEpochMilli();
+		 /** log.info("3 years less time "+timeLess3Years);
+		 *,'dob:{$lte:?2}'}-- it is placed in method
+          * */
         List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId);
         String gender = "";
 
         if (findAllChildren.size() > 0) {
             String minority = "", category = "";
             for (FamilyMember member : findAllChildren) {
+
+                if(member.getDob()>=timeLess3Years){
+                    continue;
+                }
 
                 List<AnganwadiChildren> findNonRegistered = anganwadiChildrenRepository.findAllByChildIdAndRegisteredTrueAndDeletedFalse(member.getId());
 
