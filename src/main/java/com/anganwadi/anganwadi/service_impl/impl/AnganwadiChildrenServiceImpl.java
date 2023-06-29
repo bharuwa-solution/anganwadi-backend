@@ -73,25 +73,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         this.mealsTypeRepository = mealsTypeRepository;
     }
 
-
-    private void checkAbove3Yrs(SaveAdmissionDTO saveAdmissionDTO) throws ParseException {
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
-        Date date = df.parse(saveAdmissionDTO.getDob());
-        long dob = date.getTime();
-
-        LocalDateTime check3YrsCriteria = LocalDateTime.now().minusYears(3);
-        ZonedDateTime zdt = ZonedDateTime.of(check3YrsCriteria, ZoneId.systemDefault());
-
-        long convertToMills = zdt.toInstant().toEpochMilli();
-        log.info("Dob : " + dob);
-        log.info("Age Limit : " + convertToMills);
-        if (dob >= convertToMills) {
-            throw new CustomException("Children Below 3 Years, Can't be Added");
-        }
-
-    }
-
+    
+    
     @Override
     public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId) throws ParseException, IOException {
         commonMethodsService.findCenterName(centerId);
@@ -107,7 +90,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         AnganwadiChildren saveAdmission = new AnganwadiChildren();
        String id = "";
 
-        checkAbove3Yrs(saveAdmissionDTO);
+       commonMethodsService.checkAbove3Yrs(saveAdmissionDTO.getDob());
+       commonMethodsService.checkBelow6yrs(saveAdmissionDTO.getDob());
 
         try {
             Family findFamily = familyRepository.findByFamilyId(saveAdmissionDTO.getFamilyId());
@@ -956,10 +940,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<ChildrenDTO> addInList = new ArrayList<>();
         
         List<FamilyMember> memberList = familyMemberRepository.findAllByCenterId(centerId);
+       // log.error(centerId, memberList);
         
        // System.out.println(memberList);
         
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterIdAndRegisteredTrue(centerId);
+       // log.error(centerId, childrenList);
         //System.out.println(childrenList);
 
         //List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterId();
@@ -1020,7 +1006,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 //    public DashboardDetails getDashboardDetails() {
 //        return null;
 //    }
-
+//
 
     @Override
     public List<AttendanceDTO> getAttendanceByDate(String date, String centerId) throws ParseException {
@@ -1048,22 +1034,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                         .centerId(singleRecord.getCenterId() == null ? "" : singleRecord.getCenterId())
                         .latitude(singleRecord.getLatitude() == null ? "" : singleRecord.getLatitude())
                         .longitude(singleRecord.getLongitude() == null ? "" : singleRecord.getLongitude())
-// <<<<<<HEAD
+
                         .name(memberDetails.getName() == null ? "" : memberDetails.getName())
-//==//===
+
                         .name(commonMethodsService.findMember(singleRecord.getChildId()).getName()==null?"":commonMethodsService.findMember(singleRecord.getChildId()).getName())
-//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
+
                         .attType(singleRecord.getAttType() == null ? "" : singleRecord.getAttType())
                         .att(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
-// <<<<<<HEAD
+
                         .centerName(memberDetails.getCenterName())
                         .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
                         .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
-//==//===
+
                         .centerName(memberDetails.getCenterName())
                         .gender(commonMethodsService.findMember(singleRecord.getChildId()).getGender()==null?"":commonMethodsService.findMember(singleRecord.getChildId()).getGender())
                         //.dob(singleRecord.getDob())
-//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                         .photo(singleRecord.getPhoto() == null ? "" : singleRecord.getPhoto())
                         .attendance(singleRecord.getAttendance() == null ? "" : singleRecord.getAttendance())
                         .date(singleRecord.getDate())
