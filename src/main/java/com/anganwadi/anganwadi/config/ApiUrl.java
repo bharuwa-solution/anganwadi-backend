@@ -15,6 +15,7 @@ public class ApiUrl extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("API URL : " + request.getRequestURI());
+        log.info("source :"+request.getContextPath());
 
         filterChain.doFilter(request, response);
     }
