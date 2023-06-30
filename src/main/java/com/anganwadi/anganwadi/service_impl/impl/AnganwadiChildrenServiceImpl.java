@@ -812,12 +812,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         String formatToString = df.format(currentTime.getTime());
         Date formatToTime = df.parse(formatToString);
         long timestamp = formatToTime.getTime();
+        log.error("timestamp is : "+timestamp);
         long totalCalorie = 0, totalProtein = 0;
 
         List<SaveMeals> addInList = new ArrayList<>();
 
         long checkAttendance = getChildrenPresentCounts(centerId, timestamp);
-
+        log.error("Attandance data "+checkAttendance);
         if (checkAttendance <= 0) {
             throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
         }
@@ -1797,12 +1798,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         } else {
             startTime = df.parse(commonMethodsService.startDateOfMonth()).getTime();
         }
-
+        
         if (dashboardFilter.getEndDate().trim().length() > 0) {
             endTime = df.parse(dashboardFilter.getEndDate().trim()).getTime();
         } else {
             endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
         }
+
+		/*
+		 * if (dashboardFilter.getEndDate().trim().length() > 0) { endTime =
+		 * df.parse(dashboardFilter.getEndDate().trim()).getTime(); } else { endTime =
+		 * df.parse(commonMethodsService.endDateOfMonth()).getTime(); }
+		 */
 
         List<Attendance> findAllList = attendanceRepository.findAllByDateRange(startTime, endTime, dashboardFilter.getCenterId());
 

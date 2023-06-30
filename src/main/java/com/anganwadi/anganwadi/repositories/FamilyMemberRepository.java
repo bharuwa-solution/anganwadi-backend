@@ -45,9 +45,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'_id':?0, 'name':{$regex:?1,'$options':i}}")
     List<FamilyMember> findAllByIdAndNameSearch(String memberId, String name);
-    //,'dob:{$lte:?2}'}
-    //,long timeLess3Years
-    @Query("{'dob':{$gte:?0},'centerId':?1")
+   
+    @Query("{'dob':{$gte:?0},'centerId':{$regex:?1}}")
     List<FamilyMember> findAllByDobAndCenterId(long convertToMills, String centerId);
 
     @Query("{'dob':{$gte:?1},'centerId':?0}")
@@ -73,8 +72,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'centerName':?0,'dob':{$gte:?1}}")
     List<FamilyMember> findAllFamilyChildrenByCenterId(String centerName, long convertToMills, Sort createdDate);
 
-    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dob':{$gte:?3}}")
-    List<FamilyMember> findAllBeneficiaryChildren(Date startTime, Date endTime, String centerId, long millis);
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dob':{$gte:?3,$lte:?4}}")
+    List<FamilyMember> findAllBeneficiaryChildren(Date startTime, Date endTime, String centerId, long millis,long millis3monthsBack);
 
     @Query(value = "{'dob':{$gte:?0}, 'centerId':?1}", count = true)
     long countChildrenByCenterId(long convertToMills, String centerId);

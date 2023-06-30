@@ -147,8 +147,7 @@ public class FamilyServiceImpl implements FamilyService {
             }
 
         }
-
-
+        
         return totalChildren;
     }
 
@@ -325,6 +324,7 @@ public class FamilyServiceImpl implements FamilyService {
         String relationShip = familyMemberDTO.getRelationWithOwner() == null ? "" : familyMemberDTO.getRelationWithOwner();
         String gender = familyMemberDTO.getGender() == null ? "" : familyMemberDTO.getGender();
         String dob = familyMemberDTO.getDob() == null ? "" : familyMemberDTO.getDob();
+        log.error("dob from frontend: "+dob);
         String martialStatus = familyMemberDTO.getMaritalStatus() == null ? "" : familyMemberDTO.getMaritalStatus();
         String stateCode = familyMemberDTO.getStateCode() == null ? "" : familyMemberDTO.getStateCode();
         String handicap = familyMemberDTO.getHandicap() == null ? "" : familyMemberDTO.getHandicap();
@@ -343,11 +343,13 @@ public class FamilyServiceImpl implements FamilyService {
         log.info("centerId " + centerId);
         log.info("centerName " + centerName);
 
-        //commonMethodsService.findCenterName(centerId);
+        commonMethodsService.findCenterName(centerId);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = df.parse(familyMemberDTO.getDob());
         long mills = date.getTime();
+        
+        log.error("date in millis is :  "+mills);
         String headCategory = "";
 
         List<Family> findHod = familyRepository.findAllByFamilyId(familyMemberDTO.getFamilyId());
@@ -907,6 +909,11 @@ public class FamilyServiceImpl implements FamilyService {
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
         long convertToMills = zdt.toInstant().toEpochMilli();
+        
+        LocalDateTime dateFor3Years = LocalDateTime.now().minusYears(3);
+        ZonedDateTime zdt2 = ZonedDateTime.of(dateFor3Years,ZoneId.systemDefault());
+        long date3MonthsBack = zdt2.toInstant().toEpochMilli();
+
 
         // Beneficiary dharti
         LocalDateTime dhartiDate = LocalDateTime.now().minusMonths(6);
@@ -925,7 +932,7 @@ public class FamilyServiceImpl implements FamilyService {
         addOneDay.add(Calendar.DATE, 1);
         endTime = addOneDay.getTime();
 
-        List<FamilyMember> findChildren = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills);
+        List<FamilyMember> findChildren = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills,date3MonthsBack);
         log.error("findChildren :" + findChildren.size());
 
         addOneDay.add(Calendar.DATE, -1);
@@ -2360,10 +2367,9 @@ public class FamilyServiceImpl implements FamilyService {
 		  zoneDate = ZonedDateTime.of(dateLess3Yrs,ZoneId.systemDefault()); DateFormat
 		  format = new SimpleDateFormat("dd-MM-yyyy");
 		  long timeLess3Years = zoneDate.toInstant().toEpochMilli();
-		 /** log.info("3 years less time "+timeLess3Years);
-		 *,'dob:{$lte:?2}'}-- it is placed in method
-          * */
+	
         List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId);
+        log.error("List of children "+findAllChildren);
         String gender = "";
 
         if (findAllChildren.size() > 0) {
@@ -3466,6 +3472,10 @@ public class FamilyServiceImpl implements FamilyService {
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
         long convertToMills = zdt.toInstant().toEpochMilli();
+        
+        LocalDateTime dateFor3Years = LocalDateTime.now().minusYears(3);
+        ZonedDateTime zdt2 = ZonedDateTime.of(dateFor3Years,ZoneId.systemDefault());
+        long date3MonthsBack = zdt2.toInstant().toEpochMilli();
 
         // Beneficiary dharti
         LocalDateTime dhartiDate = LocalDateTime.now().minusMonths(6);
@@ -3482,7 +3492,7 @@ public class FamilyServiceImpl implements FamilyService {
         addOneDay.add(Calendar.DATE, 1);
         endTime = addOneDay.getTime();
 
-        List<FamilyMember> fm = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills);
+        List<FamilyMember> fm = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills,date3MonthsBack);
         return DashboardFamilyData.builder()
                 .nursingMothers(dhartiWomen.size())
                 .pregnantWomen(pdd.size())
