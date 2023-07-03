@@ -2344,24 +2344,26 @@ public class FamilyServiceImpl implements FamilyService {
 
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
-//        String convertToString = String.valueOf(new Date().getTime());
+
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 //        Date parseTime = df.parse(convertToString);
-
         List<HouseholdsChildren> addList = new ArrayList<>();
+        long localDateMillis = zdt.toInstant().toEpochMilli();
 
 
-        long convertToMills = zdt.toInstant().toEpochMilli();
+        Date getDate = new Date(localDateMillis);
+        String currentDate = df.format(getDate);
+        Date formatDate = df.parse(currentDate);
+
+        long convertToMills = formatDate.getTime();
         log.info("Time "+convertToMills);
-        
-        
+
+
          LocalDateTime dateLess3Yrs = LocalDateTime.now().minusYears(3); ZonedDateTime
 		  zoneDate = ZonedDateTime.of(dateLess3Yrs,ZoneId.systemDefault()); DateFormat
 		  format = new SimpleDateFormat("dd-MM-yyyy");
 		  long timeLess3Years = zoneDate.toInstant().toEpochMilli();
-		 /** log.info("3 years less time "+timeLess3Years);
-		 *,'dob:{$lte:?2}'}-- it is placed in method
-          * */
+
         List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId);
         String gender = "";
 

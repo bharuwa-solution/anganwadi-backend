@@ -23,6 +23,7 @@ public class ApplicationConstants {
     public static final String USER_ADMIN = "ADMIN";
     public static final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().replaceAll("anganwadi-0.0.1-SNAPSHOT", "");
     public static final String baseUrlTesting = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().replaceAll("anganwadi-0.0.1-TESTING", "");
+    public static final String baseUrlTemp = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().replaceAll("anganwadi-0.0.1-TEMP", "");
     public static final String serverUploadPath = "/data/apache-tomcat-9.0.38/webapps";
     public static final String localUploadPath = "C:/Prabeer/project/Anganwadi/code";
     public static final String[] ignoreCenters = {"642fdf6152de1975898f8fbb","649a671ea33ba56f3df3f828","6426cfcfa4479557b4c4fb6c","6426d3c5a4479557b4c4fb70"};

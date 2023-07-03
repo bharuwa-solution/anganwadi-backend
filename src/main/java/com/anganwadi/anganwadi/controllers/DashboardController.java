@@ -1,9 +1,11 @@
 package com.anganwadi.anganwadi.controllers;
 
+import com.anganwadi.anganwadi.config.ApiUrl;
 import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -145,5 +147,8 @@ public class DashboardController {
         return familyService.autoUpdateCalendar();
     }
 
-
+//    @Bean
+//    public ApiUrl getUrl() {
+//        return new ApiUrl();
+//    }
 }

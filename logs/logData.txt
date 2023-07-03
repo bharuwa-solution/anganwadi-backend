@@ -1,112 +1,807 @@
-2023-06-29 18:38:32.166  INFO 11328 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 11328 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
-2023-06-29 18:38:32.169  INFO 11328 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
-2023-06-29 18:38:32.323  INFO 11328 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2023-06-29 18:38:32.324  INFO 11328 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2023-06-29 18:38:34.641  INFO 11328 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
-2023-06-29 18:38:34.855  INFO 11328 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 205 ms. Found 22 MongoDB repository interfaces.
-2023-06-29 18:38:36.245  INFO 11328 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2023-06-29 18:38:36.263  INFO 11328 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2023-06-29 18:38:36.264  INFO 11328 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
-2023-06-29 18:38:36.357  INFO 11328 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
-2023-06-29 18:38:36.358  INFO 11328 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4032 ms
-2023-06-29 18:38:36.776  INFO 11328 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@e07f9d]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
-2023-06-29 18:38:36.815  INFO 11328 --- [cluster-ClusterId{value='649d8254036e2d0e8bfffd24', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:796}] to localhost:27017
-2023-06-29 18:38:36.815  INFO 11328 --- [cluster-rtt-ClusterId{value='649d8254036e2d0e8bfffd24', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:797}] to localhost:27017
-2023-06-29 18:38:36.816  INFO 11328 --- [cluster-ClusterId{value='649d8254036e2d0e8bfffd24', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=79931200}
-2023-06-29 18:38:38.474  INFO 11328 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2023-06-29 18:38:40.984  INFO 11328 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2023-06-29 18:38:41.267  WARN 11328 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
-2023-06-29 18:38:42.021  INFO 11328 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
-2023-06-29 18:38:43.899  INFO 11328 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 12.932 seconds (JVM running for 15.158)
-2023-06-29 18:38:53.182  INFO 11328 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2023-06-29 18:38:53.183  INFO 11328 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2023-06-29 18:38:53.196  INFO 11328 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 12 ms
-2023-06-29 18:39:30.977  INFO 29268 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 29268 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
-2023-06-29 18:39:30.980  INFO 29268 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
-2023-06-29 18:39:31.138  INFO 29268 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2023-06-29 18:39:31.138  INFO 29268 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2023-06-29 18:39:33.152  INFO 29268 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
-2023-06-29 18:39:33.355  INFO 29268 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 194 ms. Found 22 MongoDB repository interfaces.
-2023-06-29 18:39:34.529  INFO 29268 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2023-06-29 18:39:34.540  INFO 29268 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2023-06-29 18:39:34.541  INFO 29268 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
-2023-06-29 18:39:34.622  INFO 29268 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
-2023-06-29 18:39:34.622  INFO 29268 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3481 ms
-2023-06-29 18:39:34.954  INFO 29268 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@773feef7]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
-2023-06-29 18:39:34.984  INFO 29268 --- [cluster-rtt-ClusterId{value='649d828e0244bd641369a4f7', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:799}] to localhost:27017
-2023-06-29 18:39:34.984  INFO 29268 --- [cluster-ClusterId{value='649d828e0244bd641369a4f7', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:798}] to localhost:27017
-2023-06-29 18:39:34.985  INFO 29268 --- [cluster-ClusterId{value='649d828e0244bd641369a4f7', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=68193601}
-2023-06-29 18:39:36.388  INFO 29268 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2023-06-29 18:39:38.919  INFO 29268 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2023-06-29 18:39:39.184  WARN 29268 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
-2023-06-29 18:39:39.923  INFO 29268 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
-2023-06-29 18:39:41.559  INFO 29268 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 11.583 seconds (JVM running for 13.437)
-2023-06-29 18:39:44.798  INFO 29268 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2023-06-29 18:39:44.799  INFO 29268 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2023-06-29 18:39:44.802  INFO 29268 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
-2023-06-29 18:39:44.819  INFO 29268 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-ui/
-2023-06-29 18:39:45.351  INFO 29268 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/ui
-2023-06-29 18:39:45.562  INFO 29268 --- [http-nio-8080-exec-3] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/security
-2023-06-29 18:39:45.608  INFO 29268 --- [http-nio-8080-exec-4] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources
-2023-06-29 18:39:45.733  INFO 29268 --- [http-nio-8080-exec-5] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/v2/api-docs
-2023-06-29 18:43:35.464  INFO 19408 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 19408 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
-2023-06-29 18:43:35.470  INFO 19408 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
-2023-06-29 18:43:35.641  INFO 19408 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2023-06-29 18:43:35.642  INFO 19408 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2023-06-29 18:43:38.492  INFO 19408 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
-2023-06-29 18:43:38.784  INFO 19408 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 276 ms. Found 22 MongoDB repository interfaces.
-2023-06-29 18:43:40.532  INFO 19408 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2023-06-29 18:43:40.563  INFO 19408 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2023-06-29 18:43:40.564  INFO 19408 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
-2023-06-29 18:43:40.690  INFO 19408 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
-2023-06-29 18:43:40.691  INFO 19408 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5048 ms
-2023-06-29 18:43:41.113  INFO 19408 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@3422f669]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
-2023-06-29 18:43:41.123  INFO 19408 --- [cluster-ClusterId{value='649d8384cc1f543dfeb1475b', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:801}] to localhost:27017
-2023-06-29 18:43:41.123  INFO 19408 --- [cluster-rtt-ClusterId{value='649d8384cc1f543dfeb1475b', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:800}] to localhost:27017
-2023-06-29 18:43:41.124  INFO 19408 --- [cluster-ClusterId{value='649d8384cc1f543dfeb1475b', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=44945400}
-2023-06-29 18:43:43.325  INFO 19408 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2023-06-29 18:43:46.493  INFO 19408 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2023-06-29 18:43:46.826  WARN 19408 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
-2023-06-29 18:43:47.523  INFO 19408 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
-2023-06-29 18:43:49.518  INFO 19408 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 15.337 seconds (JVM running for 18.279)
-2023-06-29 18:43:57.209  INFO 19408 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2023-06-29 18:43:57.210  INFO 19408 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2023-06-29 18:43:57.213  INFO 19408 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
-2023-06-29 18:43:57.232  INFO 19408 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-ui/
-2023-06-29 18:43:57.701  INFO 19408 --- [http-nio-8080-exec-5] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/ui
-2023-06-29 18:43:57.804  INFO 19408 --- [http-nio-8080-exec-9] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/security
-2023-06-29 18:43:57.830  INFO 19408 --- [http-nio-8080-exec-4] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources
-2023-06-29 18:43:57.891  INFO 19408 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/v2/api-docs
-2023-06-29 18:51:27.074  INFO 2672 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 2672 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
-2023-06-29 18:51:27.079  INFO 2672 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
-2023-06-29 18:51:27.254  INFO 2672 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2023-06-29 18:51:27.254  INFO 2672 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2023-06-29 18:51:29.923  INFO 2672 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
-2023-06-29 18:51:30.212  INFO 2672 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 276 ms. Found 22 MongoDB repository interfaces.
-2023-06-29 18:51:31.934  INFO 2672 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2023-06-29 18:51:31.954  INFO 2672 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2023-06-29 18:51:31.954  INFO 2672 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
-2023-06-29 18:51:32.058  INFO 2672 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
-2023-06-29 18:51:32.059  INFO 2672 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4802 ms
-2023-06-29 18:51:32.595  INFO 2672 --- [cluster-ClusterId{value='649d855ccad97a158dc77d5e', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:803}] to localhost:27017
-2023-06-29 18:51:32.595  INFO 2672 --- [cluster-rtt-ClusterId{value='649d855ccad97a158dc77d5e', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:802}] to localhost:27017
-2023-06-29 18:51:32.596  INFO 2672 --- [cluster-ClusterId{value='649d855ccad97a158dc77d5e', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=54402200}
-2023-06-29 18:51:32.597  INFO 2672 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@49105b30]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
-2023-06-29 18:51:35.004  INFO 2672 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2023-06-29 18:51:38.580  INFO 2672 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2023-06-29 18:51:39.034  WARN 2672 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
-2023-06-29 18:51:40.043  INFO 2672 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
-2023-06-29 18:51:42.383  INFO 2672 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 16.545 seconds (JVM running for 19.175)
-2023-06-29 18:51:49.746  INFO 2672 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2023-06-29 18:51:49.747  INFO 2672 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2023-06-29 18:51:49.752  INFO 2672 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
-2023-06-29 18:51:49.781  INFO 2672 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-ui/
-2023-06-29 18:51:49.782  INFO 2672 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : soruce :/api
-2023-06-29 18:51:50.374  INFO 2672 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/ui
-2023-06-29 18:51:50.374  INFO 2672 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : soruce :/api
-2023-06-29 18:51:50.528  INFO 2672 --- [http-nio-8080-exec-3] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/security
-2023-06-29 18:51:50.528  INFO 2672 --- [http-nio-8080-exec-3] com.anganwadi.anganwadi.config.ApiUrl    : soruce :/api
-2023-06-29 18:51:50.555  INFO 2672 --- [http-nio-8080-exec-4] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources
-2023-06-29 18:51:50.555  INFO 2672 --- [http-nio-8080-exec-4] com.anganwadi.anganwadi.config.ApiUrl    : soruce :/api
-2023-06-29 18:51:50.670  INFO 2672 --- [http-nio-8080-exec-5] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/v2/api-docs
-2023-06-29 18:51:50.672  INFO 2672 --- [http-nio-8080-exec-5] com.anganwadi.anganwadi.config.ApiUrl    : soruce :/api
+2023-06-30 15:04:09.719  INFO 29648 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 29648 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:04:09.733  INFO 29648 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:04:09.926  INFO 29648 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:04:09.927  INFO 29648 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:04:13.897  INFO 29648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-30 15:04:14.234  INFO 29648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 316 ms. Found 22 MongoDB repository interfaces.
+2023-06-30 15:04:16.394  INFO 29648 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-06-30 15:04:16.415  INFO 29648 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-06-30 15:04:16.417  INFO 29648 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-30 15:04:16.552  INFO 29648 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2023-06-30 15:04:16.553  INFO 29648 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 6624 ms
+2023-06-30 15:04:17.421  INFO 29648 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@3393daf0]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-30 15:04:17.427  INFO 29648 --- [cluster-rtt-ClusterId{value='649ea1993a29c57621dabf01', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:1030}] to localhost:27017
+2023-06-30 15:04:17.428  INFO 29648 --- [cluster-ClusterId{value='649ea1993a29c57621dabf01', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:1031}] to localhost:27017
+2023-06-30 15:04:17.429  INFO 29648 --- [cluster-ClusterId{value='649ea1993a29c57621dabf01', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=206429200}
+2023-06-30 15:04:20.066  INFO 29648 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-06-30 15:04:26.251  INFO 29648 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-06-30 15:04:27.030  WARN 29648 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-30 15:04:30.073  INFO 29648 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-30 15:04:36.343  INFO 29648 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 27.995 seconds (JVM running for 32.0)
+2023-06-30 15:05:26.578  INFO 29648 --- [http-nio-8080-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-30 15:05:26.578  INFO 29648 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-06-30 15:05:26.581  INFO 29648 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-06-30 15:05:26.599  INFO 29648 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-ui/swagger-ui.css
+2023-06-30 15:05:26.599  INFO 29648 --- [http-nio-8080-exec-4] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-ui/springfox.css
+2023-06-30 15:05:26.599  INFO 29648 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-ui/
+2023-06-30 15:05:26.600  INFO 29648 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:05:26.600  INFO 29648 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:05:26.600  INFO 29648 --- [http-nio-8080-exec-4] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:05:26.733  INFO 29648 --- [http-nio-8080-exec-3] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-ui/favicon-32x32.png
+2023-06-30 15:05:26.733  INFO 29648 --- [http-nio-8080-exec-3] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:05:26.780  INFO 29648 --- [http-nio-8080-exec-5] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/ui
+2023-06-30 15:05:26.780  INFO 29648 --- [http-nio-8080-exec-5] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:05:26.870  INFO 29648 --- [http-nio-8080-exec-6] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources/configuration/security
+2023-06-30 15:05:26.870  INFO 29648 --- [http-nio-8080-exec-6] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:05:26.884  INFO 29648 --- [http-nio-8080-exec-8] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/swagger-resources
+2023-06-30 15:05:26.884  INFO 29648 --- [http-nio-8080-exec-8] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:05:26.926  INFO 29648 --- [http-nio-8080-exec-7] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/v2/api-docs
+2023-06-30 15:05:26.926  INFO 29648 --- [http-nio-8080-exec-7] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:06:14.675  INFO 29648 --- [http-nio-8080-exec-9] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:06:14.676  INFO 29648 --- [http-nio-8080-exec-9] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:06:24.051  INFO 29648 --- [http-nio-8080-exec-9] c.a.a.s.impl.FamilyServiceImpl           : Time 1498815377898
+2023-06-30 15:06:39.483 ERROR 29648 --- [http-nio-8080-exec-9] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed; nested exception is org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.] with root cause
+
+org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.
+	at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:184) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:237) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.captureExpressionDependencies(ParameterBindingDocumentCodec.java:203) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.prepareBindingContext(AbstractMongoQuery.java:317) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.StringBasedMongoQuery.createQuery(StringBasedMongoQuery.java:115) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.doExecute(AbstractMongoQuery.java:142) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.execute(AbstractMongoQuery.java:127) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:137) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:121) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:160) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:139) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:81) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:198) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137) ~[spring-tx-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at com.anganwadi.anganwadi.service_impl.impl.FamilyServiceImpl.getAllHouseholdsChildren(FamilyServiceImpl.java:2365) ~[classes/:na]
+	at com.anganwadi.anganwadi.controllers.FamilyController.getAllHouseholdsChildren(FamilyController.java:68) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:645) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:750) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.config.ApiUrl.doFilterInternal(ApiUrl.java:20) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.utils.CORSFilter.doFilter(CORSFilter.java:33) ~[classes/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_202]
+	Suppressed: org.bson.json.JsonParseException: Trying to read past EOF.
+		at org.springframework.data.mongodb.util.json.JsonBuffer.read(JsonBuffer.java:50) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.JsonScanner.nextToken(JsonScanner.java:70) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.popToken(ParameterBindingJsonReader.java:755) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:169) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.bson.AbstractBsonReader.verifyBSONType(AbstractBsonReader.java:679) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.checkPreconditions(AbstractBsonReader.java:721) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.readString(AbstractBsonReader.java:456) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:80) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:31) ~[bson-4.6.1.jar:na]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.readValue(ParameterBindingDocumentCodec.java:371) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:248) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		... 86 common frames omitted
+
+2023-06-30 15:07:13.498  INFO 2128 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 2128 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:07:13.499  INFO 2128 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:07:13.544  INFO 2128 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:07:13.544  INFO 2128 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:07:27.645  INFO 2128 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-30 15:07:27.745  INFO 2128 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 96 ms. Found 22 MongoDB repository interfaces.
+2023-06-30 15:07:28.485  INFO 2128 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-06-30 15:07:28.492  INFO 2128 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-06-30 15:07:28.493  INFO 2128 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-30 15:07:28.689  INFO 2128 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2023-06-30 15:07:28.689  INFO 2128 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 15145 ms
+2023-06-30 15:07:28.957  INFO 2128 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@c4ff24c]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-30 15:07:28.960  INFO 2128 --- [cluster-rtt-ClusterId{value='649ea258c28b0216909bc234', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:1051}] to localhost:27017
+2023-06-30 15:07:28.960  INFO 2128 --- [cluster-ClusterId{value='649ea258c28b0216909bc234', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:1050}] to localhost:27017
+2023-06-30 15:07:28.961  INFO 2128 --- [cluster-ClusterId{value='649ea258c28b0216909bc234', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=26479699}
+2023-06-30 15:07:29.827  INFO 2128 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-06-30 15:07:31.097  INFO 2128 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-06-30 15:07:31.274  WARN 2128 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-30 15:07:31.703  INFO 2128 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-30 15:07:32.667  INFO 2128 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 19.509 seconds (JVM running for 21.094)
+2023-06-30 15:08:02.902  INFO 2128 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-30 15:08:02.906  INFO 2128 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-06-30 15:08:02.916  INFO 2128 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 9 ms
+2023-06-30 15:08:02.931  INFO 2128 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:08:02.935  INFO 2128 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:08:02.990  INFO 2128 --- [http-nio-8080-exec-1] c.a.a.s.impl.FamilyServiceImpl           : Time 1498815482988
+2023-06-30 15:08:03.058 ERROR 2128 --- [http-nio-8080-exec-1] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed; nested exception is org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.] with root cause
+
+org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.
+	at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:184) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:237) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.captureExpressionDependencies(ParameterBindingDocumentCodec.java:203) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.prepareBindingContext(AbstractMongoQuery.java:317) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.StringBasedMongoQuery.createQuery(StringBasedMongoQuery.java:115) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.doExecute(AbstractMongoQuery.java:142) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.execute(AbstractMongoQuery.java:127) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:137) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:121) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:160) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:139) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:81) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:198) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137) ~[spring-tx-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at com.anganwadi.anganwadi.service_impl.impl.FamilyServiceImpl.getAllHouseholdsChildren(FamilyServiceImpl.java:2365) ~[classes/:na]
+	at com.anganwadi.anganwadi.controllers.FamilyController.getAllHouseholdsChildren(FamilyController.java:68) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:645) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:750) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.config.ApiUrl.doFilterInternal(ApiUrl.java:20) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.utils.CORSFilter.doFilter(CORSFilter.java:33) ~[classes/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_202]
+	Suppressed: org.bson.json.JsonParseException: Trying to read past EOF.
+		at org.springframework.data.mongodb.util.json.JsonBuffer.read(JsonBuffer.java:50) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.JsonScanner.nextToken(JsonScanner.java:70) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.popToken(ParameterBindingJsonReader.java:755) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:169) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.bson.AbstractBsonReader.verifyBSONType(AbstractBsonReader.java:679) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.checkPreconditions(AbstractBsonReader.java:721) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.readString(AbstractBsonReader.java:456) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:80) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:31) ~[bson-4.6.1.jar:na]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.readValue(ParameterBindingDocumentCodec.java:371) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:248) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		... 86 common frames omitted
+
+2023-06-30 15:10:05.417  INFO 13792 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 13792 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:10:05.420  INFO 13792 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:10:05.529  INFO 13792 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:10:05.529  INFO 13792 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:10:06.869  INFO 13792 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-30 15:10:06.994  INFO 13792 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 22 MongoDB repository interfaces.
+2023-06-30 15:10:07.823  INFO 13792 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-06-30 15:10:07.832  INFO 13792 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-06-30 15:10:07.833  INFO 13792 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-30 15:10:07.884  INFO 13792 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2023-06-30 15:10:07.885  INFO 13792 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2355 ms
+2023-06-30 15:10:08.105  INFO 13792 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@4a95380d]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-30 15:10:08.106  INFO 13792 --- [cluster-ClusterId{value='649ea2f8f8c7511769af71fb', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:1052}] to localhost:27017
+2023-06-30 15:10:08.106  INFO 13792 --- [cluster-rtt-ClusterId{value='649ea2f8f8c7511769af71fb', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:1053}] to localhost:27017
+2023-06-30 15:10:08.106  INFO 13792 --- [cluster-ClusterId{value='649ea2f8f8c7511769af71fb', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=26362400}
+2023-06-30 15:10:09.215  INFO 13792 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-06-30 15:10:10.914  INFO 13792 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-06-30 15:10:11.122  WARN 13792 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-30 15:10:11.658  INFO 13792 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-30 15:10:12.860  INFO 13792 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 8.2 seconds (JVM running for 9.515)
+2023-06-30 15:10:17.892  INFO 13792 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-30 15:10:17.892  INFO 13792 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-06-30 15:10:17.895  INFO 13792 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2023-06-30 15:10:17.903  INFO 13792 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:10:17.904  INFO 13792 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:10:17.945  INFO 13792 --- [http-nio-8080-exec-1] c.a.a.s.impl.FamilyServiceImpl           : Time 1498815617944
+2023-06-30 15:10:17.987 ERROR 13792 --- [http-nio-8080-exec-1] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed; nested exception is org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.] with root cause
+
+org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.
+	at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:184) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:237) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.captureExpressionDependencies(ParameterBindingDocumentCodec.java:203) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.prepareBindingContext(AbstractMongoQuery.java:317) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.StringBasedMongoQuery.createQuery(StringBasedMongoQuery.java:115) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.doExecute(AbstractMongoQuery.java:142) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.execute(AbstractMongoQuery.java:127) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:137) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:121) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:160) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:139) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:81) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:198) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137) ~[spring-tx-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at com.anganwadi.anganwadi.service_impl.impl.FamilyServiceImpl.getAllHouseholdsChildren(FamilyServiceImpl.java:2365) ~[classes/:na]
+	at com.anganwadi.anganwadi.controllers.FamilyController.getAllHouseholdsChildren(FamilyController.java:68) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:645) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:750) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.config.ApiUrl.doFilterInternal(ApiUrl.java:20) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.utils.CORSFilter.doFilter(CORSFilter.java:33) ~[classes/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_202]
+	Suppressed: org.bson.json.JsonParseException: Trying to read past EOF.
+		at org.springframework.data.mongodb.util.json.JsonBuffer.read(JsonBuffer.java:50) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.JsonScanner.nextToken(JsonScanner.java:70) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.popToken(ParameterBindingJsonReader.java:755) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:169) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.bson.AbstractBsonReader.verifyBSONType(AbstractBsonReader.java:679) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.checkPreconditions(AbstractBsonReader.java:721) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.readString(AbstractBsonReader.java:456) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:80) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:31) ~[bson-4.6.1.jar:na]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.readValue(ParameterBindingDocumentCodec.java:371) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:248) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		... 86 common frames omitted
+
+2023-06-30 15:42:49.981  INFO 22708 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 22708 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:42:49.984  INFO 22708 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:42:50.056  INFO 22708 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:42:50.057  INFO 22708 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:42:51.465  INFO 22708 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-30 15:42:51.592  INFO 22708 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 22 MongoDB repository interfaces.
+2023-06-30 15:42:52.318  INFO 22708 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-06-30 15:42:52.326  INFO 22708 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-06-30 15:42:52.326  INFO 22708 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-30 15:42:52.373  INFO 22708 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2023-06-30 15:42:52.374  INFO 22708 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2317 ms
+2023-06-30 15:42:52.565  INFO 22708 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@5aca27f1]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-30 15:42:52.568  INFO 22708 --- [cluster-rtt-ClusterId{value='649eaaa456e0c25226666814', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:1055}] to localhost:27017
+2023-06-30 15:42:52.568  INFO 22708 --- [cluster-ClusterId{value='649eaaa456e0c25226666814', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:1054}] to localhost:27017
+2023-06-30 15:42:52.568  INFO 22708 --- [cluster-ClusterId{value='649eaaa456e0c25226666814', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=20796499}
+2023-06-30 15:42:53.299  INFO 22708 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-06-30 15:42:54.503  INFO 22708 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-06-30 15:42:54.653  WARN 22708 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-30 15:42:55.076  INFO 22708 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-30 15:42:56.037  INFO 22708 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 6.594 seconds (JVM running for 7.556)
+2023-06-30 15:42:59.398  INFO 22708 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-30 15:42:59.399  INFO 22708 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-06-30 15:42:59.403  INFO 22708 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2023-06-30 15:42:59.421  INFO 22708 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:42:59.422  INFO 22708 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:42:59.554 ERROR 22708 --- [http-nio-8080-exec-1] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed; nested exception is java.lang.NumberFormatException: For input string: "30-06-2017"] with root cause
+
+java.lang.NumberFormatException: For input string: "30-06-2017"
+	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:1.8.0_202]
+	at java.lang.Long.parseLong(Long.java:589) ~[na:1.8.0_202]
+	at java.lang.Long.parseLong(Long.java:631) ~[na:1.8.0_202]
+	at com.anganwadi.anganwadi.service_impl.impl.FamilyServiceImpl.getAllHouseholdsChildren(FamilyServiceImpl.java:2354) ~[classes/:na]
+	at com.anganwadi.anganwadi.controllers.FamilyController.getAllHouseholdsChildren(FamilyController.java:68) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:645) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:750) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.config.ApiUrl.doFilterInternal(ApiUrl.java:20) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.utils.CORSFilter.doFilter(CORSFilter.java:33) ~[classes/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_202]
+
+2023-06-30 15:47:37.996  INFO 28896 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 28896 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:47:38.000  INFO 28896 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:47:38.117  INFO 28896 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:47:38.118  INFO 28896 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:47:39.874  INFO 28896 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-30 15:47:40.021  INFO 28896 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 142 ms. Found 22 MongoDB repository interfaces.
+2023-06-30 15:47:40.725  INFO 28896 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-06-30 15:47:40.734  INFO 28896 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-06-30 15:47:40.735  INFO 28896 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-30 15:47:40.795  INFO 28896 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2023-06-30 15:47:40.796  INFO 28896 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2677 ms
+2023-06-30 15:47:40.978  INFO 28896 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@78eaab15]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-30 15:47:40.985  INFO 28896 --- [cluster-ClusterId{value='649eabc41a57714b009cfc7b', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:1057}] to localhost:27017
+2023-06-30 15:47:40.985  INFO 28896 --- [cluster-rtt-ClusterId{value='649eabc41a57714b009cfc7b', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:1056}] to localhost:27017
+2023-06-30 15:47:40.986  INFO 28896 --- [cluster-ClusterId{value='649eabc41a57714b009cfc7b', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=20076200}
+2023-06-30 15:47:41.749  INFO 28896 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-06-30 15:47:42.985  INFO 28896 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-06-30 15:47:43.134  WARN 28896 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-30 15:47:43.524  INFO 28896 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-30 15:47:44.510  INFO 28896 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 7.47 seconds (JVM running for 10.546)
+2023-06-30 15:47:50.711  INFO 28896 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-30 15:47:50.711  INFO 28896 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-06-30 15:47:50.716  INFO 28896 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2023-06-30 15:47:50.724  INFO 28896 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:47:50.724  INFO 28896 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:47:50.757  INFO 28896 --- [http-nio-8080-exec-2] c.a.a.s.impl.FamilyServiceImpl           : Time -61033411800000
+2023-06-30 15:47:50.791 ERROR 28896 --- [http-nio-8080-exec-2] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed; nested exception is org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.] with root cause
+
+org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.
+	at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:184) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:237) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.captureExpressionDependencies(ParameterBindingDocumentCodec.java:203) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.prepareBindingContext(AbstractMongoQuery.java:317) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.StringBasedMongoQuery.createQuery(StringBasedMongoQuery.java:115) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.doExecute(AbstractMongoQuery.java:142) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.execute(AbstractMongoQuery.java:127) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:137) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:121) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:160) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:139) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:81) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:198) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137) ~[spring-tx-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at com.anganwadi.anganwadi.service_impl.impl.FamilyServiceImpl.getAllHouseholdsChildren(FamilyServiceImpl.java:2363) ~[classes/:na]
+	at com.anganwadi.anganwadi.controllers.FamilyController.getAllHouseholdsChildren(FamilyController.java:68) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:645) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:750) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.config.ApiUrl.doFilterInternal(ApiUrl.java:20) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.utils.CORSFilter.doFilter(CORSFilter.java:33) ~[classes/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_202]
+	Suppressed: org.bson.json.JsonParseException: Trying to read past EOF.
+		at org.springframework.data.mongodb.util.json.JsonBuffer.read(JsonBuffer.java:50) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.JsonScanner.nextToken(JsonScanner.java:70) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.popToken(ParameterBindingJsonReader.java:755) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:169) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.bson.AbstractBsonReader.verifyBSONType(AbstractBsonReader.java:679) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.checkPreconditions(AbstractBsonReader.java:721) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.readString(AbstractBsonReader.java:456) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:80) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:31) ~[bson-4.6.1.jar:na]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.readValue(ParameterBindingDocumentCodec.java:371) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:248) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		... 86 common frames omitted
+
+2023-06-30 15:52:30.862  INFO 5988 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 5988 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:52:30.864  INFO 5988 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:52:30.957  INFO 5988 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:52:30.958  INFO 5988 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:52:43.065  INFO 20692 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 20692 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:52:43.067  INFO 20692 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:52:43.155  INFO 20692 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:52:43.155  INFO 20692 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:52:44.916  INFO 20692 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-30 15:52:45.081  INFO 20692 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 156 ms. Found 22 MongoDB repository interfaces.
+2023-06-30 15:52:45.920  INFO 20692 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-06-30 15:52:45.936  INFO 20692 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-06-30 15:52:45.937  INFO 20692 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-30 15:52:46.023  INFO 20692 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2023-06-30 15:52:46.023  INFO 20692 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2867 ms
+2023-06-30 15:52:46.264  INFO 20692 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@4a95380d]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-30 15:52:46.268  INFO 20692 --- [cluster-ClusterId{value='649eacf6ffabe46ca330a99c', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:1058}] to localhost:27017
+2023-06-30 15:52:46.268  INFO 20692 --- [cluster-rtt-ClusterId{value='649eacf6ffabe46ca330a99c', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:1059}] to localhost:27017
+2023-06-30 15:52:46.268  INFO 20692 --- [cluster-ClusterId{value='649eacf6ffabe46ca330a99c', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=25871600}
+2023-06-30 15:52:47.193  INFO 20692 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-06-30 15:52:48.447  INFO 20692 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-06-30 15:52:48.597  WARN 20692 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-30 15:52:49.302  INFO 20692 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-30 15:52:51.256  INFO 20692 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 8.856 seconds (JVM running for 10.469)
+2023-06-30 15:53:05.357  INFO 20692 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-30 15:53:05.357  INFO 20692 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-06-30 15:53:05.360  INFO 20692 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2023-06-30 15:53:05.365  INFO 20692 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:53:05.366  INFO 20692 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:53:05.401  INFO 20692 --- [http-nio-8080-exec-2] c.a.a.s.impl.FamilyServiceImpl           : Time 1498761000000
+2023-06-30 15:53:05.432 ERROR 20692 --- [http-nio-8080-exec-2] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed; nested exception is org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.] with root cause
+
+org.bson.json.JsonParseException: JSON reader was expecting a name but found '<eof>'.
+	at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:184) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:237) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.captureExpressionDependencies(ParameterBindingDocumentCodec.java:203) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.prepareBindingContext(AbstractMongoQuery.java:317) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.StringBasedMongoQuery.createQuery(StringBasedMongoQuery.java:115) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.doExecute(AbstractMongoQuery.java:142) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.mongodb.repository.query.AbstractMongoQuery.execute(AbstractMongoQuery.java:127) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:137) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:121) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:160) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:139) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:81) ~[spring-data-commons-2.7.1.jar:2.7.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:198) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137) ~[spring-tx-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.21.jar:5.3.21]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.21.jar:5.3.21]
+	at com.sun.proxy.$Proxy87.findAllByDobAndCenterId(Unknown Source) ~[na:na]
+	at com.anganwadi.anganwadi.service_impl.impl.FamilyServiceImpl.getAllHouseholdsChildren(FamilyServiceImpl.java:2368) ~[classes/:na]
+	at com.anganwadi.anganwadi.controllers.FamilyController.getAllHouseholdsChildren(FamilyController.java:68) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_202]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_202]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_202]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_202]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:645) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.21.jar:5.3.21]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:750) ~[javax.servlet-api-4.0.1.jar:4.0.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.config.ApiUrl.doFilterInternal(ApiUrl.java:20) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at com.anganwadi.anganwadi.utils.CORSFilter.doFilter(CORSFilter.java:33) ~[classes/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.21.jar:5.3.21]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.64.jar:9.0.64]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_202]
+	Suppressed: org.bson.json.JsonParseException: Trying to read past EOF.
+		at org.springframework.data.mongodb.util.json.JsonBuffer.read(JsonBuffer.java:50) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.JsonScanner.nextToken(JsonScanner.java:70) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.popToken(ParameterBindingJsonReader.java:755) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingJsonReader.readBsonType(ParameterBindingJsonReader.java:169) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.bson.AbstractBsonReader.verifyBSONType(AbstractBsonReader.java:679) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.checkPreconditions(AbstractBsonReader.java:721) ~[bson-4.6.1.jar:na]
+		at org.bson.AbstractBsonReader.readString(AbstractBsonReader.java:456) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:80) ~[bson-4.6.1.jar:na]
+		at org.bson.codecs.StringCodec.decode(StringCodec.java:31) ~[bson-4.6.1.jar:na]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.readValue(ParameterBindingDocumentCodec.java:371) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		at org.springframework.data.mongodb.util.json.ParameterBindingDocumentCodec.decode(ParameterBindingDocumentCodec.java:248) ~[spring-data-mongodb-3.4.1.jar:3.4.1]
+		... 86 common frames omitted
+
+2023-06-30 15:55:37.701  INFO 17500 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Starting AnganwadiApplication using Java 1.8.0_202 on DESKTOP-LE6JVAU with PID 17500 (C:\Prabeer\project\Anganwadi\code\out\production\classes started by Admin in C:\Prabeer\project\Anganwadi\code)
+2023-06-30 15:55:37.704  INFO 17500 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-06-30 15:55:37.824  INFO 17500 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-06-30 15:55:37.825  INFO 17500 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-06-30 15:55:39.210  INFO 17500 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-06-30 15:55:39.359  INFO 17500 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 141 ms. Found 22 MongoDB repository interfaces.
+2023-06-30 15:55:40.141  INFO 17500 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-06-30 15:55:40.150  INFO 17500 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-06-30 15:55:40.150  INFO 17500 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2023-06-30 15:55:40.201  INFO 17500 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2023-06-30 15:55:40.201  INFO 17500 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2375 ms
+2023-06-30 15:55:40.420  INFO 17500 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/1.8.0_202-b08"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@4a95380d]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-06-30 15:55:40.424  INFO 17500 --- [cluster-ClusterId{value='649eada453ca8500d6c137fe', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:1060}] to localhost:27017
+2023-06-30 15:55:40.424  INFO 17500 --- [cluster-rtt-ClusterId{value='649eada453ca8500d6c137fe', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:1061}] to localhost:27017
+2023-06-30 15:55:40.424  INFO 17500 --- [cluster-ClusterId{value='649eada453ca8500d6c137fe', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=19906400}
+2023-06-30 15:55:41.418  INFO 17500 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-06-30 15:55:43.235  INFO 17500 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-06-30 15:55:43.435  WARN 17500 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2023-06-30 15:55:43.995  INFO 17500 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2023-06-30 15:55:45.253  INFO 17500 --- [restartedMain] c.a.anganwadi.AnganwadiApplication       : Started AnganwadiApplication in 8.309 seconds (JVM running for 9.66)
+2023-06-30 15:55:52.390  INFO 17500 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-30 15:55:52.391  INFO 17500 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-06-30 15:55:52.393  INFO 17500 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-06-30 15:55:52.400  INFO 17500 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:55:52.401  INFO 17500 --- [http-nio-8080-exec-1] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:55:52.436  INFO 17500 --- [http-nio-8080-exec-1] c.a.a.s.impl.FamilyServiceImpl           : Time 1498761000000
+2023-06-30 15:55:52.480 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "dob" : { "$gte" : 1498761000000}, "centerId" : "6426cfcfa4479557b4c4fb6c"} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.FamilyMember in collection: FamilyMember
+2023-06-30 15:55:52.522  INFO 17500 --- [http-nio-8080-exec-1] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:3, serverValue:1062}] to localhost:27017
+2023-06-30 15:55:52.588 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "6416f94078b8845ed1971264", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:55:52.602 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "6418500c46ddc62e1dc6d50e", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:55:52.608 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "64301cd680430c3f4387d11e", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:55:52.611 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "6453389c7504e86559808c9e", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:55:52.615 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "6453542d7504e86559808cbb", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:55:52.617 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "64803cbda9311094df4beb1b", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:55:52.619 DEBUG 17500 --- [http-nio-8080-exec-1] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "649ad8ce75d2c01d141e5570", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:56:35.769  INFO 17500 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : API URL : /api/family/getAllHouseholdsChildren
+2023-06-30 15:56:35.769  INFO 17500 --- [http-nio-8080-exec-2] com.anganwadi.anganwadi.config.ApiUrl    : source :/api
+2023-06-30 15:56:35.769  INFO 17500 --- [http-nio-8080-exec-2] c.a.a.s.impl.FamilyServiceImpl           : Time 1498761000000
+2023-06-30 15:56:35.771 DEBUG 17500 --- [http-nio-8080-exec-2] o.s.data.mongodb.core.MongoTemplate      : find using query: { "dob" : { "$gte" : 1498761000000}, "centerId" : "649a671ea33ba56f3df3f828"} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.FamilyMember in collection: FamilyMember
+2023-06-30 15:56:35.773 DEBUG 17500 --- [http-nio-8080-exec-2] o.s.data.mongodb.core.MongoTemplate      : find using query: { "childId" : "649a75d64420a30bb2fe4c3c", "$or" : [{ "isRegistered" : true, "deleted" : false}]} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.AnganwadiChildren in collection: AnganwadiChildren
+2023-06-30 15:56:35.782 DEBUG 17500 --- [http-nio-8080-exec-2] o.s.data.mongodb.core.MongoTemplate      : find using query: { "familyId" : "AGFI_1687842155667"} fields: Document{{}} for class: class com.anganwadi.anganwadi.domains.entity.Family in collection: Family

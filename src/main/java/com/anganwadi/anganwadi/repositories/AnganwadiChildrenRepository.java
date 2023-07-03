@@ -1,6 +1,7 @@
 package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.AnganwadiChildren;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -47,6 +48,8 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
     @Query("{'centerId':?0,'isRegistered':true,'deleted':false}")
 	List<AnganwadiChildren> findAllByCenterIdAndRegisteredTrue(String centerId);
 
+    @Query(value = "{'date':?0,'centerId':?1,'attendance':'P','isRegistered':true}", count = true)
+    long countByDateAndCenterId(long parseLong, String centerId, Sort createdDate);
 
 	List<AnganwadiChildren> findAllByCenterId(String centerId);
 }
