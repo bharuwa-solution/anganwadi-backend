@@ -41,6 +41,7 @@ public class FamilyServiceImpl implements FamilyService {
     private final VaccinationScheduleRepository vaccinationScheduleRepository;
     private final HouseVisitScheduleRepository houseVisitScheduleRepository;
     private final BloodTestTrackingRepository bloodTestTrackingRepository;
+    private final VaccinationNameRepository vaccinationNameRepository;
 
     @Autowired
     public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper, FamilyMemberRepository familyMemberRepository,
@@ -49,7 +50,7 @@ public class FamilyServiceImpl implements FamilyService {
                              AnganwadiChildrenRepository anganwadiChildrenRepository, AnganwadiCenterRepository anganwadiCenterRepository,
                              UserRepository userRepository, AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService,
                              VaccinationScheduleRepository vaccinationScheduleRepository, HouseVisitScheduleRepository houseVisitScheduleRepository,
-                             BloodTestTrackingRepository bloodTestTrackingRepository) {
+                             BloodTestTrackingRepository bloodTestTrackingRepository,VaccinationNameRepository vaccinationNameRepository) {
         this.familyRepository = familyRepository;
         this.modelMapper = modelMapper;
         this.familyMemberRepository = familyMemberRepository;
@@ -66,6 +67,7 @@ public class FamilyServiceImpl implements FamilyService {
         this.vaccinationScheduleRepository = vaccinationScheduleRepository;
         this.houseVisitScheduleRepository = houseVisitScheduleRepository;
         this.bloodTestTrackingRepository=bloodTestTrackingRepository;
+        this.vaccinationNameRepository=vaccinationNameRepository;
     }
 
 
@@ -910,10 +912,11 @@ public class FamilyServiceImpl implements FamilyService {
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
         long convertToMills = zdt.toInstant().toEpochMilli();
         
-        LocalDateTime dateFor3Years = LocalDateTime.now().minusYears(3);
-        ZonedDateTime zdt2 = ZonedDateTime.of(dateFor3Years,ZoneId.systemDefault());
-        long date3MonthsBack = zdt2.toInstant().toEpochMilli();
-
+		/*
+		 * LocalDateTime dateFor3Years = LocalDateTime.now().minusYears(3);
+		 * ZonedDateTime zdt2 = ZonedDateTime.of(dateFor3Years,ZoneId.systemDefault());
+		 * long date3MonthsBack = zdt2.toInstant().toEpochMilli();
+		 */
 
         // Beneficiary dharti
         LocalDateTime dhartiDate = LocalDateTime.now().minusMonths(6);
@@ -932,7 +935,7 @@ public class FamilyServiceImpl implements FamilyService {
         addOneDay.add(Calendar.DATE, 1);
         endTime = addOneDay.getTime();
 
-        List<FamilyMember> findChildren = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills,date3MonthsBack);
+        List<FamilyMember> findChildren = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills);
         log.error("findChildren :" + findChildren.size());
 
         addOneDay.add(Calendar.DATE, -1);
@@ -3473,10 +3476,11 @@ public class FamilyServiceImpl implements FamilyService {
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
         long convertToMills = zdt.toInstant().toEpochMilli();
         
-        LocalDateTime dateFor3Years = LocalDateTime.now().minusYears(3);
-        ZonedDateTime zdt2 = ZonedDateTime.of(dateFor3Years,ZoneId.systemDefault());
-        long date3MonthsBack = zdt2.toInstant().toEpochMilli();
-
+		/*
+		 * LocalDateTime dateFor3Years = LocalDateTime.now().minusYears(3);
+		 * ZonedDateTime zdt2 = ZonedDateTime.of(dateFor3Years,ZoneId.systemDefault());
+		 * long date3MonthsBack = zdt2.toInstant().toEpochMilli();
+		 */
         // Beneficiary dharti
         LocalDateTime dhartiDate = LocalDateTime.now().minusMonths(6);
         ZonedDateTime dhartiZdt = ZonedDateTime.of(dhartiDate, ZoneId.systemDefault());
@@ -3492,7 +3496,7 @@ public class FamilyServiceImpl implements FamilyService {
         addOneDay.add(Calendar.DATE, 1);
         endTime = addOneDay.getTime();
 
-        List<FamilyMember> fm = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills,date3MonthsBack);
+        List<FamilyMember> fm = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime, dashboardFilter.getCenterId().trim(), convertToMills);
         return DashboardFamilyData.builder()
                 .nursingMothers(dhartiWomen.size())
                 .pregnantWomen(pdd.size())
@@ -5292,6 +5296,65 @@ public class FamilyServiceImpl implements FamilyService {
         }
 
         return addInList;
+    }
+    
+    @Override
+    public List<VaccinationName> getAllVaccinationName(){
+    	
+    	List<VaccinationName> listForReturn = vaccinationNameRepository.findAll();
+    	
+    	if(listForReturn.size()<=0) {
+    		throw new CustomException("No any data to fetch connect with support team..");
+    	}
+    	else {
+    		return listForReturn;
+    	}
+    	
+    }
+    
+    @Override
+    public VaccinationDTO addVaccineData(String vaccineName,String vaccineCode) {
+    	
+    	
+    	List<VaccinationName> forCheck =  vaccinationNameRepository.findAllByVaccineCode(vaccineCode);
+    	
+    	if(forCheck.size()==0) {
+    		
+    		VaccinationName vaccineData = new VaccinationName();
+    		   
+        	vaccineData.setVaccineCode(vaccineCode);
+        	vaccineData.setVaccineName(vaccineName);
+        	
+        	vaccinationNameRepository.save(vaccineData);
+        	VaccinationName result =  vaccinationNameRepository.findByVaccineCode(vaccineCode);
+    		
+    		VaccinationDTO responseDTO = new VaccinationDTO();
+    		responseDTO.setMessage("vaccination Details added Successfully..."); 
+    		responseDTO.setVaccinationName(result.getVaccineName());
+    		responseDTO.setVaccinationCode(result.getVaccineCode());   
+    		responseDTO.setId(result.getId());    	
+    		
+    		return responseDTO;
+    	}
+    	
+    	else {
+  	
+        	forCheck.get(0).setVaccineCode(vaccineCode);
+        	forCheck.get(0).setVaccineName(vaccineName);
+    	
+        	vaccinationNameRepository.save(forCheck.get(0));
+        	
+    		VaccinationDTO responseDTO = new VaccinationDTO();
+    		VaccinationName result =  vaccinationNameRepository.findByVaccineCode(vaccineCode);
+    		responseDTO.setMessage("vaccination Details was already exist but updated successfully...");
+    		responseDTO.setVaccinationName(result.getVaccineName());
+    		responseDTO.setVaccinationCode(result.getVaccineCode());   
+    		responseDTO.setId(result.getId());    	
+    		
+    		return responseDTO;
+    	}
+    	
+    	
     }
 
 }

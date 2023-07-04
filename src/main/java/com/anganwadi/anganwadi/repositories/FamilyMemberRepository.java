@@ -72,8 +72,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'centerName':?0,'dob':{$gte:?1}}")
     List<FamilyMember> findAllFamilyChildrenByCenterId(String centerName, long convertToMills, Sort createdDate);
 
-    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dob':{$gte:?3,$lte:?4}}")
-    List<FamilyMember> findAllBeneficiaryChildren(Date startTime, Date endTime, String centerId, long millis,long millis3monthsBack);
+    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dob':{$gte:?3}}")
+    List<FamilyMember> findAllBeneficiaryChildren(Date startTime, Date endTime, String centerId, long millis);
 
     @Query(value = "{'dob':{$gte:?0}, 'centerId':?1}", count = true)
     long countChildrenByCenterId(long convertToMills, String centerId);

@@ -1,6 +1,8 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.VaccinationName;
+import com.anganwadi.anganwadi.repositories.VaccinationNameRepository;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -58,4 +60,17 @@ public class HouseVisitsController {
     private VisitsDetailsDTOTemp saveVisitsDetailsTemp(@RequestBody VisitsDetailsDTOTemp visitsDetailsDTOTemp, @RequestHeader String centerId) throws ParseException {
         return familyService.saveVisitsDetailsTemp(visitsDetailsDTOTemp, centerId);
     }
+    
+    @GetMapping("/getVaccinationNames")
+    private List<VaccinationName> getVaccinationList(){
+    	
+    	return familyService.getAllVaccinationName();	
+    }
+    
+    @PostMapping("/saveVaccinationDetails")
+    private VaccinationDTO saveVaccineDetails(@RequestHeader String vaccineName, @RequestHeader String vaccineCode) {
+    	
+    	return familyService.addVaccineData(vaccineName,vaccineCode);
+    }
+    
 }

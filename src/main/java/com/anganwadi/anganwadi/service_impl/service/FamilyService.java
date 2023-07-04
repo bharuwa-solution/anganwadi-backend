@@ -2,6 +2,7 @@ package com.anganwadi.anganwadi.service_impl.service;
 
 
 import com.anganwadi.anganwadi.domains.dto.*;
+import com.anganwadi.anganwadi.domains.entity.VaccinationName;
 import com.anganwadi.anganwadi.domains.entity.Visits;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -112,6 +113,12 @@ public interface FamilyService {
     VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId) throws ParseException;
 
     String autoUpdateCalendar();
+
+	
+
+	List<VaccinationName> getAllVaccinationName();
+
+	VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
