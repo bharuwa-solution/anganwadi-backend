@@ -118,7 +118,9 @@ public interface FamilyService {
 
 	List<VaccinationName> getAllVaccinationName();
 
-	VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
+	//VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
+
+	VaccinationDTO addVaccineData(String vaccineName);
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);

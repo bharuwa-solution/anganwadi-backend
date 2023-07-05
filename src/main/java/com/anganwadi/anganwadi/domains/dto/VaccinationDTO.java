@@ -1,8 +1,8 @@
 package com.anganwadi.anganwadi.domains.dto;
 
-import com.google.auto.value.AutoValue.Builder;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nonapi.io.github.classgraph.json.Id;

@@ -1,5 +1,6 @@
 package com.anganwadi.anganwadi.repositories;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -11,12 +12,9 @@ import com.anganwadi.anganwadi.domains.entity.VaccinationName;
 @Repository
 public interface VaccinationNameRepository extends MongoRepository<VaccinationName, String>{
 	
-	List<VaccinationName> findAll();
+	
+	VaccinationName findByVaccineName(String vaccineName);
+	
+	
 
-	VaccinationName findByVaccineCode(String vaccineCode);
-
-	//List<VaccinationName> findAllByVaccineCode(String vaccineCode);
-
-	@Query("{vaccineCode:?0}")
-	List<VaccinationName> findAllByVaccineCode(String vaccineCode);
 }

@@ -68,9 +68,9 @@ public class HouseVisitsController {
     }
     
     @PostMapping("/saveVaccinationDetails")
-    private VaccinationDTO saveVaccineDetails(@RequestHeader String vaccineName, @RequestHeader String vaccineCode) {
+    private VaccinationDTO saveVaccineDetails(@RequestParam String vaccineName) {
     	
-    	return familyService.addVaccineData(vaccineName,vaccineCode);
+    	return familyService.addVaccineData(vaccineName);
     }
     
 }
