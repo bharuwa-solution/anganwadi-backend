@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -1254,42 +1255,46 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId)
 			throws ParseException {
+		int temp  = Integer.parseInt(visitsDetailsDTOTemp.getVisitType());
+		if(temp>0 && temp<=10){
+			if (visitsDetailsDTOTemp.getVisitCategory().length() > 0) {
+				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-		if (visitsDetailsDTOTemp.getVisitCategory().length() > 0) {
-			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+				long currentDate = df.parse(df.format(new Date())).getTime();
 
-			long currentDate = df.parse(df.format(new Date())).getTime();
+				if (!familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).isPresent()) {
+					throw new CustomException("Member Id Not Passed");
+				}
 
-			if (!familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).isPresent()) {
-				throw new CustomException("Member Id Not Passed");
+				log.error("input" + visitsDetailsDTOTemp);
+
+				FamilyMember findMember = familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).get();
+
+				switch (visitsDetailsDTOTemp.getVisitCategory().trim()) {
+					case "1":
+						saveBloodTestSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+						break;
+
+					case "2":
+						saveWeightsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+						break;
+
+					case "3":
+						saveVaccinationSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+						break;
+
+					case "4":
+						saveVisitsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+						break;
+				}
+
+			} else {
+				throw new CustomException("Visit Category Not Passed, Please Check");
 			}
-
-			log.error("input" + visitsDetailsDTOTemp);
-
-			FamilyMember findMember = familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).get();
-
-			switch (visitsDetailsDTOTemp.getVisitCategory().trim()) {
-			case "1":
-				saveBloodTestSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-				break;
-
-			case "2":
-				saveWeightsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-				break;
-
-			case "3":
-				saveVaccinationSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-				break;
-
-			case "4":
-				saveVisitsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-				break;
-			}
-
-		} else {
-			throw new CustomException("Visit Category Not Passed, Please Check");
 		}
-
+		else{
+			throw new CustomException("Visit Type does not exist, Connect with support team..");
+		}
 		return visitsDetailsDTOTemp;
 	}
 
@@ -4514,29 +4519,48 @@ public class FamilyServiceImpl implements FamilyService {
 				VaccinationDTO result=VaccinationDTO.builder()
 						  .message("vaccination Details is already exist...")
 						  .vaccinationName(isExist.getVaccineName())
-						  .vaccinationCode("V-"+isExist.getVaccineCode())
+						  .vaccinationCode(isExist.getVaccineCode())
 						  .id(isExist.getId())
 						  .build();
 				return result;
 		}
 		else {
 			VaccinationName newEntry = new VaccinationName();
-			List<VaccinationName> recordList = vaccinationNameRepository.findAll();
+
 			newEntry.setVaccineName(vaccineName.trim());
-			newEntry.setVaccineCode(Integer.toString(recordList.size()+1));
-			
+			//newEntry.setVaccineCode("V-"+(Integer.toString(recordList.size()+1)));
+			newEntry.setVaccineCode(ApplicationConstants.vaccineCodePrefix+assignedIntegerCode());
+
 			VaccinationName dataAdded = vaccinationNameRepository.save(newEntry);
 			
 			VaccinationDTO result=VaccinationDTO.builder()
 					  .message("vaccination Details added successfully...")
 					  .vaccinationName(dataAdded.getVaccineName())
-					  .vaccinationCode("V-"+dataAdded.getVaccineCode())
+					  .vaccinationCode(dataAdded.getVaccineCode())
 					  .id(dataAdded.getId())
 					  .build();
 			return result;
 			
 		}
 		 
+	}
+
+	public String assignedIntegerCode(){
+		List<VaccinationName> recordList = vaccinationNameRepository.findAll();
+
+		List<Integer> vaccineCodes = new ArrayList<>();
+
+		for(VaccinationName vc : recordList){
+			String str = vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1];
+			log.error("returned code : "+str);
+			vaccineCodes.add(Integer.parseInt(vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1]));
+		}
+		Collections.sort(vaccineCodes, Collections.reverseOrder());
+
+		String vaccinecode =String.valueOf(vaccineCodes.get(0)+1);
+
+
+		return vaccinecode;
 	}
 
 }
