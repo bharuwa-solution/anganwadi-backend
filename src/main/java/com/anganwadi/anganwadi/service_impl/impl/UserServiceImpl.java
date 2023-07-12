@@ -5,14 +5,17 @@ import com.anganwadi.anganwadi.domains.dto.AnganwadiCenterDTO;
 import com.anganwadi.anganwadi.domains.dto.OtpDTO;
 import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
 import com.anganwadi.anganwadi.domains.dto.UserDTO;
+import com.anganwadi.anganwadi.domains.dto.VaccinationDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
 import com.anganwadi.anganwadi.domains.entity.OtpDetails;
 import com.anganwadi.anganwadi.domains.entity.User;
+import com.anganwadi.anganwadi.domains.entity.VaccinationName;
 import com.anganwadi.anganwadi.exceptionHandler.BadRequestException;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.AnganwadiCenterRepository;
 import com.anganwadi.anganwadi.repositories.OtpDetailsRepository;
 import com.anganwadi.anganwadi.repositories.UserRepository;
+import com.anganwadi.anganwadi.repositories.VaccinationNameRepository;
 import com.anganwadi.anganwadi.service_impl.service.Msg91Services;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +38,12 @@ public class UserServiceImpl implements UserService {
     private final AnganwadiCenterRepository anganwadiCentersRepository;
     private final ModelMapper modelMapper;
     private final CommonMethodsService commonMethodsService;
+    private final VaccinationNameRepository vaccinationNameRepository;
 
     @Autowired
     private UserServiceImpl(UserRepository userRepository, OtpDetailsRepository otpDetailsRepository,
                             AnganwadiCenterRepository anganwadiCentersRepository, ModelMapper modelMapper,
-                            CommonMethodsService commonMethodsService
+                            CommonMethodsService commonMethodsService, VaccinationNameRepository vaccinationNameRepository
 
     ) {
         this.userRepository = userRepository;
@@ -47,6 +51,7 @@ public class UserServiceImpl implements UserService {
         this.otpDetailsRepository = otpDetailsRepository;
         this.anganwadiCentersRepository = anganwadiCentersRepository;
         this.commonMethodsService = commonMethodsService;
+        this.vaccinationNameRepository = vaccinationNameRepository;
 
     }
 
@@ -221,6 +226,52 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(passUserData, UserDTO.class);
 
     }
+    @Override
+	public VaccinationDTO addVaccineData(String vaccineName) {
+
+		VaccinationName isExist = vaccinationNameRepository.findByVaccineName(vaccineName.trim());
+		VaccinationDTO vaccinationDTO = new VaccinationDTO();
+
+		if (isExist != null) {
+				vaccinationDTO = VaccinationDTO.builder()
+						.message("Vaccination Details is Already Exist...")
+						.vaccinationName(isExist.getVaccineName())
+						.vaccinationCode(isExist.getVaccineCode())
+						.id(isExist.getId())
+						.build();
+
+		} else {
+			VaccinationName newEntry = new VaccinationName();
+
+			newEntry.setVaccineName(vaccineName.trim());
+			//newEntry.setVaccineCode("V-"+(Integer.toString(recordList.size()+1)));
+			newEntry.setVaccineCode(ApplicationConstants.vaccineCodePrefix + assignedIntegerCode());
+
+			VaccinationName dataAdded = vaccinationNameRepository.save(newEntry);
+			vaccinationDTO = VaccinationDTO.builder()
+					.message("Vaccination Details Added Successfully...")
+					.vaccinationName(dataAdded.getVaccineName())
+					.vaccinationCode(dataAdded.getVaccineCode())
+					.id(dataAdded.getId())
+					.build();
+
+		}
+		return vaccinationDTO;
+	}
+
+	public String assignedIntegerCode(){
+		List<VaccinationName> recordList = vaccinationNameRepository.findAll();
+		List<Integer> vaccineCodes = new ArrayList<>();
+
+		for(VaccinationName vc : recordList){
+//			String str = vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1];
+//			log.error("returned code : "+str);
+			vaccineCodes.add(Integer.parseInt(vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1]));
+		}
+		vaccineCodes.sort(Collections.reverseOrder());
+
+		return String.valueOf(vaccineCodes.get(0)+1);
+	}
 
 
 }

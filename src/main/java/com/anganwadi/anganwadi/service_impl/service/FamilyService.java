@@ -120,7 +120,7 @@ public interface FamilyService {
 
 	//VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
 
-	VaccinationDTO addVaccineData(String vaccineName);
+	//VaccinationDTO addVaccineData(String vaccineName);  // It is moved in user controller..
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);
