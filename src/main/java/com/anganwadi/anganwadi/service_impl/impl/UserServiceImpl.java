@@ -88,12 +88,16 @@ public class UserServiceImpl implements UserService {
             Calendar date = Calendar.getInstance();
             long t = date.getTimeInMillis();
             Date afterAddingTenMins = new Date(t + (10 * ApplicationConstants.ONE_MINUTE_IN_MILLIS));
+           
+            long expiryTimeInMillis = afterAddingTenMins.getTime();
+            
             String generateOtp = String.format("%04d", random.nextInt(9999));
             OtpDetails otpDetails = Msg91Services.sendRegSms(generateOtp, sendOtpDTO.getMobileNumber());
             log.info("" + otpDetails);
             if (otpDetails != null) {
                 otpDetails.setOtp(generateOtp);
-                otpDetails.setExpiryTime(afterAddingTenMins);
+                otpDetails.setExpiryTime(expiryTimeInMillis);
+                //otpDetails.setExpiryTime(afterAddingTenMins);
                 otpDetailsRepository.save(otpDetails);
 
                 otpDTO = OtpDTO.builder()
@@ -120,8 +124,18 @@ public class UserServiceImpl implements UserService {
 
         List<OtpDetails> verifyotp = otpDetailsRepository.findTopOneByMobileNumberAndOtp(otpDTO.getMobileNumber(), otpDTO.getOtp());
         User user = userRepository.getUserByMobileNumber(otpDTO.getMobileNumber());
-
+        
+        Calendar date = Calendar.getInstance();
+        long currentTime = date.getTimeInMillis();
+        log.error("current time: "+currentTime);
+ 
         if (verifyotp.size()>0 || otpDTO.getOtp().trim().equals("1105")) {
+        	
+        	
+        	if( !otpDTO.getOtp().trim().equals("1105") && verifyotp.get(0).getExpiryTime()<currentTime ) {
+        		throw new CustomException("Otp Expired or check otp again");
+        	}
+        	
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
                     .id(user.getId() == null ? "" : user.getId())
@@ -146,6 +160,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(findUser);
 
             // Update in Otp Table
+           
 
             for (OtpDetails otp : verifyotp) {
                 otp.setVersion(otpDTO.getVersion() == null ? "" : otpDTO.getVersion());

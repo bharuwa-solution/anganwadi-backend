@@ -1255,8 +1255,8 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId)
 			throws ParseException {
-		int temp  = Integer.parseInt(visitsDetailsDTOTemp.getVisitType());
-		if(temp>0 && temp<=10){
+		int visitType  = Integer.parseInt(visitsDetailsDTOTemp.getVisitType());
+		if(visitType >0 && visitType<=10){
 			if (visitsDetailsDTOTemp.getVisitCategory().length() > 0) {
 				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -4551,8 +4551,8 @@ public class FamilyServiceImpl implements FamilyService {
 		List<Integer> vaccineCodes = new ArrayList<>();
 
 		for(VaccinationName vc : recordList){
-			String str = vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1];
-			log.error("returned code : "+str);
+//			String str = vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1];
+//			log.error("returned code : "+str);
 			vaccineCodes.add(Integer.parseInt(vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1]));
 		}
 		Collections.sort(vaccineCodes, Collections.reverseOrder());
