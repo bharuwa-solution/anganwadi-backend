@@ -2,9 +2,13 @@ package com.anganwadi.anganwadi.config;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 
 public class ApplicationConstants {
 
+    public static final DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
     public static final String SIGNING_KEY = "family_key";
     public static final String ChildId = "AGCI_";
     public static final String familyId = "AGFI_";

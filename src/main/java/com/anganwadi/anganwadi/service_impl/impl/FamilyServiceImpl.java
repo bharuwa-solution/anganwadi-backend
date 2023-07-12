@@ -2,7 +2,6 @@ package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.config.ApplicationConstants;
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.dto.VaccinationDTO.VaccinationDTOBuilder;
 import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -421,7 +419,6 @@ public class FamilyServiceImpl implements FamilyService {
 			String handicap = "";
 
 			long getMills = passDetails.getDob();
-			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 			Date date = new Date(getMills);
 
 			FamilyMemberDTO singleList = FamilyMemberDTO.builder().id(passDetails.getId())
@@ -437,7 +434,8 @@ public class FamilyServiceImpl implements FamilyService {
 					.motherName(passDetails.getMotherName() == null ? "" : passDetails.getMotherName())
 					.fatherName(passDetails.getFatherName() == null ? "" : passDetails.getFatherName())
 					.idNumber(passDetails.getIdNumber() == null ? "" : passDetails.getIdNumber())
-					.gender(passDetails.getGender() == null ? "" : passDetails.getGender()).dob(df.format(date))
+					.gender(passDetails.getGender() == null ? "" : passDetails.getGender())
+					.dob(ApplicationConstants.df.format(date))
 					.centerName(commonMethodsService.findCenterName(passDetails.getCenterId()))
 					.category(passDetails.getCategory()) // join
 					.idType(passDetails.getIdType()).idNumber(passDetails.getIdNumber())
@@ -1128,14 +1126,11 @@ public class FamilyServiceImpl implements FamilyService {
 		} else {
 			delivery = DeliveryList.builder().LMPDate("").exceptedDeliveryDate("").actualDeliveryDate("").build();
 		}
-
 		return delivery;
 	}
 
 	private List<HouseVisitsList> getHouseVisitListByMemberId(String sd,
 			List<HouseVisitSchedule> houseVisitScheduleList) {
-
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
 		List<HouseVisitsList> addHouseList = new ArrayList<>();
 		Set<String> uniqueType = new TreeSet<>();
@@ -1145,7 +1140,7 @@ public class FamilyServiceImpl implements FamilyService {
 				String visitDate = "";
 				if (uniqueType.add(hvv.getVisitType().trim())) {
 					addHouseList.add(HouseVisitsList.builder().visitType(hvv.getVisitType()).title(hvv.getVisitName())
-							.round(getRounds(sd, hvv.getVisitType())).dueDate(df.format(hvv.getDueDate())).build());
+							.round(getRounds(sd, hvv.getVisitType())).dueDate(ApplicationConstants.df.format(hvv.getDueDate())).build());
 				}
 			}
 
@@ -4512,42 +4507,38 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public VaccinationDTO addVaccineData(String vaccineName) {
 
-		
 		VaccinationName isExist = vaccinationNameRepository.findByVaccineName(vaccineName.trim());
-		
-		if(isExist !=null) {
-				VaccinationDTO result=VaccinationDTO.builder()
-						  .message("vaccination Details is already exist...")
-						  .vaccinationName(isExist.getVaccineName())
-						  .vaccinationCode(isExist.getVaccineCode())
-						  .id(isExist.getId())
-						  .build();
-				return result;
-		}
-		else {
+		VaccinationDTO vaccinationDTO = new VaccinationDTO();
+
+		if (isExist != null) {
+				vaccinationDTO = VaccinationDTO.builder()
+						.message("Vaccination Details is Already Exist...")
+						.vaccinationName(isExist.getVaccineName())
+						.vaccinationCode(isExist.getVaccineCode())
+						.id(isExist.getId())
+						.build();
+
+		} else {
 			VaccinationName newEntry = new VaccinationName();
 
 			newEntry.setVaccineName(vaccineName.trim());
 			//newEntry.setVaccineCode("V-"+(Integer.toString(recordList.size()+1)));
-			newEntry.setVaccineCode(ApplicationConstants.vaccineCodePrefix+assignedIntegerCode());
+			newEntry.setVaccineCode(ApplicationConstants.vaccineCodePrefix + assignedIntegerCode());
 
 			VaccinationName dataAdded = vaccinationNameRepository.save(newEntry);
-			
-			VaccinationDTO result=VaccinationDTO.builder()
-					  .message("vaccination Details added successfully...")
-					  .vaccinationName(dataAdded.getVaccineName())
-					  .vaccinationCode(dataAdded.getVaccineCode())
-					  .id(dataAdded.getId())
-					  .build();
-			return result;
-			
+			vaccinationDTO = VaccinationDTO.builder()
+					.message("Vaccination Details Added Successfully...")
+					.vaccinationName(dataAdded.getVaccineName())
+					.vaccinationCode(dataAdded.getVaccineCode())
+					.id(dataAdded.getId())
+					.build();
+
 		}
-		 
+		return vaccinationDTO;
 	}
 
 	public String assignedIntegerCode(){
 		List<VaccinationName> recordList = vaccinationNameRepository.findAll();
-
 		List<Integer> vaccineCodes = new ArrayList<>();
 
 		for(VaccinationName vc : recordList){
@@ -4555,12 +4546,9 @@ public class FamilyServiceImpl implements FamilyService {
 			log.error("returned code : "+str);
 			vaccineCodes.add(Integer.parseInt(vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1]));
 		}
-		Collections.sort(vaccineCodes, Collections.reverseOrder());
+		vaccineCodes.sort(Collections.reverseOrder());
 
-		String vaccinecode =String.valueOf(vaccineCodes.get(0)+1);
-
-
-		return vaccinecode;
+		return String.valueOf(vaccineCodes.get(0)+1);
 	}
 
 }

@@ -1,16 +1,11 @@
 package com.anganwadi.anganwadi.controllers;
 
-import com.anganwadi.anganwadi.domains.dto.AnganwadiCenterDTO;
-import com.anganwadi.anganwadi.domains.dto.OtpDTO;
-import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
-import com.anganwadi.anganwadi.domains.dto.UserDTO;
+import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.repositories.AnganwadiCenterRepository;
+import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,18 +16,20 @@ public class UserController {
 
     private final UserService userService;
     private final AnganwadiCenterRepository anganwadiCentersRepository;
+    private final FamilyService familyService;
 
     @Autowired
-    public UserController(UserService userService, AnganwadiCenterRepository anganwadiCentersRepository) {
+    public UserController(UserService userService, AnganwadiCenterRepository anganwadiCentersRepository,
+                          FamilyService familyService) {
         this.userService = userService;
         this.anganwadiCentersRepository = anganwadiCentersRepository;
+        this.familyService = familyService;
     }
 
 
     @PostMapping("/sendOtp")
     private OtpDTO sendOtp(@RequestBody SendOtpDTO sendOtpDTO) throws IOException {
         return userService.sendOtp(sendOtpDTO);
-
     }
 
     @PostMapping("/verifyOtp")
@@ -57,5 +54,8 @@ public class UserController {
         return userService.getAnganwadiCenters();
     }
 
-
+    @PostMapping("/saveVaccinationDetails")
+    private VaccinationDTO saveVaccineDetails(@RequestParam String vaccineName) {
+        return familyService.addVaccineData(vaccineName);
+    }
 }
