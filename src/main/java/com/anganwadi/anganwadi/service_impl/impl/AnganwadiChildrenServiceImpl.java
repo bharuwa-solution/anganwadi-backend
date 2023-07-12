@@ -823,7 +823,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
         }
 
-
         for (SaveMeals mealsData : saveMeals) {
 
             if (mealsData.getTotalCalorie().length() > 0) {

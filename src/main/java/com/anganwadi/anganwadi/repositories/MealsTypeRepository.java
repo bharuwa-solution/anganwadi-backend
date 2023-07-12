@@ -8,7 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface MealsTypeRepository extends MongoRepository<MealsType, String> {
-
-
     Optional<MealsType> findByItemCode(String itemCode);
 }
