@@ -63,7 +63,6 @@ public class HouseVisitsController {
     
     @GetMapping("/getVaccinationNames")
     private List<VaccinationName> getVaccinationList(){
-    	
     	return familyService.getAllVaccinationName();	
     }
 
