@@ -2056,7 +2056,7 @@ public class FamilyServiceImpl implements FamilyService {
 		DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		long timeLess3Years = zoneDate.toInstant().toEpochMilli();
 
-		List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId);
+		List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId,timeLess3Years);
 		log.error("List of children " + findAllChildren);
 		String gender = "";
 
@@ -2064,9 +2064,9 @@ public class FamilyServiceImpl implements FamilyService {
 			String minority = "", category = "";
 			for (FamilyMember member : findAllChildren) {
 
-				if (member.getDob() >= timeLess3Years) {
-					continue;
-				}
+//				if (member.getDob() >= timeLess3Years) {
+//					continue;
+//				}
 
 				List<AnganwadiChildren> findNonRegistered = anganwadiChildrenRepository
 						.findAllByChildIdAndRegisteredTrueAndDeletedFalse(member.getId());

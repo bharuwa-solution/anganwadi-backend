@@ -46,8 +46,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'_id':?0, 'name':{$regex:?1,'$options':i}}")
     List<FamilyMember> findAllByIdAndNameSearch(String memberId, String name);
    
-    @Query("{'dob':{$gte:?0},'centerId':{$regex:?1}}")
-    List<FamilyMember> findAllByDobAndCenterId(long convertToMills, String centerId);
+    @Query("{'dob':{$gte:?0,$lte:?2},'centerId':{$regex:?1}}")
+    List<FamilyMember> findAllByDobAndCenterId(long convertToMills, String centerId,long timeLess3Yrs);
 
     @Query("{'dob':{$gte:?1},'centerId':?0}")
     List<FamilyMember> findAllByCenterIdAndDob(String centerId, long convertToMills, Sort createdDate);
