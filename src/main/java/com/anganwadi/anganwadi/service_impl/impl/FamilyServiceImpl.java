@@ -2,7 +2,6 @@ package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.config.ApplicationConstants;
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.dto.VaccinationDTO.VaccinationDTOBuilder;
 import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -44,21 +42,21 @@ public class FamilyServiceImpl implements FamilyService {
 	private final HouseVisitScheduleRepository houseVisitScheduleRepository;
 	private final BloodTestTrackingRepository bloodTestTrackingRepository;
 	private final VaccinationNameRepository vaccinationNameRepository;
-	
+
 
 	@Autowired
 	public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper,
-			FamilyMemberRepository familyMemberRepository, VisitsRepository visitsRepository,
-			WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
-			PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
-			AnganwadiChildrenRepository anganwadiChildrenRepository,
-			AnganwadiCenterRepository anganwadiCenterRepository, UserRepository userRepository,
-			AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService,
-			VaccinationScheduleRepository vaccinationScheduleRepository,
-			HouseVisitScheduleRepository houseVisitScheduleRepository,
-			BloodTestTrackingRepository bloodTestTrackingRepository,
-			VaccinationNameRepository vaccinationNameRepository
-			) {
+							 FamilyMemberRepository familyMemberRepository, VisitsRepository visitsRepository,
+							 WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
+							 PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
+							 AnganwadiChildrenRepository anganwadiChildrenRepository,
+							 AnganwadiCenterRepository anganwadiCenterRepository, UserRepository userRepository,
+							 AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService,
+							 VaccinationScheduleRepository vaccinationScheduleRepository,
+							 HouseVisitScheduleRepository houseVisitScheduleRepository,
+							 BloodTestTrackingRepository bloodTestTrackingRepository,
+							 VaccinationNameRepository vaccinationNameRepository
+	) {
 		this.familyRepository = familyRepository;
 		this.modelMapper = modelMapper;
 		this.familyMemberRepository = familyMemberRepository;
@@ -743,7 +741,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 	@Override
 	public WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId,
-			String centerName) throws ParseException {
+													String centerName) throws ParseException {
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = new Date();
 		String convertToString = df.format(date);
@@ -895,7 +893,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private List<VaccinationList> getVaccinationList(long dates, String id,
-			List<VaccinationSchedule> vaccinationSchedule) {
+													 List<VaccinationSchedule> vaccinationSchedule) {
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		List<VaccinationList> addVaccinationList = new ArrayList<>();
 
@@ -991,7 +989,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private List<MemberDetails> getMembersDetails(long dates, List<VaccinationSchedule> vs,
-			List<HouseVisitSchedule> hs) {
+												  List<HouseVisitSchedule> hs) {
 		List<MemberDetails> addInList = new ArrayList<>();
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		Set<String> uniqueMember = new TreeSet<>();
@@ -1078,7 +1076,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private List<VaccinationList> getVaccinationListByMemberId(String id,
-			List<VaccinationSchedule> vaccinationScheduleList) {
+															   List<VaccinationSchedule> vaccinationScheduleList) {
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		List<VaccinationList> addVaccinationList = new ArrayList<>();
 
@@ -1133,7 +1131,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private List<HouseVisitsList> getHouseVisitListByMemberId(String sd,
-			List<HouseVisitSchedule> houseVisitScheduleList) {
+															  List<HouseVisitSchedule> houseVisitScheduleList) {
 
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -1211,7 +1209,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private void saveBloodTestSection(VisitsDetailsDTOTemp bloodTestCases, String centerId, long currentDate,
-			FamilyMember findFamily) throws ParseException {
+									  FamilyMember findFamily) throws ParseException {
 		for (BloodTestCases cases : bloodTestCases.getBloodTest()) {
 			bloodTestTrackingRepository.save(BloodTestTracking.builder().date(currentDate).result(cases.getResult())
 					.testCode(cases.getTestCode()).build());
@@ -1220,7 +1218,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private void saveWeightsSection(VisitsDetailsDTOTemp weightRecords, String centerId, long currentDate,
-			FamilyMember findFamily) {
+									FamilyMember findFamily) {
 
 		weightTrackingRepository
 				.save(WeightTracking.builder().familyId(findFamily.getFamilyId()).childId(weightRecords.getMemberId())
@@ -1231,7 +1229,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private void saveVisitsSection(VisitsDetailsDTOTemp visitDetails, String centerId, long currentDate,
-			FamilyMember findFamily) {
+								   FamilyMember findFamily) {
 
 		visitsRepository.save(Visits.builder().familyId(findFamily.getFamilyId()).memberId(visitDetails.getMemberId())
 				.centerId(centerId).centerName(commonMethodsService.findCenterName(centerId))
@@ -1242,7 +1240,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private void saveVaccinationSection(VisitsDetailsDTOTemp visitDetails, String centerId, long currentDate,
-			FamilyMember findFamily) {
+										FamilyMember findFamily) {
 
 		vaccinationRepository
 				.save(Vaccination.builder().familyId(findFamily.getFamilyId()).childId(visitDetails.getMemberId())
@@ -1255,8 +1253,8 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId)
 			throws ParseException {
-		int visitType  = Integer.parseInt(visitsDetailsDTOTemp.getVisitType());
-		if(visitType >0 && visitType<=10){
+		int visitType = Integer.parseInt(visitsDetailsDTOTemp.getVisitType());
+		if (visitType > 0 && visitType <= 10) {
 			if (visitsDetailsDTOTemp.getVisitCategory().length() > 0) {
 				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -1291,8 +1289,7 @@ public class FamilyServiceImpl implements FamilyService {
 			} else {
 				throw new CustomException("Visit Category Not Passed, Please Check");
 			}
-		}
-		else{
+		} else {
 			throw new CustomException("Visit Type does not exist, Connect with support team..");
 		}
 		return visitsDetailsDTOTemp;
@@ -1735,54 +1732,54 @@ public class FamilyServiceImpl implements FamilyService {
 		long endMillis = 0L;
 		switch (duration) {
 
-		case "2":
-			LocalDateTime minus7Months = LocalDateTime.now().minusMonths(7);
-			String temp7Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus7Months);
-			DateFormat df7 = new SimpleDateFormat("dd-MM-yyyy");
+			case "2":
+				LocalDateTime minus7Months = LocalDateTime.now().minusMonths(7);
+				String temp7Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus7Months);
+				DateFormat df7 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last7Months = df7.parse(temp7Date);
-			endMillis = last7Months.getTime();
-			break;
+				Date last7Months = df7.parse(temp7Date);
+				endMillis = last7Months.getTime();
+				break;
 
-		case "3":
-			LocalDateTime minus12Months = LocalDateTime.now().minusMonths(12);
-			String temp12Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus12Months);
-			DateFormat df12 = new SimpleDateFormat("dd-MM-yyyy");
+			case "3":
+				LocalDateTime minus12Months = LocalDateTime.now().minusMonths(12);
+				String temp12Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus12Months);
+				DateFormat df12 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last12Months = df12.parse(temp12Date);
-			endMillis = last12Months.getTime();
-			break;
+				Date last12Months = df12.parse(temp12Date);
+				endMillis = last12Months.getTime();
+				break;
 
-		case "4":
-			LocalDateTime minus24Months = LocalDateTime.now().minusMonths(24);
-			String temp24Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus24Months);
-			DateFormat df24 = new SimpleDateFormat("dd-MM-yyyy");
+			case "4":
+				LocalDateTime minus24Months = LocalDateTime.now().minusMonths(24);
+				String temp24Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus24Months);
+				DateFormat df24 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last24Months = df24.parse(temp24Date);
-			endMillis = last24Months.getTime();
-			break;
+				Date last24Months = df24.parse(temp24Date);
+				endMillis = last24Months.getTime();
+				break;
 
-		case "5":
-			LocalDateTime minus36Months = LocalDateTime.now().minusMonths(36);
-			String temp36Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus36Months);
-			DateFormat df36 = new SimpleDateFormat("dd-MM-yyyy");
+			case "5":
+				LocalDateTime minus36Months = LocalDateTime.now().minusMonths(36);
+				String temp36Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus36Months);
+				DateFormat df36 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last36Months = df36.parse(temp36Date);
-			endMillis = last36Months.getTime();
-			break;
+				Date last36Months = df36.parse(temp36Date);
+				endMillis = last36Months.getTime();
+				break;
 
-		case "6":
-			LocalDateTime minus48Months = LocalDateTime.now().minusMonths(48);
-			String temp48Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus48Months);
-			DateFormat df48 = new SimpleDateFormat("dd-MM-yyyy");
+			case "6":
+				LocalDateTime minus48Months = LocalDateTime.now().minusMonths(48);
+				String temp48Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus48Months);
+				DateFormat df48 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last48Months = df48.parse(temp48Date);
-			endMillis = last48Months.getTime();
-			break;
+				Date last48Months = df48.parse(temp48Date);
+				endMillis = last48Months.getTime();
+				break;
 
-		default:
-			endMillis = new Date().getTime();
-			break;
+			default:
+				endMillis = new Date().getTime();
+				break;
 		}
 
 		return endMillis;
@@ -1793,63 +1790,63 @@ public class FamilyServiceImpl implements FamilyService {
 		long startMillis = 0L;
 		switch (duration) {
 
-		case "1":
-			LocalDateTime minus6Months = LocalDateTime.now().minusMonths(6);
-			String temp6Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus6Months);
-			DateFormat df6 = new SimpleDateFormat("dd-MM-yyyy");
+			case "1":
+				LocalDateTime minus6Months = LocalDateTime.now().minusMonths(6);
+				String temp6Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus6Months);
+				DateFormat df6 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last6Months = df6.parse(temp6Date);
-			startMillis = last6Months.getTime();
-			break;
+				Date last6Months = df6.parse(temp6Date);
+				startMillis = last6Months.getTime();
+				break;
 
-		case "2":
-			LocalDateTime minus12Months = LocalDateTime.now().minusMonths(12);
-			String temp12Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus12Months);
-			DateFormat df12 = new SimpleDateFormat("dd-MM-yyyy");
+			case "2":
+				LocalDateTime minus12Months = LocalDateTime.now().minusMonths(12);
+				String temp12Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus12Months);
+				DateFormat df12 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last12Months = df12.parse(temp12Date);
-			startMillis = last12Months.getTime();
-			break;
+				Date last12Months = df12.parse(temp12Date);
+				startMillis = last12Months.getTime();
+				break;
 
-		case "3":
-			LocalDateTime minus24Months = LocalDateTime.now().minusMonths(24);
-			String temp24Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus24Months);
-			DateFormat df24 = new SimpleDateFormat("dd-MM-yyyy");
+			case "3":
+				LocalDateTime minus24Months = LocalDateTime.now().minusMonths(24);
+				String temp24Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus24Months);
+				DateFormat df24 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last24Months = df24.parse(temp24Date);
-			startMillis = last24Months.getTime();
-			break;
+				Date last24Months = df24.parse(temp24Date);
+				startMillis = last24Months.getTime();
+				break;
 
-		case "4":
-			LocalDateTime minus36Months = LocalDateTime.now().minusMonths(36);
-			String temp36Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus36Months);
-			DateFormat df36 = new SimpleDateFormat("dd-MM-yyyy");
+			case "4":
+				LocalDateTime minus36Months = LocalDateTime.now().minusMonths(36);
+				String temp36Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus36Months);
+				DateFormat df36 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last36Months = df36.parse(temp36Date);
-			startMillis = last36Months.getTime();
-			break;
+				Date last36Months = df36.parse(temp36Date);
+				startMillis = last36Months.getTime();
+				break;
 
-		case "5":
-			LocalDateTime minus48Months = LocalDateTime.now().minusMonths(48);
-			String temp48Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus48Months);
-			DateFormat df48 = new SimpleDateFormat("dd-MM-yyyy");
+			case "5":
+				LocalDateTime minus48Months = LocalDateTime.now().minusMonths(48);
+				String temp48Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus48Months);
+				DateFormat df48 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last48Months = df48.parse(temp48Date);
-			startMillis = last48Months.getTime();
-			break;
+				Date last48Months = df48.parse(temp48Date);
+				startMillis = last48Months.getTime();
+				break;
 
-		case "6":
-			LocalDateTime minus60Months = LocalDateTime.now().minusMonths(60);
-			String temp60Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus60Months);
-			DateFormat df60 = new SimpleDateFormat("dd-MM-yyyy");
+			case "6":
+				LocalDateTime minus60Months = LocalDateTime.now().minusMonths(60);
+				String temp60Date = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(minus60Months);
+				DateFormat df60 = new SimpleDateFormat("dd-MM-yyyy");
 
-			Date last60Months = df60.parse(temp60Date);
-			startMillis = last60Months.getTime();
-			break;
+				Date last60Months = df60.parse(temp60Date);
+				startMillis = last60Months.getTime();
+				break;
 
-		default:
-			startMillis = -5364683608000L;
-			break;
+			default:
+				startMillis = -5364683608000L;
+				break;
 		}
 		return startMillis;
 	}
@@ -2102,55 +2099,55 @@ public class FamilyServiceImpl implements FamilyService {
 		String visitPrefix = "";
 		long noOfRounds = 0;
 		switch (caseId) {
-		case "1":
-			visitPrefix = "A";
-			noOfRounds = visitsRepository.countByVisitType(caseId);
-			break;
+			case "1":
+				visitPrefix = "A";
+				noOfRounds = visitsRepository.countByVisitType(caseId);
+				break;
 
-		case "2":
-			visitPrefix = "B";
-			noOfRounds = visitsRepository.countByVisitType(caseId);
-			break;
+			case "2":
+				visitPrefix = "B";
+				noOfRounds = visitsRepository.countByVisitType(caseId);
+				break;
 
-		case "3":
-			visitPrefix = "C";
+			case "3":
+				visitPrefix = "C";
 
-			break;
+				break;
 
-		case "4":
-			visitPrefix = "D";
+			case "4":
+				visitPrefix = "D";
 
-			break;
+				break;
 
-		case "5":
-			visitPrefix = "E";
+			case "5":
+				visitPrefix = "E";
 
-			break;
+				break;
 
-		case "6":
-			visitPrefix = "F";
+			case "6":
+				visitPrefix = "F";
 
-			break;
+				break;
 
-		case "7":
-			visitPrefix = "G";
+			case "7":
+				visitPrefix = "G";
 
-			break;
+				break;
 
-		case "8":
-			visitPrefix = "H";
+			case "8":
+				visitPrefix = "H";
 
-			break;
+				break;
 
-		case "9":
-			visitPrefix = "I";
+			case "9":
+				visitPrefix = "I";
 
-			break;
+				break;
 
-		case "10":
-			visitPrefix = "J";
+			case "10":
+				visitPrefix = "J";
 
-			break;
+				break;
 
 		}
 
@@ -2794,7 +2791,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 	@Override
 	public SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId,
-			String centerName) {
+													 String centerName) {
 
 		String familyId = saveVaccinationDTO.getFamilyId() == null ? "" : saveVaccinationDTO.getFamilyId();
 		String motherName = saveVaccinationDTO.getMotherName() == null ? "" : saveVaccinationDTO.getMotherName();
@@ -3790,20 +3787,20 @@ public class FamilyServiceImpl implements FamilyService {
 							.toLocalDate();
 
 					switch (updateVisits.getVisitType().trim()) {
-					case "1":
-						updateVisits.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "1":
+							updateVisits.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "2":
-						updateVisits.setDueDate(localDate.plusDays(270).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "2":
+							updateVisits.setDueDate(localDate.plusDays(270).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "3":
-						updateVisits.setDueDate(localDate.plusDays(280).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "3":
+							updateVisits.setDueDate(localDate.plusDays(280).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 					}
 
 					houseVisitScheduleRepository.save(updateVisits);
@@ -3816,7 +3813,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 	@Override
 	public PregnantAndDeliveryDTO updatePregnantWomenDetails(PregnantAndDeliveryDTO pregnantAndDeliveryDTO,
-			String centerId) throws ParseException {
+															 String centerId) throws ParseException {
 		if (StringUtils.isEmpty(pregnantAndDeliveryDTO.getId())) {
 			throw new CustomException("Id Not Passed, Please Check");
 		}
@@ -4056,40 +4053,40 @@ public class FamilyServiceImpl implements FamilyService {
 					LocalDate localDate = Instant.ofEpochMilli(dob).atZone(ZoneId.systemDefault()).toLocalDate();
 
 					switch (updateVisits.getVisitType().trim()) {
-					case "4":
-						updateVisits.setDueDate(
-								localDate.plusDays(3).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
-						break;
+						case "4":
+							updateVisits.setDueDate(
+									localDate.plusDays(3).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+							break;
 
-					case "5":
-						updateVisits.setDueDate(
-								localDate.plusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
-						break;
+						case "5":
+							updateVisits.setDueDate(
+									localDate.plusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+							break;
 
-					case "6":
-						updateVisits.setDueDate(localDate.plusDays(150).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "6":
+							updateVisits.setDueDate(localDate.plusDays(150).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "7":
-						updateVisits.setDueDate(localDate.plusDays(240).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "7":
+							updateVisits.setDueDate(localDate.plusDays(240).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "8":
-						updateVisits.setDueDate(localDate.plusDays(330).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "8":
+							updateVisits.setDueDate(localDate.plusDays(330).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "9":
-						updateVisits.setDueDate(localDate.plusDays(510).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "9":
+							updateVisits.setDueDate(localDate.plusDays(510).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "10":
-						updateVisits.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "10":
+							updateVisits.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 					}
 
 					houseVisitScheduleRepository.save(updateVisits);
@@ -4109,79 +4106,79 @@ public class FamilyServiceImpl implements FamilyService {
 					LocalDate localDate = Instant.ofEpochMilli(dob).atZone(ZoneId.systemDefault()).toLocalDate();
 
 					switch (vs.getCode().trim()) {
-					case "1":
-						vs.setDueDate(dob);
-						break;
+						case "1":
+							vs.setDueDate(dob);
+							break;
 
-					case "22":
-						vs.setDueDate(dob);
-						break;
+						case "22":
+							vs.setDueDate(dob);
+							break;
 
-					case "8":
-						vs.setDueDate(dob);
-						break;
+						case "8":
+							vs.setDueDate(dob);
+							break;
 
-					case "9":
-						vs.setDueDate(dob);
-						break;
+						case "9":
+							vs.setDueDate(dob);
+							break;
 
-					case "5":
-						vs.setDueDate(dob);
-						break;
+						case "5":
+							vs.setDueDate(dob);
+							break;
 
-					case "2":
-						vs.setDueDate(dob);
-						break;
+						case "2":
+							vs.setDueDate(dob);
+							break;
 
-					case "10":
-						vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "10":
+							vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "6":
-						vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "6":
+							vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "3":
-						vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "3":
+							vs.setDueDate(localDate.plusDays(180).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "11":
-						vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "11":
+							vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "7":
-						vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "7":
+							vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "4":
-						vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "4":
+							vs.setDueDate(localDate.plusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "14":
-						vs.setDueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "14":
+							vs.setDueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "13":
-						vs.setDueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "13":
+							vs.setDueDate(localDate.plusDays(540).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "12":
-						vs.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "12":
+							vs.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
-					case "15":
-						vs.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant()
-								.toEpochMilli());
-						break;
+						case "15":
+							vs.setDueDate(localDate.plusDays(720).atStartOfDay(ZoneId.systemDefault()).toInstant()
+									.toEpochMilli());
+							break;
 
 					}
 					vaccinationScheduleRepository.save(vs);
@@ -4495,72 +4492,16 @@ public class FamilyServiceImpl implements FamilyService {
 
 	@Override
 	public List<VaccinationName> getAllVaccinationName() {
-
 		//return vaccinationNameRepository.findAll();
-		
 		List<VaccinationName> listForReturn = vaccinationNameRepository.findAll();
 
-				
-		if(listForReturn.size()<=0) {
+		if (listForReturn.size() <= 0) {
 			throw new CustomException("No any data to fetch connect with support team..");
 		} else {
 			return listForReturn;
 		}
 
 	}
-
-	@Override
-	public VaccinationDTO addVaccineData(String vaccineName) {
-
-		
-		VaccinationName isExist = vaccinationNameRepository.findByVaccineName(vaccineName.trim());
-		
-		if(isExist !=null) {
-				VaccinationDTO result=VaccinationDTO.builder()
-						  .message("vaccination Details is already exist...")
-						  .vaccinationName(isExist.getVaccineName())
-						  .vaccinationCode(isExist.getVaccineCode())
-						  .id(isExist.getId())
-						  .build();
-				return result;
-		}
-		else {
-			VaccinationName newEntry = new VaccinationName();
-
-			newEntry.setVaccineName(vaccineName.trim());
-			//newEntry.setVaccineCode("V-"+(Integer.toString(recordList.size()+1)));
-			newEntry.setVaccineCode(ApplicationConstants.vaccineCodePrefix+assignedIntegerCode());
-
-			VaccinationName dataAdded = vaccinationNameRepository.save(newEntry);
-			
-			VaccinationDTO result=VaccinationDTO.builder()
-					  .message("vaccination Details added successfully...")
-					  .vaccinationName(dataAdded.getVaccineName())
-					  .vaccinationCode(dataAdded.getVaccineCode())
-					  .id(dataAdded.getId())
-					  .build();
-			return result;
-			
-		}
-		 
-	}
-
-	public String assignedIntegerCode(){
-		List<VaccinationName> recordList = vaccinationNameRepository.findAll();
-
-		List<Integer> vaccineCodes = new ArrayList<>();
-
-		for(VaccinationName vc : recordList){
-//			String str = vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1];
-//			log.error("returned code : "+str);
-			vaccineCodes.add(Integer.parseInt(vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1]));
-		}
-		Collections.sort(vaccineCodes, Collections.reverseOrder());
-
-		String vaccinecode =String.valueOf(vaccineCodes.get(0)+1);
-
-
-		return vaccinecode;
-	}
-
 }
+
+

@@ -1,16 +1,10 @@
 package com.anganwadi.anganwadi.controllers;
 
-import com.anganwadi.anganwadi.domains.dto.AnganwadiCenterDTO;
-import com.anganwadi.anganwadi.domains.dto.OtpDTO;
-import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
-import com.anganwadi.anganwadi.domains.dto.UserDTO;
+import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.repositories.AnganwadiCenterRepository;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -57,5 +51,10 @@ public class UserController {
         return userService.getAnganwadiCenters();
     }
 
+    @PostMapping("/saveVaccinationDetails")
+    private VaccinationDTO saveVaccineDetails(@RequestParam String vaccineName) {
+
+        return userService.addVaccineData(vaccineName);
+    }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ApplicationConstants {
 
     public static final String SIGNING_KEY = "family_key";
+    public static final String default_Otp = "1105";
     public static final String ChildId = "AGCI_";
     public static final String familyId = "AGFI_";
     public static final String TOKEN_PREFIX = "Bearer ";

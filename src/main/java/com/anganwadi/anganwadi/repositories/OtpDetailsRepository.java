@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface OtpDetailsRepository extends MongoRepository<OtpDetails, String> {
+//    List<OtpDetails> findTopOneByMobileNumberAndOtp(String mobileNumber, String otp);
+
     List<OtpDetails> findTopOneByMobileNumberAndOtp(String mobileNumber, String otp);
 }

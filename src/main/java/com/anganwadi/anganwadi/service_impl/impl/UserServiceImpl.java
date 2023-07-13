@@ -1,16 +1,11 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
 import com.anganwadi.anganwadi.config.ApplicationConstants;
-import com.anganwadi.anganwadi.domains.dto.AnganwadiCenterDTO;
-import com.anganwadi.anganwadi.domains.dto.OtpDTO;
-import com.anganwadi.anganwadi.domains.dto.SendOtpDTO;
-import com.anganwadi.anganwadi.domains.dto.UserDTO;
-import com.anganwadi.anganwadi.domains.dto.VaccinationDTO;
+import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
 import com.anganwadi.anganwadi.domains.entity.OtpDetails;
 import com.anganwadi.anganwadi.domains.entity.User;
 import com.anganwadi.anganwadi.domains.entity.VaccinationName;
-import com.anganwadi.anganwadi.exceptionHandler.BadRequestException;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.AnganwadiCenterRepository;
 import com.anganwadi.anganwadi.repositories.OtpDetailsRepository;
@@ -127,20 +122,20 @@ public class UserServiceImpl implements UserService {
             throw new CustomException("Please Check Details");
         }
 
-        List<OtpDetails> verifyotp = otpDetailsRepository.findTopOneByMobileNumberAndOtp(otpDTO.getMobileNumber(), otpDTO.getOtp());
+        List<OtpDetails> verifyOtp = otpDetailsRepository.findTopOneByMobileNumberAndOtp(otpDTO.getMobileNumber(), otpDTO.getOtp());
         User user = userRepository.getUserByMobileNumber(otpDTO.getMobileNumber());
-        
+
         Calendar date = Calendar.getInstance();
         long currentTime = date.getTimeInMillis();
-        log.error("current time: "+currentTime);
- 
-        if (verifyotp.size()>0 || otpDTO.getOtp().trim().equals("1105")) {
-        	
-        	
-        	if( !otpDTO.getOtp().trim().equals("1105") && verifyotp.get(0).getExpiryTime()<currentTime ) {
-        		throw new CustomException("Otp Expired or check otp again");
-        	}
-        	
+        log.error("current time: " + currentTime);
+        long expTime = 0;
+
+        for (OtpDetails exp : verifyOtp) {
+            expTime = exp.getExpiryTime();
+        }
+
+        if ((verifyOtp.size() > 0 && currentTime <= expTime) || otpDTO.getOtp().trim().equals(ApplicationConstants.default_Otp)) {
+
             otpDTO = OtpDTO.builder()
                     .otp(otpDTO.getOtp())
                     .id(user.getId() == null ? "" : user.getId())
@@ -165,16 +160,13 @@ public class UserServiceImpl implements UserService {
             userRepository.save(findUser);
 
             // Update in Otp Table
-           
-
-            for (OtpDetails otp : verifyotp) {
-                otp.setVersion(otpDTO.getVersion() == null ? "" : otpDTO.getVersion());
+            for (OtpDetails otp : verifyOtp) {
+                otp.setVersion(otpDTO.getVersion() == null ? "" : otp.getVersion());
                 otpDetailsRepository.save(otp);
             }
 
-
         } else {
-            throw new BadRequestException("Incorrect Otp, please fill correct otp");
+            throw new CustomException("Incorrect Otp Or Otp Expired, please Try Again");
         }
 
         return otpDTO;
@@ -183,10 +175,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<AnganwadiCenterDTO> addAnganwadiCenters(List<AnganwadiCenterDTO> centersDTO) {
-
         return centersDTO;
-
-
     }
 
     @Override
@@ -230,48 +219,49 @@ public class UserServiceImpl implements UserService {
 	public VaccinationDTO addVaccineData(String vaccineName) {
 
 		VaccinationName isExist = vaccinationNameRepository.findByVaccineName(vaccineName.trim());
-		VaccinationDTO vaccinationDTO = new VaccinationDTO();
 
 		if (isExist != null) {
-				vaccinationDTO = VaccinationDTO.builder()
-						.message("Vaccination Details is Already Exist...")
-						.vaccinationName(isExist.getVaccineName())
-						.vaccinationCode(isExist.getVaccineCode())
-						.id(isExist.getId())
-						.build();
+            return VaccinationDTO.builder()
+                    .message("Vaccination Details is Already Exist...")
+                    .vaccinationName(isExist.getVaccineName())
+                    .vaccinationCode(isExist.getVaccineCode())
+                    .id(isExist.getId())
+                    .build();
 
-		} else {
-			VaccinationName newEntry = new VaccinationName();
+        } else {
 
-			newEntry.setVaccineName(vaccineName.trim());
-			//newEntry.setVaccineCode("V-"+(Integer.toString(recordList.size()+1)));
-			newEntry.setVaccineCode(ApplicationConstants.vaccineCodePrefix + assignedIntegerCode());
+            VaccinationName saveData = VaccinationName.builder()
+                    .vaccineName(vaccineName)
+                    .vaccineCode(ApplicationConstants.vaccineCodePrefix + assignedIntegerCode())
+                    .build();
 
-			VaccinationName dataAdded = vaccinationNameRepository.save(newEntry);
-			vaccinationDTO = VaccinationDTO.builder()
-					.message("Vaccination Details Added Successfully...")
-					.vaccinationName(dataAdded.getVaccineName())
-					.vaccinationCode(dataAdded.getVaccineCode())
-					.id(dataAdded.getId())
-					.build();
+            vaccinationNameRepository.save(saveData);
 
-		}
-		return vaccinationDTO;
-	}
+            return VaccinationDTO.builder()
+                    .message("Vaccination Details Added Successfully...")
+                    .vaccinationName(saveData.getVaccineName())
+                    .vaccinationCode(saveData.getVaccineCode())
+                    .id(saveData.getId())
+                    .build();
+        }
+    }
 
-	public String assignedIntegerCode(){
-		List<VaccinationName> recordList = vaccinationNameRepository.findAll();
-		List<Integer> vaccineCodes = new ArrayList<>();
+    public long assignedIntegerCode() {
+        List<VaccinationName> recordList = vaccinationNameRepository.findTopOneById();
+        long val = 0;
 
-		for(VaccinationName vc : recordList){
-//			String str = vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1];
-//			log.error("returned code : "+str);
-			vaccineCodes.add(Integer.parseInt(vc.getVaccineCode().split(ApplicationConstants.vaccineCodePrefix)[1]));
-		}
-		vaccineCodes.sort(Collections.reverseOrder());
+        if (recordList.size() > 0) {
+            for (VaccinationName names : recordList) {
+                String[] splitCode = names.getVaccineCode().split("-");
+                val = Long.parseLong(splitCode[1]) + 1;
+            }
 
-		return String.valueOf(vaccineCodes.get(0)+1);
-	}
+        } else {
+            val = 1;
+        }
+
+        return val;
+    }
 
 
 }
