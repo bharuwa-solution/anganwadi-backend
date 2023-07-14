@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nonapi.io.github.classgraph.json.Id;
 
 
 @Data
@@ -14,9 +13,9 @@ import nonapi.io.github.classgraph.json.Id;
 @Builder
 public class VaccinationDTO {
 
-	private String id;
-	private String vaccinationCode;
-	private String vaccinationName;
-	private String message;
-	
+    private String id;
+    private String vaccinationCode;
+    private String vaccinationName;
+    private String message;
+
 }

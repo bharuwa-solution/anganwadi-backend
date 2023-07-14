@@ -18,4 +18,9 @@ public interface VaccinationScheduleRepository extends MongoRepository<Vaccinati
     List<VaccinationSchedule> findAllByMemberId(String id);
 
     void deleteByMemberId(String id);
+
+    @Query("{'memberId':?0,'dueDate':{$gte:?1}}")
+    List<VaccinationSchedule> findPrematureDelivery(String motherId, long babyDob);
+
+    void deleteByMemberIdAndDueDate(String motherId, long dueDate);
 }

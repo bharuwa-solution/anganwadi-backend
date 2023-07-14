@@ -21,4 +21,9 @@ public interface HouseVisitScheduleRepository extends MongoRepository<HouseVisit
     List<HouseVisitSchedule> findAllByMemberId(String memberId);
 
     void deleteByMemberId(String id);
+
+    @Query("{'memberId':?0,'dueDate':{$gte:?1}}")
+    List<HouseVisitSchedule> findPrematureDelivery(String motherId, long babyDob);
+
+    void deleteByMemberIdAndDueDate(String motherId, long dueDate);
 }

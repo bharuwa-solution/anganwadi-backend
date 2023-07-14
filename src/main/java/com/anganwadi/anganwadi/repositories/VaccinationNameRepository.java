@@ -1,8 +1,8 @@
 package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.VaccinationName;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +12,6 @@ public interface VaccinationNameRepository extends MongoRepository<VaccinationNa
 
     VaccinationName findByVaccineName(String vaccineName);
 
-    @Query(value = "{}", sort = "{_id:-1}")
+    @Aggregation(pipeline = {"{'$match':{'_id':{$ne:null}}}", "{$limit:1}", "{$sort:{'_id':-1}}"})
     List<VaccinationName> findTopOneById();
 }

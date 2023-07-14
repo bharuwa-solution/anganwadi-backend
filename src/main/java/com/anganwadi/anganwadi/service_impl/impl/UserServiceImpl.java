@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -55,11 +57,7 @@ public class UserServiceImpl implements UserService {
 
         String regex = "[+-]?\\d*(\\.\\d+)?";
         log.info("mobile Number " + mobileNumber);
-        if (!mobileNumber.matches(regex) || mobileNumber.trim().length() != 10) {
-            status = false;
-        } else {
-            status = true;
-        }
+        status = mobileNumber.matches(regex) && mobileNumber.trim().length() == 10;
         return status;
     }
 
@@ -88,9 +86,9 @@ public class UserServiceImpl implements UserService {
             Calendar date = Calendar.getInstance();
             long t = date.getTimeInMillis();
             Date afterAddingTenMins = new Date(t + (10 * ApplicationConstants.ONE_MINUTE_IN_MILLIS));
-           
+
             long expiryTimeInMillis = afterAddingTenMins.getTime();
-            
+
             String generateOtp = String.format("%04d", random.nextInt(9999));
             OtpDetails otpDetails = Msg91Services.sendRegSms(generateOtp, sendOtpDTO.getMobileNumber());
             log.info("" + otpDetails);
@@ -108,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
             }
         }
-        if(!validateNumber(sendOtpDTO.getMobileNumber(), status) || !validateUser(sendOtpDTO.getMobileNumber())){
+        if (!validateNumber(sendOtpDTO.getMobileNumber(), status) || !validateUser(sendOtpDTO.getMobileNumber())) {
             throw new CustomException("User not registered");
 
         }
@@ -215,12 +213,13 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(passUserData, UserDTO.class);
 
     }
+
     @Override
-	public VaccinationDTO addVaccineData(String vaccineName) {
+    public VaccinationDTO addVaccineData(String vaccineName) {
 
-		VaccinationName isExist = vaccinationNameRepository.findByVaccineName(vaccineName.trim());
+        VaccinationName isExist = vaccinationNameRepository.findByVaccineName(vaccineName.trim());
 
-		if (isExist != null) {
+        if (isExist != null) {
             return VaccinationDTO.builder()
                     .message("Vaccination Details is Already Exist...")
                     .vaccinationName(isExist.getVaccineName())
@@ -247,19 +246,22 @@ public class UserServiceImpl implements UserService {
     }
 
     public long assignedIntegerCode() {
-        List<VaccinationName> recordList = vaccinationNameRepository.findTopOneById();
+
+
+        Page<VaccinationName> pageList = vaccinationNameRepository.findAll(PageRequest.of(0, 1, Sort.Direction.DESC, "_id"));
+        List<VaccinationName> recordList = pageList.getContent();
         long val = 0;
 
         if (recordList.size() > 0) {
             for (VaccinationName names : recordList) {
                 String[] splitCode = names.getVaccineCode().split("-");
+                log.error(splitCode[1]);
                 val = Long.parseLong(splitCode[1]) + 1;
             }
 
         } else {
             val = 1;
         }
-
         return val;
     }
 

@@ -19,4 +19,5 @@ public interface VaccinationRepository extends MongoRepository<Vaccination, Stri
     List<Vaccination> findAllByMonthCriteria(Date startDate, Date endDate);
 
     List<Vaccination> findAllByChildId(String childId, Sort createdDate);
+
 }

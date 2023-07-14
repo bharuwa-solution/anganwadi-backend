@@ -114,13 +114,12 @@ public interface FamilyService {
 
     String autoUpdateCalendar();
 
-	
 
-	List<VaccinationName> getAllVaccinationName();
+    List<VaccinationName> getAllVaccinationName();
 
-	//VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
+    //VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
 
-	//VaccinationDTO addVaccineData(String vaccineName);  // It is moved in user controller..
+    //VaccinationDTO addVaccineData(String vaccineName);  // It is moved in user controller..
 
 
 //    FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered);

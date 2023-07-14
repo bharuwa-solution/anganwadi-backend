@@ -1,12 +1,13 @@
 
 // Auto Update Pregnancy House visits
-private void autoUpdateBeforePregnantVisits(List<PregnantAndDelivery> membersList){
+private void autoUpdatePregnantVisits(List<PregnantAndDelivery> membersList){
 
         Set<String> uniqueMember=new HashSet<>();
         for(PregnantAndDelivery members:membersList){
         if(Arrays.stream(ApplicationConstants.ignoreCenters).noneMatch(members.getCenterId().trim()::equals)){
+        String combinedId=members.getMotherMemberId()+members.getDob())
 
-        if(uniqueMember.add(members.getMotherMemberId())){
+        if(uniqueMember.add(combinedIdō)){
         LocalDate localDate=Instant.ofEpochMilli(members.getLastMissedPeriodDate()).atZone(ZoneId.systemDefault()).toLocalDate();
 
         houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
@@ -128,16 +129,21 @@ private void autoUpdateBeforePregnantVisits(List<PregnantAndDelivery> membersLis
         }
         }
 
+// Auto Update After Birth House visits
+private void autoUpdateBirthVisits(List<BabiesBirth> membersList){
 
-       // Auto Update After Birth House visits
-private void autoUpdateBirthVisits(List<BabiesBirth> membersList) {
+        // Auto Update After Birth House visits
 
-        Set<String> uniqueMember = new HashSet<>();
-        for (BabiesBirth members : membersList) {
-        if (Arrays.stream(ApplicationConstants.ignoreCenters).noneMatch(members.getCenterId().trim()::equals)) {
+        Set<String> uniqueMemberSet=new HashSet<>();
 
-        if (uniqueMember.add(members.getMotherMemberId())) {
-        LocalDate localDate = Instant.ofEpochMilli(members.getDob()).atZone(ZoneId.systemDefault()).toLocalDate();
+        for(BabiesBirth members:membersList){
+
+        if(Arrays.stream(ApplicationConstants.ignoreCenters).noneMatch(members.getCenterId().trim()::equals)){
+
+        checkPrematureVisits(members.getMotherMemberId(),members.getDob());
+
+        if(uniqueMember.add(members.getMotherMemberId())){
+        LocalDate localDate=Instant.ofEpochMilli(members.getDob()).atZone(ZoneId.systemDefault()).toLocalDate();
 
         houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
         .memberId(members.getChildId())
@@ -696,3 +702,6 @@ private void autoUpdateBirthVaccination(List<BabiesBirth> membersList) {
         }
         }
         }
+
+
+

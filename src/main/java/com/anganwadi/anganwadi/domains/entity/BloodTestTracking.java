@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Builder
 @Document(collection = "BloodTestTracking")
-public class BloodTestTracking extends BaseObject{
+public class BloodTestTracking extends BaseObject {
 
     private String testCode;
     private String result;

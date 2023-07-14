@@ -139,7 +139,7 @@ public class DashboardController {
         return familyService.getVaccinationSchedule(dashboardFilter);
     }
 
-    @ApiIgnore
+//    @ApiIgnore
     @PostMapping("/autoUpdateCalendar")
     private String autoUpdateCalendar(){
         return familyService.autoUpdateCalendar();

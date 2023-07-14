@@ -1,6 +1,5 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
-import com.anganwadi.anganwadi.domains.dto.SaveAdmissionDTO;
 import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
 import com.anganwadi.anganwadi.domains.entity.Family;
 import com.anganwadi.anganwadi.domains.entity.FamilyMember;
@@ -33,15 +32,15 @@ public class CommonMethodsService {
 
     @Autowired
     public CommonMethodsService(AnganwadiCenterRepository anganwadiCenterRepository, PregnantAndDeliveryRepository pregnantAndDeliveryRepository,
-                                FamilyMemberRepository familyMemberRepository,AttendanceRepository attendanceRepository,
+                                FamilyMemberRepository familyMemberRepository, AttendanceRepository attendanceRepository,
                                 AnganwadiChildrenRepository anganwadiChildrenRepository, FamilyRepository familyRepository) {
 
         this.anganwadiCenterRepository = anganwadiCenterRepository;
         this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
-        this.familyMemberRepository=familyMemberRepository;
-        this.attendanceRepository=attendanceRepository;
-        this.anganwadiChildrenRepository=anganwadiChildrenRepository;
-        this.familyRepository=familyRepository;
+        this.familyMemberRepository = familyMemberRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.anganwadiChildrenRepository = anganwadiChildrenRepository;
+        this.familyRepository = familyRepository;
     }
 
     public String findCenterName(String centerId) {
@@ -76,6 +75,7 @@ public class CommonMethodsService {
         System.out.println();
         return pregnantAndDeliveryRepository.countDhartiWomenByCenterId(convertToMills, centerId);
     }
+
     public long childrenCount(String centerId) {
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
@@ -86,35 +86,33 @@ public class CommonMethodsService {
 
     public String todayAttendance(String centerId) throws ParseException {
 
-       DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-       long currentDate = new Date().getTime();
-       String convertToString = df.format(currentDate);
-       Date date = df.parse(convertToString);
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        long currentDate = new Date().getTime();
+        String convertToString = df.format(currentDate);
+        Date date = df.parse(convertToString);
 
-       log.info("Date : "+date.getTime());
-       long totalStudents = anganwadiChildrenRepository.countByCenterIdAndRegisteredTrue(centerId);
-       long todayAttendance = attendanceRepository.countByDateAndCenterId(date.getTime(),centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
+        log.info("Date : " + date.getTime());
+        long totalStudents = anganwadiChildrenRepository.countByCenterIdAndRegisteredTrue(centerId);
+        long todayAttendance = attendanceRepository.countByDateAndCenterId(date.getTime(), centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-       return todayAttendance+"/"+totalStudents;
+        return todayAttendance + "/" + totalStudents;
 
     }
 
-    public long checkAgeCriteria(long criteria){
+    public long checkAgeCriteria(long criteria) {
         LocalDateTime date = LocalDateTime.now().minusYears(criteria);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
         return zdt.toInstant().toEpochMilli();
     }
 
 
-
-    public String getEndDateOfMonth(String month){
+    public String getEndDateOfMonth(String month) {
         String endDate = "";
 
-        if(month.equals("1") || month.equals("3")  || month.equals("5") || month.equals("7") || month.equals("8") || month.equals("10") || month.equals("12")){
+        if (month.equals("1") || month.equals("3") || month.equals("5") || month.equals("7") || month.equals("8") || month.equals("10") || month.equals("12")) {
 
             endDate = "31-" + month + "-" + LocalDate.now().getYear();
-        }
-        else if (month.equals("2")) {
+        } else if (month.equals("2")) {
 
             if (LocalDate.now().isLeapYear()) {
                 endDate = "29-" + month + "-" + LocalDate.now().getYear();
@@ -164,7 +162,7 @@ public class CommonMethodsService {
     public Family findFamily(String familyId) {
         return familyRepository.findByFamilyId(familyId);
     }
-    
+
     public void checkAbove3Yrs(String dateForCheck) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -182,23 +180,23 @@ public class CommonMethodsService {
         }
 
     }
-    
-    public void checkBelow6yrs(String dateForCheck) throws ParseException{
-    	  DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-          Date date = df.parse(dateForCheck);
-          long dob = date.getTime();
+    public void checkBelow6yrs(String dateForCheck) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-          LocalDateTime check6YrsCriteria = LocalDateTime.now().minusYears(6);
-          ZonedDateTime zdt = ZonedDateTime.of(check6YrsCriteria, ZoneId.systemDefault());
+        Date date = df.parse(dateForCheck);
+        long dob = date.getTime();
 
-          long convertToMills = zdt.toInstant().toEpochMilli();
-          log.info("Dob : " + dob);
-          log.info("Age Limit : " + convertToMills);
-          if (dob <= convertToMills) {
-              throw new CustomException("Children Above 6 Years, Can't be Added");
-          }
+        LocalDateTime check6YrsCriteria = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(check6YrsCriteria, ZoneId.systemDefault());
+
+        long convertToMills = zdt.toInstant().toEpochMilli();
+        log.info("Dob : " + dob);
+        log.info("Age Limit : " + convertToMills);
+        if (dob <= convertToMills) {
+            throw new CustomException("Children Above 6 Years, Can't be Added");
+        }
     }
-    
+
 
 }

@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "VaccinationName")
 public class VaccinationName extends BaseObject {
 
-	@Indexed
-	private String vaccineCode;
-	private String vaccineName;
+    @Indexed
+    private String vaccineCode;
+    private String vaccineName;
 }
