@@ -228,7 +228,6 @@ public class UserServiceImpl implements UserService {
                     .build();
 
         } else {
-
             VaccinationName saveData = VaccinationName.builder()
                     .vaccineName(vaccineName)
                     .vaccineCode(ApplicationConstants.vaccineCodePrefix + assignedIntegerCode())
@@ -246,7 +245,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public long assignedIntegerCode() {
-
 
         Page<VaccinationName> pageList = vaccinationNameRepository.findAll(PageRequest.of(0, 1, Sort.Direction.DESC, "_id"));
         List<VaccinationName> recordList = pageList.getContent();

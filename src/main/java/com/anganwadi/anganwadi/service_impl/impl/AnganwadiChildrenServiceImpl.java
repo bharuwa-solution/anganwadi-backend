@@ -360,35 +360,29 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (Attendance list : getData) {
 
             Date date = new Date(list.getDate());
-// <<<<<<HEAD
+
             FamilyMember memberDetails = familyMemberRepository.findById(list.getChildId()).get();
-//==//===
+
             FamilyMember findMember = familyMemberRepository.findById(list.getChildId()).get();
-//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
 
             AttendanceConverted attendance = AttendanceConverted.builder()
                     .id(list.getId())
                     .centerId(list.getCenterId())
-// <<<<<<HEAD
+
                     .centerName(memberDetails.getCenterName())
                     .name(memberDetails.getName())
-//==//===
                     .centerName(list.getCenterName())
                     .name(findMember.getName())
-//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     .isRegistered(list.isRegistered())
                     .childId(list.getChildId())
                     .date(df.format(date))
                     .attType(list.getAttType())
                     .latitude(list.getLatitude())
                     .longitude(list.getLongitude())
-// <<<<<<HEAD
                     .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .gender(memberDetails.getGender())
-//==//===
                     .dob(commonMethodsService.dateChangeToString(findMember.getDob()))
                     .gender(findMember.getGender())
-//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
                     .photo(list.getPhoto())
                     .attendance(list.getAttendance())
                     .build();
@@ -960,36 +954,50 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 
         long convertToMills = zdt.toInstant().toEpochMilli();
+
+        LocalDateTime date_2 = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt_2 = ZonedDateTime.of(date_2, ZoneId.systemDefault());
+
+        long convertToMills_2 = zdt_2.toInstant().toEpochMilli();
+
 //        log.info("millis " + convertToMills);
         for (AnganwadiChildren getChildren : childrenList) {
 
             // Convert Dob to Millis
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            List<FamilyMember> member = familyMemberRepository.findAllById(getChildren.getChildId());
-
+            List<FamilyMember> member = familyMemberRepository.findAllByIdAndDob(getChildren.getChildId(), convertToMills, convertToMills_2);
+            String dobInString = "", motherName = "", fatherName = "", category = "", gender = "";
             // Date dob_date = df.parse(member.getDob());
 //            long dob = dob_date.getTime();
-            long dob = member.get(0).getDob();
-            DateFormat dobStr = new SimpleDateFormat("dd-MM-yyyy");
-            Date res = new Date(dob);
-            String dobInString = dobStr.format(res);
-            //System.out.println(dobInString);
-            if (dob <= convertToMills && getChildren.getIsGoingSchool().trim().equals("0")) {
 
+            for(FamilyMember fm : member) {
+                long dob = fm.getDob();
+                motherName = fm.getMotherName();
+                fatherName = fm.getFatherName();
+                category = fm.getCategory();
+                gender = fm.getGender();
+                DateFormat dobStr = new SimpleDateFormat("dd-MM-yyyy");
+                Date res = new Date(dob);
+                dobInString = dobStr.format(res);
+            }
+
+
+            //System.out.println(dobInString);
+            if (member.size()>0 && getChildren.getIsGoingSchool().trim().equals("0")) {
 
                 ChildrenDTO childrenDTO = ChildrenDTO.builder()
                         .id(getChildren.getId())
                         .isGoingSchool(getChildren.getIsGoingSchool() == null ? "" : getChildren.getIsGoingSchool())
                         .childId(getChildren.getChildId() == null ? "" : getChildren.getChildId())
-                        .dob(member.get(0).getDob() == 0L ? "" : dobInString)
-                        .motherName(member.get(0).getMotherName() == null ? "" : member.get(0).getMotherName())
-                        .fatherName(member.get(0).getFatherName() == null ? "" : member.get(0).getFatherName())
+                        .dob(dobInString)
+                        .motherName(motherName)
+                        .fatherName(fatherName)
                         .mobileNumber(getChildren.getMobileNumber() == null ? "" : getChildren.getMobileNumber())
                         .handicap(getChildren.getHandicap() == null ? "" : getChildren.getHandicap())
                         .isRegistered(getChildren.isRegistered())
-                        .category(member.get(0).getCategory() == null ? "" : member.get(0).getCategory())
+                        .category(category)
                         .name(getChildren.getName() == null ? "" : getChildren.getName())
-                        .gender(member.get(0).getGender() == null ? "" : member.get(0).getGender())
+                        .gender(gender)
                         .profilePic(getChildren.getProfilePic() == null ? "" : getChildren.getProfilePic())
                         .deleted(getChildren.isDeleted())
                         .build();
@@ -1217,11 +1225,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     @Override
     public List<householdsHeadList> getRegisteredHouseholdsList(String centerId) {
         List<householdsHeadList> addInList = new ArrayList<>();
-//// <<<<<<HEAD
-////        List<FamilyMember> members = familyMemberRepository.findAllByCenterName(centerName);
-////        String centerId = members.get(0).getCenterId();
-////==//===
-////>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
+
         List<AnganwadiChildren> findFamilyIds = anganwadiChildrenRepository.findAllByCenterId(centerId);
         HashSet<String> uniqueFamilyIds = new HashSet<>();
 
@@ -1269,6 +1273,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                             long countMembers = familyMemberRepository.countByFamilyId(ac.getFamilyId());
 
                             householdsHeadList householdsDTO = householdsHeadList.builder()
+                                    .id(familyDetails.getId())
                                     .headName(headName)
                                     .headDob(dob)
                                     .houseNo(houseNo)
