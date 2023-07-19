@@ -1,5 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
+import com.anganwadi.anganwadi.config.ApplicationConstants;
 import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
@@ -804,28 +805,34 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date currentTime = new Date();
         String formatToString = df.format(currentTime.getTime());
         Date formatToTime = df.parse(formatToString);
+        log.error("input " + saveMeals);
+
         long timestamp = formatToTime.getTime();
-        log.error("timestamp is : " + timestamp);
-        long totalCalorie = 0, totalProtein = 0;
+//        log.error("timestamp is : " + timestamp);
+        long totalCalorie = 0, totalProtein = 0, totalQuantity = 0;
 
         List<SaveMeals> addInList = new ArrayList<>();
 
         long checkAttendance = getChildrenPresentCounts(centerId, timestamp);
-        log.error("Attandance data " + checkAttendance);
+//        log.error("Attandance data " + checkAttendance);
         if (checkAttendance <= 0) {
             throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
         }
 
         for (SaveMeals mealsData : saveMeals) {
 
-            if (mealsData.getTotalCalorie().length() > 0) {
-
-                totalCalorie = Long.parseLong(mealsData.getTotalCalorie()) * checkAttendance;
+            if (StringUtils.isEmpty(mealsData.getTotalCalorie())) {
+                totalCalorie = ApplicationConstants.MealsFixedCalorie * checkAttendance;
             }
 
-            if (mealsData.getTotalProtein().length() > 0) {
-                totalProtein = Long.parseLong(mealsData.getTotalProtein()) * checkAttendance;
+            if (StringUtils.isEmpty(mealsData.getTotalProtein())) {
+                totalProtein = ApplicationConstants.MealsFixedProtein * checkAttendance;
             }
+
+            if (StringUtils.isEmpty(mealsData.getQuantity())) {
+                totalQuantity = ApplicationConstants.MealsFixedQuantity * checkAttendance;
+            }
+
 
             List<Meals> checkMeals = mealsRepository.findAllByMealTypeAndCenterIdAndDate(mealsData.getMealType(), centerId, timestamp);
             Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(mealsData.getItemCode().trim());
@@ -839,7 +846,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 mealsRepository.save(Meals.builder()
                         .date(timestamp)
                         .itemCode(checkItemCode.get().getItemCode())
-                        .quantity(mealsData.getQuantity() == null ? "" : mealsData.getQuantity())
+                        .quantity(String.valueOf(totalQuantity))
                         .mealType(checkItemCode.get().getMealType())
                         .totalCalorie(String.valueOf(totalCalorie))
                         .totalProtein(String.valueOf(totalProtein))
