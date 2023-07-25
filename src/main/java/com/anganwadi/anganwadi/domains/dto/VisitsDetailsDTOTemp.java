@@ -19,7 +19,7 @@ public class VisitsDetailsDTOTemp {
     private String visitFor;
     private String visitType;
     private String visitCategory;
-    private List<BloodTestCases> bloodTest;
+    private List<BloodTestCasesDTO> bloodTest;
     private String weight;
     private String height;
     private String description;

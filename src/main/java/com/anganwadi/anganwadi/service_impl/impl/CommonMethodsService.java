@@ -76,6 +76,29 @@ public class CommonMethodsService {
         return pregnantAndDeliveryRepository.countDhartiWomenByCenterId(convertToMills, centerId);
     }
 
+
+    public String calBMI(String height, String weight) {
+        String status = "";
+        if (height.trim().length() > 0 && weight.trim().length() > 0) {
+            float meter = Float.parseFloat(height) / 100;
+            float weightInt = Float.parseFloat(weight);
+
+            float resul = weightInt / (meter * meter);
+
+            log.error("weight " + resul);
+
+            if (resul >= 5 && resul <= 15) {
+                status = "NORMAL";
+            } else if (resul < 5) {
+                status = "UNDER_WEIGHT";
+            } else {
+                status = "OVER_WEIGHT";
+            }
+        }
+
+        return status;
+    }
+
     public long childrenCount(String centerId) {
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());

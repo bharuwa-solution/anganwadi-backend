@@ -8,6 +8,7 @@ import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -54,6 +55,7 @@ public class AnganwadiController {
         return anganwadiChildrenService.uploadPic(file);
     }
 
+    @ApiIgnore
     @GetMapping("getAddress")
     private String getAddress() {
         return "All Users Address";
@@ -89,6 +91,7 @@ public class AnganwadiController {
         return anganwadiChildrenService.getRegisteredHouseholdsList(centerId);
     }
 
+    @ApiIgnore
     @PostMapping("saveAttendancePhoto")
     private AttendancePhotoDTO saveAttendancePhoto(@RequestBody AttendancePhotoDTO attendancePhotoDTO) {
         return anganwadiChildrenService.saveAttendancePhoto(attendancePhotoDTO);

@@ -1,4 +1,4 @@
-package com.anganwadi.anganwadi.domains.dto;
+package com.anganwadi.anganwadi.domains.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BloodTestCases {
+public class BloodTestCases extends BaseObject {
 
+    private String englishName;
+    private String hindiName;
     private String testCode;
-    private String result;
-    private long date;
 
 }

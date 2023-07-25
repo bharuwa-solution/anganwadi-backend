@@ -38,11 +38,11 @@ public interface FamilyService {
 
     List<HouseVisitDTO> getHouseVisitListing(String centerId);
 
-    List<MemberVisits> getMemberVisitDetails(String memberId, String centerName);
+    List<MemberVisits> getMemberVisitDetails(String memberId, String centerId);
 
-    List<MemberVisits> getMemberVisitDetailsLatest(String memberId, String centerId, String centerName);
+    List<MemberVisits> getMemberVisitDetailsLatest(String memberId, String centerId);
 
-    List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerId, String centerName) throws ParseException;
+    List<BirthPlaceDTO> saveBirthDetails(BirthPlaceDTO birthDetails, String centerId) throws ParseException;
 
     SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId, String centerName);
 

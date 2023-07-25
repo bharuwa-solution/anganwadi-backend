@@ -1720,27 +1720,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addInList;
     }
 
-    private String calBMI(String height, String weight) {
-        String status = "";
-        if (height.trim().length() > 0 && weight.trim().length() > 0) {
-            float meter = Float.parseFloat(height) / 100;
-            float weightInt = Float.parseFloat(weight);
 
-            float resul = weightInt / (meter * meter);
-
-            log.error("weight " + resul);
-
-            if (resul >= 5 && resul <= 15) {
-                status = "NORMAL";
-            } else if (resul < 5) {
-                status = "UNDER_WEIGHT";
-            } else {
-                status = "OVER_WEIGHT";
-            }
-        }
-
-        return status;
-    }
 
     @Override
     public List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException {
@@ -1786,7 +1766,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .endDate(df.format(endTime))
                     .height(tracking.getHeight())
                     .weight(tracking.getWeight())
-                    .bmi(calBMI(tracking.getHeight(), tracking.getWeight()))
+                    .bmi(commonMethodsService.calBMI(tracking.getHeight(), tracking.getWeight()))
                     .build();
             addInList.add(addSingle);
         }
