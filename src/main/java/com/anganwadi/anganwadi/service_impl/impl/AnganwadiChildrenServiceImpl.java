@@ -173,7 +173,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             throw new CustomException("Child Not Found");
         }
         AnganwadiChildren findId = anganwadiChildrenRepository.findById(id).get();
-        System.out.println(findId);
+
         //FamilyMember member = familyMemberRepository.find
 
         FamilyMember memberDetails = familyMemberRepository.findById(findId.getChildId()).get();
@@ -194,6 +194,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 .motherName(memberDetails.getMotherName() == null ? "" : memberDetails.getMotherName())
                 .isRegistered(findId.isRegistered())
                 .centerName(memberDetails.getCenterName())
+                .isSchoolGoing(findId.getIsGoingSchool())
                 .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                 .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
                 .mobileNumber(findId.getMobileNumber() == null ? "" : findId.getMobileNumber())

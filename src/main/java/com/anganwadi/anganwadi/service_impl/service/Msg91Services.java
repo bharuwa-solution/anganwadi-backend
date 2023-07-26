@@ -16,7 +16,8 @@ public class Msg91Services {
     @Async("threadPoolTaskExecutor")
     public static OtpDetails sendRegSms(String otp, String mobileNumber) throws IOException {
         OtpDetails otpDetails = new OtpDetails();
-        String authKey = "279572AJN05mY0S7i85ff695b3P1";
+//      String authKey = "279572AJN05mY0S7i85ff695b3P1";
+        String authKey = "279572AH78kR5djxs648db08fP1";
         String message = "Dear User,Your OTP Pin is " + otp + ".Enter this pin to login your account.Thanks-Patanjali";
         String url = "http://api.msg91.com/api/sendhttp.php?sender=PTNJAL&route=4&country=91&mobiles=" + mobileNumber + "&authkey=" + authKey + "&" + //
                 "message=" + URLEncoder.encode(message, "UTF-8") + "&DLT_TE_ID=1307163116530482383";

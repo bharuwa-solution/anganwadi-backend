@@ -12,7 +12,7 @@ public interface UserService {
 
     OtpDTO verifyOtp(OtpDTO otpDTO);
 
-    List<AnganwadiCenterDTO> addAnganwadiCenters(List<AnganwadiCenterDTO> centersDTO);
+    AnganwadiCenterDTO addAnganwadiCenters(AnganwadiCenterDTO centersDTO);
 
     List<AnganwadiCenterDTO> getAnganwadiCenters();
 

@@ -6,6 +6,7 @@ import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -155,6 +156,7 @@ public class FamilyController {
         return familyService.getAllChildrenDetails(centerName);
     }
 
+    @ApiIgnore
     @PutMapping("/updateMissingFields")
     private List<Visits> updateMissingFields(){
         return familyService.updateMissingFields();

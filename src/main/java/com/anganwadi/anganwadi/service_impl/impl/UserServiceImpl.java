@@ -172,10 +172,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AnganwadiCenterDTO> addAnganwadiCenters(List<AnganwadiCenterDTO> centersDTO) {
+    public AnganwadiCenterDTO addAnganwadiCenters(AnganwadiCenterDTO centersDTO) {
+
+        String uuid = UUID.randomUUID().toString();
+        AnganwadiCenter saveData = AnganwadiCenter.builder()
+                .centerName(centersDTO.getCenterName().trim())
+                .uniqueCode(uuid)
+                .build();
+
+        anganwadiCentersRepository.save(saveData);
+
+        return AnganwadiCenterDTO.builder()
+                .centerName(centersDTO.getCenterName().trim())
+                .centerId(saveData.getId())
+                .build();
 
 
-        return centersDTO;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class UserController {
 
     @ApiIgnore
     @PostMapping("/addAnganwadiCenters")
-    private List<AnganwadiCenterDTO> addAnganwadiCenters(@RequestBody List<AnganwadiCenterDTO> centersDTO) {
+    private AnganwadiCenterDTO addAnganwadiCenters(@RequestBody AnganwadiCenterDTO centersDTO) {
         return userService.addAnganwadiCenters(centersDTO);
     }
 
