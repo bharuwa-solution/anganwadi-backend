@@ -703,7 +703,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName)
+    public WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerId)
             throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
@@ -740,8 +740,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId,
-                                                    String centerName) throws ParseException {
+    public WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId) throws ParseException {
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
         String convertToString = df.format(date);

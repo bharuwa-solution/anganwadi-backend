@@ -20,13 +20,13 @@ public class WeightController {
     }
 
     @PostMapping("/saveWeightRecords")
-    private WeightRecordsDTO saveWeightRecords(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveWeightRecords(weightRecordsDTO, centerId, centerName);
+    private WeightRecordsDTO saveWeightRecords(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerId) throws ParseException {
+        return familyService.saveWeightRecords(weightRecordsDTO, centerId);
     }
 
     @PostMapping("/saveWeightRecordsCloned")
-    private WeightRecordsDTO saveWeightRecordsCloned(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveWeightRecordsCloned(weightRecordsDTO, centerId, centerName);
+    private WeightRecordsDTO saveWeightRecordsCloned(@RequestBody WeightRecordsDTO weightRecordsDTO, @RequestHeader String centerId) throws ParseException {
+        return familyService.saveWeightRecordsCloned(weightRecordsDTO, centerId);
     }
 
     @GetMapping("/getChildWeightRecords")
