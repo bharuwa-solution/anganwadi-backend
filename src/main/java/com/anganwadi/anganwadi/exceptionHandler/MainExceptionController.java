@@ -86,16 +86,15 @@ public class MainExceptionController implements ErrorController {
         setBodyError.put("message", error.getHeaderName() + " Is Missing, Please Check !!!");
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
-//
-//    @ExceptionHandler(NoSuchElementException.class)
-//    private ResponseEntity<?> handleHeadersError(NoSuchElementException error) {
-//        log.error(error.getMessage());
-//        Map<String, Object> setBodyError = new HashMap<>();
-//        setBodyError.put("status", HttpStatus.BAD_REQUEST);
-//        setBodyError.put("error",error.getMessage());
-//        setBodyError.put("message","Some Data is Missing or Deleted,Please Check With Team!!!");
-//        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
-//    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    private ResponseEntity<?> handleHeadersError(NoSuchElementException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.BAD_REQUEST);
+        setBodyError.put("message","Some Data is Missing or Deleted,Please Check With Team!!!");
+        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(IndexOutOfBoundsException.class)
     private ResponseEntity<?> handleOutOfBondsException(IndexOutOfBoundsException error) {

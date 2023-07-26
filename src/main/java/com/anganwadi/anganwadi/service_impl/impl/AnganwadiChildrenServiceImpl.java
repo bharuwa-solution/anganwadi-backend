@@ -1336,8 +1336,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 addInList.add(assets);
             }
         }
-
-
         return addInList;
     }
 
@@ -1345,7 +1343,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     public List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId) throws ParseException {
 
         List<StockItemsDTO> addInList = new ArrayList<>();
-
 
         for (StockItemsDTO assetsList : assetsStock) {
 
@@ -1461,19 +1458,19 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addSingle;
     }
 
-    @Override
-    public List<StockListDTO> getStocksLists() {
-
-        List<StockList> stockLists = stockListRepository.findAll();
-        List<StockListDTO> addInList = new ArrayList<>();
-        for (StockList loopStocks : stockLists) {
-            StockListDTO addSingle = modelMapper.map(loopStocks, StockListDTO.class);
-            addInList.add(addSingle);
-
-        }
-        return addInList;
-
-    }
+//    @Override
+//    public List<StockListDTO> getStocksLists() {
+//
+//        List<StockList> stockLists = stockListRepository.findAll(Sort.by(Sort.Direction.ASC, "itemCode"));
+//        List<StockListDTO> addInList = new ArrayList<>();
+//        for (StockList loopStocks : stockLists) {
+//            StockListDTO addSingle = modelMapper.map(loopStocks, StockListDTO.class);
+//            addInList.add(addSingle);
+//
+//        }
+//        return addInList;
+//
+//    }
 
     @Override
     public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId, String centerName) throws ParseException {

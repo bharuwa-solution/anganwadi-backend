@@ -36,10 +36,10 @@ public class StockController {
         return anganwadiChildrenService.getStocks(centerName, selectedMonth);
     }
 
-    @GetMapping("getStocksLists")
-    private List<StockListDTO> getStocksLists() {
-        return anganwadiChildrenService.getStocksLists();
-    }
+//    @GetMapping("getStocksLists")
+//    private List<StockListDTO> getStocksLists() {
+//        return anganwadiChildrenService.getStocksLists();
+//    }
 
     @PostMapping("saveDistributionList")
     private List<StockDistributionDTO> saveDistributionList(@RequestBody List<StockDistributionDTO> stockDistributionDTOS, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {

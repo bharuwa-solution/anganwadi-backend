@@ -6,6 +6,7 @@ import com.anganwadi.anganwadi.domains.dto.SaveVaccinationDTO;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.text.ParseException;
 import java.util.List;
@@ -21,10 +22,11 @@ public class VaccinationController {
         this.familyService = familyService;
     }
 
-    @PostMapping("/saveVaccinationDetails")
-    private SaveVaccinationDTO saveVaccinationDetails(@RequestBody SaveVaccinationDTO saveVaccinationDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveVaccinationDetails(saveVaccinationDTO, centerId, centerName);
-    }
+//    @ApiIgnore
+//    @PostMapping("/saveVaccinationDetails")
+//    private SaveVaccinationDTO saveVaccinationDetails(@RequestBody SaveVaccinationDTO saveVaccinationDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
+//        return familyService.saveVaccinationDetails(saveVaccinationDTO, centerId, centerName);
+//    }
 
     @GetMapping("/getVaccinationRecords")
     private List<GetVaccinationDTO> getVaccinationRecords(@RequestParam(required = false) String vaccineCode, @RequestHeader String centerId) {
