@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberVisits {
+public class ChildWeightDTO {
 
-    private String visitType;
-    private List<VisitArray> visitArray;
-
+    private String childId;
+    private String weight;
+    private String height;
+    private String bmi;
+    private String date;
 
 }

@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberVisits {
+public class BloodTestCasesDTO {
 
-    private String visitType;
-    private List<VisitArray> visitArray;
-
+    private String testCode;
+    private String result;
+    private String name;
+    private String memberId;
+    private String date;
 
 }

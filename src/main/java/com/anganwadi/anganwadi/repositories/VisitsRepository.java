@@ -26,8 +26,6 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
 
     List<Visits> findAllByMemberIdAndCenterIdAndVisitType(String memberId, String centerId, String valueOf);
 
-    List<Visits> findAllByMemberIdAndCenterName(String memberId, String centerName);
-
     @Query("{'centerName':?0,'category':{$regex:?1}}")
     List<Visits> findAllByCenterNameAndCategory(String centerName, String category);
 
@@ -58,4 +56,6 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     List<Visits> findAllByVaccinationCriteria(Date startTime, Date endTime, String centerId);
 
     void deleteByMemberId(String primaryId);
+
+    List<Visits> findAllByMemberIdAndCenterId(String memberId, String centerId);
 }

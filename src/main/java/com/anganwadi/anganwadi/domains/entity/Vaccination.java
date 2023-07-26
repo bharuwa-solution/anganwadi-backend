@@ -17,6 +17,8 @@ public class Vaccination extends BaseObject {
     private String familyId;
     private String childId;
     private String centerId;
+    private String visitType;
+    private String visitRound;
     private String centerName;
     private String vaccinationCode;
     private long date;

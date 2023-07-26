@@ -32,23 +32,23 @@ public class StockController {
 
 
     @GetMapping("getStocks")
-    private StockOutputItemsDTO getStocks(@RequestHeader String centerName, @RequestParam String selectedMonth) {
-        return anganwadiChildrenService.getStocks(centerName, selectedMonth);
+    private StockOutputItemsDTO getStocks(@RequestHeader String centerId, @RequestParam String selectedMonth) {
+        return anganwadiChildrenService.getStocks(centerId, selectedMonth);
     }
 
-    @GetMapping("getStocksLists")
-    private List<StockListDTO> getStocksLists() {
-        return anganwadiChildrenService.getStocksLists();
-    }
+//    @GetMapping("getStocksLists")
+//    private List<StockListDTO> getStocksLists() {
+//        return anganwadiChildrenService.getStocksLists();
+//    }
 
     @PostMapping("saveDistributionList")
-    private List<StockDistributionDTO> saveDistributionList(@RequestBody List<StockDistributionDTO> stockDistributionDTOS, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return anganwadiChildrenService.saveDistributionList(stockDistributionDTOS, centerId, centerName);
+    private List<StockDistributionDTO> saveDistributionList(@RequestBody List<StockDistributionDTO> stockDistributionDTOS, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.saveDistributionList(stockDistributionDTOS, centerId);
     }
 
     @GetMapping("getDistributionList")
-    private List<DistributionOutputList> getDistributionList(@RequestHeader String centerName, String selectedMonth) {
-        return anganwadiChildrenService.getDistributionList(centerName, selectedMonth);
+    private List<DistributionOutputList> getDistributionList(@RequestHeader String centerId, String selectedMonth) {
+        return anganwadiChildrenService.getDistributionList(centerId, selectedMonth);
     }
 
 }

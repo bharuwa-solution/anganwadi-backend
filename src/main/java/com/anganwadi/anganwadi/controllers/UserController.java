@@ -5,6 +5,7 @@ import com.anganwadi.anganwadi.repositories.AnganwadiCenterRepository;
 import com.anganwadi.anganwadi.service_impl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,6 +36,7 @@ public class UserController {
     }
 
 
+    @ApiIgnore
     @PostMapping("/addAnganwadiCenters")
     private List<AnganwadiCenterDTO> addAnganwadiCenters(@RequestBody List<AnganwadiCenterDTO> centersDTO) {
         return userService.addAnganwadiCenters(centersDTO);
@@ -51,6 +53,7 @@ public class UserController {
         return userService.getAnganwadiCenters();
     }
 
+    @ApiIgnore
     @PostMapping("/saveVaccinationDetails")
     private VaccinationDTO saveVaccineDetails(@RequestParam String vaccineName) {
 

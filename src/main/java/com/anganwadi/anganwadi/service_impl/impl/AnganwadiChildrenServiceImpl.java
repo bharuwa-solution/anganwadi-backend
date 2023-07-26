@@ -1,5 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
+import com.anganwadi.anganwadi.config.ApplicationConstants;
 import com.anganwadi.anganwadi.domains.dto.*;
 import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
@@ -804,28 +805,34 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         Date currentTime = new Date();
         String formatToString = df.format(currentTime.getTime());
         Date formatToTime = df.parse(formatToString);
+        log.error("input " + saveMeals);
+
         long timestamp = formatToTime.getTime();
-        log.error("timestamp is : " + timestamp);
-        long totalCalorie = 0, totalProtein = 0;
+//        log.error("timestamp is : " + timestamp);
+        long totalCalorie = 0, totalProtein = 0, totalQuantity = 0;
 
         List<SaveMeals> addInList = new ArrayList<>();
 
         long checkAttendance = getChildrenPresentCounts(centerId, timestamp);
-        log.error("Attandance data " + checkAttendance);
+//        log.error("Attandance data " + checkAttendance);
         if (checkAttendance <= 0) {
             throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
         }
 
         for (SaveMeals mealsData : saveMeals) {
 
-            if (mealsData.getTotalCalorie().length() > 0) {
-
-                totalCalorie = Long.parseLong(mealsData.getTotalCalorie()) * checkAttendance;
+            if (StringUtils.isEmpty(mealsData.getTotalCalorie())) {
+                totalCalorie = ApplicationConstants.MealsFixedCalorie * checkAttendance;
             }
 
-            if (mealsData.getTotalProtein().length() > 0) {
-                totalProtein = Long.parseLong(mealsData.getTotalProtein()) * checkAttendance;
+            if (StringUtils.isEmpty(mealsData.getTotalProtein())) {
+                totalProtein = ApplicationConstants.MealsFixedProtein * checkAttendance;
             }
+
+            if (StringUtils.isEmpty(mealsData.getQuantity())) {
+                totalQuantity = ApplicationConstants.MealsFixedQuantity * checkAttendance;
+            }
+
 
             List<Meals> checkMeals = mealsRepository.findAllByMealTypeAndCenterIdAndDate(mealsData.getMealType(), centerId, timestamp);
             Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(mealsData.getItemCode().trim());
@@ -839,7 +846,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 mealsRepository.save(Meals.builder()
                         .date(timestamp)
                         .itemCode(checkItemCode.get().getItemCode())
-                        .quantity(mealsData.getQuantity() == null ? "" : mealsData.getQuantity())
+                        .quantity(String.valueOf(totalQuantity))
                         .mealType(checkItemCode.get().getMealType())
                         .totalCalorie(String.valueOf(totalCalorie))
                         .totalProtein(String.valueOf(totalProtein))
@@ -1329,8 +1336,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                 addInList.add(assets);
             }
         }
-
-
         return addInList;
     }
 
@@ -1338,7 +1343,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
     public List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId) throws ParseException {
 
         List<StockItemsDTO> addInList = new ArrayList<>();
-
 
         for (StockItemsDTO assetsList : assetsStock) {
 
@@ -1424,9 +1428,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public StockOutputItemsDTO getStocks(String centerName, String selectedMonth) {
+    public StockOutputItemsDTO getStocks(String centerid, String selectedMonth) {
 
-        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterNameAndMonthOrderByCreatedDateAsc(centerName, selectedMonth);
+        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndMonthOrderByCreatedDateAsc(centerid, selectedMonth);
         HashSet<String> captureMonth = new HashSet<>();
         List<StockOutputItemsDTO> addInList = new ArrayList<>();
         StockOutputItemsDTO addSingle = new StockOutputItemsDTO();
@@ -1439,7 +1443,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     log.info("date " + df.format(date));
                     addSingle = StockOutputItemsDTO.builder()
                             .date(df.format(date))
-                            .stockArrayList(getStockArray(centerName, selectedMonth))
+                            .stockArrayList(getStockArray(commonMethodsService.findCenterName(centerid), selectedMonth))
                             .build();
                 }
 
@@ -1454,22 +1458,22 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addSingle;
     }
 
+//    @Override
+//    public List<StockListDTO> getStocksLists() {
+//
+//        List<StockList> stockLists = stockListRepository.findAll(Sort.by(Sort.Direction.ASC, "itemCode"));
+//        List<StockListDTO> addInList = new ArrayList<>();
+//        for (StockList loopStocks : stockLists) {
+//            StockListDTO addSingle = modelMapper.map(loopStocks, StockListDTO.class);
+//            addInList.add(addSingle);
+//
+//        }
+//        return addInList;
+//
+//    }
+
     @Override
-    public List<StockListDTO> getStocksLists() {
-
-        List<StockList> stockLists = stockListRepository.findAll();
-        List<StockListDTO> addInList = new ArrayList<>();
-        for (StockList loopStocks : stockLists) {
-            StockListDTO addSingle = modelMapper.map(loopStocks, StockListDTO.class);
-            addInList.add(addSingle);
-
-        }
-        return addInList;
-
-    }
-
-    @Override
-    public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId, String centerName) throws ParseException {
+    public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
@@ -1550,9 +1554,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth) {
+    public List<DistributionOutputList> getDistributionList(String centerId, String selectedMonth) {
 
-        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterNameAndMonth(centerName, selectedMonth);
+        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterIdAndMonth(centerId, selectedMonth);
+        log.error("using center ID: "+findFamily);
+//        List<StockDistribution> findFamily1 = stockDistributionRepository.findAllByCenterNameAndMonth(centerName, selectedMonth);
+//        log.error("using center Name: "+findFamily1);
         List<DistributionOutputList> addInList = new ArrayList<>();
         HashSet<String> uniqueFamily = new HashSet<>();
 
@@ -1713,27 +1720,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         return addInList;
     }
 
-    private String calBMI(String height, String weight) {
-        String status = "";
-        if (height.trim().length() > 0 && weight.trim().length() > 0) {
-            float meter = Float.parseFloat(height) / 100;
-            float weightInt = Float.parseFloat(weight);
 
-            float resul = weightInt / (meter * meter);
-
-            log.error("weight " + resul);
-
-            if (resul >= 5 && resul <= 15) {
-                status = "NORMAL";
-            } else if (resul < 5) {
-                status = "UNDER_WEIGHT";
-            } else {
-                status = "OVER_WEIGHT";
-            }
-        }
-
-        return status;
-    }
 
     @Override
     public List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException {
@@ -1779,7 +1766,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .endDate(df.format(endTime))
                     .height(tracking.getHeight())
                     .weight(tracking.getWeight())
-                    .bmi(calBMI(tracking.getHeight(), tracking.getWeight()))
+                    .bmi(commonMethodsService.calBMI(tracking.getHeight(), tracking.getWeight()))
                     .build();
             addInList.add(addSingle);
         }

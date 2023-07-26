@@ -37,18 +37,18 @@ public class HouseVisitsController {
     }
 
     @GetMapping("/getMemberVisitDetails")
-    private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId, @RequestHeader String centerName) {
-        return familyService.getMemberVisitDetails(memberId, centerName);
+    private List<MemberVisits> getMemberVisitDetails(@RequestParam String memberId, @RequestHeader String centerId) {
+        return familyService.getMemberVisitDetails(memberId, centerId);
     }
 
     @GetMapping("/getMemberVisitDetailsLatest")
-    private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId, @RequestHeader String centerId, @RequestHeader String centerName) {
-        return familyService.getMemberVisitDetailsLatest(memberId, centerId, centerName);
+    private List<MemberVisits> getMemberVisitDetailsLatest(@RequestParam String memberId, @RequestHeader String centerId) {
+        return familyService.getMemberVisitDetailsLatest(memberId, centerId);
     }
 
     @PostMapping("/saveBirthDetails")
-    private List<BirthPlaceDTO> saveBirthDetails(@RequestBody BirthPlaceDTO birthDetails, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveBirthDetails(birthDetails, centerId, centerName);
+    private List<BirthPlaceDTO> saveBirthDetails(@RequestBody BirthPlaceDTO birthDetails, @RequestHeader String centerId) throws ParseException {
+        return familyService.saveBirthDetails(birthDetails, centerId);
     }
 
     @PostMapping("/getVisitScheduler")
