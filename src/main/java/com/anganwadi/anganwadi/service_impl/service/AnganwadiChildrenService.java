@@ -29,13 +29,13 @@ public interface AnganwadiChildrenService {
 
     List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId) throws ParseException;
 
-    StockOutputItemsDTO getStocks(String centerName, String selectedMonth);
+    StockOutputItemsDTO getStocks(String centerId, String selectedMonth);
 
 //    List<StockListDTO> getStocksLists();
 
-    List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId, String centerName) throws ParseException;
+    List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId) throws ParseException;
 
-    List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth);
+    List<DistributionOutputList> getDistributionList(String centerId, String selectedMonth);
 
     List<AnganwadiAahaarData> getAnganwadiAahaarData(DashboardFilter dashboardFilter) throws ParseException;
 
@@ -76,4 +76,6 @@ public interface AnganwadiChildrenService {
     List<SaveMeals> saveMeals(List<SaveMeals> saveMeals, String centerId) throws ParseException;
 
     List<MealsResponseDTO> getMonthlyDistributedMeals(DashboardFilter dashboardFilter, String centerId) throws ParseException;
+
+//	List<DistributionOutputList> getDistributionList(String centerId, String selectedMonth, String centerName);
 }

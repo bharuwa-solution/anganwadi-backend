@@ -20,7 +20,7 @@ public interface FamilyService {
 
     VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerId, String centerName) throws ParseException;
 
-    WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName) throws ParseException;
+    WeightRecordsDTO saveWeightRecords(WeightRecordsDTO weightRecordsDTO, String centerId) throws ParseException;
 
     List<WeightRecordsDTO> getWeightRecords(String childId);
 
@@ -95,7 +95,7 @@ public interface FamilyService {
 
     DeleteBornChildDTO deleteNewBornChildRecords(String id);
 
-    WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId, String centerName) throws ParseException;
+    WeightRecordsDTO saveWeightRecordsCloned(WeightRecordsDTO weightRecordsDTO, String centerId) throws ParseException;
 
 
     List<Visits> updateMissingFields();

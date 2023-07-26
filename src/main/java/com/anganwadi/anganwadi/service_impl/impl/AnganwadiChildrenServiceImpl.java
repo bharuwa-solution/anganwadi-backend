@@ -1429,9 +1429,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public StockOutputItemsDTO getStocks(String centerName, String selectedMonth) {
+    public StockOutputItemsDTO getStocks(String centerid, String selectedMonth) {
 
-        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterNameAndMonthOrderByCreatedDateAsc(centerName, selectedMonth);
+        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndMonthOrderByCreatedDateAsc(centerid, selectedMonth);
         HashSet<String> captureMonth = new HashSet<>();
         List<StockOutputItemsDTO> addInList = new ArrayList<>();
         StockOutputItemsDTO addSingle = new StockOutputItemsDTO();
@@ -1444,7 +1444,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     log.info("date " + df.format(date));
                     addSingle = StockOutputItemsDTO.builder()
                             .date(df.format(date))
-                            .stockArrayList(getStockArray(centerName, selectedMonth))
+                            .stockArrayList(getStockArray(commonMethodsService.findCenterName(centerid), selectedMonth))
                             .build();
                 }
 
@@ -1474,7 +1474,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 //    }
 
     @Override
-    public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId, String centerName) throws ParseException {
+    public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS, String centerId) throws ParseException {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
@@ -1555,9 +1555,12 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public List<DistributionOutputList> getDistributionList(String centerName, String selectedMonth) {
+    public List<DistributionOutputList> getDistributionList(String centerId, String selectedMonth) {
 
-        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterNameAndMonth(centerName, selectedMonth);
+        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterIdAndMonth(centerId, selectedMonth);
+        log.error("using center ID: "+findFamily);
+//        List<StockDistribution> findFamily1 = stockDistributionRepository.findAllByCenterNameAndMonth(centerName, selectedMonth);
+//        log.error("using center Name: "+findFamily1);
         List<DistributionOutputList> addInList = new ArrayList<>();
         HashSet<String> uniqueFamily = new HashSet<>();
 
