@@ -15,6 +15,7 @@ public class BloodTestTracking extends BaseObject {
 
     private String testCode;
     private String result;
+    private String motherId;
     private String visitType;
     private String visitRound;
     private String memberId;

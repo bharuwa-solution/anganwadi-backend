@@ -11,6 +11,7 @@ public class ApplicationConstants {
     public static final String SIGNING_KEY = "family_key";
     public static final DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
     public static final String default_Otp = "1105";
+    public static final String birth_visit_category = "2";
     public static final Long MealsFixedQuantity = 1L;
     public static final Long MealsFixedCalorie = 500L;
     public static final Long MealsFixedProtein = 13L;

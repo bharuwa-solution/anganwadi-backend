@@ -1207,35 +1207,36 @@ public class FamilyServiceImpl implements FamilyService {
 
     }
 
-    private List<BloodTestCasesDTO> saveBloodTestSection(VisitsDetailsDTOTemp bloodTestCases, String centerId, long currentDate,
-                                                         FamilyMember findFamily) throws ParseException {
+    private void saveBloodTestSection(VisitsDetailsDTOTemp bloodTestCases, String centerId, long currentDate,
+                                      FamilyMember findFamily, String childId) throws ParseException {
 
-        List<BloodTestCasesDTO> bloodTestArray = new ArrayList<>();
+
 
         for (BloodTestCasesDTO cases : bloodTestCases.getBloodTest()) {
             bloodTestTrackingRepository.save(BloodTestTracking.builder()
                     .date(currentDate)
                     .result(cases.getResult())
+                    .motherId(findFamily.getId())
                     .visitRound(bloodTestCases.getVisitRound())
                     .visitType(bloodTestCases.getVisitType())
-                    .memberId(findFamily.getId())
+                    .memberId(childId) // childId
                     .testCode(cases.getTestCode())
                     .build());
 
             BloodTestCasesDTO singleBlood = modelMapper.map(cases, BloodTestCasesDTO.class);
-            bloodTestArray.add(singleBlood);
+
         }
-        saveVisitsSection(bloodTestCases, centerId, currentDate, findFamily);
-        return bloodTestArray;
+        saveVisitsSection(bloodTestCases, centerId, currentDate, findFamily, childId);
     }
 
     private void saveWeightsSection(VisitsDetailsDTOTemp weightRecords, String centerId, long currentDate,
-                                    FamilyMember findFamily) {
+                                    FamilyMember findFamily, String childId) {
 
         weightTrackingRepository
                 .save(WeightTracking.builder()
                         .familyId(findFamily.getFamilyId())
-                        .childId(findFamily.getId())
+                        .motherId(findFamily.getId())
+                        .childId(childId)
                         .centerId(centerId)
                         .visitRound(weightRecords.getVisitRound())
                         .visitType(weightRecords.getVisitType())
@@ -1245,15 +1246,16 @@ public class FamilyServiceImpl implements FamilyService {
                         .height(weightRecords.getHeight())
                         .build());
 
-        saveVisitsSection(weightRecords, centerId, currentDate, findFamily);
+        saveVisitsSection(weightRecords, centerId, currentDate, findFamily, childId);
     }
 
     private void saveVisitsSection(VisitsDetailsDTOTemp visitDetails, String centerId, long currentDate,
-                                   FamilyMember findFamily) {
+                                   FamilyMember findFamily, String childId) {
 
         visitsRepository.save(Visits.builder()
                 .familyId(findFamily.getFamilyId())
-                .memberId(visitDetails.getMemberId())
+                .motherId(findFamily.getId())
+                .memberId(childId)
                 .visitCategory(visitDetails.getVisitCategory())
                 .centerId(centerId)
                 .centerName(commonMethodsService.findCenterName(centerId))
@@ -1268,12 +1270,13 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     private void saveVaccinationSection(VisitsDetailsDTOTemp visitDetails, String centerId, long currentDate,
-                                        FamilyMember findFamily) {
+                                        FamilyMember findFamily, String childId) {
 
         vaccinationRepository
                 .save(Vaccination.builder().
                         familyId(findFamily.getFamilyId())
-                        .childId(findFamily.getId())
+                        .motherId(findFamily.getId())
+                        .childId(childId)
                         .visitRound(visitDetails.getVisitRound())
                         .visitType(visitDetails.getVisitType())
                         .centerId(centerId)
@@ -1281,12 +1284,26 @@ public class FamilyServiceImpl implements FamilyService {
                         .vaccinationCode(visitDetails.getVisitFor())
                         .date(currentDate).build());
 
-        saveVisitsSection(visitDetails, centerId, currentDate, findFamily);
+        saveVisitsSection(visitDetails, centerId, currentDate, findFamily, childId);
     }
+
+    private String findMotherId(String memberId, String centerId) {
+
+        List<Visits> checkPregnantVisits = visitsRepository.findAllByMemberIdAndCenterId(memberId, centerId);
+        String id = "";
+
+        for (Visits visits : checkPregnantVisits) {
+            id = visits.getMotherId();
+
+        }
+        return id;
+    }
+
 
     @Override
     public VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId) throws ParseException {
         int visitType = Integer.parseInt(visitsDetailsDTOTemp.getVisitType());
+        String motherId = "", childId = "";
 
         if (visitType > 0 && visitType <= 10) {
             if (visitsDetailsDTOTemp.getVisitCategory().length() > 0) {
@@ -1298,23 +1315,35 @@ public class FamilyServiceImpl implements FamilyService {
                     throw new CustomException("Member Id Not Passed");
                 }
 
-                FamilyMember findMember = familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).get();
+                if (visitsDetailsDTOTemp.getVisitType().trim().equals("1") || visitsDetailsDTOTemp.getVisitType().trim().equals("2")) {
+                    motherId = visitsDetailsDTOTemp.getMemberId();
+                } else {
+                    motherId = findMotherId(visitsDetailsDTOTemp.getMemberId(), centerId);
+                    childId = visitsDetailsDTOTemp.getMemberId();
+                }
+
+                if (!familyMemberRepository.findById(motherId).isPresent()) {
+                    throw new CustomException("Member Id Not Passed");
+
+                }
+
+                FamilyMember findMember = familyMemberRepository.findById(motherId).get();
 
                 switch (visitsDetailsDTOTemp.getVisitCategory().trim()) {
                     case "1":
-                        saveBloodTestSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+                        saveBloodTestSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
                         break;
 
                     case "2":
-                        saveWeightsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+                        saveWeightsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
                         break;
 
                     case "3":
-                        saveVaccinationSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+                        saveVaccinationSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
                         break;
 
                     case "4":
-                        saveVisitsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
+                        saveVisitsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
                         break;
                 }
 
@@ -2487,9 +2516,9 @@ public class FamilyServiceImpl implements FamilyService {
         return addInList;
     }
 
-    private List<VisitArray> visitArrayList(String memberId, String visitType) {
+    private List<VisitArray> visitArrayList(String motherId, String visitType) {
 
-        List<Visits> checkVisitsFor = visitsRepository.findAllByMemberIdAndVisitType(memberId, visitType);
+        List<Visits> checkVisitsFor = visitsRepository.findAllByMotherIdAndVisitType(motherId, visitType);
         List<VisitArray> addInList = new ArrayList<>();
 
         for (Visits findDetails : checkVisitsFor) {
@@ -2576,16 +2605,28 @@ public class FamilyServiceImpl implements FamilyService {
         List<MemberVisits> addInList = new ArrayList<>();
         MemberVisits memberVisits = new MemberVisits();
         HashSet<String> uniqueMember = new HashSet<>();
-        int count = 0;
+        String motherId = "";
+
+       List<Visits> findMother = visitsRepository.findAllByMemberId(memberId);
+
+       if(findMother.size()>0){
+           for(Visits visits :  findMother) {
+               motherId = visits.getMotherId();
+           }
+       }
+       else {
+           motherId = memberId;
+       }
 
         for (int i = 1; i <= 10; i++) {
-            List<Visits> findMember = visitsRepository.findAllByMemberIdAndCenterIdAndVisitType(memberId, centerId, String.valueOf(i));
+
+            List<Visits> findMember = visitsRepository.findAllByMotherIdAndCenterIdAndVisitType(motherId, centerId, String.valueOf(i));
             if (findMember.size() > 0) {
                 for (Visits checkDetails : findMember) {
 
                     memberVisits = MemberVisits.builder()
                             .visitType(checkDetails.getVisitType())
-                            .visitArray(visitArrayList(checkDetails.getMemberId(), checkDetails.getVisitType()))
+                            .visitArray(visitArrayList(checkDetails.getMotherId(), checkDetails.getVisitType()))
                             .build();
                 }
             } else {
@@ -3016,10 +3057,15 @@ public class FamilyServiceImpl implements FamilyService {
 
         WeightTracking saveRecord = WeightTracking.builder()
                 .familyId(searchFamilyId.getFamilyId() == null ? "" : searchFamilyId.getFamilyId())
+                .motherId(birthDetails.getMotherMemberId())
                 .childId(saveDetails.getChildId() == null ? "" : saveDetails.getChildId()).date(mills)
                 .centerId(centerId).centerName(commonMethodsService.findCenterName(centerId))
                 .weight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
-                .height(birthDetails.getHeight() == null ? "" : birthDetails.getHeight()).build();
+                .height(birthDetails.getHeight() == null ? "" : birthDetails.getHeight())
+                .visitType(birthDetails.getVisitType())
+                .visitType(birthDetails.getVisitType())
+                .visitRound(birthDetails.getVisitRound())
+                .build();
 
         weightTrackingRepository.save(saveRecord);
 
@@ -3032,12 +3078,19 @@ public class FamilyServiceImpl implements FamilyService {
         long timestamp = visitTime.getTime();
 
         Visits updateRecord = Visits.builder().visitFor(birthDetails.getVisitFor())
-                .familyId(searchFamilyId.getFamilyId()).visitType(birthDetails.getVisitType())
-                .visitRound(birthDetails.getVisitRound()).memberId(addMember.getId() == null ? "" : addMember.getId())
-                .centerName(commonMethodsService.findCenterName(centerId)).centerId(centerId).childDob(mills)
+                .familyId(searchFamilyId.getFamilyId())
+                .visitType(birthDetails.getVisitType())
+                .visitRound(birthDetails.getVisitRound())
+                .memberId(addMember.getId() == null ? "" : addMember.getId())
+                .centerName(commonMethodsService.findCenterName(centerId))
+                .centerId(centerId).childDob(mills)
                 .category(searchFamilyId.getCategory().length() <= 0 ? headCategory : searchFamilyId.getCategory())
-                .description("").longitude(birthDetails.getLongitude() == null ? "" : birthDetails.getLongitude())
-                .latitude(birthDetails.getLatitude() == null ? "" : birthDetails.getLatitude()).visitDateTime(timestamp)
+                .description("")
+                .motherId(birthDetails.getMotherMemberId().trim())
+                .longitude(birthDetails.getLongitude() == null ? "" : birthDetails.getLongitude())
+                .latitude(birthDetails.getLatitude() == null ? "" : birthDetails.getLatitude())
+                .visitDateTime(timestamp)
+                .visitCategory(ApplicationConstants.birth_visit_category)
                 .build();
 
         visitsRepository.save(updateRecord);
@@ -4756,7 +4809,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         List<BloodTestCasesDTO> reportList = new ArrayList<>();
 
-        List<BloodTestTracking> findReports = bloodTestTrackingRepository.findAllByMemberIdAndVisitTypeAndVisitRound(findDetails.getMemberId(), findDetails.getVisitType(), findDetails.getVisitRound());
+        List<BloodTestTracking> findReports = bloodTestTrackingRepository.findAllByMotherIdAndVisitTypeAndVisitRound(findDetails.getMotherId(), findDetails.getVisitType(), findDetails.getVisitRound());
 
         if (findReports.size() > 0) {
             for (BloodTestTracking btt : findReports) {
@@ -4774,7 +4827,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     private List<ChildWeightDTO> weightArrayList(Visits findDetails) {
         List<ChildWeightDTO> weightList = new ArrayList<>();
-        List<WeightTracking> findWeights = weightTrackingRepository.findAllByChildIdAndVisitTypeAndVisitRound(findDetails.getMemberId(), findDetails.getVisitType(), findDetails.getVisitRound());
+        List<WeightTracking> findWeights = weightTrackingRepository.findAllByMotherIdAndVisitTypeAndVisitRound(findDetails.getMotherId(), findDetails.getVisitType(), findDetails.getVisitRound());
 
         if (findWeights.size() > 0) {
             for (WeightTracking wt : findWeights) {
@@ -4795,7 +4848,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         List<VaccinationDTO> vaccinationList = new ArrayList<>();
 
-        List<Vaccination> findVaccine = vaccinationRepository.findAllByChildIdAndVisitTypeAndVisitRound(findDetails.getMemberId(), findDetails.getVisitType(), findDetails.getVisitRound());
+        List<Vaccination> findVaccine = vaccinationRepository.findAllByMotherIdAndVisitTypeAndVisitRound(findDetails.getMotherId(), findDetails.getVisitType(), findDetails.getVisitRound());
 
         if (findVaccine.size() > 0) {
             for (Vaccination vc : findVaccine) {

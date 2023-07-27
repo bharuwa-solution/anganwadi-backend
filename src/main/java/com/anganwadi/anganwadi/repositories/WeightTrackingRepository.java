@@ -23,5 +23,5 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
 
     void deleteByChildId(String primaryId);
 
-    List<WeightTracking> findAllByChildIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
+    List<WeightTracking> findAllByMotherIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
 }

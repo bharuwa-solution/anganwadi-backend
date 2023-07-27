@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface VaccinationRepository extends MongoRepository<Vaccination, String> {
 
-    List<Vaccination> findAllByChildIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
+    List<Vaccination> findAllByMotherIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
 }

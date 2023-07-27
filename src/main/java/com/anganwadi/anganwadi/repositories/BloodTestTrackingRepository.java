@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface BloodTestTrackingRepository extends MongoRepository<BloodTestTracking, String > {
 
-    List<BloodTestTracking> findAllByMemberIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
+    List<BloodTestTracking> findAllByMotherIdAndVisitTypeAndVisitRound(String motherId, String visitType, String visitRound);
 }
