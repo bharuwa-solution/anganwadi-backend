@@ -11,10 +11,9 @@ import java.util.List;
 
 @Repository
 public interface StockDistributionRepository extends MongoRepository<StockDistribution, String> {
-    List<StockDistribution> findAllByCenterName(String centerName);
+//    List<StockDistribution> findAllByCenterName(String centerName);
 
-   // List<StockDistribution> findAllByCenterNameAndMonth(String centerName, String selectedMonth);
-    List<StockDistribution> findAllByCenterIdAndMonth(String centerId, String selectedMonth);
+    // List<StockDistribution> findAllByCenterNameAndMonth(String centerName, String selectedMonth);
 
     List<StockDistribution> findAllByFamilyIdAndMonth(String familyId, String selectedMonth);
 
@@ -22,4 +21,7 @@ public interface StockDistributionRepository extends MongoRepository<StockDistri
 
     @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<StockDistribution> findAllByDistributionCriteria(Date startTime, Date endTime, String centerId);
+
+    @Query("{'centerId':?0,date:{$gte:?1,$lte:?2}}")
+    List<StockDistribution> findAllByCenterIdAndDateRange(String centerId, long startDataRange, long endDataRange);
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class StockDistributionDTO {
 
     private String familyId;
-    private String centerName;
+//    private String centerName;
     private String date;
     private String itemName;
     private String itemCode;

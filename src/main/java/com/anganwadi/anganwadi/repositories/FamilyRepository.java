@@ -24,4 +24,6 @@ public interface FamilyRepository extends MongoRepository<Family, String> {
 
     @Query("{'createdDate':{$gte:?0,$lte:?1}}")
     List<Family> findByCategoryCriteria(Date startTime, Date endTime);
+
+    Family findByFamilyIdAndCenterId(String familyId, String centerId);
 }

@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -128,6 +129,17 @@ public class CommonMethodsService {
         return zdt.toInstant().toEpochMilli();
     }
 
+    public String getStartDate(String startMonth) throws ParseException {
+        String inputMonth = startMonth == null ? "" : startMonth;
+        String output = "";
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+
+        output = "01-" + inputMonth + "-" + year;
+
+        log.error("startDate " + output);
+        return output;
+    }
 
     public String getEndDateOfMonth(String month) {
         String endDate = "";

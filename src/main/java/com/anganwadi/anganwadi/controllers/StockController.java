@@ -47,7 +47,7 @@ public class StockController {
     }
 
     @GetMapping("getDistributionList")
-    private List<DistributionOutputList> getDistributionList(@RequestHeader String centerId, String selectedMonth) {
+    private List<DistributionOutputList> getDistributionList(@RequestHeader String centerId, String selectedMonth) throws ParseException {
         return anganwadiChildrenService.getDistributionList(centerId, selectedMonth);
     }
 

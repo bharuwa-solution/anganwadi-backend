@@ -1485,8 +1485,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         for (StockDistributionDTO stockList : stockDistributionDTOS) {
 
+            if (StringUtils.isEmpty(stockList.getFamilyId().trim())) {
+                throw new CustomException("Family Id Is Empty");
+            } else {
+                Family fy = familyRepository.findByFamilyIdAndCenterId(stockList.getFamilyId(), centerId);
+
+                if (fy == null) {
+                    throw new CustomException("Family Doesn't Exists in that Center");
+                }
+            }
+
             StockDistribution saveEntry = StockDistribution.builder()
-                    .centerName(commonMethodsService.findCenterName(centerId))
+                    .centerId(centerId)
                     .date(mills)
                     .month(currentMonth)
                     .familyId(stockList.getFamilyId())
@@ -1498,15 +1508,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
             stockDistributionRepository.save(saveEntry);
 
-            StockDistributionDTO singleEntry = StockDistributionDTO.builder()
-                    .centerName(commonMethodsService.findCenterName(centerId))
-                    .date(df.format(date))
-                    .familyId(stockList.getFamilyId())
-                    .itemCode(stockList.getItemCode())
-                    .itemName(stockList.getItemName())
-                    .quantity(stockList.getQuantity())
-                    .unit(stockList.getUnit())
-                    .build();
+            StockDistributionDTO singleEntry = modelMapper.map(saveEntry, StockDistributionDTO.class);
 
             addInList.add(singleEntry);
 
@@ -1555,10 +1557,16 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public List<DistributionOutputList> getDistributionList(String centerId, String selectedMonth) {
+    public List<DistributionOutputList> getDistributionList(String centerId, String selectedMonth) throws ParseException {
 
-        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterIdAndMonth(centerId, selectedMonth);
-        log.error("using center ID: "+findFamily);
+        Date startDate = ApplicationConstants.df.parse(commonMethodsService.getStartDate(selectedMonth.trim()));
+        long startDataRange = startDate.getTime();
+
+        Date endDate = ApplicationConstants.df.parse(commonMethodsService.getEndDateOfMonth(selectedMonth.trim()));
+        long endDataRange = endDate.getTime();
+
+        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterIdAndDateRange(centerId, startDataRange, endDataRange);
+        log.error("using center ID: " + findFamily);
 //        List<StockDistribution> findFamily1 = stockDistributionRepository.findAllByCenterNameAndMonth(centerName, selectedMonth);
 //        log.error("using center Name: "+findFamily1);
         List<DistributionOutputList> addInList = new ArrayList<>();
@@ -1568,12 +1576,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         for (StockDistribution sd : findFamily) {
             String name = "", profilePic = "", houseNo = "", familyId = "";
 
-            List<Family> findHouseholds = familyRepository.findAllByFamilyId(sd.getFamilyId());
+            Family fy = familyRepository.findByFamilyId(sd.getFamilyId());
 
-            for (Family fy : findHouseholds) {
-                houseNo = fy.getHouseNo();
-                familyId = fy.getFamilyId();
+            if (fy == null) {
+                throw new CustomException("Family Doesn't Exists in that Center");
             }
+
+            houseNo = fy.getHouseNo();
+            familyId = fy.getFamilyId();
+
 
             List<FamilyMember> findHeadDetails = familyMemberRepository.findAllByFamilyId(sd.getFamilyId(), Sort.by(Sort.Direction.DESC, "createdDate"));
 

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -14,10 +15,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class StockDistribution extends BaseObject {
 
     private String familyId;
+    @Indexed
     private long date;
     private String month;
     private String centerId;
-    private String centerName;
+//    private String centerName;
     private String itemName;
     private String itemCode;
     private String quantity;
