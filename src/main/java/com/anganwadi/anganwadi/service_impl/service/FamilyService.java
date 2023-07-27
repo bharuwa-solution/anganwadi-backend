@@ -117,6 +117,8 @@ public interface FamilyService {
 
     List<VaccinationName> getAllVaccinationName();
 
+    VisitsCurrentMember getCurrentMemberId(String id);
+
     //VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
 
     //VaccinationDTO addVaccineData(String vaccineName);  // It is moved in user controller..

@@ -60,4 +60,7 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     List<Visits> findAllByMemberIdAndCenterId(String memberId, String centerId);
 
     List<Visits> findAllByMotherIdAndVisitType(String motherId, String visitType);
+
+
+    List<Visits> findAllByMotherId(String id, Sort createdDate);
 }

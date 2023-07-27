@@ -1287,13 +1287,13 @@ public class FamilyServiceImpl implements FamilyService {
         saveVisitsSection(visitDetails, centerId, currentDate, findFamily, childId);
     }
 
-    private String findMotherId(String memberId, String centerId) {
+    private String findMotherId(String memberId) {
 
-        List<Visits> checkPregnantVisits = visitsRepository.findAllByMemberIdAndCenterId(memberId, centerId);
+        List<BabiesBirth> checkPregnantVisits = babiesBirthRepository.findAllByMotherMemberId(memberId);
         String id = "";
 
-        for (Visits visits : checkPregnantVisits) {
-            id = visits.getMotherId();
+        for (BabiesBirth visits : checkPregnantVisits) {
+            id = visits.getMotherMemberId();
 
         }
         return id;
@@ -1318,12 +1318,12 @@ public class FamilyServiceImpl implements FamilyService {
                 if (visitsDetailsDTOTemp.getVisitType().trim().equals("1") || visitsDetailsDTOTemp.getVisitType().trim().equals("2")) {
                     motherId = visitsDetailsDTOTemp.getMemberId();
                 } else {
-                    motherId = findMotherId(visitsDetailsDTOTemp.getMemberId(), centerId);
+                    motherId = findMotherId(visitsDetailsDTOTemp.getMemberId());
                     childId = visitsDetailsDTOTemp.getMemberId();
                 }
 
                 if (!familyMemberRepository.findById(motherId).isPresent()) {
-                    throw new CustomException("Member Id Not Passed");
+                    throw new CustomException("Mother Id Not Passed");
 
                 }
 
@@ -2607,16 +2607,14 @@ public class FamilyServiceImpl implements FamilyService {
         HashSet<String> uniqueMember = new HashSet<>();
         String motherId = "";
 
-       List<Visits> findMother = visitsRepository.findAllByMemberId(memberId);
+       List<BabiesBirth> findMother = babiesBirthRepository.findAllByMotherMemberId(memberId);
 
        if(findMother.size()>0){
-           for(Visits visits :  findMother) {
-               motherId = visits.getMotherId();
+           for(BabiesBirth visits :  findMother) {
+               motherId = visits.getMotherMemberId();
            }
        }
-       else {
-           motherId = memberId;
-       }
+
 
         for (int i = 1; i <= 10; i++) {
 
@@ -4900,6 +4898,39 @@ public class FamilyServiceImpl implements FamilyService {
             return listForReturn;
         }
 
+    }
+
+    @Override
+    public VisitsCurrentMember getCurrentMemberId(String id) {
+
+        List<Visits> checkMember = visitsRepository.findAllByMotherId(id, Sort.by(Sort.Direction.DESC, "createdDate"));
+        VisitsCurrentMember memberId = new VisitsCurrentMember();
+
+        if (checkMember.size() > 0) {
+
+            for (Visits visits : checkMember) {
+
+                if (visits.getMemberId().trim().length() > 0) {
+
+                    memberId = VisitsCurrentMember.builder()
+                            .memberId(visits.getMemberId())
+                            .build();
+                    break;
+
+                } else {
+                    memberId = VisitsCurrentMember.builder()
+                            .memberId(visits.getMotherId())
+                            .build();
+                }
+
+            }
+
+
+        } else {
+            throw new CustomException("Member Id Not Found");
+        }
+
+        return memberId;
     }
 }
 

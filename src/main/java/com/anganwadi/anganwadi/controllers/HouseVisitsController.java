@@ -66,4 +66,9 @@ public class HouseVisitsController {
     	return familyService.getAllVaccinationName();	
     }
 
+    @GetMapping("/getCurrentMemberId")
+    private VisitsCurrentMember getCurrentMemberId(@RequestParam String id){
+        return familyService.getCurrentMemberId(id);
+    }
+
 }
