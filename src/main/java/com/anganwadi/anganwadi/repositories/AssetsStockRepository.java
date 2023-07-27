@@ -2,6 +2,7 @@ package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.AssetsStock;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,5 +18,6 @@ public interface AssetsStockRepository extends MongoRepository<AssetsStock, Stri
     List<AssetsStock> findAllByCenterNameAndItemCodeAndMonth(String centerName, String itemCode, String selectedMonth);
 
    // List<AssetsStock> findAllByCenterNameAndMonthOrderByCreatedDateAsc(String centerName, String selectedMonth);
-    List<AssetsStock> findAllByCenterIdAndMonthOrderByCreatedDateAsc(String centerId, String selectedMonth);
+    @Query("{'date':{$gte:?1,$lte:?2},'centerId':?0}")
+    List<AssetsStock> findAllByCenterIdAndMonthOrderByCreatedDateAsc(String centerId, long startTime,long endTime);
 }

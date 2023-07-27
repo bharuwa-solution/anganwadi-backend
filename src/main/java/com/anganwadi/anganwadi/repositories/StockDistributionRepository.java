@@ -14,7 +14,9 @@ public interface StockDistributionRepository extends MongoRepository<StockDistri
     List<StockDistribution> findAllByCenterName(String centerName);
 
    // List<StockDistribution> findAllByCenterNameAndMonth(String centerName, String selectedMonth);
-    List<StockDistribution> findAllByCenterIdAndMonth(String centerId, String selectedMonth);
+    
+    @Query("{'date':{$gte:?1,$lte:?2},'centerId':?0}")
+    List<StockDistribution> findAllByCenterIdAndMonth(String centerId, long startDate,long endDate);
 
     List<StockDistribution> findAllByFamilyIdAndMonth(String familyId, String selectedMonth);
 

@@ -140,7 +140,7 @@ public class CommonMethodsService {
             if (LocalDate.now().isLeapYear()) {
                 endDate = "29-" + month + "-" + LocalDate.now().getYear();
             } else {
-                endDate = "28-03" + LocalDate.now().getYear();
+                endDate = "28-02" + LocalDate.now().getYear();
             }
 
         } else {
@@ -149,7 +149,13 @@ public class CommonMethodsService {
 
         return endDate;
     }
-
+    
+    public String getStartDateOfMonth(String month) {
+    	String startDate="01-"+month+"-"+LocalDate.now().getYear();
+    	
+    	return startDate;
+    }
+    
     public Boolean checkMortalityDate(String memberId) {
         boolean isDead = false;
 

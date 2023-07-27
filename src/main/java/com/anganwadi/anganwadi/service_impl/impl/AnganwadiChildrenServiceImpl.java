@@ -1429,33 +1429,45 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     @Override
     public StockOutputItemsDTO getStocks(String centerid, String selectedMonth) {
+    	try {
+    		String startDate = commonMethodsService.getStartDateOfMonth(selectedMonth);
+        	String endDate = commonMethodsService.getEndDateOfMonth(selectedMonth);
+        	
+        	
+    		long startTime = commonMethodsService.dateChangeToLong(startDate);
+    		long endTime = commonMethodsService.dateChangeToLong(endDate);
+            List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndMonthOrderByCreatedDateAsc(centerid, startTime,endTime);
+            HashSet<String> captureMonth = new HashSet<>();
+            List<StockOutputItemsDTO> addInList = new ArrayList<>();
+            StockOutputItemsDTO addSingle = new StockOutputItemsDTO();
+            if (findByCenterName.size() > 0) {
+                for (AssetsStock findMonth : findByCenterName) {
+                    long getMills = findMonth.getDate();
+                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = new Date(getMills);
+                    if (captureMonth.add(df.format(date))) {
+                        log.info("date " + df.format(date));
+                        addSingle = StockOutputItemsDTO.builder()
+                                .date(df.format(date))
+                                .stockArrayList(getStockArray(commonMethodsService.findCenterName(centerid), selectedMonth))
+                                .build();
+                    }
 
-        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndMonthOrderByCreatedDateAsc(centerid, selectedMonth);
-        HashSet<String> captureMonth = new HashSet<>();
-        List<StockOutputItemsDTO> addInList = new ArrayList<>();
-        StockOutputItemsDTO addSingle = new StockOutputItemsDTO();
-        if (findByCenterName.size() > 0) {
-            for (AssetsStock findMonth : findByCenterName) {
-                long getMills = findMonth.getDate();
-                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = new Date(getMills);
-                if (captureMonth.add(df.format(date))) {
-                    log.info("date " + df.format(date));
-                    addSingle = StockOutputItemsDTO.builder()
-                            .date(df.format(date))
-                            .stockArrayList(getStockArray(commonMethodsService.findCenterName(centerid), selectedMonth))
-                            .build();
                 }
-
+            } else {
+                addSingle = StockOutputItemsDTO.builder()
+                        .date("")
+                        .stockArrayList(Collections.EMPTY_LIST)
+                        .build();
             }
-        } else {
-            addSingle = StockOutputItemsDTO.builder()
-                    .date("")
-                    .stockArrayList(Collections.EMPTY_LIST)
-                    .build();
-        }
-
-        return addSingle;
+            return addSingle;
+    	}
+    	catch (Exception e) {
+			// TODO: handle exception
+		}
+    	
+    	return  new StockOutputItemsDTO();
+        
     }
 
 //    @Override
@@ -1555,8 +1567,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
     @Override
     public List<DistributionOutputList> getDistributionList(String centerId, String selectedMonth) {
+    	try {
+    		
+    	
+    	String startDate = commonMethodsService.getStartDateOfMonth(selectedMonth);
+    	String endDate = commonMethodsService.getEndDateOfMonth(selectedMonth);
+    	
+    	
+		long startTime = commonMethodsService.dateChangeToLong(startDate);
+		long endTime = commonMethodsService.dateChangeToLong(endDate);
+		
+    	List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterIdAndMonth(centerId, startTime,endTime);
 
-        List<StockDistribution> findFamily = stockDistributionRepository.findAllByCenterIdAndMonth(centerId, selectedMonth);
         log.error("using center ID: "+findFamily);
 //        List<StockDistribution> findFamily1 = stockDistributionRepository.findAllByCenterNameAndMonth(centerName, selectedMonth);
 //        log.error("using center Name: "+findFamily1);
@@ -1607,6 +1629,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             }
         }
         return addInList;
+    } catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    	return  Collections.emptyList();
     }
 
 //    private String selectMonth(int monthValue) {
