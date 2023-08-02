@@ -32,7 +32,7 @@ public class StockController {
 
 
     @GetMapping("getStocks")
-    private StockOutputItemsDTO getStocks(@RequestHeader String centerId, @RequestParam String selectedMonth) {
+    private StockOutputItemsDTO getStocks(@RequestHeader String centerId, @RequestParam String selectedMonth) throws ParseException {
         return anganwadiChildrenService.getStocks(centerId, selectedMonth);
     }
 

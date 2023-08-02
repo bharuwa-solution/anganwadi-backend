@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VaccinationNameRepository extends MongoRepository<VaccinationName, String> {
@@ -14,4 +15,6 @@ public interface VaccinationNameRepository extends MongoRepository<VaccinationNa
 
     @Aggregation(pipeline = {"{'$match':{'_id':{$ne:null}}}", "{$limit:1}", "{$sort:{'_id':-1}}"})
     List<VaccinationName> findTopOneById();
+
+    Optional<VaccinationName> findByVaccineCode(String vaccineCode);
 }

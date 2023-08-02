@@ -114,10 +114,9 @@ public interface FamilyService {
 
     String autoUpdateCalendar();
 
+    List<VaccinationDTO> getAllVaccinationName();
 
-    List<VaccinationName> getAllVaccinationName();
 
-    VisitsCurrentMember getCurrentMemberId(String id);
 
     //VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
 

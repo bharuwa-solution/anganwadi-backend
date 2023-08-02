@@ -1150,6 +1150,33 @@ public class FamilyServiceImpl implements FamilyService {
 		return addHouseList;
 	}
 
+	private RecentVisits getRecentVisit(String memberId) {
+
+		List<Visits> visits = new ArrayList<>();
+
+		visits = visitsRepository.findAllByMotherId(memberId,Sort.by(Sort.Direction.ASC, "createdDate"));
+
+		if(visits.size()>0){
+			visits = visitsRepository.findAllByMemberIdOrderByCreatedDateDesc(memberId);
+		}
+
+		Set<String> recent = new HashSet<>();
+		RecentVisits singleEntry = new RecentVisits();
+
+		for (Visits v : visits) {
+			if (recent.add(v.getMemberId())) {
+				singleEntry = RecentVisits.builder()
+						.visitFor(v.getVisitFor() == null ? "" : v.getVisitFor())
+						.date(ApplicationConstants.df.format(v.getVisitDateTime()))
+						.visitCategory(v.getVisitCategory() == null ? "" : v.getVisitCategory())
+						.visitType(v.getVisitType() == null ? "" : v.getVisitType())
+						.build();
+			}
+		}
+		return singleEntry;
+	}
+
+
 	@Override
 	public List<MemberDetails> getVisitScheduler(DashboardFilter dashboardFilter) throws ParseException {
 		List<MemberDetails> addInList = new ArrayList<>();
@@ -1196,6 +1223,7 @@ public class FamilyServiceImpl implements FamilyService {
 					.houseNo(familyDetails.getHouseNo()).category(familyDetails.getCategory())
 					.religion(familyDetails.getReligion()).gender(memberDetails.getGender())
 					.profilePic(memberDetails.getPhoto())
+					.recentVisits(getRecentVisit(sd))
 					.vaccination(getVaccinationListByMemberId(sd, vaccinationScheduleList))
 					.delivery(getDeliveryListByMemberId(sd, houseVisitScheduleList))
 					.houseVisits(getHouseVisitListByMemberId(sd, houseVisitScheduleList)).build();
@@ -1206,60 +1234,104 @@ public class FamilyServiceImpl implements FamilyService {
 
 	}
 
-	private List<BloodTestCasesDTO> saveBloodTestSection(VisitsDetailsDTOTemp bloodTestCases, String centerId,
-			long currentDate, FamilyMember findFamily) throws ParseException {
-
-		List<BloodTestCasesDTO> bloodTestArray = new ArrayList<>();
+	private void saveBloodTestSection(VisitsDetailsDTOTemp bloodTestCases, String centerId,
+									  long currentDate, FamilyMember findFamily, String childId) throws ParseException {
 
 		for (BloodTestCasesDTO cases : bloodTestCases.getBloodTest()) {
-			bloodTestTrackingRepository.save(BloodTestTracking.builder().date(currentDate).result(cases.getResult())
-					.visitRound(bloodTestCases.getVisitRound()).visitType(bloodTestCases.getVisitType())
-					.memberId(findFamily.getId()).testCode(cases.getTestCode()).build());
+			bloodTestTrackingRepository.save(BloodTestTracking.builder().
+					date(currentDate)
+					.result(cases.getResult())
+					.visitRound(bloodTestCases.getVisitRound())
+					.visitType(bloodTestCases.getVisitType())
+					.motherId(findFamily.getId())
+					.memberId(childId)
+					.testCode(cases.getTestCode()).build());
 
 			BloodTestCasesDTO singleBlood = modelMapper.map(cases, BloodTestCasesDTO.class);
-			bloodTestArray.add(singleBlood);
+
 		}
-		saveVisitsSection(bloodTestCases, centerId, currentDate, findFamily);
-		return bloodTestArray;
+		saveVisitsSection(bloodTestCases, centerId, currentDate, findFamily, childId);
 	}
 
 	private void saveWeightsSection(VisitsDetailsDTOTemp weightRecords, String centerId, long currentDate,
-			FamilyMember findFamily) {
+									FamilyMember findFamily, String childId) {
 
-		weightTrackingRepository.save(WeightTracking.builder().familyId(findFamily.getFamilyId())
-				.childId(findFamily.getId()).centerId(centerId).visitRound(weightRecords.getVisitRound())
-				.visitType(weightRecords.getVisitType()).centerName(commonMethodsService.findCenterName(centerId))
-				.date(currentDate).weight(weightRecords.getWeight()).height(weightRecords.getHeight()).build());
+		weightTrackingRepository.save(WeightTracking.builder()
+				.familyId(findFamily.getFamilyId())
+				.childId(childId)
+				.motherId(findFamily.getId())
+				.centerId(centerId)
+				.visitRound(weightRecords.getVisitRound())
+				.visitType(weightRecords.getVisitType())
+				.centerName(commonMethodsService.findCenterName(centerId))
+				.date(currentDate)
+				.weight(weightRecords.getWeight())
+				.height(weightRecords.getHeight()).build());
 
-		saveVisitsSection(weightRecords, centerId, currentDate, findFamily);
+		saveVisitsSection(weightRecords, centerId, currentDate, findFamily, childId);
 	}
 
 	private void saveVisitsSection(VisitsDetailsDTOTemp visitDetails, String centerId, long currentDate,
-			FamilyMember findFamily) {
+								   FamilyMember findFamily, String childId) {
 
-		visitsRepository.save(Visits.builder().familyId(findFamily.getFamilyId()).memberId(visitDetails.getMemberId())
-				.visitCategory(visitDetails.getVisitCategory()).centerId(centerId)
-				.centerName(commonMethodsService.findCenterName(centerId)).visitType(visitDetails.getVisitType())
-				.visitFor(visitDetails.getVisitFor()).visitRound(visitDetails.getVisitRound())
-				.description(visitDetails.getDescription()).visitDateTime(currentDate)
+		visitsRepository.save(Visits.builder()
+				.familyId(findFamily.getFamilyId())
+				.motherId(visitDetails.getMemberId())
+				.memberId(childId)
+				.visitCategory(visitDetails.getVisitCategory())
+				.centerId(centerId)
+				.centerName(commonMethodsService.findCenterName(centerId))
+				.visitType(visitDetails.getVisitType())
+				.visitFor(visitDetails.getVisitFor())
+				.visitRound(visitDetails.getVisitRound())
+				.description(visitDetails.getDescription())
+				.visitDateTime(currentDate)
 				.longitude(visitDetails.getLongitude()).latitude(visitDetails.getLatitude()).build());
 	}
 
 	private void saveVaccinationSection(VisitsDetailsDTOTemp visitDetails, String centerId, long currentDate,
-			FamilyMember findFamily) {
+										FamilyMember findFamily, String childId) {
 
-		vaccinationRepository.save(Vaccination.builder().familyId(findFamily.getFamilyId()).childId(findFamily.getId())
-				.visitRound(visitDetails.getVisitRound()).visitType(visitDetails.getVisitType()).centerId(centerId)
-				.centerName(commonMethodsService.findCenterName(centerId)).vaccinationCode(visitDetails.getVisitFor())
+		vaccinationRepository.save(Vaccination.builder()
+				.familyId(findFamily.getFamilyId())
+				.motherId(findFamily.getId())
+				.childId(childId)
+				.visitRound(visitDetails.getVisitRound())
+				.visitType(visitDetails.getVisitType())
+				.centerId(centerId)
+				.centerName(commonMethodsService.findCenterName(centerId))
+				.vaccinationCode(visitDetails.getVisitFor())
 				.date(currentDate).build());
 
-		saveVisitsSection(visitDetails, centerId, currentDate, findFamily);
+		saveVisitsSection(visitDetails, centerId, currentDate, findFamily, childId);
 	}
+
+	private String findChildId(String motherId, String visitType) {
+		List<Visits> checkMember = visitsRepository.findAllByMotherId(motherId, Sort.by(Sort.Direction.DESC, "createdDate"));
+		String childId = "";
+
+		for (Visits visits : checkMember) {
+			if (visits.getMemberId().trim().length() > 0) {
+				childId = visits.getMemberId();
+				break;
+			}
+		}
+		return childId;
+	}
+
 
 	@Override
 	public VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId)
 			throws ParseException {
 		int visitType = Integer.parseInt(visitsDetailsDTOTemp.getVisitType());
+		String fetchMotherId = "", childId = "";
+
+		// Fetch MotherId & childId
+
+		fetchMotherId = getVisitMotherId(visitsDetailsDTOTemp.getMemberId());
+
+		childId = findChildId(visitsDetailsDTOTemp.getMemberId(), visitsDetailsDTOTemp.getVisitType());
+
 
 		if (visitType > 0 && visitType <= 10) {
 			if (visitsDetailsDTOTemp.getVisitCategory().length() > 0) {
@@ -1267,28 +1339,28 @@ public class FamilyServiceImpl implements FamilyService {
 
 				long currentDate = df.parse(df.format(new Date())).getTime();
 
-				if (!familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).isPresent()) {
+				if (!familyMemberRepository.findById(fetchMotherId).isPresent()) {
 					throw new CustomException("Member Id Not Passed");
 				}
 
-				FamilyMember findMember = familyMemberRepository.findById(visitsDetailsDTOTemp.getMemberId()).get();
+				FamilyMember findMember = familyMemberRepository.findById(fetchMotherId).get();
 
 				switch (visitsDetailsDTOTemp.getVisitCategory().trim()) {
-				case "1":
-					saveBloodTestSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-					break;
+					case "1":
+						saveBloodTestSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
+						break;
 
-				case "2":
-					saveWeightsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-					break;
+					case "2":
+						saveWeightsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
+						break;
 
-				case "3":
-					saveVaccinationSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-					break;
+					case "3":
+						saveVaccinationSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
+						break;
 
-				case "4":
-					saveVisitsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember);
-					break;
+					case "4":
+						saveVisitsSection(visitsDetailsDTOTemp, centerId, currentDate, findMember, childId);
+						break;
 				}
 
 			} else {
@@ -2073,23 +2145,26 @@ public class FamilyServiceImpl implements FamilyService {
 	public List<GetVaccinationDTO> getVaccinationRecords(String vaccineCode, String centerId) {
 
 		List<GetVaccinationDTO> addList = new ArrayList<>();
-		List<Visits> vaccinationList = new ArrayList<>();
+//		List<Visits> vaccinationList = new ArrayList<>();
 		HashSet<String> uniqueFamilyId = new HashSet<>();
 		String code = vaccineCode == null ? "" : vaccineCode;
 
-		if (code.trim().length() > 0) {
-			vaccinationList = visitsRepository.findAllByVisitForSearchCriteria(vaccineCode, centerId,
-					Sort.by(Sort.Direction.DESC, "createdDate"));
-		} else {
-			vaccinationList = visitsRepository.findAllByVisitForAndCenterId(centerId,
-					Sort.by(Sort.Direction.DESC, "createdDate"));
-		}
+		List<Vaccination> vaccinationList = vaccinationRepository.findAllByCenterIdAndVaccinationCode(centerId, code);
+
+
+//		if (code.trim().length() > 0) {
+//			vaccinationList = visitsRepository.findAllByVisitForSearchCriteria(vaccineCode, centerId,
+//					Sort.by(Sort.Direction.DESC, "createdDate"));
+//		} else {
+//			vaccinationList = visitsRepository.findAllByVisitForAndCenterId(centerId,
+//					Sort.by(Sort.Direction.DESC, "createdDate"));
+//		}
 
 		if (vaccinationList.size() > 0) {
-			for (Visits vaccDetails : vaccinationList) {
+			for (Vaccination vaccDetails : vaccinationList) {
 
-				if (familyMemberRepository.findById(vaccDetails.getMemberId()).isPresent()) {
-					FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getMemberId()).get();
+				if (familyMemberRepository.findById(vaccDetails.getChildId()).isPresent()) {
+					FamilyMember fmd = familyMemberRepository.findById(vaccDetails.getChildId()).get();
 
 					Family findHouse = familyRepository.findByFamilyId(fmd.getFamilyId());
 					long getMills = fmd.getDob();
@@ -2098,10 +2173,11 @@ public class FamilyServiceImpl implements FamilyService {
 
 					if (uniqueFamilyId.add(fmd.getId())) {
 						GetVaccinationDTO addSingle = GetVaccinationDTO.builder().name(fmd.getName())
-								.gender(fmd.getGender()).childId(vaccDetails.getMemberId()).centerId(centerId)
+								.gender(fmd.getGender()).childId(vaccDetails.getChildId()).centerId(centerId)
 								.centerName(commonMethodsService.findCenterName(centerId))
-								.houseNo(findHouse.getHouseNo()).vaccinationCode(vaccDetails.getVisitFor())
-								.vaccinationName("").age(df.format(date)).photo(fmd.getPhoto())
+								.houseNo(findHouse.getHouseNo()).vaccinationCode(vaccDetails.getVaccinationCode())
+								.vaccinationName(commonMethodsService.getVaccineName(vaccDetails.getVaccinationCode()))
+								.age(df.format(date)).photo(fmd.getPhoto())
 								.motherName(fmd.getMotherName()).build();
 						addList.add(addSingle);
 					}
@@ -2336,9 +2412,9 @@ public class FamilyServiceImpl implements FamilyService {
 		return addInList;
 	}
 
-	private List<VisitArray> visitArrayList(String memberId, String visitType) {
+	private List<VisitArray> visitArrayList(String currentMemberId, String visitType) {
 
-		List<Visits> checkVisitsFor = visitsRepository.findAllByMemberIdAndVisitType(memberId, visitType);
+		List<Visits> checkVisitsFor = visitsRepository.findAllByMotherIdAndVisitType(currentMemberId, visitType);
 		List<VisitArray> addInList = new ArrayList<>();
 
 		for (Visits findDetails : checkVisitsFor) {
@@ -2346,7 +2422,7 @@ public class FamilyServiceImpl implements FamilyService {
 			long millis = findDetails.getVisitDateTime();
 			Date date = new Date(millis);
 			VisitArray visitArray = new VisitArray();
-			log.error("fetched details is: " + findDetails);
+
 
 			if (findDetails.getVisitCategory() != null) {
 				switch (findDetails.getVisitCategory().trim()) {
@@ -2357,7 +2433,8 @@ public class FamilyServiceImpl implements FamilyService {
 							.visitFor(findDetails.getVisitFor() == null ? "" : findDetails.getVisitFor())
 							.visitRound(findDetails.getVisitRound() == null ? "" : findDetails.getVisitRound())
 							.description(findDetails.getDescription() == null ? "" : findDetails.getDescription())
-							.bloodTestArray(bloodTestArrayList(findDetails)).weightTrackArray(Collections.emptyList())
+							.bloodTestArray(bloodTestArrayList(findDetails, currentMemberId))
+							.weightTrackArray(Collections.emptyList())
 							.vaccinationArray(Collections.emptyList()).build();
 					break;
 
@@ -2367,7 +2444,8 @@ public class FamilyServiceImpl implements FamilyService {
 							.visitFor(findDetails.getVisitFor() == null ? "" : findDetails.getVisitFor())
 							.visitRound(findDetails.getVisitRound() == null ? "" : findDetails.getVisitRound())
 							.description(findDetails.getDescription() == null ? "" : findDetails.getDescription())
-							.bloodTestArray(Collections.emptyList()).weightTrackArray(weightArrayList(findDetails))
+							.bloodTestArray(Collections.emptyList())
+							.weightTrackArray(weightArrayList(findDetails))
 							.vaccinationArray(Collections.emptyList()).build();
 					break;
 
@@ -2405,27 +2483,44 @@ public class FamilyServiceImpl implements FamilyService {
 		return addInList;
 	}
 
+
+	private String getVisitMotherId(String id) {
+		String motherId = id;
+
+		List<BabiesBirth> checkMother = babiesBirthRepository.findAllByChildId(id);
+		if (checkMother.size() > 0) {
+			for (BabiesBirth visits : checkMother) {
+				motherId = visits.getMotherMemberId();
+			}
+		}
+		return motherId;
+	}
+
 	@Override
 	public List<MemberVisits> getMemberVisitDetailsLatest(String memberId, String centerId) {
 
 		List<MemberVisits> addInList = new ArrayList<>();
 		MemberVisits memberVisits = new MemberVisits();
 		HashSet<String> uniqueMember = new HashSet<>();
-		int count = 0;
+		String fetchMemberId = "";
 
 		for (int i = 1; i <= 10; i++) {
-			List<Visits> findMember = visitsRepository.findAllByMemberIdAndCenterIdAndVisitType(memberId, centerId,
-					String.valueOf(i));
-			log.error("fetched value with " + i + " is:  " + findMember);
+
+			// find Mother Id
+			fetchMemberId = getVisitMotherId(memberId);
+
+			List<Visits> findMember = visitsRepository.findAllByMotherIdAndCenterIdAndVisitType(fetchMemberId, centerId, String.valueOf(i));
+
 			if (findMember.size() > 0) {
 				for (Visits checkDetails : findMember) {
-
 					memberVisits = MemberVisits.builder().visitType(checkDetails.getVisitType())
-							.visitArray(visitArrayList(checkDetails.getMemberId(), checkDetails.getVisitType()))
+							.visitArray(visitArrayList(fetchMemberId, checkDetails.getVisitType()))
 							.build();
 				}
 			} else {
-				memberVisits = MemberVisits.builder().visitType(String.valueOf(i)).visitArray(Collections.emptyList())
+				memberVisits = MemberVisits.builder()
+						.visitType(String.valueOf(i))
+						.visitArray(Collections.emptyList())
 						.build();
 			}
 			addInList.add(memberVisits);
@@ -2826,8 +2921,7 @@ public class FamilyServiceImpl implements FamilyService {
 				.dateOfMortality("").dateOfLeaving("").dateOfArrival("").handicapType("").photo("").memberCode("")
 				.residentArea("").recordForMonth(getMonth).mobileNumber(searchFamilyId.getMobileNumber())
 				.stateCode(searchFamilyId.getStateCode()).centerName(commonMethodsService.findCenterName(centerId))
-				.relationWithOwner(
-						birthDetails.getRelationWithOwner() == null ? "" : birthDetails.getRelationWithOwner())
+				.relationWithOwner(birthDetails.getRelationWithOwner() == null ? "" : birthDetails.getRelationWithOwner())
 				.gender(birthDetails.getGender()).dob(mills).build();
 		familyMemberRepository.save(addMember);
 
@@ -2850,6 +2944,9 @@ public class FamilyServiceImpl implements FamilyService {
 
 		WeightTracking saveRecord = WeightTracking.builder()
 				.familyId(searchFamilyId.getFamilyId() == null ? "" : searchFamilyId.getFamilyId())
+				.motherId(birthDetails.getMotherMemberId())
+				.visitType(birthDetails.getVisitType())
+				.visitRound(birthDetails.getVisitRound())
 				.childId(saveDetails.getChildId() == null ? "" : saveDetails.getChildId()).date(mills)
 				.centerId(centerId).centerName(commonMethodsService.findCenterName(centerId))
 				.weight(birthDetails.getFirstWeight() == null ? "" : birthDetails.getFirstWeight())
@@ -2867,7 +2964,10 @@ public class FamilyServiceImpl implements FamilyService {
 
 		Visits updateRecord = Visits.builder().visitFor(birthDetails.getVisitFor())
 				.familyId(searchFamilyId.getFamilyId()).visitType(birthDetails.getVisitType())
-				.visitRound(birthDetails.getVisitRound()).memberId(addMember.getId() == null ? "" : addMember.getId())
+				.motherId(birthDetails.getMotherMemberId())
+				.visitCategory(ApplicationConstants.birth_visit_category)
+				.visitRound(birthDetails.getVisitRound())
+				.memberId(saveDetails.getChildId())
 				.centerName(commonMethodsService.findCenterName(centerId)).centerId(centerId).childDob(mills)
 				.category(searchFamilyId.getCategory().length() <= 0 ? headCategory : searchFamilyId.getCategory())
 				.description("").longitude(birthDetails.getLongitude() == null ? "" : birthDetails.getLongitude())
@@ -3453,16 +3553,15 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public List<PerVaccineRecord> getVaccinationByChildId(String childId) {
 
-		List<Visits> findRecords = visitsRepository.findAllByVisitForCriteria(childId,
-				Sort.by(Sort.Direction.ASC, "createdDate"));
+		List<Vaccination> findRecords = vaccinationRepository.findByChildId(childId, Sort.by(Sort.Direction.ASC, "createdDate"));
 		List<PerVaccineRecord> addInSingle = new ArrayList<>();
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
-		for (Visits lists : findRecords) {
-			Date date = new Date(lists.getVisitDateTime());
-			PerVaccineRecord singleList = PerVaccineRecord.builder().vaccinationCode(lists.getVisitFor())
-					.vaccinationName("").date(df.format(date)).build();
+		for (Vaccination lists : findRecords) {
+			Date date = new Date(lists.getDate());
+			PerVaccineRecord singleList = PerVaccineRecord.builder()
+					.vaccinationCode(lists.getVaccinationCode() == null ? "" : lists.getVaccinationCode())
+					.vaccinationName(commonMethodsService.getVaccineName(lists.getVaccinationCode()))
+					.date(ApplicationConstants.df.format(date)).build();
 			addInSingle.add(singleList);
 		}
 		return addInSingle;
@@ -4584,19 +4683,19 @@ public class FamilyServiceImpl implements FamilyService {
 		return addInList;
 	}
 
-	private List<BloodTestCasesDTO> bloodTestArrayList(Visits findDetails) {
+	private List<BloodTestCasesDTO> bloodTestArrayList(Visits findDetails, String currentMember) {
 
 		List<BloodTestCasesDTO> reportList = new ArrayList<>();
 
-		List<BloodTestTracking> findReports = bloodTestTrackingRepository.findAllByMemberIdAndVisitTypeAndVisitRound(
-				findDetails.getMemberId(), findDetails.getVisitType(), findDetails.getVisitRound());
+		List<BloodTestTracking> findReports = bloodTestTrackingRepository.findAllByMotherIdAndVisitTypeAndVisitRound(findDetails.getMotherId(), findDetails.getVisitType(), findDetails.getVisitRound());
 
 		if (findReports.size() > 0) {
 			for (BloodTestTracking btt : findReports) {
 				reportList.add(BloodTestCasesDTO.builder().date(ApplicationConstants.df.format(btt.getDate()))
 						.result(btt.getResult() == null ? "" : btt.getResult())
 						.testCode(btt.getTestCode() == null ? "" : btt.getTestCode())
-						.memberId(btt.getMemberId() == null ? "" : btt.getMemberId()).name("").build());
+						.memberId(btt.getMemberId().equals("") ? currentMember : btt.getMemberId())
+						.name("").build());
 			}
 		}
 		return reportList;
@@ -4604,13 +4703,16 @@ public class FamilyServiceImpl implements FamilyService {
 
 	private List<ChildWeightDTO> weightArrayList(Visits findDetails) {
 		List<ChildWeightDTO> weightList = new ArrayList<>();
-		List<WeightTracking> findWeights = weightTrackingRepository.findAllByChildIdAndVisitTypeAndVisitRound(
-				findDetails.getMemberId(), findDetails.getVisitType(), findDetails.getVisitRound());
+		List<WeightTracking> findWeights = weightTrackingRepository.findAllByMotherIdAndVisitTypeAndVisitRound(
+				findDetails.getMotherId(), findDetails.getVisitType(), findDetails.getVisitRound());
 
 		if (findWeights.size() > 0) {
 			for (WeightTracking wt : findWeights) {
-				weightList.add(ChildWeightDTO.builder().childId(wt.getChildId()).weight(wt.getWeight())
-						.height(wt.getHeight()).date(ApplicationConstants.df.format(wt.getDate()))
+				weightList.add(ChildWeightDTO.builder()
+						.childId(wt.getChildId())
+						.weight(wt.getWeight())
+						.height(wt.getHeight())
+						.date(ApplicationConstants.df.format(wt.getDate()))
 						.bmi(commonMethodsService.calBMI(wt.getWeight(), wt.getHeight())).build());
 			}
 		}
@@ -4622,8 +4724,8 @@ public class FamilyServiceImpl implements FamilyService {
 
 		List<VaccinationDTO> vaccinationList = new ArrayList<>();
 
-		List<Vaccination> findVaccine = vaccinationRepository.findAllByChildIdAndVisitTypeAndVisitRound(
-				findDetails.getMemberId(), findDetails.getVisitType(), findDetails.getVisitRound());
+		List<Vaccination> findVaccine = vaccinationRepository.findAllByMotherIdAndVisitTypeAndVisitRound(
+				findDetails.getMotherId(), findDetails.getVisitType(), findDetails.getVisitRound());
 
 		if (findVaccine.size() > 0) {
 			for (Vaccination vc : findVaccine) {
@@ -4658,15 +4760,19 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	@Override
-	public List<VaccinationName> getAllVaccinationName() {
+	public List<VaccinationDTO> getAllVaccinationName() {
 		// return vaccinationNameRepository.findAll();
 		List<VaccinationName> listForReturn = vaccinationNameRepository.findAll();
+		List<VaccinationDTO> addinList = new ArrayList<>();
 
-		if (listForReturn.size() <= 0) {
-			throw new CustomException("No any data to fetch connect with support team..");
-		} else {
-			return listForReturn;
+		for (VaccinationName vn : listForReturn) {
+			addinList.add(VaccinationDTO.builder()
+					.id(vn.getId())
+					.vaccinationName(vn.getVaccineName())
+					.vaccinationCode(vn.getVaccineCode())
+					.message("")
+					.build());
 		}
-
+		return addinList;
 	}
 }

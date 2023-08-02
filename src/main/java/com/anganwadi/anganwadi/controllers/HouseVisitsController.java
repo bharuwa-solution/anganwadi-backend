@@ -61,14 +61,7 @@ public class HouseVisitsController {
         return familyService.saveVisitsDetailsTemp(visitsDetailsDTOTemp, centerId);
     }
     
-    @GetMapping("/getVaccinationNames")
-    private List<VaccinationName> getVaccinationList(){
-    	return familyService.getAllVaccinationName();	
-    }
 
-    @GetMapping("/getCurrentMemberId")
-    private VisitsCurrentMember getCurrentMemberId(@RequestParam String id){
-        return familyService.getCurrentMemberId(id);
-    }
+
 
 }

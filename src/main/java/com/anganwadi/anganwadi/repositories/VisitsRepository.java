@@ -16,8 +16,6 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     @Query(value = "{'visitType':?0}", count = true)
     Long countByVisitType(String visitType);
 
-    List<Visits> findAllByMemberId(String memberId);
-
     Visits findByMemberIdAndVisitType(String memberId, String valueOf);
 
     List<Visits> findAllByMemberIdAndVisitType(String memberId, String valueOf);
@@ -61,6 +59,9 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
 
     List<Visits> findAllByMotherIdAndVisitType(String motherId, String visitType);
 
-
     List<Visits> findAllByMotherId(String id, Sort createdDate);
+
+    List<Visits> findAllByMemberId(String memberId);
+
+    List<Visits> findAllByMemberIdOrderByCreatedDateDesc(String memberId);
 }

@@ -29,7 +29,7 @@ public interface AnganwadiChildrenService {
 
     List<StockItemsDTO> addStocks(List<StockItemsDTO> assetsStock, String centerId) throws ParseException;
 
-    StockOutputItemsDTO getStocks(String centerId, String selectedMonth);
+    StockOutputItemsDTO getStocks(String centerId, String selectedMonth) throws ParseException;
 
 //    List<StockListDTO> getStocksLists();
 

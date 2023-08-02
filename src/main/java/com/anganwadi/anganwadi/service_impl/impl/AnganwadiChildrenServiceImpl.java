@@ -1429,9 +1429,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 
     @Override
-    public StockOutputItemsDTO getStocks(String centerid, String selectedMonth) {
+    public StockOutputItemsDTO getStocks(String centerid, String selectedMonth) throws ParseException {
+        String startDate = commonMethodsService.getStartDateOfMonth(selectedMonth);
+        String endDate = commonMethodsService.getEndDateOfMonth(selectedMonth);
 
-        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndMonthOrderByCreatedDateAsc(centerid, selectedMonth);
+
+        long startTime = commonMethodsService.dateChangeToLong(startDate);
+        long endTime = commonMethodsService.dateChangeToLong(endDate);
+
+        List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndDateRange(centerid, startTime,endTime);
         HashSet<String> captureMonth = new HashSet<>();
         List<StockOutputItemsDTO> addInList = new ArrayList<>();
         StockOutputItemsDTO addSingle = new StockOutputItemsDTO();
@@ -1961,11 +1967,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
             Attendance saveAttendance = Attendance.builder()
                     .childId(getId.getChildId())
                     //.dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
-//// <<<<<<HEAD
+
                     //.dob(dateChangeToString(memberDetails.getDob()))
                     //.name(getId.getName())
-////==//===
-////>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
+
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(getId.getProfilePic())

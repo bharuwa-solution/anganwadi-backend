@@ -17,7 +17,6 @@ public interface AssetsStockRepository extends MongoRepository<AssetsStock, Stri
 
     List<AssetsStock> findAllByCenterNameAndItemCodeAndMonth(String centerName, String itemCode, String selectedMonth);
 
-   // List<AssetsStock> findAllByCenterNameAndMonthOrderByCreatedDateAsc(String centerName, String selectedMonth);
     @Query("{'date':{$gte:?1,$lte:?2},'centerId':?0}")
-    List<AssetsStock> findAllByCenterIdAndMonthOrderByCreatedDateAsc(String centerId, long startTime,long endTime);
+    List<AssetsStock> findAllByCenterIdAndDateRange(String centerid, long startTime, long endTime);
 }

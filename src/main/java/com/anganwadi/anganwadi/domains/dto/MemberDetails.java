@@ -19,6 +19,7 @@ public class MemberDetails {
     private String fatherHusbandName;
     private String name;
     private String visits;
+    private RecentVisits recentVisits;
     private String centerName;
     private String houseNo;
     private String category;

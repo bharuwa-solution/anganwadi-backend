@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VisitsCurrentMember {
-    private String memberId;
+public class RecentVisits {
+    private String visitType;
+    private String visitCategory;
+    private String date;
+    private String visitFor;
+
 }
