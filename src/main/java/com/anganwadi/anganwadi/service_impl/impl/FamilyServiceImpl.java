@@ -4775,4 +4775,42 @@ public class FamilyServiceImpl implements FamilyService {
 		}
 		return addinList;
 	}
+
+	@Override
+	public List<ChildrenDataDTO> getChildrensData() {
+		
+		LocalDateTime date = LocalDateTime.now().minusYears(6);
+		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+		long convertToMills = zdt.toInstant().toEpochMilli();
+		
+		List<FamilyMember> members = familyMemberRepository.findAllByDob(convertToMills);
+		List<ChildrenDataDTO> result = new ArrayList<>();
+		String center1= "Hyderabad phase 1";
+		String center2= "Patanjali phase 1";
+		String center3= "Patanjali phase 2";
+		String center4= "Noida phase 1";
+		if(members.size() !=0) {
+			for(FamilyMember fm:members) {
+				String centerName = fm.getCenterName();
+				if(centerName.equals(center1)|| centerName.equals(center2) || centerName.equals(center3) || centerName.equals(center4)) {
+					continue;
+				}
+				else {
+					Family family = familyRepository.findByFamilyId(fm.getFamilyId());
+					result.add(ChildrenDataDTO.builder()
+							.id(fm.getId())
+							.name(fm.getName())
+							.familyId(fm.getFamilyId())
+							.fatherName(fm.getFatherName())
+							.motherName(fm.getMotherName())
+							.category(fm.getCategory())
+							.dob(this.commonMethodsService.dateChangeToString(fm.getDob()))
+							.religion(family.getReligion())
+							.centerName(fm.getCenterName())
+							.build());				
+					}
+			}
+		}
+		return result;	
+	}
 }

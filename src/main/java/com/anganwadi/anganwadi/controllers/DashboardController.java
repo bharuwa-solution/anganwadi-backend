@@ -144,6 +144,9 @@ public class DashboardController {
     private String autoUpdateCalendar(){
         return familyService.autoUpdateCalendar();
     }
-
-
+    
+    @GetMapping("/getChildrensData")
+    private List<ChildrenDataDTO> getChildrensData(){
+    	return familyService.getChildrensData();
+    }
 }
