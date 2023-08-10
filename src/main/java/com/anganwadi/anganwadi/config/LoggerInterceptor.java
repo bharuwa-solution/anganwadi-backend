@@ -15,6 +15,7 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
 
       log.error("IP :"+request.getRemoteAddr());
+      log.error("IP :"+request.getLocalAddr());
       return true;
     }
 }

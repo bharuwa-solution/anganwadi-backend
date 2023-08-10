@@ -116,6 +116,8 @@ public interface FamilyService {
 
     List<VaccinationDTO> getAllVaccinationName();
 
+	List<ChildrenDataDTO> getChildrensData();
+
 
 
     //VaccinationDTO addVaccineData(String vaccineName, String vaccineCode);
