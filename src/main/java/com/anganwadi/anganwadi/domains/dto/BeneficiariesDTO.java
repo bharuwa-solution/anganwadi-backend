@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChildrenDataDTO {
+public class BeneficiariesDTO {
 	
 	private String id;
 	private String familyId;

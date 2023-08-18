@@ -17,7 +17,6 @@ import java.util.Date;
 @Slf4j
 public class FileManagementService {
 
-
     public String uploadPic(MultipartFile file) throws IOException {
         String fileName = "";
         String fileSeparator = ApplicationConstants.fileSeparator;

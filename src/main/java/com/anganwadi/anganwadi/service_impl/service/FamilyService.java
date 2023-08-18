@@ -2,7 +2,6 @@ package com.anganwadi.anganwadi.service_impl.service;
 
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.VaccinationName;
 import com.anganwadi.anganwadi.domains.entity.Visits;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -116,7 +115,7 @@ public interface FamilyService {
 
     List<VaccinationDTO> getAllVaccinationName();
 
-	List<ChildrenDataDTO> getChildrensData();
+	List<BeneficiariesDTO> getBeneficiariesReport();
 
 
 

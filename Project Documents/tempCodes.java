@@ -163,7 +163,7 @@ private void autoUpdateBirthVisits(List<BabiesBirth> membersList){
         .dueDate(localDate.plusDays(29).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
         .build());
 
-        // Visit TILL_1_5_MONTHS
+        // Visit TILL_1_5_.MONTHS
 
         houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
         .memberId(members.getChildId())

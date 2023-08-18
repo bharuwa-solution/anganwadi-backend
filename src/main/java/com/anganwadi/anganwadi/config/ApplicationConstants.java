@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 public class ApplicationConstants {
 
     public static final String SIGNING_KEY = "family_key";
+    public static final String[] noOfHouseVisits = {"1","2","3","4","5","6","7","8","9","10"};
     public static final DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
     public static final String default_Otp = "1105";
     public static final String birth_visit_category = "2";
@@ -36,4 +37,5 @@ public class ApplicationConstants {
     public static final String localUploadPath = "C:/Prabeer/project/Anganwadi/code";
     public static final String[] ignoreCenters = {"642fdf6152de1975898f8fbb","649a671ea33ba56f3df3f828","6426cfcfa4479557b4c4fb6c","6426d3c5a4479557b4c4fb70"};
     public static final String vaccineCodePrefix="V-";
+    public static final Long startTimeInMillis = 1672511400000L;
 }
