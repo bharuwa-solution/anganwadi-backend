@@ -2235,11 +2235,20 @@ public class FamilyServiceImpl implements FamilyService {
 					}
 
 					HouseholdsChildren singeEntry = HouseholdsChildren.builder().childName(member.getName())
-							.motherName("").fatherName("").familyId(member.getFamilyId()).childId(member.getId())
-							.dob(df.format(getMillis)).motherName(member.getMotherName())
-							.fatherName(member.getFatherName()).memberCode(member.getMemberCode())
-							.gender(member.getGender()).mobileNumber(member.getMobileNumber()).category(category)
-							.minority(minority).handicap(member.getHandicapType()).photoUrl(member.getPhoto()).build();
+							.motherName("")
+							.fatherName("")
+							.familyId(member.getFamilyId())
+							.childId(member.getId())
+							.dob(df.format(getMillis))
+							.motherName(member.getMotherName())
+							.fatherName(member.getFatherName())
+							.memberCode(member.getMemberCode())
+							.gender(member.getGender())
+							.mobileNumber(member.getMobileNumber())
+							.category(category)
+							.minority(minority)
+							.handicap(member.getHandicapType())
+							.photoUrl(member.getPhoto()).build();
 
 					addList.add(singeEntry);
 				}
@@ -3111,21 +3120,27 @@ public class FamilyServiceImpl implements FamilyService {
 		ZonedDateTime dhartiZdt = ZonedDateTime.of(dhartiDate, ZoneId.systemDefault());
 		long convertToMills2 = dhartiZdt.toInstant().toEpochMilli();
 
-		List<PregnantAndDelivery> pdd = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime.getTime(),
-				endTime.getTime(), dashboardFilter.getCenterId().trim());
+		List<PregnantAndDelivery> pdd = pregnantAndDeliveryRepository.findAllDashboardFamilyPregnancyCriteria(startTime.getTime(),
+				endTime.getTime(), dashboardFilter.getCenterId().trim(),ApplicationConstants.ignoreCenters);
 
-		List<PregnantAndDelivery> dhartiWomen = pregnantAndDeliveryRepository.findAllBeneficiaryDharti(
-				startTime.getTime(), endTime.getTime(), dashboardFilter.getCenterId().trim(), convertToMills2);
+		List<PregnantAndDelivery> dhartiWomen = pregnantAndDeliveryRepository.findAllDashboardFamilyBeneficiaryDharti(
+				startTime.getTime(), endTime.getTime(), dashboardFilter.getCenterId().trim(), convertToMills2,ApplicationConstants.ignoreCenters);
 
 		Calendar addOneDay = Calendar.getInstance();
 		addOneDay.setTime(endTime);
 		addOneDay.add(Calendar.DATE, 1);
 		endTime = addOneDay.getTime();
 
-		List<FamilyMember> fm = familyMemberRepository.findAllBeneficiaryChildren(startTime, endTime,
-				dashboardFilter.getCenterId().trim(), convertToMills);
-		return DashboardFamilyData.builder().nursingMothers(dhartiWomen.size()).pregnantWomen(pdd.size())
-				.totalBeneficiary(dhartiWomen.size() + pdd.size() + fm.size()).children(fm.size()).build();
+		List<FamilyMember> fm = familyMemberRepository.findAllDashboardFamilyChildren(startTime, endTime,
+				dashboardFilter.getCenterId().trim(), convertToMills,ApplicationConstants.ignoreCenters);
+
+
+		return DashboardFamilyData.builder()
+				.nursingMothers(dhartiWomen.size())
+				.pregnantWomen(pdd.size())
+				.totalBeneficiary(dhartiWomen.size() + pdd.size() + fm.size())
+				.children(fm.size())
+				.build();
 	}
 
 	@Override
