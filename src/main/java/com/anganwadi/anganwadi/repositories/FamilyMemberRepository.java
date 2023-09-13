@@ -96,6 +96,6 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'_id':?0,'dob':{$lte:?1,$gte:?2}}")
     List<FamilyMember> findAllByIdAndDob(String childId, long convertToMills, long convertToMills_2);
 
-    @Query("{'createdDate': {$gte : { $date : ?0}, $lte : { $date : ?1}}, 'centerId': {$not:{$in: [?4]},$regex: ?2 }, 'dob' : { $gte : ?3}}")
+    @Query("{'createdDate': {$gte : { $date : ?0}, $lte : { $date : ?1}}, 'centerId': {$not:{$in: ?4},$regex: ?2 }, 'dob' : { $gte : ?3}}")
     List<FamilyMember> findAllBeneficiaryChildrenOfActiveCenters(Date startTime, Date endTime, String centerId, long millis, String [] inactiveCenterIds);
 }

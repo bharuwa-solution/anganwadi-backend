@@ -56,9 +56,9 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     void deleteByMotherMemberId(String primaryId);
 
-    @Query("{'regDate': {$gte: ?0, $lte: ?1}, 'centerId': {$not:{$in: [?4]},$regex: ?2 }, 'dateOfDelivery' : { $gte : ?3}}")
+    @Query("{'regDate': {$gte: ?0, $lte: ?1}, 'centerId': {$not:{$in: ?4},$regex: ?2 }, 'dateOfDelivery' : { $gte : ?3}}")
     List<PregnantAndDelivery> findAllBeneficiaryDhartiByActiveCenters(Long startTime, Long endTime, String centerId, long millis, String [] inactiveCenterIds);
 
-    @Query("{'dateOfDelivery': { $eq : 0}, 'regDate' : { $gte : ?0, $lte: ?1},'centerId': {$not:{$in: [?3]},'$regex': ?2 }}")
+    @Query("{'dateOfDelivery': { $eq : 0}, 'regDate' : { $gte : ?0, $lte: ?1},'centerId': {$not:{$in: ?3},'$regex': ?2 }}")
     List<PregnantAndDelivery> findAllByPregnancyCriteriaByActiveCenters(Long startTime, Long endTime, String centerId, String[] ignoreCenters);
 }
