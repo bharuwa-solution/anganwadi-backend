@@ -33,14 +33,14 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query("{'regDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dateOfDelivery':{$gte:?3}}")
     List<PregnantAndDelivery> findAllBeneficiaryDharti(Long startTime, Long endTime, String centerId, long millis);
 
-    @Query("{$and:[{'centerId':{$regex:?2,$nin:?4}}],'dateOfDelivery':{$gte:?3}}")
-    List<PregnantAndDelivery> findAllDashboardFamilyBeneficiaryDharti(Long startTime, Long endTime, String centerId, long millis, String[] ignoreCenters);
+    @Query("{$and:[{'centerId':{$regex:?0,$nin:?2}}],'dateOfDelivery':{$gte:?1}}")
+    List<PregnantAndDelivery> findAllDashboardFamilyBeneficiaryDharti(String centerId, long millis, String[] ignoreCenters);
 
     @Query("{'dateOfDelivery':{$eq:0},'regDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<PregnantAndDelivery> findAllByPregnancyCriteria(Long startTime, Long endTime, String centerId);
 
-    @Query("{$and:[{,'centerId':{$regex:?2,$nin:?3}}],'dateOfDelivery':{$eq:0}}")
-    List<PregnantAndDelivery> findAllDashboardFamilyPregnancyCriteria(Long startTime, Long endTime, String centerId, String[] ignoreCenters);
+    @Query("{$and:[{,'centerId':{$regex:?0,$nin:?1}}],'dateOfDelivery':{$eq:0}}")
+    List<PregnantAndDelivery> findAllDashboardFamilyPregnancyCriteria(String centerId, String[] ignoreCenters);
 
     @Query(value = "{'dateOfDelivery':{$eq:0},'centerId':?0}", count = true)
     long countPregnantWomenByCenterId(String centerId);

@@ -3090,20 +3090,23 @@ public class FamilyServiceImpl implements FamilyService {
 
 		Date currentDate = new Date();
 		long currentMillis = currentDate.getTime();
-		Date startTime = null, endTime = null;
 
-		if (dashboardFilter.getStartDate().trim().length() > 0) {
-			startTime = df.parse(dashboardFilter.getStartDate().trim());
+//		Date startTime = null, endTime = null;
 
-		} else {
-			startTime = df.parse(commonMethodsService.startDateOfMonth());
-		}
+		// Currently Not Required, Need to Provide entire Data
 
-		if (dashboardFilter.getEndDate().trim().length() > 0) {
-			endTime = df.parse(dashboardFilter.getEndDate().trim());
-		} else {
-			endTime = df.parse(commonMethodsService.endDateOfMonth());
-		}
+//		if (dashboardFilter.getStartDate().trim().length() > 0) {
+//			startTime = df.parse(dashboardFilter.getStartDate().trim());
+//
+//		} else {
+//			startTime = df.parse(commonMethodsService.startDateOfMonth());
+//		}
+//
+//		if (dashboardFilter.getEndDate().trim().length() > 0) {
+//			endTime = df.parse(dashboardFilter.getEndDate().trim());
+//		} else {
+//			endTime = df.parse(commonMethodsService.endDateOfMonth());
+//		}
 
 		// Beneficiary Children
 		LocalDateTime date = LocalDateTime.now().minusYears(6);
@@ -3120,20 +3123,19 @@ public class FamilyServiceImpl implements FamilyService {
 		ZonedDateTime dhartiZdt = ZonedDateTime.of(dhartiDate, ZoneId.systemDefault());
 		long convertToMills2 = dhartiZdt.toInstant().toEpochMilli();
 
-		List<PregnantAndDelivery> pdd = pregnantAndDeliveryRepository.findAllDashboardFamilyPregnancyCriteria(startTime.getTime(),
-				endTime.getTime(), dashboardFilter.getCenterId().trim(),ApplicationConstants.ignoreCenters);
+		List<PregnantAndDelivery> pdd = pregnantAndDeliveryRepository.findAllDashboardFamilyPregnancyCriteria(dashboardFilter.getCenterId().trim(), ApplicationConstants.ignoreCenters);
 
 		List<PregnantAndDelivery> dhartiWomen = pregnantAndDeliveryRepository.findAllDashboardFamilyBeneficiaryDharti(
-				startTime.getTime(), endTime.getTime(), dashboardFilter.getCenterId().trim(), convertToMills2,ApplicationConstants.ignoreCenters);
+				dashboardFilter.getCenterId().trim(), convertToMills2, ApplicationConstants.ignoreCenters);
 
-		Calendar addOneDay = Calendar.getInstance();
-		addOneDay.setTime(endTime);
-		addOneDay.add(Calendar.DATE, 1);
-		endTime = addOneDay.getTime();
+		// As Above endTime Reason
 
-		List<FamilyMember> fm = familyMemberRepository.findAllDashboardFamilyChildren(startTime, endTime,
-				dashboardFilter.getCenterId().trim(), convertToMills,ApplicationConstants.ignoreCenters);
+//		Calendar addOneDay = Calendar.getInstance();
+//		addOneDay.setTime(endTime);
+//		addOneDay.add(Calendar.DATE, 1);
+//		endTime = addOneDay.getTime();
 
+		List<FamilyMember> fm = familyMemberRepository.findAllDashboardFamilyChildren(dashboardFilter.getCenterId().trim(), convertToMills, ApplicationConstants.ignoreCenters);
 
 		return DashboardFamilyData.builder()
 				.nursingMothers(dhartiWomen.size())
