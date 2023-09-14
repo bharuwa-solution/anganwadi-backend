@@ -643,6 +643,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         String formatToString = df.format(currentTime.getTime());
         Date formatToTime = df.parse(formatToString);
         long timestamp = formatToTime.getTime();
+        
+
+        long checkAttendance = getChildrenPresentCounts(centerId, timestamp);
+//        log.error("Attandance data " + checkAttendance);
+        if (checkAttendance <= 0) {
+            throw new CustomException("Attendance Is Not Marked Or No Children Is Present");
+        }
 
         List<SaveActivitiesDTO> addList = new ArrayList<>();
 
