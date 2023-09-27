@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -104,5 +105,15 @@ public class MainExceptionController implements ErrorController {
         setBodyError.put("message",error.getMessage());
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ParseException.class)
+    private ResponseEntity<?> handleParseException(ParseException error) {
+        log.error(error.getMessage());
+        Map<String, Object> setBodyError = new HashMap<>();
+        setBodyError.put("status", HttpStatus.BAD_REQUEST);
+        setBodyError.put("message",error.getMessage());
+        return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

@@ -15,11 +15,10 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     List<PregnantAndDelivery> findAllByCenterId(String centerId, Sort createdDate);
 
-
     List<PregnantAndDelivery> findAllByMotherMemberId(String id, Sort lastMissedPeriodDate);
-
-    @Query("{'centerId':?0,'dateOfDelivery':{$eq:0}}")
-    List<PregnantAndDelivery> findAllByCenterIdAndDateOfDelivery(String centerId, Sort createdDate);
+//
+//    @Query("{'centerId':?0,'dateOfDelivery':{$eq:0}}")
+//    List<PregnantAndDelivery> findAllByCenterIdAndDateOfDelivery(String centerId, Sort createdDate);
 
     @Query("{'centerId':?0,'dateOfDelivery':{$eq:0},'lastMissedPeriodDate':{$gt:0},'misCarriageDate':{$eq:0}}")
     List<PregnantAndDelivery> findAllPregnantWomen(String centerId, Sort createdDate);
