@@ -1,9 +1,6 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
-import com.anganwadi.anganwadi.domains.entity.AnganwadiCenter;
-import com.anganwadi.anganwadi.domains.entity.Family;
-import com.anganwadi.anganwadi.domains.entity.FamilyMember;
-import com.anganwadi.anganwadi.domains.entity.VaccinationName;
+import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +18,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,12 +31,18 @@ public class CommonMethodsService {
     private final AttendanceRepository attendanceRepository;
     private final FamilyRepository familyRepository;
     private final VaccinationNameRepository vaccinationNameRepository;
+    private final VaccinationRepository vaccinationRepository;
+    private final BabiesBirthRepository babiesBirthRepository;
+    private final WeightTrackingRepository weightTrackingRepository;
+    private final VisitsRepository visitsRepository;
 
     @Autowired
     public CommonMethodsService(AnganwadiCenterRepository anganwadiCenterRepository, PregnantAndDeliveryRepository pregnantAndDeliveryRepository,
                                 FamilyMemberRepository familyMemberRepository, AttendanceRepository attendanceRepository,
                                 AnganwadiChildrenRepository anganwadiChildrenRepository, FamilyRepository familyRepository,
-                                VaccinationNameRepository vaccinationNameRepository) {
+                                VaccinationNameRepository vaccinationNameRepository, VaccinationRepository vaccinationRepository,
+                                BabiesBirthRepository babiesBirthRepository, WeightTrackingRepository weightTrackingRepository,
+                                VisitsRepository visitsRepository) {
 
         this.anganwadiCenterRepository = anganwadiCenterRepository;
         this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
@@ -47,6 +51,10 @@ public class CommonMethodsService {
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.familyRepository = familyRepository;
         this.vaccinationNameRepository=vaccinationNameRepository;
+        this.vaccinationRepository=vaccinationRepository;
+        this.babiesBirthRepository=babiesBirthRepository;
+        this.weightTrackingRepository=weightTrackingRepository;
+        this.visitsRepository=visitsRepository;
     }
 
     public String findCenterName(String centerId) {
@@ -256,5 +264,32 @@ public class CommonMethodsService {
         return vaccineName;
 
     }
+
+    public void removeMemberFromAssociatedTable(String memberId){
+
+        List<Vaccination> removeChild = vaccinationRepository.findByChildId(memberId,Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<Vaccination> removeMother = vaccinationRepository.findByMotherId(memberId,Sort.by(Sort.Direction.ASC, "createdDate"));
+
+
+        if(removeChild.size()>0){
+            vaccinationRepository.deleteAllByChildId(memberId);
+        }
+
+        if(removeMother.size()>0){
+            vaccinationRepository.deleteAllByMotherId(memberId);
+        }
+
+
+        anganwadiChildrenRepository.deleteAllByChildId(memberId);
+        attendanceRepository.deleteByChildId(memberId);
+        babiesBirthRepository.deleteById(memberId);
+        weightTrackingRepository.deleteByChildId(memberId);
+        visitsRepository.deleteByMemberId(memberId);
+        pregnantAndDeliveryRepository.deleteByMotherMemberId(memberId);
+
+
+    }
+
+
 
 }

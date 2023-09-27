@@ -11,9 +11,9 @@ import java.util.List;
 public interface FamilyService {
     List<householdsHeadList> getAllHouseholds(String centerId);
 
-    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerId, String centerName) throws ParseException;
+    HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerId) throws ParseException;
 
-    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO, String centerId, String centerName) throws ParseException;
+    FamilyMemberDTO saveFamilyMembers(FamilyMemberDTO familyMemberDTO, String centerId) throws ParseException;
 
     List<FamilyMemberDTO> getFamilyMembers(String familyId);
 
@@ -72,7 +72,7 @@ public interface FamilyService {
 
     FamilyMemberDTO deleteFamilyMembers(String memberId, String id);
 
-    HouseholdWomenDetails getHouseholdWomenDetails(String centerId, String centerName);
+    HouseholdWomenDetails getHouseholdWomenDetails(String centerId);
 
     PregnantAndDeliveryDTO registerPregnantWomen(PregnantAndDeliveryDTO pregnantAndDeliveryDTO, String centerId) throws ParseException;
 
@@ -84,7 +84,7 @@ public interface FamilyService {
 
     List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(String centerId);
 
-    List<NewBornChildDTO> getNewBornChildRecords(String centerName) throws ParseException;
+    List<NewBornChildDTO> getNewBornChildRecords(String centerId) throws ParseException;
 
     NewBornChildDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO);
 

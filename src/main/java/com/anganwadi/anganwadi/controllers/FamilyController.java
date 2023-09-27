@@ -31,13 +31,13 @@ public class FamilyController {
 
 
     @PostMapping("/saveHouseholds")
-    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveHouseholds(householdsDTO, centerId, centerName);
+    private HouseholdsDTO saveHouseholds(@RequestBody HouseholdsDTO householdsDTO, @RequestHeader String centerId) throws ParseException {
+        return familyService.saveHouseholds(householdsDTO, centerId);
     }
 
     @PostMapping("/saveFamilyMembers")
-    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO, @RequestHeader String centerId, @RequestHeader String centerName) throws ParseException {
-        return familyService.saveFamilyMembers(familyMemberDTO, centerId, centerName);
+    private FamilyMemberDTO saveFamilyMembers(@RequestBody FamilyMemberDTO familyMemberDTO, @RequestHeader String centerId) throws ParseException {
+        return familyService.saveFamilyMembers(familyMemberDTO, centerId);
     }
 
 //    @PutMapping("updateRegisteredValue")
@@ -102,8 +102,8 @@ public class FamilyController {
     }
 
     @GetMapping("/getHouseholdWomenDetails")
-    private HouseholdWomenDetails getHouseholdWomenDetails(@RequestHeader String centerId, @RequestHeader String centerName) {
-        return familyService.getHouseholdWomenDetails(centerId, centerName);
+    private HouseholdWomenDetails getHouseholdWomenDetails(@RequestHeader String centerId) {
+        return familyService.getHouseholdWomenDetails(centerId);
     }
 
     @PostMapping("/registerPregnantWomen")
@@ -132,8 +132,8 @@ public class FamilyController {
     }
 
     @GetMapping("/getNewBornChildRecords")
-    private List<NewBornChildDTO> getNewBornChildRecords(@RequestHeader String centerName) throws ParseException {
-        return familyService.getNewBornChildRecords(centerName);
+    private List<NewBornChildDTO> getNewBornChildRecords(@RequestHeader String centerId) throws ParseException {
+        return familyService.getNewBornChildRecords(centerId);
     }
 
     @PutMapping("/updateNewBornChildRecords")

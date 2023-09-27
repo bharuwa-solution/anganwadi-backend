@@ -44,4 +44,6 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
 
     @Query("{'date':?0,'centerId':?1}")
     List<Attendance> findAllByDateAndCenterId(long date, String centerId, Sort createdDate);
+
+    void deleteByChildId(String memberId);
 }

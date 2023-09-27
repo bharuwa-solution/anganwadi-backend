@@ -37,6 +37,8 @@ public class PregnantAndDelivery extends BaseObject {
     private String childWeight;
     private String birthStatus;
     private String centerId;
+    private long misCarriageDate;
+    private String misCarriageReason;
     private String centerName;
 
 }

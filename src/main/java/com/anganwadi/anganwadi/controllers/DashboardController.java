@@ -150,4 +150,11 @@ public class DashboardController {
     private List<BeneficiariesDTO> getBeneficiariesReport(){
     	return familyService.getBeneficiariesReport();
     }
+
+    @ApiIgnore
+    @GetMapping("/databaseBackup")
+    private String databaseBackup(){
+        return "sdad";
+    }
+
 }

@@ -31,4 +31,6 @@ public class PregnantAndDeliveryDTO {
     private String centerId;
     private boolean isDeleted;
     private String centerName;
+    private String misCarriageDate;
+    private String misCarriageReason;
 }

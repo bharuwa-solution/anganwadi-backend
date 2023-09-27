@@ -531,7 +531,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .childId(findStudent.getChildId() == null ? "" : findStudent.getChildId())
                     .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()) == null ? "" : commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .gender(memberDetails.getGender() == null ? "" : memberDetails.getGender())
-                    .profilePic(findStudent.getProfilePic() == null ? "" : findStudent.getProfilePic())
+                    .profilePic(findStudent.getProfilePic() == null ? "" : findStudent. getProfilePic())
                     .id(findStudent.getId())
                     .name(findStudent.getName() == null ? "" : findStudent.getName())
                     .deleted(findStudent.isDeleted())
