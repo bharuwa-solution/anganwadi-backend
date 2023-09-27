@@ -4,10 +4,10 @@ private void autoUpdatePregnantVisits(List<PregnantAndDelivery> membersList){
 
         Set<String> uniqueMember=new HashSet<>();
         for(PregnantAndDelivery members:membersList){
-        if(Arrays.stream(ApplicationConstants.ignoreCenters).noneMatch(members.getCenterId().trim()::equals)){
-        String combinedId=members.getMotherMemberId()+members.getDob())
 
-        if(uniqueMember.add(combinedIdō)){
+        String combinedId=members.getMotherMemberId()+members.getDob();
+
+        if(uniqueMember.add(combinedId) && members.getLastMissedPeriodDate()>0){
         LocalDate localDate=Instant.ofEpochMilli(members.getLastMissedPeriodDate()).atZone(ZoneId.systemDefault()).toLocalDate();
 
         houseVisitScheduleRepository.save(HouseVisitSchedule.builder()
@@ -80,7 +80,7 @@ private void autoUpdatePregnantVisits(List<PregnantAndDelivery> membersList){
         }
         }
         }
-        }
+
 
     // Auto Update Pregnancy Vaccination
     private void autoUpdatePregnancyVaccination(List<PregnantAndDelivery> membersList){

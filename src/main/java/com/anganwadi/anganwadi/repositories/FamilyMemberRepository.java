@@ -63,7 +63,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     List<FamilyMember> findAllByCenterId(String centerId);
 
-    @Query("{'dob':{$gte:?0},'centerName':?1,'deleted':false}")
+    @Query("{'dob':{$gte:?0},'centerId':?1,'deleted':false}")
     List<FamilyMember> findAllByDobCriteria(long convertToMills, String centerId);
 
     @Query("{'familyId':?0,'name':?1}")

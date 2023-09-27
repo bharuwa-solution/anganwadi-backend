@@ -24,4 +24,6 @@ public interface StockDistributionRepository extends MongoRepository<StockDistri
 
     @Query("{'centerId':?0,date:{$gte:?1,$lte:?2}}")
     List<StockDistribution> findAllByCenterIdAndDateRange(String centerId, long startDataRange, long endDataRange);
+
+    void deleteAllByFamilyId(String familyId);
 }

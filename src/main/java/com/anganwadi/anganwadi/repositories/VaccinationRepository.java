@@ -12,9 +12,12 @@ import java.util.List;
 public interface VaccinationRepository extends MongoRepository<Vaccination, String> {
 
     List<Vaccination> findAllByMotherIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
-
     List<Vaccination> findByChildId(String childId, Sort createdDate);
 
     @Query("{'centerId':?0,'vaccinationCode':{$regex:?1}}")
     List<Vaccination> findAllByCenterIdAndVaccinationCode(String centerId, String code);
+
+    void deleteAllByChildId(String primaryId);
+    List<Vaccination> findByMotherId(String primaryId, Sort createdDate);
+    void deleteAllByMotherId(String primaryId);
 }
