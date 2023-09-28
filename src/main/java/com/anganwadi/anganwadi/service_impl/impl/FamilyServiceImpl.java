@@ -2420,7 +2420,7 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public List<FemaleMembersDTO> getHouseholdsFemaleDetails(String centerId) {
 
-		List<FamilyMember> findFemales = familyMemberRepository.findAllByGenderAndCenterId(centerId);
+		List<FamilyMember> findFemales = familyMemberRepository.findAllByGenderAndCenterId(centerId, true,false);
 		List<FemaleMembersDTO> addList = new ArrayList<>();
 
 		for (FamilyMember checkAge : findFemales) {
@@ -3877,7 +3877,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 		// Count Pregnant Women
 		List<PregnantAndDelivery> findPW = pregnantAndDeliveryRepository.findAllPregnantWomen(centerId,
-				Sort.by(Sort.Direction.DESC, "createdDate"));
+				Sort.by(Sort.Direction.DESC, "createdDate"), true, false);
 		HashSet<String> uniqueWomen = new HashSet<>();
 
 		for (PregnantAndDelivery pd : findPW) {
@@ -4067,7 +4067,7 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public List<PregnantAndDeliveryDTO> getAllPregnantWomenDetails(String centerId) {
 		List<PregnantAndDelivery> findPD = pregnantAndDeliveryRepository.findAllPregnantWomen(centerId,
-				Sort.by(Sort.Direction.DESC, "createdDate"));
+				Sort.by(Sort.Direction.DESC, "createdDate"), true, false);
 		List<PregnantAndDeliveryDTO> addInList = new ArrayList<>();
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -4302,7 +4302,7 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(String centerId) {
 
-		List<FamilyMember> findWomen = familyMemberRepository.findAllByGenderAndCenterId(centerId);
+		List<FamilyMember> findWomen = familyMemberRepository.findAllByGenderAndCenterId(centerId,true,false);
 		HashSet<String> uniqueWomenList = new HashSet<>();
 		List<WomenListByPeriodDateDTO> addInList = new ArrayList<>();
 
