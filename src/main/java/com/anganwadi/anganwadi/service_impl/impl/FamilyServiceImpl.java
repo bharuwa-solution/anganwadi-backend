@@ -3549,7 +3549,6 @@ public class FamilyServiceImpl implements FamilyService {
 		FamilyMember familyMember = familyMemberRepository.findById(familyMemberDTO.getId()).get();
 		Family findFamilyId = familyRepository.findByFamilyId(familyMember.getFamilyId());
 
-
 		// Validating Mortality Date
 
 			try {
@@ -3567,7 +3566,6 @@ public class FamilyServiceImpl implements FamilyService {
 
 			Date date = ApplicationConstants.df.parse(familyMemberDTO.getDob());
 			long mills = date.getTime();
-
 			// Updating In Family Member
 
 			familyMember.setName(familyMemberDTO.getName());
@@ -3878,7 +3876,7 @@ public class FamilyServiceImpl implements FamilyService {
 	public HouseholdWomenDetails getHouseholdWomenDetails(String centerId) {
 
 		// Count Pregnant Women
-		List<PregnantAndDelivery> findPW = pregnantAndDeliveryRepository.findAllByCenterIdAndDateOfDelivery(centerId,
+		List<PregnantAndDelivery> findPW = pregnantAndDeliveryRepository.findAllPregnantWomen(centerId,
 				Sort.by(Sort.Direction.DESC, "createdDate"));
 		HashSet<String> uniqueWomen = new HashSet<>();
 
@@ -3894,7 +3892,9 @@ public class FamilyServiceImpl implements FamilyService {
 
 		List<FamilyMember> findChild = familyMemberRepository.findAllByDobCriteria(convertToMills, centerId);
 
-		return HouseholdWomenDetails.builder().pregnantWomen(uniqueWomen.size()).newBornBabies(findChild.size())
+		return HouseholdWomenDetails.builder()
+				.pregnantWomen(uniqueWomen.size())
+				.newBornBabies(findChild.size())
 				.build();
 	}
 
@@ -3980,7 +3980,6 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	private boolean checkPregnantWithInYear(PregnantAndDeliveryDTO pregnantAndDeliveryDTO, long missedPeriodDate) {
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
 		HashSet<String> recentData = new HashSet<>();
 
@@ -4007,13 +4006,11 @@ public class FamilyServiceImpl implements FamilyService {
 	public PregnantAndDeliveryDTO registerPregnantWomen(PregnantAndDeliveryDTO pregnantAndDeliveryDTO, String centerId)
 			throws ParseException {
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
-		long missedPeriodDate = df.parse(pregnantAndDeliveryDTO.getLastMissedPeriodDate()).getTime();
+		long missedPeriodDate = ApplicationConstants.df.parse(pregnantAndDeliveryDTO.getLastMissedPeriodDate()).getTime();
 
 		Date currentTime = new Date();
-		String formatToString = df.format(currentTime.getTime());
-		Date formatToTime = df.parse(formatToString);
+		String formatToString = ApplicationConstants.df.format(currentTime.getTime());
+		Date formatToTime = ApplicationConstants.df.parse(formatToString);
 		long timestamp = formatToTime.getTime();
 
 		FamilyMember fm = familyMemberRepository.findById(pregnantAndDeliveryDTO.getMotherMemberId()).get();
@@ -4051,7 +4048,7 @@ public class FamilyServiceImpl implements FamilyService {
 				.familyId(pregnantAndDeliveryDTO.getFamilyId() == null ? "" : pregnantAndDeliveryDTO.getFamilyId())
 				.motherMemberId(pregnantAndDeliveryDTO.getMotherMemberId() == null ? ""
 						: pregnantAndDeliveryDTO.getMotherMemberId())
-				.motherName(fm.getName() == null ? "" : fm.getName()).dob(df.format(new Date(fm.getDob())))
+				.motherName(fm.getName() == null ? "" : fm.getName()).dob(ApplicationConstants.df.format(new Date(fm.getDob())))
 				.husbandName(fm.getFatherName() == null ? "" : fm.getFatherName()).yojana(pd.getYojana())
 				.profilePic(fm.getPhoto() == null ? "" : fm.getPhoto())
 				.childName(pregnantAndDeliveryDTO.getChildName() == null ? "" : pregnantAndDeliveryDTO.getChildName())
@@ -4059,9 +4056,9 @@ public class FamilyServiceImpl implements FamilyService {
 						pregnantAndDeliveryDTO.getChildGender() == null ? "" : pregnantAndDeliveryDTO.getChildGender())
 				.category(fm.getCategory() == null ? "" : fm.getCategory())
 				.religion(family.getReligion() == null ? "" : family.getReligion())
-				.houseNumber(family.getHouseNo() == null ? "" : family.getHouseNo()).regDate(df.format(formatToTime))
+				.houseNumber(family.getHouseNo() == null ? "" : family.getHouseNo()).regDate(ApplicationConstants.df.format(formatToTime))
 				.centerId(centerId).isDeleted(pd.isDeleted()).centerName(commonMethodsService.findCenterName(centerId))
-				.noOfChild(pregnantAndDeliveryDTO.getNoOfChild()).lastMissedPeriodDate(df.format(missedPeriodDate))
+				.noOfChild(pregnantAndDeliveryDTO.getNoOfChild()).lastMissedPeriodDate(ApplicationConstants.df.format(missedPeriodDate))
 				.dateOfDelivery(pregnantAndDeliveryDTO.getDateOfDelivery() == null ? ""
 						: pregnantAndDeliveryDTO.getDateOfDelivery())
 				.build();
@@ -4136,9 +4133,7 @@ public class FamilyServiceImpl implements FamilyService {
 								.toEpochMilli());
 						break;
 					}
-
 					houseVisitScheduleRepository.save(updateVisits);
-
 				}
 			}
 		}
@@ -4149,10 +4144,15 @@ public class FamilyServiceImpl implements FamilyService {
 
 		boolean isValid = false;
 		try{
+
 		LocalDate localDate=Instant.ofEpochMilli(pd.getLastMissedPeriodDate()).atZone(ZoneId.systemDefault()).toLocalDate();
 
-		long after9MonthsDate = localDate.plusMonths(9).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		long after9MonthsDate = localDate.plusDays(270).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		Date date = ApplicationConstants.df.parse(misCarriageDate);
+
+		log.error("MisCarriage Date : "+date.getTime());
+		log.error("Pd Date : "+pd.getLastMissedPeriodDate());
+		log.error("after9Months : "+after9MonthsDate);
 
 		if(date.getTime()>=pd.getLastMissedPeriodDate() && date.getTime()<=after9MonthsDate){
 				isValid = true;
@@ -4161,7 +4161,6 @@ public class FamilyServiceImpl implements FamilyService {
 		catch (Exception e){
 			e.printStackTrace();
 		}
-
 		return isValid;
 	}
 
@@ -4174,28 +4173,32 @@ public class FamilyServiceImpl implements FamilyService {
 			throw new CustomException("Id Not Passed, Please Check");
 		}
 
-
 		String[] yojanaList = new String[0];
 
-		Date date = ApplicationConstants.df.parse(pregnantAndDeliveryDTO.getMisCarriageDate());
-
-		// Removing House visits & vaccination entries from db, If Mis-charged Date is Entered
-
 //        long dod = df.parse(pregnantAndDeliveryDTO.getDateOfDelivery()).getTime();
-		long missedPeriodDate = ApplicationConstants.df.parse(pregnantAndDeliveryDTO.getLastMissedPeriodDate()).getTime();
-		PregnantAndDelivery findPD = pregnantAndDeliveryRepository.findById(pregnantAndDeliveryDTO.getId()).get();
 
+		PregnantAndDelivery findPD = pregnantAndDeliveryRepository.findById(pregnantAndDeliveryDTO.getId()).get();
+		long millisDate = 0;
 
 		// Check MisCarriage Date is Valid
-		if(!checkMisCarriageDate(findPD, pregnantAndDeliveryDTO.getMisCarriageDate())){
-			throw new CustomException("MisCarriage Date Should Be Between 9 Months Of LMP Date");
+		if(pregnantAndDeliveryDTO.getMisCarriageDate().length()>0) {
+			Date date = ApplicationConstants.df.parse(pregnantAndDeliveryDTO.getMisCarriageDate());
+			if (!checkMisCarriageDate(findPD, pregnantAndDeliveryDTO.getMisCarriageDate())) {
+				throw new CustomException("MisCarriage Date Should Be Between 9 Months Of LMP Date");
+			}
+			millisDate = date.getTime();
 		}
 
+		long missedPeriodDate = ApplicationConstants.df.parse(pregnantAndDeliveryDTO.getLastMissedPeriodDate()).getTime();
 		try {
 
 			if(pregnantAndDeliveryDTO.getMisCarriageDate().length()>0){
+
+
+				 // Removing House visits & vaccination entries from db, If Mis-charged Date is Entered
 				removeFromVaccinationSchedule(findPD.getMotherMemberId());
 				removeFromHouseVisitSchedule(findPD.getMotherMemberId());
+
 			}
 			else {
 				yojanaList = pregnantAndDeliveryDTO.getYojana() == null ? new String[0] : pregnantAndDeliveryDTO.getYojana();
@@ -4205,7 +4208,7 @@ public class FamilyServiceImpl implements FamilyService {
 			findPD.setChildName(pregnantAndDeliveryDTO.getChildName());
 			findPD.setChildGender(pregnantAndDeliveryDTO.getChildGender());
 			findPD.setNoOfChild(pregnantAndDeliveryDTO.getNoOfChild());
-			findPD.setMisCarriageDate(date.getTime());
+			findPD.setMisCarriageDate(millisDate);
 //            findPD.setDateOfDelivery(dod);
 			findPD.setYojana(yojanaList);
 			findPD.setLastMissedPeriodDate(findPD.getMisCarriageDate() > 0 ? 0 : missedPeriodDate);
@@ -4230,7 +4233,8 @@ public class FamilyServiceImpl implements FamilyService {
 					.houseNumber(findPD.getHouseNumber() == null ? "" : findPD.getHouseNumber())
 					.dateOfDelivery(findPD.getMisCarriageDate()>0?"-":ApplicationConstants.df.format(findPD.getDateOfDelivery()))
 					.isDeleted(findPD.isDeleted())
-					.misCarriageDate(findPD.getMisCarriageDate()>0?pregnantAndDeliveryDTO.getMisCarriageDate():"-")
+					.misCarriageDate(findPD.getMisCarriageDate()>0?ApplicationConstants.df.format(findPD.getMisCarriageDate()):"-")
+					.misCarriageReason(findPD.getMisCarriageReason()==null?"":findPD.getMisCarriageReason())
 					.lastMissedPeriodDate(findPD.getMisCarriageDate() > 0 ? "-" : ApplicationConstants.df.format(missedPeriodDate)).build();
 
 		} catch (NoSuchElementException | NullPointerException e) {
