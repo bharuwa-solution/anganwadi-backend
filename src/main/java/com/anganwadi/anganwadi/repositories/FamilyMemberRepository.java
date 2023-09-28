@@ -46,9 +46,9 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'_id':?0, 'name':{$regex:?1,'$options':i}}")
     List<FamilyMember> findAllByIdAndNameSearch(String memberId, String name);
    
-    @Query("{'dob':{$gte:?0,$lte:?2},'centerId':{$regex:?1}}")
+    @Query("{'dob':{$gte:?0,$lte:?2},'centerId':{$regex:?1},'dateOfMortality':''}")
     List<FamilyMember> findAllByDobAndCenterId(long convertToMills, String centerId,long timeLess3Yrs);
-
+   
     @Query("{'dob':{$gte:?1},'centerId':?0}")
     List<FamilyMember> findAllByCenterIdAndDob(String centerId, long convertToMills, Sort createdDate);
 
@@ -69,7 +69,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'familyId':?0,'name':?1}")
     List<FamilyMember> findByFamilyIdAndName(String familyId, String motherName);
 
-    @Query("{'centerName':?0,'dob':{$gte:?1}}")
+    @Query("{'centerName':?0,'dob':{$gte:?1},'dateOfMortality':''}")
     List<FamilyMember> findAllFamilyChildrenByCenterId(String centerName, long convertToMills, Sort createdDate);
 
     @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dob':{$gte:?3}}")
@@ -93,7 +93,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
 //    Family findByFamilyId(String familyId);
 
-    @Query("{'_id':?0,'dob':{$lte:?1,$gte:?2}}")
+    @Query("{'_id':?0,'dob':{$lte:?1,$gte:?2},'dateOfMortality':''}")
     List<FamilyMember> findAllByIdAndDob(String childId, long convertToMills, long convertToMills_2);
 
     @Query("{'createdDate': {$gte : { $date : ?0}, $lte : { $date : ?1}}, 'centerId': {$not:{$in: ?4},$regex: ?2 }, 'dob' : { $gte : ?3}}")
