@@ -25,8 +25,8 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'relationWithOwner':'Self'}")
     List<FamilyMember> findAllByHusband();
 
-    @Query("{'gender':'2','centerId':?0}")
-    List<FamilyMember> findAllByGenderAndCenterId(String centerName);
+    @Query("{'gender':'2','centerId':?0, 'isActive':?1, 'deleted':?2}")
+    List<FamilyMember> findAllByGenderAndCenterId(String centerName,boolean isActive,boolean deleted );
 
     @Query("{'dob':{$gte:?0},'centerName':?1}")
     List<FamilyMember> findAllByDobAndCenterName(long convertToMills, String centerName);
