@@ -152,8 +152,8 @@ public class FamilyController {
     }
 
     @GetMapping("/getAllChildrenDetails")
-    private List<FamilyChildrenDetails> getAllChildrenDetails(@RequestHeader String centerName) throws ParseException {
-        return familyService.getAllChildrenDetails(centerName);
+    private List<FamilyChildrenDetails> getAllChildrenDetails(@RequestHeader String centerId) throws ParseException {
+        return familyService.getAllChildrenDetails(centerId);
     }
 
     @ApiIgnore

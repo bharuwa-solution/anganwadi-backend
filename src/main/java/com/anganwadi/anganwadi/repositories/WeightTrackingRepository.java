@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface WeightTrackingRepository extends MongoRepository<WeightTracking, String> {
 
+   @Query("{'childId':?0,'isActive':true,'deleted':false}")
    List<WeightTracking> findAllByChildId(String childId, Sort createdDate);
 
     @Query(value = "{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
@@ -24,4 +25,5 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
     void deleteByChildId(String primaryId);
 
     List<WeightTracking> findAllByMotherIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
+
 }
