@@ -4466,8 +4466,8 @@ public class FamilyServiceImpl implements FamilyService {
 		LocalDateTime date = LocalDateTime.now().minusMonths(6);
 		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 		long convertToMills = zdt.toInstant().toEpochMilli();
-		log.error("time "+convertToMills)
-		;
+		log.error("time "+convertToMills);
+
 		List<BabiesBirth> birthList = babiesBirthRepository.findAllByDobCriteria(convertToMills,centerId);
 
 		List<NewBornChildDTO> addInList = new ArrayList<>();
