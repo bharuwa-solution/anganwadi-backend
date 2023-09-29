@@ -952,16 +952,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
         List<ChildrenDTO> addInList = new ArrayList<>();
 
-        List<FamilyMember> memberList = familyMemberRepository.findAllByCenterId(centerId);
-        // log.error(centerId, memberList);
-
-        // System.out.println(memberList);
-
         List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterIdAndRegisteredTrue(centerId);
-        // log.error(centerId, childrenList);
-        //System.out.println(childrenList);
-
-        //List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCenterId();
+  
 
         // Check 3 Years Criteria
         // Initially all the age group was added, but currently is was stop from backend && to avoid those old records, below ,condition is added"
@@ -1049,9 +1041,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         List<Attendance> findRecords = attendanceRepository.findAllByDateAndCenterIdAndRegistered(timestamp, centerId, Sort.by(Sort.Direction.DESC, "createdDate"));
         //System.out.println("Records of attandence are--  "+findRecords);
         List<AttendanceDTO> addList = new ArrayList<>();
+        
 
         for (Attendance singleRecord : findRecords) {
             FamilyMember memberDetails = familyMemberRepository.findById(singleRecord.getChildId()).get();
+            
+            if(!memberDetails.getDateOfMortality().equals("")) {
+            	continue;
+            }
 
             long millis = df.parse(commonMethodsService.dateChangeToString(memberDetails.getDob())).getTime();
 
