@@ -90,7 +90,7 @@ public interface FamilyService {
 
     List<PregnantAndDeliveryDTO> getDhatriDetails(String centerId);
 
-    List<FamilyChildrenDetails> getAllChildrenDetails(String centerName);
+    List<FamilyChildrenDetails> getAllChildrenDetails(String centerId);
 
     DeleteBornChildDTO deleteNewBornChildRecords(String id);
 

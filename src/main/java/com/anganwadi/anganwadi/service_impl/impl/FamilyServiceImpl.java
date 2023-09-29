@@ -2230,11 +2230,10 @@ public class FamilyServiceImpl implements FamilyService {
 
 		List<GetVaccinationDTO> addList = new ArrayList<>();
 //		List<Visits> vaccinationList = new ArrayList<>();
-		HashSet<String> uniqueFamilyId = new HashSet<>();
+		HashSet<String> uniqueMemberId = new HashSet<>();
 		String code = vaccineCode == null ? "" : vaccineCode;
 
 		List<Vaccination> vaccinationList = vaccinationRepository.findAllByCenterIdAndVaccinationCode(centerId, code);
-
 
 //		if (code.trim().length() > 0) {
 //			vaccinationList = visitsRepository.findAllByVisitForSearchCriteria(vaccineCode, centerId,
@@ -2252,16 +2251,16 @@ public class FamilyServiceImpl implements FamilyService {
 
 					Family findHouse = familyRepository.findByFamilyId(fmd.getFamilyId());
 					long getMills = fmd.getDob();
-					DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 					Date date = new Date(getMills);
 
-					if (uniqueFamilyId.add(fmd.getId())) {
+					if (uniqueMemberId.add(fmd.getId())) {
 						GetVaccinationDTO addSingle = GetVaccinationDTO.builder().name(fmd.getName())
 								.gender(fmd.getGender()).childId(vaccDetails.getChildId()).centerId(centerId)
 								.centerName(commonMethodsService.findCenterName(centerId))
 								.houseNo(findHouse.getHouseNo()).vaccinationCode(vaccDetails.getVaccinationCode())
 								.vaccinationName(commonMethodsService.getVaccineName(vaccDetails.getVaccinationCode()))
-								.age(df.format(date)).photo(fmd.getPhoto())
+								.age(ApplicationConstants.df.format(date)).photo(fmd.getPhoto())
 								.motherName(fmd.getMotherName()).build();
 						addList.add(addSingle);
 					}
@@ -3550,17 +3549,18 @@ public class FamilyServiceImpl implements FamilyService {
 		Family findFamilyId = familyRepository.findByFamilyId(familyMember.getFamilyId());
 
 		// Validating Mortality Date
-
+		if(familyMemberDTO.getDateOfMortality().length()>0) {
 			try {
+
 				long validatedDate = commonMethodsService.dateChangeToLong(familyMemberDTO.getDateOfMortality());
 				log.error("death date : " + validatedDate);
-				if(validatedDate<familyMember.getDob()){
+				if (validatedDate < familyMember.getDob()) {
 					throw new CustomException("Mortality Date Can't Be Before Birth Date");
-					}
 				}
-				catch (ParseException e){
-					e.printStackTrace();
-				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
 
 		try {
 
@@ -3596,28 +3596,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 			familyMemberRepository.save(familyMember);
 
-			// Updating in Anganwadi Children, If Exists
-
-			List<AnganwadiChildren> ac = anganwadiChildrenRepository
-					.findAllByChildIdAndRegisteredTrue(familyMemberDTO.getId());
-
-			if (ac.size() > 0) {
-				for (AnganwadiChildren children : ac) {
-					children.setName(familyMemberDTO.getName());
-//                    children.setGender(familyMemberDTO.getGender());
-//                    children.setDob(familyMemberDTO.getDob());
-//                    children.setFatherName(familyMemberDTO.getFatherName());
-//                    children.setMotherName(familyMemberDTO.getMotherName());
-					children.setMobileNumber(familyMemberDTO.getMobileNumber());
-
-					if (familyMember.getDateOfMortality().length() > 0) {
-						children.setDeleted(true);
-						children.setActive(false);
-					}
-
-					anganwadiChildrenRepository.save(children);
-				}
-			}
+			memberSoftDelete(familyMemberDTO, familyMember.getDateOfMortality());
 
 			return FamilyMemberDTO.builder().id(familyMember.getId()).category(familyMember.getCategory())
 					.name(familyMember.getName()).relationWithOwner(familyMember.getRelationWithOwner())
@@ -3639,6 +3618,117 @@ public class FamilyServiceImpl implements FamilyService {
 			throw new CustomException("Member Not Found");
 		}
 	}
+
+
+	private void memberSoftDelete(FamilyMemberDTO familyMemberDTO, String DateOfMortality) {
+
+		if(DateOfMortality.length()>0) {
+
+			// Updating in Anganwadi Children, If Exists
+
+			List<AnganwadiChildren> ac = anganwadiChildrenRepository
+					.findAllByChildIdAndRegisteredTrue(familyMemberDTO.getId());
+
+			if (ac.size() > 0) {
+				for (AnganwadiChildren children : ac) {
+					children.setName(familyMemberDTO.getName());
+//                    children.setGender(familyMemberDTO.getGender());
+//                    children.setDob(familyMemberDTO.getDob());
+//                    children.setFatherName(familyMemberDTO.getFatherName());
+//                    children.setMotherName(familyMemberDTO.getMotherName());
+					children.setMobileNumber(familyMemberDTO.getMobileNumber());
+
+
+					children.setDeleted(true);
+					children.setActive(false);
+
+
+					anganwadiChildrenRepository.save(children);
+				}
+			}
+
+
+			// Updating in Attendance
+			List<Attendance> checkInAttendance = attendanceRepository.findAllByChildId(familyMemberDTO.getId());
+
+			for (Attendance at : checkInAttendance) {
+				at.setDeleted(true);
+				at.setActive(false);
+				attendanceRepository.save(at);
+			}
+
+
+			// Updating in BabiesBirth
+			List<BabiesBirth> checkInBirth = babiesBirthRepository.findAllByChildId(familyMemberDTO.getId());
+
+			for (BabiesBirth bb : checkInBirth) {
+				bb.setActive(false);
+				bb.setDeleted(true);
+				babiesBirthRepository.save(bb);
+			}
+
+			// Updating in BloodTestTracking
+			List<BloodTestTracking> checkMotherId = bloodTestTrackingRepository.findByMotherId(familyMemberDTO.getId());
+			List<BloodTestTracking> checkChildId = bloodTestTrackingRepository.findByMemberId(familyMemberDTO.getId());
+
+
+			if (checkMotherId.size() > 0) {
+
+				for (BloodTestTracking motherId : checkMotherId) {
+					motherId.setActive(false);
+					motherId.setDeleted(true);
+					bloodTestTrackingRepository.save(motherId);
+				}
+
+			} else if (checkChildId.size() > 0) {
+
+				for (BloodTestTracking childId : checkChildId) {
+					childId.setActive(false);
+					childId.setDeleted(true);
+					bloodTestTrackingRepository.save(childId);
+				}
+			}
+
+			// Remove From Scheduler Tables
+
+			removeFromVaccinationSchedule(familyMemberDTO.getId());
+			removeFromHouseVisitSchedule(familyMemberDTO.getId());
+
+
+			// Updating Vaccination
+			List<Vaccination> checkMotherVaccine = vaccinationRepository.findByMotherId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+			List<Vaccination> checkChildVaccine = vaccinationRepository.findByChildId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+
+			if (checkMotherVaccine.size() > 0) {
+
+				for (Vaccination motherId : checkMotherVaccine) {
+					motherId.setActive(false);
+					motherId.setDeleted(true);
+					vaccinationRepository.save(motherId);
+				}
+
+			} else if (checkChildVaccine.size() > 0) {
+
+				for (Vaccination childId : checkChildVaccine) {
+					childId.setDeleted(true);
+					childId.setActive(false);
+					vaccinationRepository.save(childId);
+				}
+
+			}
+
+			// Updating Weight Tracking
+
+			List<WeightTracking> weightTrackings = weightTrackingRepository.findAllByChildId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+
+			for (WeightTracking wt : weightTrackings) {
+				wt.setActive(false);
+				wt.setDeleted(true);
+				weightTrackingRepository.save(wt);
+			}
+		}
+	}
+
 
 	@Override
 	public HouseholdsDTO getHouseholdById(String id) {
@@ -4376,8 +4466,8 @@ public class FamilyServiceImpl implements FamilyService {
 		LocalDateTime date = LocalDateTime.now().minusMonths(6);
 		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 		long convertToMills = zdt.toInstant().toEpochMilli();
-		log.error("time "+convertToMills)
-		;
+		log.error("time "+convertToMills);
+
 		List<BabiesBirth> birthList = babiesBirthRepository.findAllByDobCriteria(convertToMills,centerId);
 
 		List<NewBornChildDTO> addInList = new ArrayList<>();
@@ -4694,23 +4784,20 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	@Override
-	public List<FamilyChildrenDetails> getAllChildrenDetails(String centerName) {
+	public List<FamilyChildrenDetails> getAllChildrenDetails(String centerId) {
 
 		LocalDateTime date = LocalDateTime.now().minusYears(7);
 		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 		long convertToMills = zdt.toInstant().toEpochMilli();
 		List<FamilyChildrenDetails> addInList = new ArrayList<>();
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-		List<FamilyMember> findChildren = familyMemberRepository.findAllFamilyChildrenByCenterId(centerName,
+		List<FamilyMember> findChildren = familyMemberRepository.findAllFamilyChildrenByCenterId(centerId,
 				convertToMills, Sort.by(Sort.Direction.DESC, "createdDate"));
 
 		for (FamilyMember fm : findChildren) {
-
 			Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
-
 			FamilyChildrenDetails singleChild = FamilyChildrenDetails.builder()
-					.name(fm.getName() == null ? "" : fm.getName()).dob(df.format(fm.getDob()))
+					.name(fm.getName() == null ? "" : fm.getName()).dob(ApplicationConstants.df.format(fm.getDob()))
 					.photo(fm.getPhoto() == null ? "" : fm.getPhoto())
 					.gender(fm.getGender() == null ? "" : fm.getGender())
 					.motherName(fm.getMotherName() == null ? "" : fm.getMotherName())
