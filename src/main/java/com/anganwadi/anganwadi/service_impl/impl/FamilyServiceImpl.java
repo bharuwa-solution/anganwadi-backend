@@ -160,7 +160,7 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public List<householdsHeadList> getAllHouseholds(String centerId) {
 		List<householdsHeadList> addInList = new ArrayList<>();
-		List<Family> familyList = familyRepository.findAllByCenterId(centerId,
+		List<Family> familyList = familyRepository.findAllByCenterIdAndIsActiveTrueAndDeletedFalse(centerId,
 				Sort.by(Sort.Direction.DESC, "createdDate"));
 
 		// Get Head of Family Details
@@ -299,7 +299,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 
 
-		log.info("death Date " + deathDate);
+//		log.info("death Date " + deathDate);
 //		log.info("centerName " + centerName);
 
 		if(deathDate.length()>0){
@@ -414,17 +414,15 @@ public class FamilyServiceImpl implements FamilyService {
 
 		Family checkDeleted = familyRepository.findByFamilyId(familyId);
 
-		if (checkDeleted.isDeleted()) {
+		if (checkDeleted.isDeleted() && !checkDeleted.isActive()) {
 			throw new CustomException("The Family Is Deleted, Please Check With Support Team, to Re-activate It!!");
 		}
 
 		List<FamilyMemberDTO> addInList = new ArrayList<>();
 		List<FamilyMember> getMembers = familyMemberRepository.findAllByFamilyId(familyId,
 				Sort.by(Sort.Direction.ASC, "createdDate"));
-		String gender = "";
-		for (FamilyMember passDetails : getMembers) {
 
-			String handicap = "";
+		for (FamilyMember passDetails : getMembers) {
 
 			long getMills = passDetails.getDob();
 			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -2099,7 +2097,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	@Override
-	public MPRDTO getMPRRecords(String month, String duration, String category, String centerName)
+	public MPRDTO getMPRRecords(String month, String duration, String category, String centerId)
 			throws ParseException {
 
 		duration = duration == null ? "" : duration;
@@ -2122,7 +2120,7 @@ public class FamilyServiceImpl implements FamilyService {
 		}
 
 		List<FamilyMember> findByCenter = familyMemberRepository
-				.findAllByCenterNameAndRecordForMonthAndCategory(centerName, startTime, endTime, category);
+				.findAllByCenterNameAndRecordForMonthAndCategory(centerId, startTime, endTime, category);
 		long startDate = 0, endDate = 0;
 
 		for (FamilyMember formatDetails : findByCenter) {
@@ -2162,7 +2160,7 @@ public class FamilyServiceImpl implements FamilyService {
 		}
 
 		List<PregnantAndDelivery> findDhatri = pregnantAndDeliveryRepository
-				.findAllByCenterNameAndCategoryAndCreatedDate(centerName, category, startTime, endTime);
+				.findAllByCenterNameAndCategoryAndCreatedDate(centerId, category, startTime, endTime);
 		HashSet<String> uniqueDhartiMemberId = new HashSet<>();
 		HashSet<String> uniquePregnantMemberId = new HashSet<>();
 		String visitCat = "";
@@ -2173,7 +2171,7 @@ public class FamilyServiceImpl implements FamilyService {
 			LocalDateTime date = LocalDateTime.now().minusMonths(6);
 			ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 			long convertToMills = zdt.toInstant().toEpochMilli();
-			log.info("dharti " + convertToMills);
+//			log.info("dharti " + convertToMills);
 			if (checkDetails.getDateOfDelivery() >= convertToMills) {
 				if (uniqueDhartiMemberId.add(checkDetails.getMotherMemberId())) {
 					dharti++;
