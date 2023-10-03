@@ -75,16 +75,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	}
 
 	@Override
-	public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, java.lang.String centerId)
+	public SaveAdmissionDTO saveChildrenRecord(SaveAdmissionDTO saveAdmissionDTO, String centerId)
 			throws ParseException, IOException {
 		// commonMethodsService.findCenterName(centerId);
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-		DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
-		df.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+
+		ApplicationConstants.df.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
 
 		String finalDate = saveAdmissionDTO.getDob();
-		Date dob = df2.parse(finalDate);
+		Date dob = ApplicationConstants.df.parse(finalDate);
 		log.info("reg " + saveAdmissionDTO.isRegistered());
 
 		AnganwadiChildren saveAdmission = new AnganwadiChildren();
@@ -93,40 +92,44 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 		commonMethodsService.checkAbove3Yrs(saveAdmissionDTO.getDob());
 		commonMethodsService.checkBelow6yrs(saveAdmissionDTO.getDob());
 
-		try {
-			Family findFamily = familyRepository.findByFamilyId(saveAdmissionDTO.getFamilyId());
 
-			List<AnganwadiChildren> findExistingRecord = anganwadiChildrenRepository
-					.findAllByChildId(saveAdmissionDTO.getChildId());
+		Family findFamily = familyRepository.findByFamilyId(saveAdmissionDTO.getFamilyId());
 
-			// Child id not present in familyMember
-			FamilyMember familyMember = familyMemberRepository.findById(saveAdmissionDTO.getChildId()).get();
-			
-			if(!familyMember.getDateOfMortality().equals("")) {
-				throw new CustomException("Cannot added dead children as anganwadi student !!");
-			}
+		List<AnganwadiChildren> findExistingRecord = anganwadiChildrenRepository
+				.findAllByChildId(saveAdmissionDTO.getChildId());
 
-			// List<FamilyMember> members =
-			// familyMemberRepository.findAllByFamilyIdAndName(saveAdmissionDTO.getFamilyId(),saveAdmissionDTO.getName());
+		// Child id not present in familyMember & is Active
 
-			if (findExistingRecord.size() > 0) {
-				for (AnganwadiChildren record : findExistingRecord) {
-					if (!record.getCenterId().equals(centerId)) {
-						throw new CustomException("Center id is different Kindly check and update");
-					}
-					record.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
-					record.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
-					record.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
-					record.setIsGoingSchool("0");
-					record.setHandicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap());
-					record.setProfilePic(
-							saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic());
-					record.setRegistered(saveAdmissionDTO.isRegistered());
-					record.setDeleted(false);
-					anganwadiChildrenRepository.save(record);
-					id = record.getId();
+		Optional<FamilyMember> familyMember = familyMemberRepository.findById(saveAdmissionDTO.getChildId());
 
+		if (!familyMember.isPresent()) {
+			throw new CustomException("Student Not Found !!");
+		}
+
+		if (!familyMember.get().getDateOfMortality().equals("")) {
+			throw new CustomException("Cannot added In-Active children !!");
+		}
+
+		// List<FamilyMember> members =
+		// familyMemberRepository.findAllByFamilyIdAndName(saveAdmissionDTO.getFamilyId(),saveAdmissionDTO.getName());
+
+		if (findExistingRecord.size() > 0) {
+			for (AnganwadiChildren record : findExistingRecord) {
+				if (!record.getCenterId().equals(centerId)) {
+					throw new CustomException("Center id is different Kindly check and update");
 				}
+				record.setName(saveAdmissionDTO.getName() == null ? "" : saveAdmissionDTO.getName());
+				record.setChildId(saveAdmissionDTO.getChildId() == null ? "" : saveAdmissionDTO.getChildId());
+				record.setFamilyId(saveAdmissionDTO.getFamilyId() == null ? "" : saveAdmissionDTO.getFamilyId());
+				record.setIsGoingSchool("0");
+				record.setHandicap(saveAdmissionDTO.getHandicap() == null ? "" : saveAdmissionDTO.getHandicap());
+				record.setProfilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic());
+				record.setRegistered(saveAdmissionDTO.isRegistered());
+				record.setDeleted(false);
+				anganwadiChildrenRepository.save(record);
+				id = record.getId();
+
+			}
 
 			} else {
 				saveAdmission = AnganwadiChildren.builder()
@@ -140,31 +143,28 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 						.profilePic(saveAdmissionDTO.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
 						.build();
 
-				anganwadiChildrenRepository.save(saveAdmission);
-				id = saveAdmission.getId();
-				// admissionDTO = modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
-			}
-			log.error("id " + id);
-			return SaveAdmissionDTO.builder().id(id).name(familyMember.getName() == null ? "" : familyMember.getName())
-					.familyId(familyMember.getFamilyId() == null ? "" : familyMember.getFamilyId())
-					.childId(familyMember.getId() == null ? "" : familyMember.getId())
-					.isRegistered(saveAdmissionDTO.isRegistered()).isSchoolGoing("0")
-					.profilePic(saveAdmission.getProfilePic() == null ? "" : saveAdmission.getProfilePic())
-					.mobileNumber(familyMember.getMobileNumber() == null ? "" : familyMember.getMobileNumber())
-					.handicap(saveAdmission.getHandicap() == null ? "" : saveAdmission.getHandicap())
-					.profilePic(saveAdmission.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
-					.centerName(familyMember.getCenterName())
-					.fatherName(saveAdmissionDTO.getFatherName() == null ? "" : saveAdmissionDTO.getFatherName())
-					.motherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName())
-					.minority(findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority())
-					.gender(familyMember.getGender() == null ? "" : familyMember.getGender())
-					.dob(df.format(familyMember.getDob()))
+			anganwadiChildrenRepository.save(saveAdmission);
+			id = saveAdmission.getId();
+			// admissionDTO = modelMapper.map(saveAdmission, SaveAdmissionDTO.class);
+		}
+		log.error("id " + id);
+		return SaveAdmissionDTO.builder().id(id).name(familyMember.get().getName() == null ? "" : familyMember.get().getName())
+				.familyId(familyMember.get().getFamilyId() == null ? "" : familyMember.get().getFamilyId())
+				.childId(familyMember.get().getId() == null ? "" : familyMember.get().getId())
+				.isRegistered(saveAdmissionDTO.isRegistered()).isSchoolGoing("0")
+				.profilePic(saveAdmission.getProfilePic() == null ? "" : saveAdmission.getProfilePic())
+				.mobileNumber(familyMember.get().getMobileNumber() == null ? "" : familyMember.get().getMobileNumber())
+				.handicap(saveAdmission.getHandicap() == null ? "" : saveAdmission.getHandicap())
+				.profilePic(saveAdmission.getProfilePic() == null ? "" : saveAdmissionDTO.getProfilePic())
+				.centerName(familyMember.get().getCenterName())
+				.fatherName(saveAdmissionDTO.getFatherName() == null ? "" : saveAdmissionDTO.getFatherName())
+				.motherName(saveAdmissionDTO.getMotherName() == null ? "" : saveAdmissionDTO.getMotherName())
+				.minority(findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority())
+				.gender(familyMember.get().getGender() == null ? "" : familyMember.get().getGender())
+				.dob(ApplicationConstants.df.format(familyMember.get().getDob()))
 					.category(findFamily.getCategory() == null ? "" : findFamily.getCategory()).build();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new CustomException("Their is Some Error, Please Contact Support Team");
-		}
+
 	}
 
 	@Override
@@ -874,7 +874,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 		for (AnganwadiChildren getChildren : childrenList) {
 
 			// Convert Dob to Millis
-			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 			List<FamilyMember> member = familyMemberRepository.findAllByIdAndDob(getChildren.getChildId(),
 					convertToMills, convertToMills_2);
 			String dobInString = "", motherName = "", fatherName = "", category = "", gender = "";

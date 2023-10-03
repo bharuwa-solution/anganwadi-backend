@@ -151,7 +151,6 @@ public class FamilyServiceImpl implements FamilyService {
 			if (checkChildren.getDob() >= convertToMills) {
 				totalChildren++;
 			}
-
 		}
 
 		return totalChildren;
@@ -452,7 +451,7 @@ public class FamilyServiceImpl implements FamilyService {
 					.residentArea(passDetails.getResidentArea() == null ? "" : passDetails.getResidentArea())
 					.dateOfArrival(passDetails.getDateOfArrival() == null ? "" : passDetails.getDateOfArrival())
 					.dateOfLeaving(passDetails.getDateOfLeaving() == null ? "" : passDetails.getDateOfLeaving())
-					.dateOfMortality(passDetails.getDateOfLeaving() == null ? "" : passDetails.getDateOfLeaving())
+					.dateOfMortality(passDetails.getDateOfMortality() == null ? "" : passDetails.getDateOfMortality())
 					.build();
 			addInList.add(singleList);
 		}
@@ -3228,23 +3227,23 @@ public class FamilyServiceImpl implements FamilyService {
 
 		List<TotalChildrenData> childrenData = new ArrayList<>();
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 
 		Date currentDate = new Date();
 		long currentMillis = currentDate.getTime();
 		Date startTime = null, endTime = null;
 
 		if (dashboardFilter.getStartDate().trim().length() > 0) {
-			startTime = df.parse(dashboardFilter.getStartDate().trim());
+			startTime = ApplicationConstants.df.parse(dashboardFilter.getStartDate().trim());
 
 		} else {
-			startTime = df.parse(commonMethodsService.startDateOfMonth());
+			startTime = ApplicationConstants.df.parse(commonMethodsService.startDateOfMonth());
 		}
 
 		if (dashboardFilter.getEndDate().trim().length() > 0) {
-			endTime = df.parse(dashboardFilter.getEndDate().trim());
+			endTime = ApplicationConstants.df.parse(dashboardFilter.getEndDate().trim());
 		} else {
-			endTime = df.parse(commonMethodsService.endDateOfMonth());
+			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
 
 		LocalDateTime sixthDate = LocalDateTime.now().minusYears(6);
@@ -3266,8 +3265,8 @@ public class FamilyServiceImpl implements FamilyService {
 			Family findFamily = familyRepository.findByFamilyId(fm.getFamilyId());
 			String minority = findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority();
 			childrenData.add(TotalChildrenData.builder().caste(fm.getCategory() == null ? "" : fm.getCategory())
-					.gender(fm.getGender() == null ? "" : fm.getGender()).startDate(df.format(startTime))
-					.endDate(df.format(endTime)).isMinority(minority).name(fm.getName() == null ? "" : fm.getName())
+					.gender(fm.getGender() == null ? "" : fm.getGender()).startDate(ApplicationConstants.df.format(startTime))
+					.endDate(ApplicationConstants.df.format(endTime)).isMinority(minority).name(fm.getName() == null ? "" : fm.getName())
 					.centerId(fm.getCenterId() == null ? "" : fm.getCenterId())
 					.centerName(fm.getCenterName() == null ? "" : fm.getCenterName()).build());
 		}
@@ -3587,6 +3586,22 @@ public class FamilyServiceImpl implements FamilyService {
 			familyMember.setDateOfLeaving(familyMemberDTO.getDateOfLeaving());
 			familyMember.setDateOfMortality(familyMemberDTO.getDateOfMortality());
 
+			List<AnganwadiChildren> ac = anganwadiChildrenRepository
+					.findAllByChildIdAndRegisteredTrue(familyMemberDTO.getId());
+
+			if (ac.size() > 0) {
+				for (AnganwadiChildren children : ac) {
+					children.setName(familyMemberDTO.getName());
+//                    children.setGender(familyMemberDTO.getGender());
+//                    children.setDob(familyMemberDTO.getDob());
+//                    children.setFatherName(familyMemberDTO.getFatherName());
+//                    children.setMotherName(familyMemberDTO.getMotherName());
+					children.setMobileNumber(familyMemberDTO.getMobileNumber());
+
+					anganwadiChildrenRepository.save(children);
+				}
+			}
+
 			if (familyMember.getDateOfMortality().length() > 0) {
 				familyMember.setDeleted(true);
 				familyMember.setActive(false);
@@ -3629,32 +3644,13 @@ public class FamilyServiceImpl implements FamilyService {
 
 			if (ac.size() > 0) {
 				for (AnganwadiChildren children : ac) {
-					children.setName(familyMemberDTO.getName());
-//                    children.setGender(familyMemberDTO.getGender());
-//                    children.setDob(familyMemberDTO.getDob());
-//                    children.setFatherName(familyMemberDTO.getFatherName());
-//                    children.setMotherName(familyMemberDTO.getMotherName());
-					children.setMobileNumber(familyMemberDTO.getMobileNumber());
-
 
 					children.setDeleted(true);
 					children.setActive(false);
 
-
 					anganwadiChildrenRepository.save(children);
 				}
 			}
-
-
-			// Updating in Attendance
-			List<Attendance> checkInAttendance = attendanceRepository.findAllByChildId(familyMemberDTO.getId());
-
-			for (Attendance at : checkInAttendance) {
-				at.setDeleted(true);
-				at.setActive(false);
-				attendanceRepository.save(at);
-			}
-
 
 			// Updating in BabiesBirth
 			List<BabiesBirth> checkInBirth = babiesBirthRepository.findAllByChildId(familyMemberDTO.getId());
@@ -3977,6 +3973,7 @@ public class FamilyServiceImpl implements FamilyService {
 		LocalDateTime date = LocalDateTime.now().minusMonths(6);
 		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 		long convertToMills = zdt.toInstant().toEpochMilli();
+		log.error("millis :"+convertToMills);
 
 		List<FamilyMember> findChild = familyMemberRepository.findAllByDobCriteria(convertToMills, centerId);
 
@@ -4158,33 +4155,36 @@ public class FamilyServiceImpl implements FamilyService {
 				Sort.by(Sort.Direction.DESC, "createdDate"), true, false);
 		List<PregnantAndDeliveryDTO> addInList = new ArrayList<>();
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		Set<String > uniqueMother = new HashSet<>();
 
 		if (findPD.size() > 0) {
 			for (PregnantAndDelivery pd : findPD) {
-				String dod = "";
-				if (pd.getDateOfDelivery() > 0) {
-					dod = df.format(pd.getDateOfDelivery());
-				}
+				if (uniqueMother.add(pd.getMotherMemberId())) {
+					String dod = "";
+					if (pd.getDateOfDelivery() > 0) {
+						dod = df.format(pd.getDateOfDelivery());
+					}
 
-				PregnantAndDeliveryDTO singleEntry = PregnantAndDeliveryDTO.builder().id(pd.getId())
-						.familyId(pd.getFamilyId() == null ? "" : pd.getFamilyId())
-						.centerId(pd.getCenterId() == null ? "" : pd.getCenterId())
-						.centerName(pd.getCenterName() == null ? "" : pd.getCenterName())
-						.regDate(df.format(pd.getRegDate())).noOfChild(pd.getNoOfChild()).isDeleted(pd.isDeleted())
-						.yojana(pd.getYojana())
-						.motherMemberId(pd.getMotherMemberId() == null ? "" : pd.getMotherMemberId())
-						.motherName(pd.getMotherName() == null ? "" : pd.getMotherName())
-						.dob(df.format(new Date(pd.getDob())))
-						.husbandName(pd.getHusbandName() == null ? "" : pd.getHusbandName())
-						.profilePic(pd.getProfilePic() == null ? "" : pd.getProfilePic())
-						.childName(pd.getChildName() == null ? "" : pd.getChildName())
-						.childGender(pd.getChildGender() == null ? "" : pd.getChildGender())
-						.category(pd.getCategory() == null ? "" : pd.getCategory())
-						.religion(pd.getReligion() == null ? "" : pd.getReligion())
-						.misCarriageDate(pd.getMisCarriageDate()>0?ApplicationConstants.df.format(pd.getMisCarriageDate()):"-")
-						.houseNumber(pd.getHouseNumber() == null ? "" : pd.getHouseNumber()).dateOfDelivery(dod)
-						.lastMissedPeriodDate(df.format(pd.getLastMissedPeriodDate())).build();
-				addInList.add(singleEntry);
+					PregnantAndDeliveryDTO singleEntry = PregnantAndDeliveryDTO.builder().id(pd.getId())
+							.familyId(pd.getFamilyId() == null ? "" : pd.getFamilyId())
+							.centerId(pd.getCenterId() == null ? "" : pd.getCenterId())
+							.centerName(pd.getCenterName() == null ? "" : pd.getCenterName())
+							.regDate(df.format(pd.getRegDate())).noOfChild(pd.getNoOfChild()).isDeleted(pd.isDeleted())
+							.yojana(pd.getYojana())
+							.motherMemberId(pd.getMotherMemberId() == null ? "" : pd.getMotherMemberId())
+							.motherName(pd.getMotherName() == null ? "" : pd.getMotherName())
+							.dob(df.format(new Date(pd.getDob())))
+							.husbandName(pd.getHusbandName() == null ? "" : pd.getHusbandName())
+							.profilePic(pd.getProfilePic() == null ? "" : pd.getProfilePic())
+							.childName(pd.getChildName() == null ? "" : pd.getChildName())
+							.childGender(pd.getChildGender() == null ? "" : pd.getChildGender())
+							.category(pd.getCategory() == null ? "" : pd.getCategory())
+							.religion(pd.getReligion() == null ? "" : pd.getReligion())
+							.misCarriageDate(pd.getMisCarriageDate() > 0 ? ApplicationConstants.df.format(pd.getMisCarriageDate()) : "-")
+							.houseNumber(pd.getHouseNumber() == null ? "" : pd.getHouseNumber()).dateOfDelivery(dod)
+							.lastMissedPeriodDate(df.format(pd.getLastMissedPeriodDate())).build();
+					addInList.add(singleEntry);
+				}
 			}
 
 		}
@@ -4460,64 +4460,65 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public List<NewBornChildDTO> getNewBornChildRecords(String centerId) throws ParseException {
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-		String birthType = "", birthPlace = "", motherMeemberId = "", motherPhoto = "", srNo = "";
+		String birthType = "", birthPlace = "", motherMeemberId = "", motherPhoto = "", srNo = "", weight="",height="";
 		LocalDateTime date = LocalDateTime.now().minusMonths(6);
 		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 		long convertToMills = zdt.toInstant().toEpochMilli();
 		log.error("time "+convertToMills);
 
-		List<BabiesBirth> birthList = babiesBirthRepository.findAllByDobCriteria(convertToMills,centerId);
-
+		List<FamilyMember> findChild = familyMemberRepository.findAllByDobCriteria(convertToMills, centerId);
 		List<NewBornChildDTO> addInList = new ArrayList<>();
+
+
 		try {
-			if (birthList.size() > 0) {
-				for (BabiesBirth child : birthList) {
-					FamilyMember findChild = familyMemberRepository.findById(child.getChildId()).get();
+			if (findChild.size() > 0) {
+				for (FamilyMember bb : findChild) {
+					List<BabiesBirth> birthList = babiesBirthRepository.findAllByChildId(bb.getId());
 
 
 					for (BabiesBirth lists : birthList) {
 						birthPlace = lists.getBirthPlace();
 						birthType = lists.getBirthType();
+						weight= lists.getFirstWeight();
+						height = lists.getHeight();
 						srNo = lists.getSrNo();
 						motherMeemberId = lists.getMotherMemberId();
 
-
+					}
 						List<FamilyMember> findMotherDetails = familyMemberRepository
-								.findByFamilyIdAndName(findChild.getFamilyId().trim(), findChild.getMotherName().trim());
+								.findByFamilyIdAndName(bb.getFamilyId().trim(), bb.getMotherName().trim());
 
 						for (FamilyMember fm : findMotherDetails) {
 							motherPhoto = fm.getPhoto().trim();
 						}
 
-						Family familyDetails = familyRepository.findByFamilyId(findChild.getFamilyId());
+						Family familyDetails = familyRepository.findByFamilyId(bb.getFamilyId());
 
 						NewBornChildDTO singleEntry = NewBornChildDTO.builder()
-								.id(findChild.getId())
-								.name(findChild.getName() == null ? "" : findChild.getName())
+								.id(bb.getId())
+								.name(bb.getName() == null ? "" : bb.getName())
 								.motherPhoto(motherPhoto)
-								.motherName(findChild.getMotherName() == null ? "" : findChild.getMotherName())
-								.fatherName(findChild.getFatherName() == null ? "" : findChild.getFatherName())
+								.motherName(bb.getMotherName() == null ? "" : bb.getMotherName())
+								.fatherName(bb.getFatherName() == null ? "" : bb.getFatherName())
 								.houseNumber(familyDetails.getHouseNo() == null ? "" : familyDetails.getHouseNo())
-								.relationWithOwner(findChild.getRelationWithOwner() == null ? "" : findChild.getRelationWithOwner())
-								.dob(df.format(findChild.getDob()))
+								.relationWithOwner(bb.getRelationWithOwner() == null ? "" : bb.getRelationWithOwner())
+								.dob(df.format(bb.getDob()))
 								.srNo(srNo)
 								.birthPlace(birthPlace)
 								.birthType(birthType)
-								.familyId(findChild.getFamilyId() == null ? "" : findChild.getFamilyId())
+								.familyId(bb.getFamilyId() == null ? "" : bb.getFamilyId())
 								.motherMemberId(motherMeemberId)
-								.gender(findChild.getGender() == null ? "" : findChild.getGender())
-								.centerId(findChild.getCenterId() == null ? "" : findChild.getCenterId())
-								.centerName(findChild.getCenterName())
+								.gender(bb.getGender() == null ? "" : bb.getGender())
+								.centerId(bb.getCenterId() == null ? "" : bb.getCenterId())
+								.centerName(bb.getCenterName())
 								.visitFor("")
 								.visitType("")
-								.firstWeight("")
+								.firstWeight(weight==null?"":weight)
 								.visitRound("")
-								.height("")
+								.height(height==null?"":height)
 								.build();
 						addInList.add(singleEntry);
 					}
-
-				}
 			}
 		} catch (Exception e) {
 
@@ -4681,7 +4682,9 @@ public class FamilyServiceImpl implements FamilyService {
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		try {
 			HashSet<String> uniqueWeight = new HashSet<>();
-			BabiesBirth bb = babiesBirthRepository.findByIdAndDeletedIsFalse(birthPlaceDTO.getId());
+
+			BabiesBirth bb = babiesBirthRepository.findByChildIdAndDeletedIsFalse(birthPlaceDTO.getId());
+
 			Date date = df.parse(birthPlaceDTO.getDob());
 			long miils = date.getTime();
 
@@ -4788,7 +4791,7 @@ public class FamilyServiceImpl implements FamilyService {
 		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 		long convertToMills = zdt.toInstant().toEpochMilli();
 		List<FamilyChildrenDetails> addInList = new ArrayList<>();
-
+//        log.error("age Limit : "+convertToMills);
 		List<FamilyMember> findChildren = familyMemberRepository.findAllFamilyChildrenByCenterId(centerId,
 				convertToMills, Sort.by(Sort.Direction.DESC, "createdDate"));
 
