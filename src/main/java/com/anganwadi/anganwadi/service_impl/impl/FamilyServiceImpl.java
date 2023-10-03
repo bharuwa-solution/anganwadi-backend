@@ -338,7 +338,7 @@ public class FamilyServiceImpl implements FamilyService {
 				.category(category.equals("") ? headCategory : category).maritalStatus(martialStatus)
 				.stateCode(stateCode).handicap(handicap).handicapType(handicapType).residentArea(area)
 				.dateOfArrival(arrivalDate).dateOfLeaving(leavingDate)
-//				.dateOfMortality(deathDate).photo(photo)
+				.dateOfMortality(deathDate).photo(photo)
 				.isRegistered(isRegistered).build();
 
 //		if (deathDate.length() > 0) {
