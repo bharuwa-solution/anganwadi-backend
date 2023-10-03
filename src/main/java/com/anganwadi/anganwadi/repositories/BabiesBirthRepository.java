@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BabiesBirthRepository extends MongoRepository<BabiesBirth, String> {
@@ -17,11 +18,10 @@ public interface BabiesBirthRepository extends MongoRepository<BabiesBirth, Stri
     @Query("{'dob':{$gte:?0},'centerId':?1,'isActive':true,'deleted':false}")
     List<BabiesBirth> findAllByDobCriteria(long convertToMills,String centerId);
 
-    BabiesBirth findByChildIdAndDeletedIsFalse(String id);
-
     List<BabiesBirth> findAllByChildId(String id);
 
-    BabiesBirth findByIdAndDeletedIsFalse(String id);
+
+    BabiesBirth findByChildIdAndDeletedIsFalse(String id);
 
     BabiesBirth findByChildId(String primaryId);
 

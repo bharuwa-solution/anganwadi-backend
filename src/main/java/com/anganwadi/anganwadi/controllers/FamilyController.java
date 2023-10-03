@@ -57,8 +57,8 @@ public class FamilyController {
 
 
     @GetMapping("/getMPRRecords")
-    private MPRDTO getMPRRecords(@RequestParam(required = false) String month, @RequestParam(required = false) String duration, @RequestParam(required = false) String category, @RequestHeader String centerName) throws ParseException {
-        return familyService.getMPRRecords(month, duration, category, centerName);
+    private MPRDTO getMPRRecords(@RequestParam(required = false) String month, @RequestParam(required = false) String duration, @RequestParam(required = false) String category, @RequestHeader String centerId) throws ParseException {
+        return familyService.getMPRRecords(month, duration, category, centerId);
     }
 
     @GetMapping("/getMembersByFamilyId")

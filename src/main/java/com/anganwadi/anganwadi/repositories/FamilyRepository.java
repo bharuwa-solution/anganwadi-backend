@@ -20,7 +20,7 @@ public interface FamilyRepository extends MongoRepository<Family, String> {
 
     Family findByFamilyId(String familyId);
 
-    List<Family> findAllByCenterId(String centerId, Sort createdDate);
+    List<Family> findAllByCenterIdAndIsActiveTrueAndDeletedFalse(String centerId, Sort createdDate);
 
     @Query("{'createdDate':{$gte:?0,$lte:?1}}")
     List<Family> findByCategoryCriteria(Date startTime, Date endTime);

@@ -32,13 +32,13 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query("{'dateOfDelivery':{$eq:0}}")
     List<PregnantAndDelivery> findAllByDateOfDelivery();
 
-    @Query("{'regDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'dateOfDelivery':{$gte:?3}}")
+    @Query("{'centerId':{$regex:?2},'dateOfDelivery':{$gte:?3},'isActive':true, 'deleted':false}")
     List<PregnantAndDelivery> findAllBeneficiaryDharti(Long startTime, Long endTime, String centerId, long millis);
 
     @Query("{$and:[{'centerId':{$regex:?0,$nin:?2}}],'dateOfDelivery':{$gte:?1}}")
     List<PregnantAndDelivery> findAllDashboardFamilyBeneficiaryDharti(String centerId, long millis, String[] ignoreCenters);
 
-    @Query("{'dateOfDelivery':{$eq:0},'regDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    @Query("{'dateOfDelivery':{$eq:0},'centerId':{$regex:?2},'isActive':true, 'deleted':false}")
     List<PregnantAndDelivery> findAllByPregnancyCriteria(Long startTime, Long endTime, String centerId);
 
     @Query("{$and:[{,'centerId':{$regex:?0,$nin:?1}}],'dateOfDelivery':{$eq:0}}")
@@ -50,8 +50,8 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query(value = "{'dateOfDelivery':{$gte:?0},'centerId':?1}", count = true)
     long countDhartiWomenByCenterId(long convertToMills, String centerId);
 
-    @Query("{'centerName':{$regex:?0},'category':{$regex:?1},'createdDate':{$gte:?2,$lte:?3}}")
-    List<PregnantAndDelivery> findAllByCenterNameAndCategoryAndCreatedDate(String centerName, String category, Date startDate, Date endDate);
+    @Query("{'centerId':{$regex:?0},'category':{$regex:?1},'createdDate':{$gte:?2,$lte:?3},'isActive':true, 'deleted':false}")
+    List<PregnantAndDelivery> findAllByCenterNameAndCategoryAndCreatedDate(String centerId, String category, Date startDate, Date endDate);
 
     @Query("{'dateOfDelivery':{$gt:0},'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<PregnantAndDelivery> findAllDhartiCriteria(Date startTime, Date endTime, String centerId);
