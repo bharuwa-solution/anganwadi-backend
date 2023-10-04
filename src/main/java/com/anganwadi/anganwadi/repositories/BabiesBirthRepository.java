@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BabiesBirthRepository extends MongoRepository<BabiesBirth, String> {
@@ -28,4 +27,5 @@ public interface BabiesBirthRepository extends MongoRepository<BabiesBirth, Stri
     List<BabiesBirth> findAllByMotherMemberId(String memberId);
 
     List<BabiesBirth> findAllByCenterId(String centerId);
+
 }
