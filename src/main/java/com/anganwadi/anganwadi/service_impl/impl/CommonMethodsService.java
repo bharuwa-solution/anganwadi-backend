@@ -165,7 +165,7 @@ public class CommonMethodsService {
             if (LocalDate.now().isLeapYear()) {
                 endDate = "29-" + month + "-" + LocalDate.now().getYear();
             } else {
-                endDate = "28-02" + LocalDate.now().getYear();
+                endDate = "28-02-" + LocalDate.now().getYear();
             }
 
         } else {

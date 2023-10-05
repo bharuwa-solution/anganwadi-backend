@@ -337,7 +337,7 @@ public class FamilyServiceImpl implements FamilyService {
 				.category(category.equals("") ? headCategory : category).maritalStatus(martialStatus)
 				.stateCode(stateCode).handicap(handicap).handicapType(handicapType).residentArea(area)
 				.dateOfArrival(arrivalDate).dateOfLeaving(leavingDate)
-//				.dateOfMortality(deathDate).photo(photo)
+				.dateOfMortality(deathDate).photo(photo)
 				.isRegistered(isRegistered).build();
 
 //		if (deathDate.length() > 0) {
@@ -357,7 +357,7 @@ public class FamilyServiceImpl implements FamilyService {
 				.dob(ApplicationConstants.df.format(formatDate)).maritalStatus(martialStatus).stateCode(stateCode).handicap(handicap)
 				.handicapType(handicapType).motherName(motherName).fatherName(fatherName).memberCode(memberCode)
 				.residentArea(area).dateOfArrival(arrivalDate).dateOfLeaving(leavingDate)
-//				.dateOfMortality(deathDate)
+				.dateOfMortality(deathDate)
 				.photo(photo).isRegistered(isRegistered).build();
 	}
 
