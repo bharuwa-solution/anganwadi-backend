@@ -13,4 +13,5 @@ public class HouseholdWomenDetails {
 
     private long pregnantWomen;
     private long newBornBabies;
+    private long nursingMother;
 }

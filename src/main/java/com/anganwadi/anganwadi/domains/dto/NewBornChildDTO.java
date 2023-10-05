@@ -13,6 +13,7 @@ public class NewBornChildDTO {
 
     private String id;
     private String name;
+    private String childId;
     private String birthPlace;
     private String visitFor;
     private String srNo;

@@ -88,7 +88,7 @@ public interface FamilyService {
 
     NewBornChildDTO updateNewBornChildRecords(BirthPlaceDTO birthPlaceDTO);
 
-    List<PregnantAndDeliveryDTO> getDhatriDetails(String centerId);
+    List<MotherChildDTO> getDhatriDetails(String centerId);
 
     List<FamilyChildrenDetails> getAllChildrenDetails(String centerId);
 

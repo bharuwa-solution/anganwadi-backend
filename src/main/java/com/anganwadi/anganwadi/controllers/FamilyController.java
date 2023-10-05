@@ -147,7 +147,7 @@ public class FamilyController {
     }
 
     @GetMapping("/getDhatriDetails")
-    private List<PregnantAndDeliveryDTO> getDhatriDetails(@RequestHeader String centerId) {
+    private List<MotherChildDTO> getDhatriDetails(@RequestHeader String centerId) {
         return familyService.getDhatriDetails(centerId);
     }
 

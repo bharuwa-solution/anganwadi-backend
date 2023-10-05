@@ -24,7 +24,7 @@ public interface BabiesBirthRepository extends MongoRepository<BabiesBirth, Stri
 
     BabiesBirth findByChildId(String primaryId);
 
-    List<BabiesBirth> findAllByMotherMemberId(String memberId);
+    List<BabiesBirth> findAllByMotherMemberIdAndIsActiveTrueAndDeletedFalse(String memberId);
 
     List<BabiesBirth> findAllByCenterId(String centerId);
 

@@ -537,22 +537,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	@Override
 	public List<RationDistribution> getRationDistributionData(DashboardFilter dashboardFilter) throws ParseException {
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		List<RationDistribution> addInList = new ArrayList<>();
 		HashSet<String> uniqueFood = new HashSet<>();
 
 		Date startTime = null, endTime = null;
 
 		if (dashboardFilter.getStartDate().trim().length() > 0) {
-			startTime = df.parse(dashboardFilter.getStartDate().trim());
+			startTime = ApplicationConstants.df.parse(dashboardFilter.getStartDate().trim());
 		} else {
-			startTime = df.parse(commonMethodsService.startDateOfMonth());
+			startTime = ApplicationConstants.df.parse(commonMethodsService.startDateOfMonth());
 		}
 
 		if (dashboardFilter.getEndDate().trim().length() > 0) {
-			endTime = df.parse(dashboardFilter.getEndDate().trim());
+			endTime = ApplicationConstants.df.parse(dashboardFilter.getEndDate().trim());
 		} else {
-			endTime = df.parse(commonMethodsService.endDateOfMonth());
+			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
 
 		Calendar addOneDay = Calendar.getInstance();
@@ -568,10 +567,16 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 		for (StockDistribution sc : stockDistributionList) {
 			if (uniqueFood.add(sc.getItemCode().trim())) {
-				RationDistribution rd = RationDistribution.builder().itemName(sc.getItemName())
-						.centerId(sc.getCenterId()).itemCode(sc.getItemCode()).quantityUnit(sc.getUnit())
+				RationDistribution rd = RationDistribution.builder()
+						.itemName(sc.getItemName())
+						.centerId(sc.getCenterId())
+						.itemCode(sc.getItemCode())
+						.quantityUnit(sc.getUnit())
 						.distribution(String.valueOf(getRationQty(sc.getItemCode().trim(), stockDistributionList)))
-						.allocated(String.valueOf(new Random().nextInt(40))).shorted("").access("").build();
+						.allocated(String.valueOf(new Random().nextInt(40)))
+						.shorted("")
+						.access("")
+						.build();
 				addInList.add(rd);
 			}
 		}

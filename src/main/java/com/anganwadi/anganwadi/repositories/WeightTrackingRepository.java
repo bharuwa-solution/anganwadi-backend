@@ -18,7 +18,7 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
     @Query(value = "{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
     List<WeightTracking> findAllByMonthCriteria(Date startTime, Date endTime, Sort createdDate, String centerId);
 
-    List<WeightTracking> findByChildId(String childId, Sort createdDate);
+    List<WeightTracking> findTopByChildIdAndIsActiveTrueAndDeletedFalse(String childId, Sort createdDate);
 
     void deleteAllByChildId(String childId);
 
