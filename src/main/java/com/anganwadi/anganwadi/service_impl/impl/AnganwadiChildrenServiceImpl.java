@@ -1313,27 +1313,37 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 		List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndDateRange(centerid, startTime,
 				endTime);
-		HashSet<String> captureMonth = new HashSet<>();
-		List<StockOutputItemsDTO> addInList = new ArrayList<>();
-		StockOutputItemsDTO addSingle = new StockOutputItemsDTO();
+		String convertedDate = null;
+
+		StockOutputItemsDTO addInList = new StockOutputItemsDTO();
 		if (findByCenterName.size() > 0) {
-			for (AssetsStock findMonth : findByCenterName) {
-				long getMills = findMonth.getDate();
+			List<StockOutputArray>  lsStock = new ArrayList<>();
+			for(AssetsStock assetsStock : findByCenterName){
+
+				long getMills = assetsStock.getDate();
 				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 				Date date = new Date(getMills);
-				if (captureMonth.add(df.format(date))) {
-					log.info("date " + df.format(date));
-					addSingle = StockOutputItemsDTO.builder().date(df.format(date))
-							.stockArrayList(getStockArray(commonMethodsService.findCenterName(centerid), selectedMonth))
-							.build();
-				}
+				log.info("date " + df.format(date));
+				convertedDate = df.format(date);
+				StockOutputArray stockDetail = new StockOutputArray();
+				stockDetail.setItemName(assetsStock.getItemName());
+				stockDetail.setItemCode(assetsStock.getItemCode());
+				stockDetail.setCenterName(assetsStock.getCenterName());
+				stockDetail.setQuantity(assetsStock.getQty());
+				stockDetail.setUnit(assetsStock.getQtyUnit());
+				lsStock.add(stockDetail);
 
 			}
+			addInList.setDate(convertedDate);
+			addInList.setStockArrayList(lsStock);
+
 		} else {
-			addSingle = StockOutputItemsDTO.builder().date("").stockArrayList(Collections.EMPTY_LIST).build();
+			StockOutputItemsDTO dto = new StockOutputItemsDTO();
+			dto.setDate("");
+			dto.setStockArrayList(Collections.EMPTY_LIST);
 		}
 
-		return addSingle;
+		return addInList;
 	}
 
 //    @Override
