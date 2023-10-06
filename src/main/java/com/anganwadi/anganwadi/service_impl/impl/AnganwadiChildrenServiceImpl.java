@@ -1266,46 +1266,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 		return addInList;
 	}
 
-	private String sumOfItemsByDate(String centerName, String itemCode, String selectedMonth) {
+	private String  sumOfItemsByDate(String itemCode, List<AssetsStock> findRecords) {
 		String itemSum = "";
-		List<AssetsStock> findCenterItems = assetsStockRepository.findAllByCenterNameAndItemCodeAndMonth(centerName,
-				itemCode, selectedMonth);
+
 		float itemInFloat = 0L;
-		if (findCenterItems.size() > 0) {
-
-			for (AssetsStock fs : findCenterItems) {
-				itemInFloat = itemInFloat + Float.parseFloat(fs.getQty());
+			for(AssetsStock as :  findRecords) {
+				if (itemCode.equals(as.getItemCode().trim())) {
+					itemInFloat = itemInFloat + Float.parseFloat(as.getQty());
+				}
 			}
-		}
-
 		itemSum = String.valueOf(itemInFloat);
 
 		return itemSum;
-	}
-
-	private List<StockOutputArray> getStockArray(String centerName, String selectedMonth) {
-		HashSet<String> uniqueCode = new HashSet<>();
-		List<StockOutputArray> addInArrayList = new ArrayList<>();
-		List<AssetsStock> findDetails = assetsStockRepository.findAllByCenterNameAndMonthOrderByDateDesc(centerName,
-				selectedMonth);
-
-		for (AssetsStock findItemsWise : findDetails) {
-			long getMills = findItemsWise.getDate();
-			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-			Date date = new Date(getMills);
-
-			if (uniqueCode.add(findItemsWise.getItemCode())) {
-				StockOutputArray singleEntry = StockOutputArray.builder().centerName(findItemsWise.getCenterName())
-						.itemCode(findItemsWise.getItemCode()).itemName(findItemsWise.getItemName())
-						.quantity(sumOfItemsByDate(findItemsWise.getCenterName(), findItemsWise.getItemCode(),
-								selectedMonth))
-						.unit(findItemsWise.getQtyUnit()).build();
-				addInArrayList.add(singleEntry);
-			}
-
-		}
-
-		return addInArrayList;
 	}
 
 	@Override
@@ -1316,39 +1288,41 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 		long startTime = commonMethodsService.dateChangeToLong(startDate);
 		long endTime = commonMethodsService.dateChangeToLong(endDate);
 
-		List<AssetsStock> findByCenterName = assetsStockRepository.findAllByCenterIdAndDateRange(centerid, startTime,
-				endTime);
-		String convertedDate = null;
+		Set<String > uniqueItemCode = new HashSet<>();
 
-		StockOutputItemsDTO addInList = new StockOutputItemsDTO();
-		if (findByCenterName.size() > 0) {
-			List<StockOutputArray>  lsStock = new ArrayList<>();
-			for(AssetsStock assetsStock : findByCenterName){
+		List<AssetsStock> findRecords = assetsStockRepository.findAllByCenterIdAndDateRange(centerid, startTime,
+				endTime,Sort.by(Sort.Direction.DESC, "createdDate"));
+		String convertedDate = "";
 
-				long getMills = assetsStock.getDate();
-				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-				Date date = new Date(getMills);
-				log.info("date " + df.format(date));
-				convertedDate = df.format(date);
+		List<StockOutputArray> addInList = new ArrayList<>();
+		StockOutputItemsDTO stockData = new StockOutputItemsDTO();
+
+		if(findRecords.size()>0){
+			for(AssetsStock items : findRecords) {
+				if(uniqueItemCode.add(items.getItemCode().trim())) {
+
+				Date date = new Date(items.getDate());
+//				log.info("date " + ApplicationConstants.df.format(date));
+					convertedDate = ApplicationConstants.df.format(date);
+
 				StockOutputArray stockDetail = new StockOutputArray();
-				stockDetail.setItemName(assetsStock.getItemName());
-				stockDetail.setItemCode(assetsStock.getItemCode());
-				stockDetail.setCenterName(assetsStock.getCenterName());
-				stockDetail.setQuantity(assetsStock.getQty());
-				stockDetail.setUnit(assetsStock.getQtyUnit());
-				lsStock.add(stockDetail);
+				stockDetail.setItemName(items.getItemName());
+				stockDetail.setItemCode(items.getItemCode());
+				stockDetail.setCenterName(items.getCenterName());
+				stockDetail.setQuantity(sumOfItemsByDate(items.getItemCode().trim(),findRecords));
+				stockDetail.setUnit(items.getQtyUnit());
+				addInList.add(stockDetail);
 
+					stockData.setDate(convertedDate);
+					stockData.setStockArrayList(addInList);
+				}
 			}
-			addInList.setDate(convertedDate);
-			addInList.setStockArrayList(lsStock);
-
 		} else {
-			StockOutputItemsDTO dto = new StockOutputItemsDTO();
-			dto.setDate("");
-			dto.setStockArrayList(Collections.EMPTY_LIST);
+			stockData.setDate("");
+			stockData.setStockArrayList(Collections.EMPTY_LIST);
 		}
 
-		return addInList;
+		return stockData;
 	}
 
 //    @Override
@@ -1561,21 +1535,21 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 	@Override
 	public List<AnganwadiAahaarData> getAnganwadiAahaarData(DashboardFilter dashboardFilter) throws ParseException {
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 		List<AnganwadiAahaarData> addInList = new ArrayList<>();
 
 		Date startTime, endTime;
 
 		if (dashboardFilter.getStartDate().trim().length() > 0) {
-			startTime = df.parse(dashboardFilter.getStartDate().trim());
+			startTime = ApplicationConstants.df.parse(dashboardFilter.getStartDate().trim());
 		} else {
-			startTime = df.parse(commonMethodsService.startDateOfMonth());
+			startTime = ApplicationConstants.df.parse(commonMethodsService.startDateOfMonth());
 		}
 
 		if (dashboardFilter.getEndDate().trim().length() > 0) {
-			endTime = df.parse(dashboardFilter.getEndDate().trim());
+			endTime = ApplicationConstants.df.parse(dashboardFilter.getEndDate().trim());
 		} else {
-			endTime = df.parse(commonMethodsService.endDateOfMonth());
+			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
 
 		Calendar addOneDay = Calendar.getInstance();
@@ -1595,8 +1569,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 			AnganwadiAahaarData singleList = AnganwadiAahaarData.builder().foodName(checkItemCode.get().getItemName())
 					.centerId(meals.getCenterId()).foodCode(meals.getItemCode()).quantity(meals.getQuantity())
 					.childrenCount(getAnganwadiAahaarPresentCount(meals.getCenterId(), meals.getDate()))
-					.quantityUnit(checkItemCode.get().getQuantityUnit()).startDate(df.format(startTime))
-					.endDate(df.format(endTime)).date(df.format(new Date(meals.getDate())))
+					.quantityUnit(checkItemCode.get().getQuantityUnit()).startDate(ApplicationConstants.df.format(startTime))
+					.endDate(ApplicationConstants.df.format(endTime)).date(ApplicationConstants.df.format(new Date(meals.getDate())))
 					.mealType(checkItemCode.get().getMealType()).build();
 			addInList.add(singleList);
 		}

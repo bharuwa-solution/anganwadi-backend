@@ -2,6 +2,7 @@ package com.anganwadi.anganwadi.repositories;
 
 import com.anganwadi.anganwadi.domains.entity.WeightTracking;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,4 +27,6 @@ public interface WeightTrackingRepository extends MongoRepository<WeightTracking
 
     List<WeightTracking> findAllByMotherIdAndVisitTypeAndVisitRound(String memberId, String visitType, String visitRound);
 
+    @Aggregation(pipeline = {"{'$match':{'childId':?0,'isActive':true,'deleted':false}}", "{$limit:1}"})
+    List<WeightTracking> findAllByChildIdLimit(String id, Sort createdDate);
 }

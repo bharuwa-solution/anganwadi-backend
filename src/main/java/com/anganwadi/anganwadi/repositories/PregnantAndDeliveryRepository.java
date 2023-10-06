@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantAndDelivery, String> {
@@ -63,4 +64,7 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     @Query("{'dateOfDelivery': { $eq : 0}, 'regDate' : { $gte : ?0, $lte: ?1},'centerId': {$not:{$in: ?3},'$regex': ?2 }}")
     List<PregnantAndDelivery> findAllByPregnancyCriteriaByActiveCenters(Long startTime, Long endTime, String centerId, String[] ignoreCenters);
+
+    @Query("{'motherMemberId':?0,'dateOfDelivery':{$eq:0},'lastMissedPeriodDate':{$gt:0},'misCarriageDate':{$eq:0},{$limit:1}'}")
+    List<PregnantAndDelivery> findByMotherMemberIdAndDeliveryCriteria(String id);
 }

@@ -49,7 +49,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'dob':{$gte:?0,$lte:?2},'centerId':{$regex:?1},'dateOfMortality':''}")
     List<FamilyMember> findAllByDobAndCenterId(long convertToMills, String centerId,long timeLess3Yrs);
    
-    @Query("{'dob':{$gte:?1},'centerId':?0}")
+    @Query("{'dob':{$gte:?1},'centerId':?0,'isActive':true, 'deleted':false}")
     List<FamilyMember> findAllByCenterIdAndDob(String centerId, long convertToMills, Sort createdDate);
 
     @Query("{'gender':?0,'centerId':?1}")
