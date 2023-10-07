@@ -1,9 +1,11 @@
 package com.anganwadi.anganwadi.service_impl.impl;
 
+import com.anganwadi.anganwadi.domains.dto.FamilyMemberDTO;
 import com.anganwadi.anganwadi.domains.entity.*;
 import com.anganwadi.anganwadi.exceptionHandler.CustomException;
 import com.anganwadi.anganwadi.repositories.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,10 @@ public class CommonMethodsService {
     private final BabiesBirthRepository babiesBirthRepository;
     private final WeightTrackingRepository weightTrackingRepository;
     private final VisitsRepository visitsRepository;
+    private final BloodTestTrackingRepository bloodTestTrackingRepository;
+    private final VaccinationScheduleRepository vaccinationScheduleRepository;
+    private final HouseVisitScheduleRepository houseVisitScheduleRepository;
+
 
     @Autowired
     public CommonMethodsService(AnganwadiCenterRepository anganwadiCenterRepository, PregnantAndDeliveryRepository pregnantAndDeliveryRepository,
@@ -42,7 +48,9 @@ public class CommonMethodsService {
                                 AnganwadiChildrenRepository anganwadiChildrenRepository, FamilyRepository familyRepository,
                                 VaccinationNameRepository vaccinationNameRepository, VaccinationRepository vaccinationRepository,
                                 BabiesBirthRepository babiesBirthRepository, WeightTrackingRepository weightTrackingRepository,
-                                VisitsRepository visitsRepository) {
+                                VisitsRepository visitsRepository, BloodTestTrackingRepository bloodTestTrackingRepository,
+                                VaccinationScheduleRepository vaccinationScheduleRepository, HouseVisitScheduleRepository houseVisitScheduleRepository
+    ) {
 
         this.anganwadiCenterRepository = anganwadiCenterRepository;
         this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
@@ -50,11 +58,14 @@ public class CommonMethodsService {
         this.attendanceRepository = attendanceRepository;
         this.anganwadiChildrenRepository = anganwadiChildrenRepository;
         this.familyRepository = familyRepository;
-        this.vaccinationNameRepository=vaccinationNameRepository;
-        this.vaccinationRepository=vaccinationRepository;
-        this.babiesBirthRepository=babiesBirthRepository;
-        this.weightTrackingRepository=weightTrackingRepository;
-        this.visitsRepository=visitsRepository;
+        this.vaccinationNameRepository = vaccinationNameRepository;
+        this.vaccinationRepository = vaccinationRepository;
+        this.babiesBirthRepository = babiesBirthRepository;
+        this.weightTrackingRepository = weightTrackingRepository;
+        this.visitsRepository = visitsRepository;
+        this.bloodTestTrackingRepository = bloodTestTrackingRepository;
+        this.vaccinationScheduleRepository = vaccinationScheduleRepository;
+        this.houseVisitScheduleRepository = houseVisitScheduleRepository;
     }
 
     public String findCenterName(String centerId) {
@@ -290,6 +301,148 @@ public class CommonMethodsService {
 
     }
 
+    public void removeFromVaccinationSchedule(String id) {
+        if (!StringUtils.isEmpty(id)) {
+            List<VaccinationSchedule> hs = vaccinationScheduleRepository.findAllByMemberId(id);
+            if (hs.size() > 0) {
+                vaccinationScheduleRepository.deleteByMemberId(id);
+            }
+        }
 
+    }
+
+    public void removeFromHouseVisitSchedule(String id) {
+        if (!StringUtils.isEmpty(id)) {
+            List<HouseVisitSchedule> hvs = houseVisitScheduleRepository.findAllByMemberId(id);
+            if (hvs.size() > 0) {
+                houseVisitScheduleRepository.deleteByMemberId(id);
+            }
+        }
+    }
+
+
+    public void memberSoftDelete(FamilyMemberDTO familyMemberDTO, String DateOfMortality) {
+
+        if (DateOfMortality.length() > 0) {
+
+            // Updating in Anganwadi Children, If Exists
+
+            List<AnganwadiChildren> ac = anganwadiChildrenRepository
+                    .findAllByChildIdAndRegisteredTrue(familyMemberDTO.getId());
+
+            if (ac.size() > 0) {
+                for (AnganwadiChildren children : ac) {
+
+                    children.setDeleted(true);
+                    children.setActive(false);
+
+                    anganwadiChildrenRepository.save(children);
+                }
+            }
+
+            // Updating in BabiesBirth
+            List<BabiesBirth> checkInBirth = babiesBirthRepository.findAllByChildId(familyMemberDTO.getId());
+
+            for (BabiesBirth bb : checkInBirth) {
+                bb.setActive(false);
+                bb.setDeleted(true);
+                babiesBirthRepository.save(bb);
+            }
+
+            // Updating in BloodTestTracking
+            List<BloodTestTracking> checkMotherId = bloodTestTrackingRepository.findByMotherId(familyMemberDTO.getId());
+            List<BloodTestTracking> checkChildId = bloodTestTrackingRepository.findByMemberId(familyMemberDTO.getId());
+
+
+            if (checkMotherId.size() > 0) {
+
+                for (BloodTestTracking motherId : checkMotherId) {
+                    motherId.setActive(false);
+                    motherId.setDeleted(true);
+                    bloodTestTrackingRepository.save(motherId);
+                }
+
+            } else if (checkChildId.size() > 0) {
+
+                for (BloodTestTracking childId : checkChildId) {
+                    childId.setActive(false);
+                    childId.setDeleted(true);
+                    bloodTestTrackingRepository.save(childId);
+                }
+            }
+
+            // Remove From Scheduler Tables
+
+            removeFromVaccinationSchedule(familyMemberDTO.getId());
+            removeFromHouseVisitSchedule(familyMemberDTO.getId());
+
+
+            // Updating Vaccination
+            List<Vaccination> checkMotherVaccine = vaccinationRepository.findByMotherId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+            List<Vaccination> checkChildVaccine = vaccinationRepository.findByChildId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+
+            if (checkMotherVaccine.size() > 0) {
+
+                for (Vaccination motherId : checkMotherVaccine) {
+                    motherId.setActive(false);
+                    motherId.setDeleted(true);
+                    vaccinationRepository.save(motherId);
+                }
+
+            } else if (checkChildVaccine.size() > 0) {
+
+                for (Vaccination childId : checkChildVaccine) {
+                    childId.setDeleted(true);
+                    childId.setActive(false);
+                    vaccinationRepository.save(childId);
+                }
+
+            }
+
+            // Updating Weight Tracking
+
+            List<WeightTracking> weightTrackings = weightTrackingRepository.findAllByChildId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+
+            for (WeightTracking wt : weightTrackings) {
+                wt.setActive(false);
+                wt.setDeleted(true);
+                weightTrackingRepository.save(wt);
+            }
+        }
+
+        // Updating Pregnant & Delivery Table
+
+        List<PregnantAndDelivery> findMother = pregnantAndDeliveryRepository.findByMotherMemberIdAndDeliveryCriteria(familyMemberDTO.getId());
+
+        if (findMother.size() > 0) {
+            for (PregnantAndDelivery ppd : findMother) {
+                ppd.setActive(false);
+                ppd.setDeleted(true);
+                pregnantAndDeliveryRepository.save(ppd);
+            }
+        }
+
+
+        // Updating Visits
+
+        List<Visits> checkMotherVisits = visitsRepository.findAllByMotherId(familyMemberDTO.getId(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Visits> checkChildVisits = visitsRepository.findAllByMemberId(familyMemberDTO.getId());
+
+        if (checkMotherVisits.size() > 0) {
+            for (Visits motherId : checkChildVisits) {
+                motherId.setActive(false);
+                motherId.setDeleted(true);
+                visitsRepository.save(motherId);
+            }
+        } else if (checkChildVisits.size() > 0) {
+
+            for (Visits childId : checkChildVisits) {
+                childId.setActive(false);
+                childId.setDeleted(true);
+                visitsRepository.save(childId);
+            }
+        }
+
+    }
 
 }

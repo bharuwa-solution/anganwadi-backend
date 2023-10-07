@@ -26,4 +26,6 @@ public interface StockDistributionRepository extends MongoRepository<StockDistri
     List<StockDistribution> findAllByCenterIdAndDateRange(String centerId, long startDataRange, long endDataRange);
 
     void deleteAllByFamilyId(String familyId);
+
+    List<StockDistribution> findAllByFamilyId(String familyId);
 }

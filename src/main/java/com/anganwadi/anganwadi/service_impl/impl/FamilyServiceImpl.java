@@ -881,11 +881,11 @@ public class FamilyServiceImpl implements FamilyService {
 			}
 		}
 
-
 		// Adding Pregnant
 		for (PregnantAndDelivery pregnant : pdd) {
 			if(pregnant.getRegDate()<=endTime.getTime() && uniquePdd.add(pregnant.getMotherMemberId().trim())) {
 				Family findFamily = familyRepository.findByFamilyId(pregnant.getFamilyId());
+//				log.error("id : "+pregnant.getMotherMemberId());
 				FamilyMember member = familyMemberRepository.findById(pregnant.getMotherMemberId()).get();
 
 				HouseholdRelCatData singleEntry_3 = HouseholdRelCatData.builder()
@@ -1925,27 +1925,29 @@ public class FamilyServiceImpl implements FamilyService {
 
 			List<WeightTracking> findChildDetails = weightTrackingRepository.findAllByChildIdLimit(tracking.getId(),
 					Sort.by(Sort.Direction.DESC, "createdDate"));
-			Date date = new Date();
-            String weight = "",height = "";
+
+			String weight = "", height = "", weightDate = "";
 
 			Family findFamilyDetails = familyRepository.findByFamilyId(tracking.getFamilyId());
 
-			for(WeightTracking wt : findChildDetails){
-                weight = wt.getWeight()==null?"":wt.getWeight();
-                height = wt.getHeight()==null?"":wt.getHeight();
-            }
+			for (WeightTracking wt : findChildDetails) {
+				weight = wt.getWeight() == null ? "" : wt.getWeight();
+				height = wt.getHeight() == null ? "" : wt.getHeight();
+				Date date = new Date(wt.getDate());
+				weightDate = ApplicationConstants.df.format(date);
+			}
 
 			if (uniqueChildId.add(tracking.getId())) {
 				WeightRecordsDTO singleEntry = WeightRecordsDTO.builder()
 						.familyId(tracking.getFamilyId() == null ? "" : tracking.getFamilyId())
 						.childId(tracking.getId() == null ? "" : tracking.getId())
-                        .name(tracking.getName())
+						.name(tracking.getName())
 						.houseNo(findFamilyDetails.getHouseNo() == null ? "" : findFamilyDetails.getHouseNo())
 						.gender(tracking.getGender())
-                        .motherName(tracking.getMotherName())
+						.motherName(tracking.getMotherName())
 						.dob(ApplicationConstants.df.format(tracking.getDob()))
-                        .photo(tracking.getPhoto())
-                        .date(ApplicationConstants.df.format(date))
+						.photo(tracking.getPhoto())
+						.date(weightDate)
 						.centerName(tracking.getCenterName())
                         .weight(weight)
 						.height(height)
@@ -3625,7 +3627,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 			familyMemberRepository.save(familyMember);
 
-			memberSoftDelete(familyMemberDTO, familyMember.getDateOfMortality());
+			commonMethodsService.memberSoftDelete(familyMemberDTO, familyMember.getDateOfMortality());
 
 			return FamilyMemberDTO.builder().id(familyMember.getId()).category(familyMember.getCategory())
 					.name(familyMember.getName()).relationWithOwner(familyMember.getRelationWithOwner())
@@ -3649,108 +3651,6 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 
-	private void memberSoftDelete(FamilyMemberDTO familyMemberDTO, String DateOfMortality) {
-
-		if(DateOfMortality.length()>0) {
-
-			// Updating in Anganwadi Children, If Exists
-
-			List<AnganwadiChildren> ac = anganwadiChildrenRepository
-					.findAllByChildIdAndRegisteredTrue(familyMemberDTO.getId());
-
-			if (ac.size() > 0) {
-				for (AnganwadiChildren children : ac) {
-
-					children.setDeleted(true);
-					children.setActive(false);
-
-					anganwadiChildrenRepository.save(children);
-				}
-			}
-
-			// Updating in BabiesBirth
-			List<BabiesBirth> checkInBirth = babiesBirthRepository.findAllByChildId(familyMemberDTO.getId());
-
-			for (BabiesBirth bb : checkInBirth) {
-				bb.setActive(false);
-				bb.setDeleted(true);
-				babiesBirthRepository.save(bb);
-			}
-
-			// Updating in BloodTestTracking
-			List<BloodTestTracking> checkMotherId = bloodTestTrackingRepository.findByMotherId(familyMemberDTO.getId());
-			List<BloodTestTracking> checkChildId = bloodTestTrackingRepository.findByMemberId(familyMemberDTO.getId());
-
-
-			if (checkMotherId.size() > 0) {
-
-				for (BloodTestTracking motherId : checkMotherId) {
-					motherId.setActive(false);
-					motherId.setDeleted(true);
-					bloodTestTrackingRepository.save(motherId);
-				}
-
-			} else if (checkChildId.size() > 0) {
-
-				for (BloodTestTracking childId : checkChildId) {
-					childId.setActive(false);
-					childId.setDeleted(true);
-					bloodTestTrackingRepository.save(childId);
-				}
-			}
-
-			// Remove From Scheduler Tables
-
-			removeFromVaccinationSchedule(familyMemberDTO.getId());
-			removeFromHouseVisitSchedule(familyMemberDTO.getId());
-
-
-			// Updating Vaccination
-			List<Vaccination> checkMotherVaccine = vaccinationRepository.findByMotherId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
-			List<Vaccination> checkChildVaccine = vaccinationRepository.findByChildId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
-
-			if (checkMotherVaccine.size() > 0) {
-
-				for (Vaccination motherId : checkMotherVaccine) {
-					motherId.setActive(false);
-					motherId.setDeleted(true);
-					vaccinationRepository.save(motherId);
-				}
-
-			} else if (checkChildVaccine.size() > 0) {
-
-				for (Vaccination childId : checkChildVaccine) {
-					childId.setDeleted(true);
-					childId.setActive(false);
-					vaccinationRepository.save(childId);
-				}
-
-			}
-
-			// Updating Weight Tracking
-
-			List<WeightTracking> weightTrackings = weightTrackingRepository.findAllByChildId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
-
-			for (WeightTracking wt : weightTrackings) {
-				wt.setActive(false);
-				wt.setDeleted(true);
-				weightTrackingRepository.save(wt);
-			}
-		}
-
-		// Updating Pregnant & Delivery Table
-
-		List<PregnantAndDelivery> findMother = pregnantAndDeliveryRepository.findByMotherMemberIdAndDeliveryCriteria(familyMemberDTO.getId());
-
-		if(findMother.size()>0){
-			for(PregnantAndDelivery ppd :  findMother) {
-				ppd.setActive(false);
-				ppd.setDeleted(true);
-				pregnantAndDeliveryRepository.save(ppd);
-			}
-		}
-
-	}
 
 
 	@Override
@@ -3810,6 +3710,7 @@ public class FamilyServiceImpl implements FamilyService {
 				String isMinority = findFamily.getIsMinority() == null ? "" : findFamily.getIsMinority();
 				String icdsService = findFamily.getIcdsService() == null ? "" : findFamily.getIcdsService();
 
+				findFamily.setActive(false);
 				findFamily.setDeleted(true);
 				familyRepository.save(findFamily);
 				boolean deletedStatus = findFamily.isDeleted();
@@ -3819,17 +3720,21 @@ public class FamilyServiceImpl implements FamilyService {
 				String headName = "", headPic = "", headGender = "", headMobile = "";
 				Date dob = new Date();
 
-				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 				long totalMembers = findMembers.size();
 
 				if (findMembers.size() > 0) {
 
 					for (FamilyMember deleteMember : findMembers) {
+						deleteMember.setActive(false);
 						deleteMember.setDeleted(true);
 						familyMemberRepository.save(deleteMember);
-						commonMethodsService.removeMemberFromAssociatedTable(deleteMember.getId());
-						removeFromHouseVisitSchedule(deleteMember.getId());
-						removeFromVaccinationSchedule(deleteMember.getId());
+						FamilyMemberDTO familyMemberDTO = modelMapper.map(deleteMember, FamilyMemberDTO.class);
+
+						commonMethodsService.memberSoftDelete(familyMemberDTO, deleteMember.getId());
+						commonMethodsService.removeFromHouseVisitSchedule(deleteMember.getId());
+						commonMethodsService.removeFromVaccinationSchedule(deleteMember.getId());
+
 					}
 
 					for (FamilyMember findHod : findMembers) {
@@ -3850,22 +3755,48 @@ public class FamilyServiceImpl implements FamilyService {
 						}
 
 					}
-
-					for (FamilyMember finalStep : findMembers) {
-						familyMemberRepository.deleteById(finalStep.getId());
-					}
 				}
 
 				// Remove From Stock Distro.
-				stockDistributionRepository.deleteAllByFamilyId(familyId);
+				List<StockDistribution> familyInStock = stockDistributionRepository.findAllByFamilyId(familyId);
 
-				familyRepository.deleteById(primaryId);
+				for (StockDistribution fs : familyInStock) {
+					fs.setActive(false);
+					fs.setDeleted(true);
+					stockDistributionRepository.save(fs);
+				}
 
-				return HouseholdsDTO.builder().id(primaryId).centerName(centerName).uniqueCode("").uniqueId("")
-						.headName(headName).headDob(df.format(dob)).totalMembers(String.valueOf(totalMembers))
-						.headPic(headPic).centerId(centerId).headGender(headGender).houseNo(findFamily.getHouseNo())
-						.mobileNumber(headMobile).uniqueIdType("").deleted(deletedStatus).category(category)
-						.religion(religion).isMinority(isMinority).icdsService(icdsService).build();
+				// Remove From Visits
+
+				List<Visits> checkVisits = visitsRepository.findAllByFamilyId(familyId);
+
+				for (Visits visits : checkVisits) {
+					visits.setActive(false);
+					visits.setDeleted(true);
+
+					visitsRepository.save(visits);
+				}
+
+				return HouseholdsDTO.builder()
+						.id(primaryId)
+						.centerName(centerName)
+						.uniqueCode("")
+						.uniqueId("")
+						.headName(headName)
+						.headDob(ApplicationConstants.df.format(dob))
+						.totalMembers(String.valueOf(totalMembers))
+						.headPic(headPic)
+						.centerId(centerId)
+						.headGender(headGender)
+						.houseNo(findFamily.getHouseNo())
+						.mobileNumber(headMobile)
+						.uniqueIdType("")
+						.deleted(deletedStatus)
+						.category(category)
+						.religion(religion)
+						.isMinority(isMinority)
+						.icdsService(icdsService)
+						.build();
 
 			} else {
 				throw new CustomException("Un-Authorized Access");
@@ -3936,7 +3867,6 @@ public class FamilyServiceImpl implements FamilyService {
 			if (verifyUser.getId().length() > 0 && verifyUser.getRole().equals(ApplicationConstants.USER_ADMIN)) {
 
 				FamilyMember checkMember = familyMemberRepository.findById(memberId).get();
-				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
 				String primaryId = checkMember.getId();
 				String category = checkMember.getCategory() == null ? "" : checkMember.getCategory();
@@ -3950,7 +3880,7 @@ public class FamilyServiceImpl implements FamilyService {
 				String mobileNo = checkMember.getMobileNumber() == null ? "" : checkMember.getMobileNumber();
 				String idType = checkMember.getIdType() == null ? "" : checkMember.getIdType();
 				String idNumber = checkMember.getIdNumber() == null ? "" : checkMember.getIdNumber();
-				String dob = df.format(new Date(checkMember.getDob()));
+				String dob = ApplicationConstants.df.format(new Date(checkMember.getDob()));
 				String handicap = checkMember.getHandicap() == null ? "" : checkMember.getHandicap();
 				String maritalStatus = checkMember.getMaritalStatus() == null ? "" : checkMember.getMaritalStatus();
 				String stateCode = checkMember.getStateCode() == null ? "" : checkMember.getStateCode();
@@ -3964,9 +3894,17 @@ public class FamilyServiceImpl implements FamilyService {
 						: checkMember.getDateOfMortality();
 				String photo = checkMember.getPhoto() == null ? "" : checkMember.getPhoto();
 
-				familyMemberRepository.deleteById(primaryId);
 
-				commonMethodsService.removeMemberFromAssociatedTable(primaryId);
+				String currentMortalityDate = ApplicationConstants.df.format(new Date());
+				FamilyMemberDTO familyMemberDTO = modelMapper.map(checkMember, FamilyMemberDTO.class);
+
+				// Updating Active & Deleted Parameter in Family Member Table
+				checkMember.setDateOfMortality(currentMortalityDate);
+				checkMember.setDeleted(true);
+				checkMember.setActive(false);
+
+				familyMemberRepository.save(checkMember);
+				commonMethodsService.memberSoftDelete(familyMemberDTO, currentMortalityDate);
 
 				return FamilyMemberDTO.builder().id(primaryId).category(category).name(name)
 						.relationWithOwner(relationWithOwner).gender(gender).centerName(centerName)
@@ -4323,15 +4261,14 @@ public class FamilyServiceImpl implements FamilyService {
 		long missedPeriodDate = ApplicationConstants.df.parse(pregnantAndDeliveryDTO.getLastMissedPeriodDate()).getTime();
 		try {
 
-			if(pregnantAndDeliveryDTO.getMisCarriageDate().length()>0){
+			if (pregnantAndDeliveryDTO.getMisCarriageDate().length() > 0) {
 
 
-				 // Removing House visits & vaccination entries from db, If Mis-charged Date is Entered
-				removeFromVaccinationSchedule(findPD.getMotherMemberId());
-				removeFromHouseVisitSchedule(findPD.getMotherMemberId());
+				// Removing House visits & vaccination entries from db, If Mis-charged Date is Entered
+				commonMethodsService.removeFromVaccinationSchedule(findPD.getMotherMemberId());
+				commonMethodsService.removeFromHouseVisitSchedule(findPD.getMotherMemberId());
 
-			}
-			else {
+			} else {
 				yojanaList = pregnantAndDeliveryDTO.getYojana() == null ? new String[0] : pregnantAndDeliveryDTO.getYojana();
 			}
 
@@ -4375,25 +4312,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 	}
 
-	public void removeFromHouseVisitSchedule(String id) {
-		if (!StringUtils.isEmpty(id)) {
-			List<HouseVisitSchedule> hvs = houseVisitScheduleRepository.findAllByMemberId(id);
-			if (hvs.size() > 0) {
-				houseVisitScheduleRepository.deleteByMemberId(id);
-			}
-		}
 
-	}
-
-	public void removeFromVaccinationSchedule(String id) {
-		if (!StringUtils.isEmpty(id)) {
-			List<VaccinationSchedule> hs = vaccinationScheduleRepository.findAllByMemberId(id);
-			if (hs.size() > 0) {
-				vaccinationScheduleRepository.deleteByMemberId(id);
-			}
-		}
-
-	}
 
 	@Override
 	public PregnantAndDeliveryDTO deletePregnantWomenDetails(String id) {
@@ -4403,8 +4322,8 @@ public class FamilyServiceImpl implements FamilyService {
 		}
 
 		try {
-			removeFromHouseVisitSchedule(id);
-			removeFromVaccinationSchedule(id);
+			commonMethodsService.removeFromHouseVisitSchedule(id);
+			commonMethodsService.removeFromVaccinationSchedule(id);
 
 			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 			PregnantAndDelivery findPD = pregnantAndDeliveryRepository.findById(id).get();
@@ -4920,8 +4839,8 @@ public class FamilyServiceImpl implements FamilyService {
 					gender = "", centerId = "", firstWeight = "", height = "", centerName = "";
 			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-			removeFromHouseVisitSchedule(id);
-			removeFromVaccinationSchedule(id);
+			commonMethodsService.removeFromHouseVisitSchedule(id);
+			commonMethodsService.removeFromVaccinationSchedule(id);
 
 			DeleteBornChildDTO deleteRecord = new DeleteBornChildDTO();
 			BabiesBirth findChild = new BabiesBirth();

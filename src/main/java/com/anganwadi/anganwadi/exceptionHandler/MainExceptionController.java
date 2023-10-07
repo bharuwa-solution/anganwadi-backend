@@ -22,7 +22,7 @@ public class MainExceptionController implements ErrorController {
 
     @ExceptionHandler(NullPointerException.class)
     private ResponseEntity<?> handleNullPointerException(NullPointerException nullError) {
-        log.error(nullError.getMessage());
+        log.error(String.valueOf(nullError.getCause()));
         Map<String, Object> setNullError = new HashMap<>();
         setNullError.put("status", HttpStatus.BAD_REQUEST);
         setNullError.put("message", nullError.getMessage());
