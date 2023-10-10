@@ -15,12 +15,12 @@ public interface StockDistributionRepository extends MongoRepository<StockDistri
 
     // List<StockDistribution> findAllByCenterNameAndMonth(String centerName, String selectedMonth);
 
-    List<StockDistribution> findAllByFamilyIdAndMonth(String familyId, String selectedMonth);
+    List<StockDistribution> findAllByFamilyIdAndDate(String familyId, Long  selectedMonth);
 
-    List<StockDistribution> findAllByFamilyIdAndItemCodeAndMonth(String familyId, String itemCode, String selectedMonth, Sort itemCode1);
+    List<StockDistribution> findAllByFamilyIdAndItemCodeAndDate(String familyId, String itemCode, Long selectedMonth, Sort itemCode1);
 
     @Query("{'date':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
-    List<StockDistribution> findAllByDistributionCriteria(Date startTime, Date endTime, String centerId);
+    List<StockDistribution> findAllByDistributionCriteria(Long startTime, Long endTime, String centerId);
 
     @Query("{'centerId':?0,date:{$gte:?1,$lte:?2}}")
     List<StockDistribution> findAllByCenterIdAndDateRange(String centerId, long startDataRange, long endDataRange);

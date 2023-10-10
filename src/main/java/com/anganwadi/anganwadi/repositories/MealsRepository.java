@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface MealsRepository extends MongoRepository<Meals, String> {
 
-    @Query("{'createdDate':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
-    List<Meals> findAllByMonthCriteria(Date startDate, Date endDate, Sort date, String centerId);
+    @Query("{'date':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    List<Meals> findAllByMonthCriteria(Long startDate, Long endDate, Sort date, String centerId);
 
     @Query("{'mealType':?0,'centerId':?1,'date':?2}")
     List<Meals> findAllByMealTypeAndCenterIdAndDate(String mealType, String centerId, long date);

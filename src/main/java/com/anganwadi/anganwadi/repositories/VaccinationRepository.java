@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -20,4 +21,7 @@ public interface VaccinationRepository extends MongoRepository<Vaccination, Stri
     void deleteAllByChildId(String primaryId);
     List<Vaccination> findByMotherId(String primaryId, Sort createdDate);
     void deleteAllByMotherId(String primaryId);
+
+    @Query("{'centerId':{$regex:?2},'isActive':true,'deleted':false}")
+    List<Vaccination> findAllByVaccinationCriteria(Date startTime, Date endTime, String centerId);
 }

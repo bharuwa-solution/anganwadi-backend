@@ -211,7 +211,7 @@ public class CommonMethodsService {
     }
 
     public long dateChangeToLong(String dateStr) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Date date = sdf.parse(dateStr);
 
         return date.getTime();

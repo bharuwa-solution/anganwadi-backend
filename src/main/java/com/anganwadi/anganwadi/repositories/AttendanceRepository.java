@@ -29,7 +29,7 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
 
     List<Attendance> findAllByChildIdAndDateAndCenterId(String childId, long date, String centerId);
 
-    @Query("{'date':{$gte:?0,$lte:?1},'centerId':{$regex:?2}}")
+    @Query("{'date':{$gte:?0,$lte:?1},'centerId':{$regex:?2},'isActive':true,'deleted':false}")
     List<Attendance> findAllByDateRange(long startDayMillis, long lastDayMillis, String centerId);
 
     @Query("{'date':?0,'centerId':?1,'isRegistered':true}")

@@ -103,7 +103,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 		Optional<FamilyMember> familyMember = familyMemberRepository.findById(saveAdmissionDTO.getChildId());
 
 		if (!familyMember.isPresent()) {
-			throw new CustomException("Student Not Found !!");
+			throw new CustomException("Student Not Found Or Not Available !!");
 		}
 
 		if (!familyMember.get().getDateOfMortality().equals("")) {
@@ -489,7 +489,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 					.deleted(findStudent.isDeleted()).build();
 
 		} else {
-			throw new CustomException("Student Not Found");
+			throw new CustomException("Student Not Found Or Not Available");
 		}
 	}
 
@@ -554,16 +554,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
 
-		Calendar addOneDay = Calendar.getInstance();
-		addOneDay.setTime(endTime);
-		addOneDay.add(Calendar.DATE, 1);
-		endTime = addOneDay.getTime();
-
 		List<StockDistribution> stockDistributionList = stockDistributionRepository
-				.findAllByDistributionCriteria(startTime, endTime, dashboardFilter.getCenterId().trim());
-
-		addOneDay.add(Calendar.DATE, -1);
-		endTime = addOneDay.getTime();
+				.findAllByDistributionCriteria(startTime.getTime(), endTime.getTime(), dashboardFilter.getCenterId().trim());
 
 		for (StockDistribution sc : stockDistributionList) {
 			if (uniqueFood.add(sc.getItemCode().trim())) {
@@ -573,7 +565,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 						.itemCode(sc.getItemCode())
 						.quantityUnit(sc.getUnit())
 						.distribution(String.valueOf(getRationQty(sc.getItemCode().trim(), stockDistributionList)))
-						.allocated(String.valueOf(new Random().nextInt(40)))
+						.allocated("")
 						.shorted("")
 						.access("")
 						.build();
@@ -737,10 +729,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	@Override
 	public List<SaveMeals> saveMeals(List<SaveMeals> saveMeals, String centerId) throws ParseException {
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 		Date currentTime = new Date();
-		String formatToString = df.format(currentTime.getTime());
-		Date formatToTime = df.parse(formatToString);
+		String formatToString = ApplicationConstants.df.format(currentTime.getTime());
+		Date formatToTime = ApplicationConstants.df.parse(formatToString);
 		log.error("input " + saveMeals);
 
 		long timestamp = formatToTime.getTime();
@@ -788,7 +780,7 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 //                throw new CustomException("Selected Food Item Is Not Available, Please Contact Anganwadi To Add In List");
 			}
 
-			addInList.add(SaveMeals.builder().date(df.format(timestamp)).itemName(checkItemCode.get().getItemName())
+			addInList.add(SaveMeals.builder().date(ApplicationConstants.df.format(timestamp)).itemName(checkItemCode.get().getItemName())
 					.itemCode(checkItemCode.get().getItemCode()).quantityUnit(checkItemCode.get().getQuantityUnit())
 					.quantity(mealsData.getQuantity() == null ? "" : mealsData.getQuantity()).centerId(centerId)
 					.totalCalorie(String.valueOf(totalCalorie)).totalProtein(String.valueOf(totalProtein))
@@ -1342,13 +1334,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	@Override
 	public List<StockDistributionDTO> saveDistributionList(List<StockDistributionDTO> stockDistributionDTOS,
 			String centerId) throws ParseException {
-
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-		Date date = new Date();
-		long mills = date.getTime();
 		List<StockDistributionDTO> addInList = new ArrayList<>();
-		String[] spiltMonth = df.format(date).split("-");
-		String currentMonth = spiltMonth[1].replace("0", "");
+
+
+		Date currentDate = new Date();
 
 		for (StockDistributionDTO stockList : stockDistributionDTOS) {
 
@@ -1362,9 +1351,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 				}
 			}
 
-			StockDistribution saveEntry = StockDistribution.builder().centerId(centerId).date(mills).month(currentMonth)
-					.familyId(stockList.getFamilyId()).itemCode(stockList.getItemCode())
-					.itemName(stockList.getItemName()).quantity(stockList.getQuantity()).unit(stockList.getUnit())
+			StockDistribution saveEntry = StockDistribution.builder()
+					.centerId(centerId)
+					.date(commonMethodsService.dateChangeToLong(ApplicationConstants.df.format(currentDate)))
+					.familyId(stockList.getFamilyId())
+					.itemCode(stockList.getItemCode())
+					.itemName(stockList.getItemName())
+					.quantity(stockList.getQuantity())
+					.unit(stockList.getUnit())
 					.build();
 
 			stockDistributionRepository.save(saveEntry);
@@ -1380,8 +1374,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 	private String getDistributionQty(String familyId, String itemCode, String selectedMonth) {
 
-		List<StockDistribution> findItemsQty = stockDistributionRepository.findAllByFamilyIdAndItemCodeAndMonth(
-				familyId, itemCode, selectedMonth, Sort.by(Sort.Direction.ASC, "itemCode"));
+		List<StockDistribution> findItemsQty = stockDistributionRepository.findAllByFamilyIdAndItemCodeAndDate(
+				familyId, itemCode, 0L, Sort.by(Sort.Direction.ASC, "itemCode"));
 		Float sum = 0F;
 		String finalQty = "";
 		for (StockDistribution findQty : findItemsQty) {
@@ -1395,8 +1389,8 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	private List<DistributionArrayList> getItemArray(String familyId, String selectedMonth) {
 
 		HashSet<String> uniqueItem = new HashSet<>();
-		List<StockDistribution> findItems = stockDistributionRepository.findAllByFamilyIdAndMonth(familyId,
-				selectedMonth);
+		List<StockDistribution> findItems = stockDistributionRepository.findAllByFamilyIdAndDate(familyId,
+				0L);
 		List<DistributionArrayList> itemList = new ArrayList<>();
 
 		for (StockDistribution items : findItems) {
@@ -1552,26 +1546,24 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
 
-		Calendar addOneDay = Calendar.getInstance();
-		addOneDay.setTime(endTime);
-		addOneDay.add(Calendar.DATE, 1);
-		endTime = addOneDay.getTime();
-
-		List<Meals> findMeals = mealsRepository.findAllByMonthCriteria(startTime, endTime,
+		List<Meals> findMeals = mealsRepository.findAllByMonthCriteria(startTime.getTime(), endTime.getTime(),
 				Sort.by(Sort.Direction.ASC, "date"), dashboardFilter.getCenterId().trim());
 
-		addOneDay.add(Calendar.DATE, -1);
-		endTime = addOneDay.getTime();
 
 		for (Meals meals : findMeals) {
 			Optional<MealsType> checkItemCode = mealsTypeRepository.findByItemCode(meals.getItemCode());
 
 			AnganwadiAahaarData singleList = AnganwadiAahaarData.builder().foodName(checkItemCode.get().getItemName())
-					.centerId(meals.getCenterId()).foodCode(meals.getItemCode()).quantity(meals.getQuantity())
+					.centerId(meals.getCenterId())
+					.foodCode(meals.getItemCode())
+					.quantity(meals.getQuantity())
 					.childrenCount(getAnganwadiAahaarPresentCount(meals.getCenterId(), meals.getDate()))
-					.quantityUnit(checkItemCode.get().getQuantityUnit()).startDate(ApplicationConstants.df.format(startTime))
-					.endDate(ApplicationConstants.df.format(endTime)).date(ApplicationConstants.df.format(new Date(meals.getDate())))
-					.mealType(checkItemCode.get().getMealType()).build();
+					.quantityUnit(checkItemCode.get().getQuantityUnit())
+					.startDate(ApplicationConstants.df.format(startTime))
+					.endDate(ApplicationConstants.df.format(endTime))
+					.date(ApplicationConstants.df.format(new Date(meals.getDate())))
+					.mealType(checkItemCode.get().getMealType())
+					.build();
 			addInList.add(singleList);
 		}
 		return addInList;
@@ -1628,20 +1620,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 		List<DashboardAttendanceDTO> addInList = new ArrayList<>();
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
 		long startTime = 0, endTime = 0;
 
 		if (dashboardFilter.getStartDate().trim().length() > 0) {
-			startTime = df.parse(dashboardFilter.getStartDate().trim()).getTime();
+			startTime = ApplicationConstants.df.parse(dashboardFilter.getStartDate().trim()).getTime();
 		} else {
-			startTime = df.parse(commonMethodsService.startDateOfMonth()).getTime();
+			startTime = ApplicationConstants.df.parse(commonMethodsService.startDateOfMonth()).getTime();
 		}
 
 		if (dashboardFilter.getEndDate().trim().length() > 0) {
-			endTime = df.parse(dashboardFilter.getEndDate().trim()).getTime();
+			endTime = ApplicationConstants.df.parse(dashboardFilter.getEndDate().trim()).getTime();
 		} else {
-			endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
+			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth()).getTime();
 		}
 
 		/*
@@ -1658,10 +1648,14 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 			FamilyMember memberDetails = familyMemberRepository.findById(attend.getChildId()).get();
 
 			DashboardAttendanceDTO singleEntry = DashboardAttendanceDTO.builder()
-					.centerName(memberDetails.getCenterName()).centerId(attend.getCenterId())
-					.childId(attend.getChildId()).startDate(df.format(startTime)).endDate(df.format(endTime))
+					.centerName(memberDetails.getCenterName())
+					.centerId(attend.getCenterId())
+					.childId(attend.getChildId())
+					.startDate(ApplicationConstants.df.format(startTime))
+					.endDate(ApplicationConstants.df.format(endTime))
 					.attendanceType(attend.getAttType() == null ? "" : attend.getAttType())
-					.date(df.format(attendanceDate)).attendance(attend.getAttendance()).build();
+					.date(ApplicationConstants.df.format(attendanceDate))
+					.attendance(attend.getAttendance()).build();
 
 			addInList.add(singleEntry);
 		}
@@ -1721,7 +1715,6 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	public List<AnganwadiChildrenList> getAnganwadiChildrenDetails(DashboardFilter dashboardFilter)
 			throws ParseException {
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		List<AnganwadiChildrenList> addInList = new ArrayList<>();
 		String searchKeyword = dashboardFilter.getSearch() == null ? "" : dashboardFilter.getSearch();
 		HashSet<String> uniqueStudent = new HashSet<>();
@@ -1729,16 +1722,16 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 		Date startTime = null, endTime = null;
 
 		if (dashboardFilter.getStartDate().trim().length() > 0) {
-			startTime = df.parse(dashboardFilter.getStartDate().trim());
+			startTime = ApplicationConstants.df.parse(dashboardFilter.getStartDate().trim());
 
 		} else {
-			startTime = df.parse(commonMethodsService.startDateOfMonth());
+			startTime = ApplicationConstants.df.parse(commonMethodsService.startDateOfMonth());
 		}
 
 		if (dashboardFilter.getEndDate().trim().length() > 0) {
-			endTime = df.parse(dashboardFilter.getEndDate().trim());
+			endTime = ApplicationConstants.df.parse(dashboardFilter.getEndDate().trim());
 		} else {
-			endTime = df.parse(commonMethodsService.endDateOfMonth());
+			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
 
 		List<AnganwadiChildren> childrenList = anganwadiChildrenRepository.findAllByCreatedDateAndSearch(startTime,
@@ -1753,11 +1746,11 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 					Family findReligion = familyRepository.findByFamilyId(dataList.getFamilyId());
 					AnganwadiChildrenList addSingle = AnganwadiChildrenList.builder()
 							.name(dataList.getName() == null ? "" : dataList.getName()).centerId(dataList.getCenterId())
-							.startDate(df.format(startTime))
+							.startDate(ApplicationConstants.df.format(startTime))
 							.minority(family.getIsMinority() == null ? "" : family.getIsMinority())
 							.houseNo(findReligion.getHouseNo() == null ? "" : findReligion.getHouseNo())
 							.childId(dataList.getChildId() == null ? "" : dataList.getChildId())
-							.endDate(df.format(endTime))
+							.endDate(ApplicationConstants.df.format(endTime))
 							.motherName(memberDetails.getMotherName() == null ? "" : memberDetails.getMotherName())
 							.fatherName(memberDetails.getFatherName() == null ? "" : memberDetails.getFatherName())
 							.dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))

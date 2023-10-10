@@ -75,7 +75,7 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query("{'createdDate':{$lte:?1},'centerId':{$regex:?2},'dob':{$gte:?3},'isActive':true, 'deleted':false}")
     List<FamilyMember> findAllBeneficiaryChildren(Date startTime, Date endTime, String centerId, long millis);
 
-    @Query("{$and:[{'centerId':{$regex:?0,$nin:?2}}],'dob':{$gte:?1},'isActive':true, 'deleted':false}")
+    @Query("{'centerId':{$regex:?0},'dob':{$gte:?1},'isActive':true, 'deleted':false}")
     List<FamilyMember> findAllDashboardFamilyChildren(String centerId, long millis, String[] ignoreCenters);
 
     @Query(value = "{'dob':{$gte:?0}, 'centerId':?1}", count = true)

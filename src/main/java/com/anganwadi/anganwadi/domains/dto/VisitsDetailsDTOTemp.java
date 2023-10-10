@@ -22,6 +22,7 @@ public class VisitsDetailsDTOTemp {
     private List<BloodTestCasesDTO> bloodTest;
     private String weight;
     private String height;
+    private String centerId;
     private String description;
     private String visitRound;
 

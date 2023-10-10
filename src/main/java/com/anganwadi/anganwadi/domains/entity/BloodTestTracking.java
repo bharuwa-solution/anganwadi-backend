@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BloodTestTracking extends BaseObject {
 
     private String testCode;
+    private String centerId;
+    private String familyId;
     private String result;
     private String motherId;
     private String visitType;
