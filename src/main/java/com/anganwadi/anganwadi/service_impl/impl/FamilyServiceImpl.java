@@ -2424,9 +2424,9 @@ public class FamilyServiceImpl implements FamilyService {
     private Boolean validateBeforeAdding(PregnantAndDelivery womenDetails) {
 
         boolean valid = false;
-        PregnantAndDeliveryDTO pddDto = modelMapper.map(womenDetails,PregnantAndDeliveryDTO.class);
+        PregnantAndDeliveryDTO pddDto = modelMapper.map(womenDetails, PregnantAndDeliveryDTO.class);
 
-        if(womenDetails.getLastMissedPeriodDate()==0 && womenDetails.getDateOfDelivery()==0 && checkPregnantWithInYear(pddDto,womenDetails.getLastMissedPeriodDate())){
+        if (womenDetails.getLastMissedPeriodDate() == 0 && womenDetails.getDateOfDelivery() == 0 && checkPregnantWithInYear(pddDto, womenDetails.getLastMissedPeriodDate())) {
 
             valid = true;
         }
@@ -2482,30 +2482,30 @@ public class FamilyServiceImpl implements FamilyService {
             }
 
             // Adding Women, Exists in a Pregnant & Delivery Table After Filtering
-                for (PregnantAndDelivery pdd : checkPregnantWomen) {
+            for (PregnantAndDelivery pdd : checkPregnantWomen) {
 
-                    if (getDiff >= 20 && getDiff <= 60 && validateBeforeAdding(pdd)) {
+                if (getDiff >= 20 && getDiff <= 60 && validateBeforeAdding(pdd)) {
 
-                        // center Name
-                        List<Family> checkHouseDetails = familyRepository.findAllByFamilyId(checkAge.getFamilyId());
+                    // center Name
+                    List<Family> checkHouseDetails = familyRepository.findAllByFamilyId(checkAge.getFamilyId());
 
-                        for (Family getDetails : checkHouseDetails) {
-                            houseNo = getDetails.getHouseNo();
-                            familyId = getDetails.getFamilyId();
-                        }
-
-                        husbandName = checkAge.getFatherName();
-
-                        FemaleMembersDTO addMember = FemaleMembersDTO.builder()
-                                .name(checkAge.getName() == null ? "" : checkAge.getName())
-                                .centerName(commonMethodsService.findCenterName(centerId)).husbandName(husbandName)
-                                .familyId(familyId).houseNo(houseNo).memberId(checkAge.getId())
-                                .profilePic(checkAge.getPhoto() == null ? "" : checkAge.getPhoto())
-                                .dob(ApplicationConstants.df.format(checkAge.getDob())).build();
-
-                        addList.add(addMember);
+                    for (Family getDetails : checkHouseDetails) {
+                        houseNo = getDetails.getHouseNo();
+                        familyId = getDetails.getFamilyId();
                     }
+
+                    husbandName = checkAge.getFatherName();
+
+                    FemaleMembersDTO addMember = FemaleMembersDTO.builder()
+                            .name(checkAge.getName() == null ? "" : checkAge.getName())
+                            .centerName(commonMethodsService.findCenterName(centerId)).husbandName(husbandName)
+                            .familyId(familyId).houseNo(houseNo).memberId(checkAge.getId())
+                            .profilePic(checkAge.getPhoto() == null ? "" : checkAge.getPhoto())
+                            .dob(ApplicationConstants.df.format(checkAge.getDob())).build();
+
+                    addList.add(addMember);
                 }
+            }
         }
         return addList;
     }
@@ -3420,7 +3420,7 @@ public class FamilyServiceImpl implements FamilyService {
                                     .husbandName(searchResults.getFatherName()).dob(ApplicationConstants.df.format(searchResults.getDob()))
                                     .category(searchResults.getCategory()).minority(households.getIsMinority())
                                     .religion(households.getReligion())
-                                    .duration(calDuration(visits.getLastMissedPeriodDate(),endTime.getTime())).build();
+                                    .duration(calDuration(visits.getLastMissedPeriodDate(), endTime.getTime())).build();
 
                             addInList.add(addSingle);
                         }
