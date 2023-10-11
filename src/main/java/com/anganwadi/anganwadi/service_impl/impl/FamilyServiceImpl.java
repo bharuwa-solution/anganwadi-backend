@@ -2109,6 +2109,7 @@ public class FamilyServiceImpl implements FamilyService {
 	public MPRDTO getMPRRecords(String month, String duration, String category, String centerId)
 			throws ParseException {
 
+		month = month == null ? "" : month;
 		duration = duration == null ? "" : duration;
 		category = category == null ? "" : category;
 		long male = 0, female = 0, dharti = 0, pregnant = 0, birth = 0, mortality = 0;
