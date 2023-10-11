@@ -994,10 +994,10 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 
 	private void markAsAbsent(String childId, String centerId) throws ParseException {
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 		Date currentTime = new Date();
-		String formatToString = df.format(currentTime.getTime());
-		Date formatToTime = df.parse(formatToString);
+		String formatToString = ApplicationConstants.df.format(currentTime.getTime());
+		Date formatToTime = ApplicationConstants.df.parse(formatToString);
 
 		long timestamp = formatToTime.getTime();
 
@@ -1013,28 +1013,19 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 			List<Attendance> lastVerify = attendanceRepository.findAllByChildIdAndDateAndCenterId(getId.getChildId(),
 					timestamp, getId.getCenterId());
 			String verifyAttend = checkAttendanceOnDay(getId.getChildId(), timestamp, getId.getCenterId());
-			if (lastVerify.size() <= 0 && getId.getIsGoingSchool().equals("0")) { // && dob <= millis
-				FamilyMember memberDetails = familyMemberRepository.findById(getId.getChildId()).get();
+			if (lastVerify.size() <= 0 && getId.getIsGoingSchool().trim().equals("0")) { // && dob <= millis
 
 				Attendance saveAttendance = Attendance.builder().childId(getId.getChildId())
-						// .dob(dateChangeToString(memberDetails.getDob()))
-						// .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
-						.centerId(getId.getCenterId()).isRegistered(getId.isRegistered()).longitude("").latitude("")
+						.centerId(getId.getCenterId())
+						.isRegistered(getId.isRegistered())
+						.longitude("").latitude("")
 						.attType("System")
-						// .centerName(centerName)
-						// .name(getId.getName())
-
-						// .centerName(centerName)
-//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
 						.photo(getId.getProfilePic())
-						// .gender(getId.getGender())
 						.date(timestamp).attendance(verifyAttend.equals("") ? attendance : verifyAttend).build();
 				attendanceRepository.save(saveAttendance);
 
 			}
-
 		}
-
 	}
 
 	private void markPresent(String childId, String latitude, String longitude, long timestamp, String centerId) {
@@ -1042,27 +1033,24 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 		String[] splitString = childId.split(",");
 
 		for (String getChildId : splitString) {
-			FamilyMember fm = this.familyMemberRepository.findById(getChildId).get();
+			Optional<FamilyMember> fm = familyMemberRepository.findById(getChildId.trim());
 
-			if (!fm.getDateOfMortality().equals(""))
-				continue;
+			if (fm.isPresent() && fm.get().getDateOfMortality().trim().length()==0) {
 
-			List<Attendance> findChildInRecord = attendanceRepository.updateAttendance(getChildId.trim(), timestamp,
-					centerId);
+					List<Attendance> findChildInRecord = attendanceRepository.updateAttendance(getChildId.trim(), timestamp,
+							centerId);
 
-			if (findChildInRecord.size() > 0) {
-
-				for (Attendance markAttendance : findChildInRecord) {
-
-					markAttendance.setLatitude(latitude);
-					markAttendance.setAttType("System");
-					markAttendance.setLongitude(longitude);
-					markAttendance.setAttendance("P");
-					attendanceRepository.save(markAttendance);
-				}
+					if (findChildInRecord.size() > 0) {
+						for (Attendance markAttendance : findChildInRecord) {
+							markAttendance.setLatitude(latitude);
+							markAttendance.setAttType("System");
+							markAttendance.setLongitude(longitude);
+							markAttendance.setAttendance("P");
+							attendanceRepository.save(markAttendance);
+						}
+					}
 			}
 		}
-
 	}
 
 	@Override
@@ -1072,11 +1060,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
         log.error("Center Id : " + centerId);
         // convert date to millis
 
-
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Date currentTime = new Date();
-        String formatToString = df.format(currentTime.getTime());
-        Date formatToTime = df.parse(formatToString);
+        String formatToString = ApplicationConstants.df.format(currentTime.getTime());
+        Date formatToTime = ApplicationConstants.df.parse(formatToString);
         long timestamp = formatToTime.getTime();
 
         // set default value
@@ -1107,13 +1093,13 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
                     .childId(fetchDetails.getChildId())
                     .attType("System")
                     .att("")
-// <<<<<<HEAD
+
                     .dob(commonMethodsService.dateChangeToString(memberDetails.getDob()))
                     .name(memberDetails.getName())
-//==//===
+
                     //.dob(fetchDetails.getDob())
                     .name(commonMethodsService.findMember(fetchDetails.getChildId()).getName())
-//>>>> branch 'master' of git@github.com:BhanuBharuwa/anganwadi-backend.git
+
                     .latitude(attendanceDTO.getLatitude())
                     .longitude(attendanceDTO.getLongitude())
                     .photo(fetchDetails.getPhoto())
@@ -1572,20 +1558,18 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	@Override
 	public List<WeightTrackingDTO> getChildrenWeightData(DashboardFilter dashboardFilter) throws ParseException {
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
 		Date startTime = null, endTime = null;
 
 		if (dashboardFilter.getStartDate().trim().length() > 0) {
-			startTime = df.parse(dashboardFilter.getStartDate().trim());
+			startTime = ApplicationConstants.df.parse(dashboardFilter.getStartDate().trim());
 		} else {
-			startTime = df.parse(commonMethodsService.startDateOfMonth());
+			startTime = ApplicationConstants.df.parse(commonMethodsService.startDateOfMonth());
 		}
 
 		if (dashboardFilter.getEndDate().trim().length() > 0) {
-			endTime = df.parse(dashboardFilter.getEndDate().trim());
+			endTime = ApplicationConstants.df.parse(dashboardFilter.getEndDate().trim());
 		} else {
-			endTime = df.parse(commonMethodsService.endDateOfMonth());
+			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
 
 		Calendar addOneDay = Calendar.getInstance();
@@ -1605,10 +1589,15 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 			Date date = new Date(getMills);
 
 			WeightTrackingDTO addSingle = WeightTrackingDTO.builder().familyId(tracking.getFamilyId())
-					.centerId(tracking.getCenterId()).childId(tracking.getChildId()).date(df.format(date))
-					.startDate(df.format(startTime)).endDate(df.format(endTime)).height(tracking.getHeight())
+					.centerId(tracking.getCenterId())
+					.childId(tracking.getChildId())
+					.date(ApplicationConstants.df.format(date))
+					.startDate(ApplicationConstants.df.format(startTime))
+					.endDate(ApplicationConstants.df.format(endTime))
+					.height(tracking.getHeight())
 					.weight(tracking.getWeight())
-					.bmi(commonMethodsService.calBMI(tracking.getHeight(), tracking.getWeight())).build();
+					.bmi(commonMethodsService.calBMI(tracking.getHeight(), tracking.getWeight()))
+					.build();
 			addInList.add(addSingle);
 		}
 
@@ -1766,10 +1755,9 @@ public class AnganwadiChildrenServiceImpl implements AnganwadiChildrenService {
 	@Override
 	public List<AttendanceDTO> makeAttendance(AttendanceDTO attendanceDTO) throws ParseException {
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		Date currentTime = new Date();
-		String formatToString = df.format(currentTime.getTime());
-		Date formatToTime = df.parse(formatToString);
+		String formatToString = ApplicationConstants.df.format(currentTime.getTime());
+		Date formatToTime = ApplicationConstants.df.parse(formatToString);
 		long timestamp = formatToTime.getTime();
 
 		String[] spiltComma = attendanceDTO.getChildId().trim().split(",");

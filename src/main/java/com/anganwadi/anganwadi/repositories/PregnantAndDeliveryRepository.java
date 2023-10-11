@@ -16,7 +16,7 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     List<PregnantAndDelivery> findAllByCenterId(String centerId, Sort createdDate);
 
-    List<PregnantAndDelivery> findAllByMotherMemberId(String id, Sort lastMissedPeriodDate);
+    List<PregnantAndDelivery> findAllByMotherMemberId(String id, Sort CreatedDate);
 //
 //    @Query("{'centerId':?0,'dateOfDelivery':{$eq:0}}")
 //    List<PregnantAndDelivery> findAllByCenterIdAndDateOfDelivery(String centerId, Sort createdDate);
@@ -33,7 +33,7 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query("{'dateOfDelivery':{$eq:0}}")
     List<PregnantAndDelivery> findAllByDateOfDelivery();
 
-    @Query("{'centerId':{$regex:?2},'dateOfDelivery':{$gte:?3},'isActive':true, 'deleted':false}")
+    @Query("{'centerId':{$regex:?2},'dateOfDelivery':{$gte:?3,$lte:?1},'isActive':true, 'deleted':false}")
     List<PregnantAndDelivery> findAllBeneficiaryDharti(Long startTime, Long endTime, String centerId, long millis);
 
     @Query("{'centerId':{$regex:?0},'dateOfDelivery':{$gte:?1},'isActive':true, 'deleted':false}")
@@ -65,6 +65,7 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
     @Query("{'dateOfDelivery': { $eq : 0}, 'regDate' : { $gte : ?0, $lte: ?1},'centerId': {$not:{$in: ?3},'$regex': ?2 }}")
     List<PregnantAndDelivery> findAllByPregnancyCriteriaByActiveCenters(Long startTime, Long endTime, String centerId, String[] ignoreCenters);
 
-    @Query("{'motherMemberId':?0,'dateOfDelivery':{$eq:0},'lastMissedPeriodDate':{$gt:0},'misCarriageDate':{$eq:0},{$limit:1}'}")
+    @Query("{'motherMemberId':?0,'dateOfDelivery':{$eq:0},'lastMissedPeriodDate':{$gt:0},'misCarriageDate':{$eq:0}}")
     List<PregnantAndDelivery> findByMotherMemberIdAndDeliveryCriteria(String id);
+
 }

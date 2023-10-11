@@ -46,7 +46,6 @@ public class MainExceptionController implements ErrorController {
         Map<String, Object> setNullError = new HashMap<>();
         setNullError.put("message", error.getMessage());
         return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
-
     }
 
 
@@ -57,7 +56,6 @@ public class MainExceptionController implements ErrorController {
         setNullError.put("status", HttpStatus.BAD_REQUEST);
         setNullError.put("message", "Please Check Details Properly");
         return new ResponseEntity<>(setNullError, HttpStatus.BAD_REQUEST);
-
     }
 
 
