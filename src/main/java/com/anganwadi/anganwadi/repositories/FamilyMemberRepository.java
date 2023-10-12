@@ -98,4 +98,21 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
 
     @Query("{'createdDate': {$gte : { $date : ?0}, $lte : { $date : ?1}}, 'centerId': {$not:{$in: ?4},$regex: ?2 }, 'dob' : { $gte : ?3}}")
     List<FamilyMember> findAllBeneficiaryChildrenOfActiveCenters(Date startTime, Date endTime, String centerId, long millis, String [] inactiveCenterIds);
+
+
+    @Query(value = "{'centerId':{$regex:?0},'gender':{$regex:?1},'category':{$regex:?2},'createdDate':{$gte:?3,$lte:?4},'isActive':true, 'deleted':false}",count = true)
+    Long countByCenterIdAndGenderAndCategoryAndCreatedDate(String centerId,String gender, String category, Date startDate, Date endDate);
+
+    @Query(value = "{'centerId':{$regex:?0},'category':{$regex:?1},'createdDate':{$gte:?2,$lte:?3},'isActive':false, 'deleted':true}",count = true)
+    Long countByAndCenterId(String centerId,String category, Date startDate, Date endDate);
+
+    @Query(value ="{'centerId':{$regex:?0},'category':{$regex:?1},'dob':{$gte:?2,$lte:?3},'isActive':true, 'deleted':false}",count = true )
+    Long countByDob(String centerId,String category, long startDate, long endDate);
+
+
+
+
+   // Long countByIsActiveAndCenterIdAndDeleted(boolean isActive, String centerId, boolean deleted);
+    Long countByDobBetween(long startDate, long endDate);
+
 }
