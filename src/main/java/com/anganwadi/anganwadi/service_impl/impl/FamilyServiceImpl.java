@@ -1172,26 +1172,29 @@ public class FamilyServiceImpl implements FamilyService {
 
     private RecentVisits getRecentVisit(String memberId) {
 
-        List<Visits> visits = new ArrayList<>();
-
-        visits = visitsRepository.findAllByMotherId(memberId, Sort.by(Sort.Direction.ASC, "createdDate"));
-
-        if (visits.size() > 0) {
-            visits = visitsRepository.findAllByMemberIdOrderByCreatedDateDesc(memberId);
-        }
+        List<Visits> visits = visitsRepository.findAllByMotherIdOrMemberId(memberId, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Set<String> recent = new HashSet<>();
         RecentVisits singleEntry = new RecentVisits();
 
-        for (Visits v : visits) {
-            if (recent.add(v.getMemberId())) {
-                singleEntry = RecentVisits.builder()
-                        .visitFor(v.getVisitFor() == null ? "" : v.getVisitFor())
-                        .date(ApplicationConstants.df.format(v.getVisitDateTime()))
-                        .visitCategory(v.getVisitCategory() == null ? "" : v.getVisitCategory())
-                        .visitType(v.getVisitType() == null ? "" : v.getVisitType())
-                        .build();
+        if (visits.size() > 0) {
+            for (Visits v : visits) {
+                if (recent.add(v.getMemberId())) {
+                    singleEntry = RecentVisits.builder()
+                            .visitFor(v.getVisitFor() == null ? "" : v.getVisitFor())
+                            .date(ApplicationConstants.df.format(v.getVisitDateTime()))
+                            .visitCategory(v.getVisitCategory() == null ? "" : v.getVisitCategory())
+                            .visitType(v.getVisitType() == null ? "" : v.getVisitType())
+                            .build();
+                }
             }
+        } else {
+            singleEntry = RecentVisits.builder()
+                    .visitFor(ApplicationConstants.EmptyStringValue)
+                    .date(ApplicationConstants.EmptyStringValue)
+                    .visitCategory(ApplicationConstants.EmptyStringValue)
+                    .visitType(ApplicationConstants.EmptyStringValue)
+                    .build();
         }
         return singleEntry;
     }
@@ -1200,22 +1203,22 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public List<MemberDetails> getVisitScheduler(DashboardFilter dashboardFilter) throws ParseException {
         List<MemberDetails> addInList = new ArrayList<>();
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
         Set<String> uniqueDate = new TreeSet<>();
 
         long startTime = 0, endTime = 0;
 
         if (dashboardFilter.getStartDate().trim().length() > 0) {
-            startTime = df.parse(dashboardFilter.getStartDate().trim()).getTime();
+            startTime = ApplicationConstants.df.parse(dashboardFilter.getStartDate().trim()).getTime();
 
         } else {
-            startTime = df.parse(commonMethodsService.startDateOfMonth()).getTime();
+            startTime = ApplicationConstants.df.parse(commonMethodsService.startDateOfMonth()).getTime();
         }
 
         if (dashboardFilter.getEndDate().trim().length() > 0) {
-            endTime = df.parse(dashboardFilter.getEndDate().trim()).getTime();
+            endTime = ApplicationConstants.df.parse(dashboardFilter.getEndDate().trim()).getTime();
         } else {
-            endTime = df.parse(commonMethodsService.endDateOfMonth()).getTime();
+            endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth()).getTime();
         }
 
         List<VaccinationSchedule> vaccinationScheduleList = vaccinationScheduleRepository.findAllByDateRange(startTime,
@@ -1223,9 +1226,9 @@ public class FamilyServiceImpl implements FamilyService {
         List<HouseVisitSchedule> houseVisitScheduleList = houseVisitScheduleRepository.findAllByDateRange(startTime,
                 endTime, dashboardFilter.getCenterId());
 
-        for (VaccinationSchedule vs : vaccinationScheduleList) {
-            uniqueDate.add(vs.getMemberId());
-        }
+//        for (VaccinationSchedule vs : vaccinationScheduleList) {
+//            uniqueDate.add(vs.getMemberId());
+//        }
 
         for (HouseVisitSchedule hs : houseVisitScheduleList) {
             uniqueDate.add(hs.getMemberId());
@@ -2281,7 +2284,7 @@ public class FamilyServiceImpl implements FamilyService {
         LocalDateTime date = LocalDateTime.now().minusYears(6);
         ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 //        String convertToString = String.valueOf(new Date().getTime());
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 //        Date parseTime = df.parse(convertToString);
 
         List<HouseholdsChildren> addList = new ArrayList<>();
@@ -2296,7 +2299,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         List<FamilyMember> findAllChildren = familyMemberRepository.findAllByDobAndCenterId(convertToMills, centerId,
                 timeLess3Years);
-        log.error("List of children " + findAllChildren);
+//        log.error("List of children " + findAllChildren);
         String gender = "";
 
         if (findAllChildren.size() > 0) {
@@ -2323,7 +2326,7 @@ public class FamilyServiceImpl implements FamilyService {
                             .fatherName("")
                             .familyId(member.getFamilyId())
                             .childId(member.getId())
-                            .dob(df.format(getMillis))
+                            .dob(ApplicationConstants.df.format(getMillis))
                             .motherName(member.getMotherName())
                             .fatherName(member.getFatherName())
                             .memberCode(member.getMemberCode())
@@ -2601,13 +2604,16 @@ public class FamilyServiceImpl implements FamilyService {
                         break;
 
                     case "4":
-                        visitArray = VisitArray.builder().date(ApplicationConstants.df.format(date))
+                        visitArray = VisitArray.builder()
+                                .date(ApplicationConstants.df.format(date))
                                 .visitCategory(findDetails.getVisitCategory() == null ? "" : findDetails.getVisitCategory())
                                 .visitFor(findDetails.getVisitFor() == null ? "" : findDetails.getVisitFor())
                                 .visitRound(findDetails.getVisitRound() == null ? "" : findDetails.getVisitRound())
                                 .description(findDetails.getDescription() == null ? "" : findDetails.getDescription())
-                                .bloodTestArray(Collections.emptyList()).weightTrackArray(Collections.emptyList())
-                                .vaccinationArray(Collections.emptyList()).build();
+                                .bloodTestArray(Collections.emptyList())
+                                .weightTrackArray(Collections.emptyList())
+                                .vaccinationArray(Collections.emptyList())
+                                .build();
                         break;
 
                     default:
@@ -2654,7 +2660,8 @@ public class FamilyServiceImpl implements FamilyService {
 
             if (findMember.size() > 0) {
                 for (Visits checkDetails : findMember) {
-                    memberVisits = MemberVisits.builder().visitType(checkDetails.getVisitType())
+                    memberVisits = MemberVisits.builder()
+                            .visitType(checkDetails.getVisitType())
                             .visitArray(visitArrayList(fetchMemberId, checkDetails.getVisitType()))
                             .build();
                 }
@@ -3960,7 +3967,7 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public HouseholdWomenDetails getHouseholdWomenDetails(String centerId) {
+    public HouseholdWomenDetails getHouseholdWomenDetails(String centerId) throws ParseException {
 
         // Count Pregnant Women
         List<PregnantAndDelivery> findPW = pregnantAndDeliveryRepository.findAllPregnantWomen(centerId,
@@ -3976,8 +3983,9 @@ public class FamilyServiceImpl implements FamilyService {
         LocalDateTime dhartiDate = LocalDateTime.now().minusMonths(6);
         ZonedDateTime dhartiZdt = ZonedDateTime.of(dhartiDate, ZoneId.systemDefault());
         long convertToMills2 = dhartiZdt.toInstant().toEpochMilli();
+        String currentDate = ApplicationConstants.df.format(new Date());
 
-        List<PregnantAndDelivery> dhartiWomen = pregnantAndDeliveryRepository.findAllBeneficiaryDharti(0L, 0L, centerId, convertToMills2);
+        List<PregnantAndDelivery> dhartiWomen = pregnantAndDeliveryRepository.findAllBeneficiaryDharti(convertToMills2, commonMethodsService.dateChangeToLong(currentDate), centerId, convertToMills2);
         HashSet<String> uniqueDharti = new HashSet<>();
 
         for (PregnantAndDelivery dharti : dhartiWomen) {
@@ -4387,67 +4395,46 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public List<WomenListByPeriodDateDTO> getWomenListByPeriodDate(String centerId) {
 
-        List<FamilyMember> findWomen = familyMemberRepository.findAllByGenderAndCenterId(centerId, true, false);
+        List<PregnantAndDelivery> findWomen = pregnantAndDeliveryRepository.findAllPregnantWomen(centerId, Sort.by(Sort.Direction.ASC, "createdDate"), true, false);
         HashSet<String> uniqueWomenList = new HashSet<>();
         List<WomenListByPeriodDateDTO> addInList = new ArrayList<>();
 
         if (findWomen.size() > 0) {
 
-            for (FamilyMember womenList : findWomen) {
+            for (PregnantAndDelivery womenList : findWomen) {
 
-                List<PregnantAndDelivery> findPD = pregnantAndDeliveryRepository.findAllPregnantWomen(womenList.getCenterId(), Sort.by(Sort.Direction.ASC, "createdDate"), true, false);
+                // Fetching From Family Member & Family
 
-                // Fetching From PregnantAndDelivery
+                Optional<FamilyMember> findMember = familyMemberRepository.findById(womenList.getMotherMemberId());
+                if (findMember.isPresent()) {
+                    Family findFamily = familyRepository.findByFamilyId(findMember.get().getFamilyId());
 
-                for (PregnantAndDelivery pd : findPD) {
-                    PregnantAndDeliveryDTO pdd = modelMapper.map(pd, PregnantAndDeliveryDTO.class);
+                    PregnantAndDeliveryDTO pdd = modelMapper.map(womenList, PregnantAndDeliveryDTO.class);
 
-                    if (uniqueWomenList.add(pd.getMotherMemberId()) && pd.getLastMissedPeriodDate() > 0 && checkPregnantWithInYear(pdd, pd.getLastMissedPeriodDate())) {
-                        WomenListByPeriodDateDTO singePDList = WomenListByPeriodDateDTO.builder().id(pd.getId())
-                                .familyId(pd.getFamilyId() == null ? "" : pd.getFamilyId())
-                                .centerId(pd.getCenterId() == null ? "" : pd.getCenterId())
-                                .centerName(pd.getCenterName() == null ? "" : pd.getCenterName())
-                                .regDate(ApplicationConstants.df.format(pd.getRegDate())).noOfChild(pd.getNoOfChild())
-                                .memberId(pd.getMotherMemberId() == null ? "" : pd.getMotherMemberId())
-                                .name(pd.getMotherName() == null ? "" : pd.getMotherName())
-                                .profilePic(pd.getProfilePic() == null ? "" : pd.getProfilePic())
-                                .husbandName(pd.getHusbandName() == null ? "" : pd.getHusbandName())
-                                .dob(ApplicationConstants.df.format(new Date(pd.getDob())))
-                                .childName(pd.getChildName() == null ? "" : pd.getChildName())
-                                .childGender(pd.getChildGender() == null ? "" : pd.getChildGender())
-                                .category(pd.getCategory() == null ? "" : pd.getCategory())
-                                .religion(pd.getReligion() == null ? "" : pd.getReligion())
-                                .houseNo(pd.getHouseNumber() == null ? "" : pd.getHouseNumber())
-                                .dateOfDelivery(ApplicationConstants.df.format(pd.getDateOfDelivery())).isDeleted(pd.isDeleted())
-                                .lastMissedPeriodDate(ApplicationConstants.df.format(pd.getLastMissedPeriodDate())).build();
+                    if (uniqueWomenList.add(womenList.getMotherMemberId()) && womenList.getLastMissedPeriodDate() > 0) {
+                        WomenListByPeriodDateDTO singePDList = WomenListByPeriodDateDTO.builder().id(womenList.getId())
+                                .familyId(womenList.getFamilyId() == null ? "" : womenList.getFamilyId())
+                                .centerId(womenList.getCenterId() == null ? "" : womenList.getCenterId())
+                                .centerName(commonMethodsService.findCenterName(centerId))
+                                .regDate(ApplicationConstants.df.format(womenList.getRegDate())).noOfChild(womenList.getNoOfChild())
+                                .memberId(womenList.getMotherMemberId() == null ? "" : womenList.getMotherMemberId())
+                                .name(findMember.get().getName() == null ? "" : findMember.get().getName())
+                                .profilePic(findMember.get().getPhoto() == null ? "" : findMember.get().getPhoto())
+                                .husbandName(womenList.getHusbandName() == null ? "" : womenList.getHusbandName())
+                                .dob(ApplicationConstants.df.format(new Date(findMember.get().getDob())))
+                                .childName(womenList.getChildName() == null ? "" : womenList.getChildName())
+                                .childGender(womenList.getChildGender() == null ? "" : womenList.getChildGender())
+                                .category(findFamily.getCategory() == null ? "" : findFamily.getCategory())
+                                .religion(findFamily.getReligion() == null ? "" : findFamily.getReligion())
+                                .houseNo(findFamily.getHouseNo() == null ? "" : findFamily.getHouseNo())
+                                .dateOfDelivery(ApplicationConstants.df.format(womenList.getDateOfDelivery())).isDeleted(womenList.isDeleted())
+                                .lastMissedPeriodDate(ApplicationConstants.df.format(womenList.getLastMissedPeriodDate())).build();
 
                         addInList.add(singePDList);
 
                     }
-                }
 
-                // Fetching From Family Member
-//
-//				if (uniqueWomenList.add(womenList.getId())) {
-//					Family findFamilyDetails = familyRepository.findByFamilyId(womenList.getFamilyId());
-//
-//					WomenListByPeriodDateDTO singleWomenList = WomenListByPeriodDateDTO.builder().id(womenList.getId())
-//							.familyId(womenList.getFamilyId() == null ? "" : womenList.getFamilyId())
-//							.centerId(womenList.getCenterId() == null ? "" : womenList.getCenterId())
-//							.centerName(womenList.getCenterName() == null ? "" : womenList.getCenterName()).regDate("")
-//							.noOfChild(0).memberId(womenList.getId() == null ? "" : womenList.getId())
-//							.name(womenList.getMotherName() == null ? "" : womenList.getMotherName())
-//							.profilePic(womenList.getPhoto() == null ? "" : womenList.getPhoto())
-//							.husbandName(womenList.getFatherName() == null ? "" : womenList.getFatherName())
-//							.dob(ApplicationConstants.df.format(new Date(womenList.getDob()))).childName("").childGender("")
-//							.category(womenList.getCategory() == null ? "" : womenList.getCategory())
-//							.religion(findFamilyDetails.getReligion() == null ? "" : findFamilyDetails.getReligion())
-//							.houseNo(findFamilyDetails.getHouseNo() == null ? "" : findFamilyDetails.getHouseNo())
-//							.dateOfDelivery("").isDeleted(womenList.isDeleted()).lastMissedPeriodDate("").build();
-//
-//					addInList.add(singleWomenList);
-//
-//				}
+                }
 
             }
 

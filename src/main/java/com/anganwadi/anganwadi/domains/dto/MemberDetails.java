@@ -19,13 +19,13 @@ public class MemberDetails {
     private String fatherHusbandName;
     private String name;
     private String visits;
-    private RecentVisits recentVisits;
     private String centerName;
     private String houseNo;
     private String category;
     private String religion;
     private String gender;
     private String profilePic;
+    private RecentVisits recentVisits;
     private List<VaccinationList> vaccination;
     private DeliveryList delivery;
     private List<HouseVisitsList> houseVisits;
