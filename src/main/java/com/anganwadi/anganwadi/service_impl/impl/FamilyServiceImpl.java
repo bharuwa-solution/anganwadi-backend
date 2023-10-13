@@ -3024,12 +3024,25 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember addMember = FamilyMember.builder().familyId(searchFamilyId.getFamilyId())
                 .name(birthDetails.getName() == null ? "" : birthDetails.getName())
                 .category(searchFamilyId.getCategory().length() <= 0 ? headCategory : searchFamilyId.getCategory())
-                .centerId(centerId).motherName(searchFamilyId.getName()).fatherName(headName).maritalStatus("2")
-                .dateOfMortality("").dateOfLeaving("").dateOfArrival("").handicapType("").photo("").memberCode("")
-                .residentArea("").recordForMonth(getMonth).mobileNumber(searchFamilyId.getMobileNumber())
-                .stateCode(searchFamilyId.getStateCode()).centerName(commonMethodsService.findCenterName(centerId))
+                .centerId(centerId).motherName(searchFamilyId.getName())
+                .fatherName(headName).maritalStatus("2")
+                .dateOfMortality("").dateOfLeaving("")
+                .dateOfArrival("")
+                .handicapType("")
+                .photo("")
+                .memberCode("")
+                .residentArea("")
+                .memberCode("")
+                .handicap("")
+                .idType("")
+                .idNumber("")
+                .recordForMonth(getMonth)
+                .mobileNumber(searchFamilyId.getMobileNumber())
+                .stateCode(searchFamilyId.getStateCode())
+                .centerName(commonMethodsService.findCenterName(centerId))
                 .relationWithOwner(birthDetails.getRelationWithOwner() == null ? "" : birthDetails.getRelationWithOwner())
-                .gender(birthDetails.getGender()).dob(mills).build();
+                .gender(birthDetails.getGender())
+                .dob(mills).build();
         familyMemberRepository.save(addMember);
 
         // Save in Birth Table
@@ -3625,14 +3638,26 @@ public class FamilyServiceImpl implements FamilyService {
                 }
             }
 
+
+            // Updating in Pregnancy Table
+
+            List<PregnantAndDelivery> findWomen = pregnantAndDeliveryRepository.findAllByMotherMemberId(familyMemberDTO.getId(), Sort.by(Sort.Direction.ASC, "createdDate"));
+
+            for (PregnantAndDelivery pdd : findWomen) {
+                pdd.setHusbandName(familyMember.getFatherName());
+                pdd.setMotherName(familyMember.getName());
+                pregnantAndDeliveryRepository.save(pdd);
+            }
+
             if (familyMember.getDateOfMortality().length() > 0) {
                 familyMember.setDeleted(true);
                 familyMember.setActive(false);
+                commonMethodsService.memberSoftDelete(familyMemberDTO, familyMember.getDateOfMortality());
             }
 
             familyMemberRepository.save(familyMember);
 
-            commonMethodsService.memberSoftDelete(familyMemberDTO, familyMember.getDateOfMortality());
+
 
             return FamilyMemberDTO.builder().id(familyMember.getId()).category(familyMember.getCategory())
                     .name(familyMember.getName()).relationWithOwner(familyMember.getRelationWithOwner())
