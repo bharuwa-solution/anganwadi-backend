@@ -1148,10 +1148,7 @@ public class FamilyServiceImpl implements FamilyService {
         return delivery;
     }
 
-    private List<HouseVisitsList> getHouseVisitListByMemberId(String sd,
-                                                              List<HouseVisitSchedule> houseVisitScheduleList) {
-
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+    private List<HouseVisitsList> getHouseVisitListByMemberId(String sd,  List<HouseVisitSchedule> houseVisitScheduleList) {
 
         List<HouseVisitsList> addHouseList = new ArrayList<>();
         Set<String> uniqueType = new TreeSet<>();
@@ -1161,7 +1158,7 @@ public class FamilyServiceImpl implements FamilyService {
                 String visitDate = "";
                 if (uniqueType.add(hvv.getVisitType().trim())) {
                     addHouseList.add(HouseVisitsList.builder().visitType(hvv.getVisitType()).title(hvv.getVisitName())
-                            .round(getRounds(sd, hvv.getVisitType())).dueDate(df.format(hvv.getDueDate())).build());
+                            .round(getRounds(sd, hvv.getVisitType())).dueDate(ApplicationConstants.df.format(hvv.getDueDate())).build());
                 }
             }
 
@@ -3650,6 +3647,8 @@ public class FamilyServiceImpl implements FamilyService {
             familyMember.setDateOfLeaving(familyMemberDTO.getDateOfLeaving());
             familyMember.setDateOfMortality(familyMemberDTO.getDateOfMortality());
 
+
+            // Updating in Anganwadi
             List<AnganwadiChildren> ac = anganwadiChildrenRepository
                     .findAllByChildIdAndRegisteredTrue(familyMemberDTO.getId());
 
@@ -3666,7 +3665,17 @@ public class FamilyServiceImpl implements FamilyService {
                 }
             }
 
-            if (familyMember.getDateOfMortality().length() > 0) {
+            // Updating in Pregnancy Table
+
+            List<PregnantAndDelivery> findWomen = pregnantAndDeliveryRepository.findAllByMotherMemberId(familyMemberDTO.getId(),Sort.by(Sort.Direction.ASC, "createdDate"));
+
+            for(PregnantAndDelivery pdd : findWomen){
+                pdd.setMotherName(familyMemberDTO.getName());
+                pdd.setHusbandName(familyMemberDTO.getFatherName());
+                pregnantAndDeliveryRepository.save(pdd);
+            }
+
+            if (familyMember.getDateOfMortality().trim().length() > 0) {
                 familyMember.setDeleted(true);
                 familyMember.setActive(false);
             }
