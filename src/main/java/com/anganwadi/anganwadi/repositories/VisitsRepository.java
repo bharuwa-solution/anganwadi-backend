@@ -64,4 +64,7 @@ public interface VisitsRepository extends MongoRepository<Visits, String> {
     List<Visits> findAllByMemberId(String memberId);
 
     List<Visits> findAllByMemberIdOrderByCreatedDateDesc(String memberId);
+
+    @Query("{$or:[{'motherId':?0},{'memberId':?0}]},{$limit:1}")
+    List<Visits> findAllByMotherIdOrMemberId(String memberId, Sort createdDate);
 }

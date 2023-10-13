@@ -412,7 +412,7 @@ public class CommonMethodsService {
 
         // Updating Pregnant & Delivery Table
 
-        List<PregnantAndDelivery> findMother = pregnantAndDeliveryRepository.findByMotherMemberIdAndDeliveryCriteria(familyMemberDTO.getId());
+        List<PregnantAndDelivery> findMother = pregnantAndDeliveryRepository.findAllByMotherMemberId(familyMemberDTO.getId(),Sort.by(Sort.Direction.DESC, "createdDate"));
 
         if (findMother.size() > 0) {
             for (PregnantAndDelivery ppd : findMother) {

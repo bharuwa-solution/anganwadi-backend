@@ -38,4 +38,5 @@ public class ApplicationConstants {
     public static final String[] ignoreCenters = {"642fdf6152de1975898f8fbb","649a671ea33ba56f3df3f828","6426cfcfa4479557b4c4fb6c","6426d3c5a4479557b4c4fb70"};
     public static final String vaccineCodePrefix="V-";
     public static final Long startTimeInMillis = 1672511400000L;
+    public static final String EmptyStringValue = "";
 }

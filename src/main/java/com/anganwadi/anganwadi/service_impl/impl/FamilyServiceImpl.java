@@ -25,64 +25,64 @@ import java.util.*;
 @Slf4j
 public class FamilyServiceImpl implements FamilyService {
 
-	private final FamilyRepository familyRepository;
-	private final ModelMapper modelMapper;
-	private final FamilyMemberRepository familyMemberRepository;
-	private final VisitsRepository visitsRepository;
-	private final WeightTrackingRepository weightTrackingRepository;
-	private final VaccinationRepository vaccinationRepository;
-	private final PregnantAndDeliveryRepository pregnantAndDeliveryRepository;
-	private final BabiesBirthRepository babiesBirthRepository;
-	private final AnganwadiChildrenRepository anganwadiChildrenRepository;
-	private final AnganwadiCenterRepository anganwadiCenterRepository;
-	private final UserRepository userRepository;
-	private final AttendanceRepository attendanceRepository;
-	private final CommonMethodsService commonMethodsService;
-	private final VaccinationScheduleRepository vaccinationScheduleRepository;
-	private final HouseVisitScheduleRepository houseVisitScheduleRepository;
-	private final BloodTestTrackingRepository bloodTestTrackingRepository;
-	private final VaccinationNameRepository vaccinationNameRepository;
-	private final StockDistributionRepository stockDistributionRepository;
+    private final FamilyRepository familyRepository;
+    private final ModelMapper modelMapper;
+    private final FamilyMemberRepository familyMemberRepository;
+    private final VisitsRepository visitsRepository;
+    private final WeightTrackingRepository weightTrackingRepository;
+    private final VaccinationRepository vaccinationRepository;
+    private final PregnantAndDeliveryRepository pregnantAndDeliveryRepository;
+    private final BabiesBirthRepository babiesBirthRepository;
+    private final AnganwadiChildrenRepository anganwadiChildrenRepository;
+    private final AnganwadiCenterRepository anganwadiCenterRepository;
+    private final UserRepository userRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final CommonMethodsService commonMethodsService;
+    private final VaccinationScheduleRepository vaccinationScheduleRepository;
+    private final HouseVisitScheduleRepository houseVisitScheduleRepository;
+    private final BloodTestTrackingRepository bloodTestTrackingRepository;
+    private final VaccinationNameRepository vaccinationNameRepository;
+    private final StockDistributionRepository stockDistributionRepository;
 
-	@Autowired
-	public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper,
-			FamilyMemberRepository familyMemberRepository, VisitsRepository visitsRepository,
-			WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
-			PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
-			AnganwadiChildrenRepository anganwadiChildrenRepository,
-			AnganwadiCenterRepository anganwadiCenterRepository, UserRepository userRepository,
-			AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService,
-			VaccinationScheduleRepository vaccinationScheduleRepository,
-			HouseVisitScheduleRepository houseVisitScheduleRepository,
-			BloodTestTrackingRepository bloodTestTrackingRepository,
-			VaccinationNameRepository vaccinationNameRepository, StockDistributionRepository stockDistributionRepository
-							 ) {
-		this.familyRepository = familyRepository;
-		this.modelMapper = modelMapper;
-		this.familyMemberRepository = familyMemberRepository;
-		this.visitsRepository = visitsRepository;
-		this.weightTrackingRepository = weightTrackingRepository;
-		this.vaccinationRepository = vaccinationRepository;
-		this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
-		this.babiesBirthRepository = babiesBirthRepository;
-		this.anganwadiChildrenRepository = anganwadiChildrenRepository;
-		this.anganwadiCenterRepository = anganwadiCenterRepository;
-		this.userRepository = userRepository;
-		this.attendanceRepository = attendanceRepository;
-		this.commonMethodsService = commonMethodsService;
-		this.vaccinationScheduleRepository = vaccinationScheduleRepository;
-		this.houseVisitScheduleRepository = houseVisitScheduleRepository;
-		this.bloodTestTrackingRepository = bloodTestTrackingRepository;
-		this.vaccinationNameRepository = vaccinationNameRepository;
-		this.stockDistributionRepository=stockDistributionRepository;
-	}
+    @Autowired
+    public FamilyServiceImpl(FamilyRepository familyRepository, ModelMapper modelMapper,
+                             FamilyMemberRepository familyMemberRepository, VisitsRepository visitsRepository,
+                             WeightTrackingRepository weightTrackingRepository, VaccinationRepository vaccinationRepository,
+                             PregnantAndDeliveryRepository pregnantAndDeliveryRepository, BabiesBirthRepository babiesBirthRepository,
+                             AnganwadiChildrenRepository anganwadiChildrenRepository,
+                             AnganwadiCenterRepository anganwadiCenterRepository, UserRepository userRepository,
+                             AttendanceRepository attendanceRepository, CommonMethodsService commonMethodsService,
+                             VaccinationScheduleRepository vaccinationScheduleRepository,
+                             HouseVisitScheduleRepository houseVisitScheduleRepository,
+                             BloodTestTrackingRepository bloodTestTrackingRepository,
+                             VaccinationNameRepository vaccinationNameRepository, StockDistributionRepository stockDistributionRepository
+    ) {
+        this.familyRepository = familyRepository;
+        this.modelMapper = modelMapper;
+        this.familyMemberRepository = familyMemberRepository;
+        this.visitsRepository = visitsRepository;
+        this.weightTrackingRepository = weightTrackingRepository;
+        this.vaccinationRepository = vaccinationRepository;
+        this.pregnantAndDeliveryRepository = pregnantAndDeliveryRepository;
+        this.babiesBirthRepository = babiesBirthRepository;
+        this.anganwadiChildrenRepository = anganwadiChildrenRepository;
+        this.anganwadiCenterRepository = anganwadiCenterRepository;
+        this.userRepository = userRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.commonMethodsService = commonMethodsService;
+        this.vaccinationScheduleRepository = vaccinationScheduleRepository;
+        this.houseVisitScheduleRepository = houseVisitScheduleRepository;
+        this.bloodTestTrackingRepository = bloodTestTrackingRepository;
+        this.vaccinationNameRepository = vaccinationNameRepository;
+        this.stockDistributionRepository = stockDistributionRepository;
+    }
 
-	public int totalHouseholdsMale(String familyId) {
-		int totalMale = 0;
-		LocalDateTime date = LocalDateTime.now().minusYears(6);
-		ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+    public int totalHouseholdsMale(String familyId) {
+        int totalMale = 0;
+        LocalDateTime date = LocalDateTime.now().minusYears(6);
+        ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
 //        String convertToString = String.valueOf(new Date().getTime());
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 //        Date parseTime = df.parse(convertToString);
 
 		List<FamilyMember> checkFamily = familyMemberRepository.findAllByFamilyId(familyId,
@@ -2108,66 +2108,108 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public MPRDTO getMPRRecords(String month, String duration, String category, String centerId)
 			throws ParseException {
+
+		month = month == null ? "" : month;
+		duration = duration == null ? "" : duration;
+		category = category == null ? "" : category;
 		long male = 0, female = 0, dharti = 0, pregnant = 0, birth = 0, mortality = 0;
-		MPRDTO mprCounts = new MPRDTO();
+		MPRDTO MprCounts = new MPRDTO();
 
-		if(centerId!=null){
-			Date startTime = null, endTime = null;
-			// Millis to Date
-			startTime = new Date(ApplicationConstants.startTimeInMillis);
-			log.error("startTime " + startTime);
+		Date startTime = null, endTime = null;
 
+		// Millis to Date
+		startTime = new Date(ApplicationConstants.startTimeInMillis);
+		log.error("startTime " + startTime);
+		if (month.trim().length() > 0) {
 
-			if (month != null) {
-				endTime = ApplicationConstants.df.parse(MPRMonthEndDate(month));
-			} else {
-				endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
-			}
+			endTime = ApplicationConstants.df.parse(MPRMonthEndDate(month));
 
-			if (category != null) {
-				if (month != null) {
-					// find data when both category and month are passed
-					mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1",category,startTime,endTime));
-					mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2",category, startTime,endTime));
-					mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,category,startTime,endTime));
-					mprCounts.setBirth(familyMemberRepository.countByDob(centerId,category,getSixYearsAgoMillis(endTime.getTime()),endTime.getTime() ));
-					mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,category,getSixMonthsAgoMillis(System.currentTimeMillis()),System.currentTimeMillis()));
-					mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId,category,endTime.getTime()));
+		} else {
 
-				} else {
-					// find data when only category is passed
-					mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1",category,startTime,endTime));
-					mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2",category, startTime,endTime));
-					mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,category,startTime,endTime));
-					mprCounts.setBirth(familyMemberRepository.countByDob(centerId,category,getSixYearsAgoMillis(endTime.getTime()),endTime.getTime() ));
-					mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,category,sixMonthAgoInMillis(),System.currentTimeMillis()));
-					mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId,category,endTime.getTime()));
-
-				}
-			} else if (month != null) {
-				// find data when only month is passed
-				mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1","",startTime,endTime));
-				mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2","", startTime,endTime));
-				mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,"",startTime,endTime));
-				mprCounts.setBirth(familyMemberRepository.countByDob(centerId,"",getSixYearsAgoMillis(endTime.getTime()),endTime.getTime() ));
-				mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,"",getSixMonthsAgoMillis(System.currentTimeMillis()),System.currentTimeMillis()));
-				mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId,"",endTime.getTime()));
-			} else {
-				// find all data
-				mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1","",startTime,endTime));
-				mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2","", startTime,endTime));
-				mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,"",startTime,endTime));
-				mprCounts.setBirth(familyMemberRepository.countByDob(centerId,"",sixYearsAgoInMillis(),System.currentTimeMillis()));
-				mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,"",sixMonthAgoInMillis(),System.currentTimeMillis()));
-				mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,"",0,0));
-			}
-
-		}else{
-			System.out.println("@@@@@@@@ Center Id not Passed or Center Id passed is  : "+centerId);
-			throw new CustomException("Please connect with Support Team. ");
+			endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
 		}
-		return mprCounts;
 
+		List<FamilyMember> findByCenter = familyMemberRepository
+				.findAllByCenterNameAndRecordForMonthAndCategory(centerId, startTime, endTime, category);
+		long startDate = 0, endDate = 0;
+
+		for (FamilyMember formatDetails : findByCenter) {
+
+			startDate = MPRDurationStartDate(duration);
+			endDate = MPRDurationEndDate(duration);
+			long deathInMillis = 0L;
+
+			if (formatDetails.getDateOfMortality().trim().length() > 0) {
+
+				Date deathDate = ApplicationConstants.df.parse(formatDetails.getDateOfMortality());
+				deathInMillis = deathDate.getTime();
+			}
+
+			if (formatDetails.getDob() >= startDate && formatDetails.getDob() < endDate
+					&& formatDetails.getGender().trim().equals("1")) {
+				male++;
+//                log.error("Male Name " + formatDetails.getName());
+			}
+
+			if (formatDetails.getDob() >= startDate && formatDetails.getDob() < endDate
+					&& formatDetails.getGender().trim().equals("2")) {
+				female++;
+//                log.error("Female Name " + formatDetails.getName());
+			}
+
+			if (formatDetails.getDob() >= startDate && formatDetails.getDob() < endDate) {
+				birth++;
+//                log.error("Birth Name " + formatDetails.getName());
+			}
+
+			if (formatDetails.getDateOfMortality().trim().length() > 0
+					&& (deathInMillis >= startDate && deathInMillis < endDate)) {
+				mortality++;
+//                log.error("Birth Name " + formatDetails.getName());
+			}
+		}
+
+		List<PregnantAndDelivery> findDhatri = pregnantAndDeliveryRepository
+				.findAllByCenterNameAndCategoryAndCreatedDate(centerId, category, startTime, endTime);
+		HashSet<String> uniqueDhartiMemberId = new HashSet<>();
+		HashSet<String> uniquePregnantMemberId = new HashSet<>();
+		String visitCat = "";
+
+		// Find Dharti
+		for (PregnantAndDelivery checkDetails : findDhatri) {
+
+			LocalDateTime date = LocalDateTime.now().minusMonths(6);
+			ZonedDateTime zdt = ZonedDateTime.of(date, ZoneId.systemDefault());
+			long convertToMills = zdt.toInstant().toEpochMilli();
+//			log.info("dharti " + convertToMills);
+			if (checkDetails.getDateOfDelivery() >= convertToMills) {
+				if (uniqueDhartiMemberId.add(checkDetails.getMotherMemberId())) {
+					dharti++;
+				}
+
+			}
+
+		}
+
+		// Find Pregnant
+
+		for (PregnantAndDelivery preg : findDhatri) {
+
+			if (preg.getDateOfDelivery() <= 0) {
+				if (uniquePregnantMemberId.add(preg.getMotherMemberId())) {
+//                        log.error("MemberId " + preg.getMemberId());
+					pregnant++;
+				}
+
+			}
+		}
+
+		MprCounts = MPRDTO.builder().male(male).female(female).birth(birth).mortality(mortality).dharti(dharti)
+				.pregnant(pregnant).build();
+
+//        List<FamilyMember> chekByCat = familyMemberRepository.findAllByMPRPeriod(month, duration, category, centerName);
+
+		return MprCounts;
 	}
 
 	@Override
@@ -5131,51 +5173,5 @@ public class FamilyServiceImpl implements FamilyService {
 		addInList.addAll(beneficiaryDharti());
 
 		return addInList;
-	}
-
-	public  long sixYearsAgoInMillis() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.YEAR, -6);
-		Date sixYearsAgoDate = calendar.getTime();
-		return sixYearsAgoDate.getTime();
-	}
-
-	public  long sixMonthAgoInMillis() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH, -6);
-		Date sixMonthAgoDate = calendar.getTime();
-		return sixMonthAgoDate.getTime();
-	}
-
-	public static long getSixYearsAgoMillis(long currentTimeMillis) {
-		// Convert the provided time in milliseconds to a LocalDate
-		LocalDate currentDate = Instant.ofEpochMilli(currentTimeMillis)
-				.atZone(ZoneId.systemDefault())
-				.toLocalDate();
-
-		// Calculate the date 6 months ago
-		LocalDate sixYearsAgoDate = currentDate.minusYears(6);
-
-		// Convert the resulting date back to milliseconds
-		return sixYearsAgoDate
-				.atStartOfDay(ZoneId.systemDefault())
-				.toInstant()
-				.toEpochMilli();
-	}
-
-	public static long getSixMonthsAgoMillis(long currentTimeMillis) {
-		// Convert the provided time in milliseconds to a LocalDate
-		LocalDate currentDate = Instant.ofEpochMilli(currentTimeMillis)
-				.atZone(ZoneId.systemDefault())
-				.toLocalDate();
-
-		// Calculate the date 6 months ago
-		LocalDate sixMonthsAgoDate = currentDate.minusMonths(6);
-
-		// Convert the resulting date back to milliseconds
-		return sixMonthsAgoDate
-				.atStartOfDay(ZoneId.systemDefault())
-				.toInstant()
-				.toEpochMilli();
 	}
 }

@@ -16,7 +16,7 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     List<PregnantAndDelivery> findAllByCenterId(String centerId, Sort createdDate);
 
-    List<PregnantAndDelivery> findAllByMotherMemberId(String id, Sort lastMissedPeriodDate);
+    List<PregnantAndDelivery> findAllByMotherMemberId(String id, Sort CreatedDate);
 //
 //    @Query("{'centerId':?0,'dateOfDelivery':{$eq:0}}")
 //    List<PregnantAndDelivery> findAllByCenterIdAndDateOfDelivery(String centerId, Sort createdDate);
@@ -67,11 +67,4 @@ public interface PregnantAndDeliveryRepository extends MongoRepository<PregnantA
 
     @Query("{'motherMemberId':?0,'dateOfDelivery':{$eq:0},'lastMissedPeriodDate':{$gt:0},'misCarriageDate':{$eq:0},{$limit:1}'}")
     List<PregnantAndDelivery> findByMotherMemberIdAndDeliveryCriteria(String id);
-
-
-    @Query(value = "{'centerId':{$regex:?0},'category':{$regex:?1},'dateOfDelivery':{$gte:?2,$lte:?3},'isActive':true, 'deleted':false}",count = true)
-    Long countByCenterIdAndCategoryAndDateOfDelivery(String centerId, String category, long startDate, long endDate);
-
-    @Query(value = "{'centerId':{$regex:?0},'category':{$regex:?1},'lastMissedPeriodDate':{$lte:?2},'isActive':true, 'deleted':false}",count = true)
-    Long countByCenterIdAndCategoryAndLastMissedPeriodDate(String centerId, String category, long lastMissedPeriodDate);
 }

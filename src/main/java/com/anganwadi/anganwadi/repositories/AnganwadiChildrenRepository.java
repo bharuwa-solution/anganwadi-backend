@@ -44,7 +44,7 @@ public interface AnganwadiChildrenRepository extends MongoRepository<AnganwadiCh
     @Query("{'childId':?0,$or:[{'isRegistered':true,'deleted':false}]}")
     List<AnganwadiChildren> findAllByChildIdAndRegisteredTrueAndDeletedFalse(String id);
 
-    @Query("{'centerId':?0,'isRegistered':true,'deleted':false}")
+    @Query("{'centerId':?0,'isRegistered':true,'deleted':false,'isActive':true}")
 	List<AnganwadiChildren> findAllByCenterIdAndRegisteredTrue(String centerId);
 
 

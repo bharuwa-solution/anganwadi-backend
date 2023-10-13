@@ -72,7 +72,7 @@ public interface FamilyService {
 
     FamilyMemberDTO deleteFamilyMembers(String memberId, String id);
 
-    HouseholdWomenDetails getHouseholdWomenDetails(String centerId);
+    HouseholdWomenDetails getHouseholdWomenDetails(String centerId) throws ParseException;
 
     PregnantAndDeliveryDTO registerPregnantWomen(PregnantAndDeliveryDTO pregnantAndDeliveryDTO, String centerId) throws ParseException;
 

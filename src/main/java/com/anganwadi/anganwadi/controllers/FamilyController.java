@@ -102,7 +102,7 @@ public class FamilyController {
     }
 
     @GetMapping("/getHouseholdWomenDetails")
-    private HouseholdWomenDetails getHouseholdWomenDetails(@RequestHeader String centerId) {
+    private HouseholdWomenDetails getHouseholdWomenDetails(@RequestHeader String centerId) throws ParseException {
         return familyService.getHouseholdWomenDetails(centerId);
     }
 
