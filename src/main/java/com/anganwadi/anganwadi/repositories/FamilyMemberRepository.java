@@ -109,10 +109,4 @@ public interface FamilyMemberRepository extends MongoRepository<FamilyMember, St
     @Query(value ="{'centerId':{$regex:?0},'category':{$regex:?1},'dob':{$gte:?2,$lte:?3},'isActive':true, 'deleted':false}",count = true )
     Long countByDob(String centerId,String category, long startDate, long endDate);
 
-
-
-
-   // Long countByIsActiveAndCenterIdAndDeleted(boolean isActive, String centerId, boolean deleted);
-    Long countByDobBetween(long startDate, long endDate);
-
 }
