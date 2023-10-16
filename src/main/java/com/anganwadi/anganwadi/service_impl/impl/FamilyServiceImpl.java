@@ -2094,7 +2094,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         output = "01-0" + inputMonth + "-" + year;
 
-        log.error("startDate " + output);
+//        log.error("startDate " + output);
         return output;
     }
 
@@ -2108,59 +2108,33 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public MPRDTO getMPRRecords(String month, String duration, String category, String centerId)
             throws ParseException {
-        long male = 0, female = 0, dharti = 0, pregnant = 0, birth = 0, mortality = 0;
+        month = month==null?"":month;
+        category=category==null?"":category;
+
         MPRDTO mprCounts = new MPRDTO();
 
         if(centerId!=null){
             Date startTime = null, endTime = null;
             // Millis to Date
             startTime = new Date(ApplicationConstants.startTimeInMillis);
-            log.error("startTime " + startTime);
+//            log.error("startTime " + startTime);
 
 
-            if (month != null) {
+            if (!month.isEmpty()) {
                 endTime = ApplicationConstants.df.parse(MPRMonthEndDate(month));
             } else {
                 endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
             }
 
-            if (category != null) {
-                if (month != null) {
-                    // find data when both category and month are passed
-                    mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1",category,startTime,endTime));
-                    mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2",category, startTime,endTime));
-                    mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,category,startTime,endTime));
-                    mprCounts.setBirth(familyMemberRepository.countByDob(centerId,category,getSixYearsAgoMillis(endTime.getTime()),endTime.getTime() ));
-                    mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,category,getSixMonthsAgoMillis(System.currentTimeMillis()),System.currentTimeMillis()));
-                    mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId,category,endTime.getTime()));
+            log.error("End Time : " + endTime);
 
-                } else {
-                    // find data when only category is passed
-                    mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1",category,startTime,endTime));
-                    mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2",category, startTime,endTime));
-                    mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,category,startTime,endTime));
-                    mprCounts.setBirth(familyMemberRepository.countByDob(centerId,category,getSixYearsAgoMillis(endTime.getTime()),endTime.getTime() ));
-                    mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,category,getSixMonthsAgoMillis(System.currentTimeMillis()),System.currentTimeMillis()));
-                    mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId,category,endTime.getTime()));
+            mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId, "1", category, startTime, endTime));
+            mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId, "2", category, startTime, endTime));
+            mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId, category, startTime, endTime));
+            mprCounts.setBirth(familyMemberRepository.countByDob(centerId, category, getSixYearsAgoMillis(endTime.getTime()), endTime.getTime()));
+            mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId, category, getSixMonthsAgoMillis(System.currentTimeMillis()), System.currentTimeMillis()));
+            mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId, category, endTime.getTime()));
 
-                }
-            } else if (month != null) {
-                // find data when only month is passed
-                mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1","",startTime,endTime));
-                mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2","", startTime,endTime));
-                mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,"",startTime,endTime));
-                mprCounts.setBirth(familyMemberRepository.countByDob(centerId,"",getSixYearsAgoMillis(endTime.getTime()),endTime.getTime() ));
-                mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,"",getSixMonthsAgoMillis(System.currentTimeMillis()),System.currentTimeMillis()));
-                mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId,"",endTime.getTime()));
-            } else {
-                // find all data
-                mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"1","",startTime,endTime));
-                mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId,"2","", startTime,endTime));
-                mprCounts.setMortality(familyMemberRepository.countByAndCenterId(centerId,"",startTime,endTime));
-                mprCounts.setBirth(familyMemberRepository.countByDob(centerId,"",getSixYearsAgoMillis(System.currentTimeMillis()),System.currentTimeMillis()));
-                mprCounts.setDharti(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,"",getSixMonthsAgoMillis(System.currentTimeMillis()),System.currentTimeMillis()));
-                mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndDateOfDelivery(centerId,"",0,0));
-            }
 
         }else{
             System.out.println("@@@@@@@@ Center Id not Passed or Center Id passed is  : "+centerId);
