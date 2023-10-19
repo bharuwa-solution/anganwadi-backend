@@ -1,4 +1,3 @@
-
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.WeightRecordsDTO;
@@ -36,7 +35,7 @@ public class WeightController {
     }
 
     @GetMapping("/getAllChildWeightRecords")
-    private List<WeightRecordsDTO> getAllChildWeightRecords(@RequestHeader String centerId){
+    private List<WeightRecordsDTO> getAllChildWeightRecords(@RequestHeader String centerId) {
         return familyService.getAllChildWeightRecords(centerId);
     }
 

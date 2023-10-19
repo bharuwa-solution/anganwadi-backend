@@ -12,10 +12,10 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter {
 
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-      log.error("IP :" + request.getLocalAddr());
-      return true;
+        log.error("IP :" + request.getLocalAddr());
+        return true;
     }
 
 

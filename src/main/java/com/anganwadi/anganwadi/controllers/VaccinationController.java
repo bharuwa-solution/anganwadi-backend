@@ -2,15 +2,11 @@ package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.GetVaccinationDTO;
 import com.anganwadi.anganwadi.domains.dto.PerVaccineRecord;
-import com.anganwadi.anganwadi.domains.dto.SaveVaccinationDTO;
 import com.anganwadi.anganwadi.domains.dto.VaccinationDTO;
-import com.anganwadi.anganwadi.domains.entity.VaccinationName;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -41,7 +37,7 @@ public class VaccinationController {
     }
 
     @GetMapping("/getVaccinationNames")
-    private List<VaccinationDTO> getVaccinationList(){
+    private List<VaccinationDTO> getVaccinationList() {
         return familyService.getAllVaccinationName();
     }
 

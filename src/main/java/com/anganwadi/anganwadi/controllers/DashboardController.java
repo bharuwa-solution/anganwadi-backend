@@ -25,7 +25,7 @@ public class DashboardController {
 
     @PostMapping("getDashboardFamilyData")
     private DashboardFamilyData getDashboardFamilyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-            return familyService.getDashboardFamilyData(dashboardFilter);
+        return familyService.getDashboardFamilyData(dashboardFilter);
     }
 
     @PostMapping("getTotalChildrenData")
@@ -141,19 +141,19 @@ public class DashboardController {
 
     @ApiIgnore
     @PostMapping("/autoUpdateCalendar")
-    private String autoUpdateCalendar(){
+    private String autoUpdateCalendar() {
         return familyService.autoUpdateCalendar();
     }
 
     @ApiIgnore
     @GetMapping("/getBeneficiariesReport")
-    private List<BeneficiariesDTO> getBeneficiariesReport(){
-    	return familyService.getBeneficiariesReport();
+    private List<BeneficiariesDTO> getBeneficiariesReport() {
+        return familyService.getBeneficiariesReport();
     }
 
     @ApiIgnore
     @GetMapping("/databaseBackup")
-    private String databaseBackup(){
+    private String databaseBackup() {
         return "sdad";
     }
 

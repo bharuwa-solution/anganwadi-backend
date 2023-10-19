@@ -2108,12 +2108,12 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public MPRDTO getMPRRecords(String month, String duration, String category, String centerId)
             throws ParseException {
-        month = month==null?"":month;
-        category=category==null?"":category;
+        month = month == null ? "" : month;
+        category = category == null ? "" : category;
 
         MPRDTO mprCounts = new MPRDTO();
 
-        if(centerId!=null){
+        if (centerId != null) {
             Date startTime = null, endTime = null;
             // Millis to Date
             startTime = new Date(ApplicationConstants.startTimeInMillis);
@@ -2126,7 +2126,7 @@ public class FamilyServiceImpl implements FamilyService {
                 endTime = ApplicationConstants.df.parse(commonMethodsService.endDateOfMonth());
             }
 
-            log.error("End Time : " + endTime);
+//            log.error("End Time : " + endTime);
 
             mprCounts.setMale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId, "1", category, startTime, endTime));
             mprCounts.setFemale(familyMemberRepository.countByCenterIdAndGenderAndCategoryAndCreatedDate(centerId, "2", category, startTime, endTime));
@@ -2136,8 +2136,8 @@ public class FamilyServiceImpl implements FamilyService {
             mprCounts.setPregnant(pregnantAndDeliveryRepository.countByCenterIdAndCategoryAndLastMissedPeriodDate(centerId, category, endTime.getTime()));
 
 
-        }else{
-            System.out.println("@@@@@@@@ Center Id not Passed or Center Id passed is  : "+centerId);
+        } else {
+            System.out.println("@@@@@@@@ Center Id not Passed or Center Id passed is  : " + centerId);
             throw new CustomException("Please connect with Support Team. ");
         }
         return mprCounts;
@@ -2363,11 +2363,9 @@ public class FamilyServiceImpl implements FamilyService {
         PregnantAndDeliveryDTO pddDto = modelMapper.map(womenDetails, PregnantAndDeliveryDTO.class);
 
         if (womenDetails.getLastMissedPeriodDate() == 0 && womenDetails.getDateOfDelivery() == 0 && checkPregnantWithInYear(pddDto, womenDetails.getLastMissedPeriodDate())) {
-
             valid = true;
         }
         return valid;
-
     }
 
     @Override
@@ -3630,7 +3628,6 @@ public class FamilyServiceImpl implements FamilyService {
             }
 
             familyMemberRepository.save(familyMember);
-
 
 
             return FamilyMemberDTO.builder().id(familyMember.getId()).category(familyMember.getCategory())

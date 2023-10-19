@@ -1,8 +1,6 @@
 package com.anganwadi.anganwadi.controllers;
 
 import com.anganwadi.anganwadi.domains.dto.*;
-import com.anganwadi.anganwadi.domains.entity.Meals;
-import com.anganwadi.anganwadi.domains.entity.MealsType;
 import com.anganwadi.anganwadi.service_impl.service.AnganwadiChildrenService;
 import com.anganwadi.anganwadi.service_impl.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,7 @@ public class AnganwadiController {
         this.familyService = familyService;
     }
 
-//    @GetMapping("getDashboardDetails")
+    //    @GetMapping("getDashboardDetails")
 //    private DashboardDetails getDashboardDetails() {
 //        return anganwadiChildrenService.getDashboardDetails();
 //    }
@@ -108,23 +106,23 @@ public class AnganwadiController {
     }
 
     @PostMapping("getAllActivity")
-    private List<AnganwadiActivitiesDTO>getAllActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId) throws ParseException {
-        return anganwadiChildrenService.getAllActivity(anganwadiActivitiesDTO,centerId);
+    private List<AnganwadiActivitiesDTO> getAllActivity(@RequestBody AnganwadiActivitiesDTO anganwadiActivitiesDTO, @RequestHeader String centerId) throws ParseException {
+        return anganwadiChildrenService.getAllActivity(anganwadiActivitiesDTO, centerId);
     }
 
     @GetMapping("getMealsItems")
-    private MealTypeDTO getMealsItems(){
+    private MealTypeDTO getMealsItems() {
         return anganwadiChildrenService.getMealsItems();
     }
 
     @PostMapping("saveMeals")
     private List<SaveMeals> saveMeals(@RequestBody List<SaveMeals> saveMeals, @RequestHeader String centerId) throws ParseException {
-        return anganwadiChildrenService.saveMeals(saveMeals,centerId);
+        return anganwadiChildrenService.saveMeals(saveMeals, centerId);
     }
 
     @PostMapping("getMonthlyDistributedMeals")
     private List<MealsResponseDTO> getMonthlyDistributedMeals(@RequestBody DashboardFilter dashboardFilter, @RequestHeader String centerId) throws ParseException {
-        return anganwadiChildrenService.getMonthlyDistributedMeals(dashboardFilter,centerId);
+        return anganwadiChildrenService.getMonthlyDistributedMeals(dashboardFilter, centerId);
     }
 
 
