@@ -185,13 +185,13 @@ public class CommonMethodsService {
 
         return endDate;
     }
-    
+
     public String getStartDateOfMonth(String month) {
-    	String startDate="01-"+month+"-"+LocalDate.now().getYear();
-    	
-    	return startDate;
+        String startDate = "01-" + month + "-" + LocalDate.now().getYear();
+
+        return startDate;
     }
-    
+
     public Boolean checkMortalityDate(String memberId) {
         boolean isDead = false;
 
@@ -263,30 +263,30 @@ public class CommonMethodsService {
         }
     }
 
-    public String getVaccineName(String vaccineCode){
+    public String getVaccineName(String vaccineCode) {
         String vaccineName = "";
 
         Optional<VaccinationName> checkCode = vaccinationNameRepository.findByVaccineCode(vaccineCode);
 
-        if(checkCode.isPresent()) {
+        if (checkCode.isPresent()) {
             vaccineName = checkCode.get().getVaccineName();
         }
-        log.error("Vaccine Name :"+vaccineName);
+        log.error("Vaccine Name :" + vaccineName);
         return vaccineName;
 
     }
 
-    public void removeMemberFromAssociatedTable(String memberId){
+    public void removeMemberFromAssociatedTable(String memberId) {
 
-        List<Vaccination> removeChild = vaccinationRepository.findByChildId(memberId,Sort.by(Sort.Direction.ASC, "createdDate"));
-        List<Vaccination> removeMother = vaccinationRepository.findByMotherId(memberId,Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<Vaccination> removeChild = vaccinationRepository.findByChildId(memberId, Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<Vaccination> removeMother = vaccinationRepository.findByMotherId(memberId, Sort.by(Sort.Direction.ASC, "createdDate"));
 
 
-        if(removeChild.size()>0){
+        if (removeChild.size() > 0) {
             vaccinationRepository.deleteAllByChildId(memberId);
         }
 
-        if(removeMother.size()>0){
+        if (removeMother.size() > 0) {
             vaccinationRepository.deleteAllByMotherId(memberId);
         }
 
@@ -412,7 +412,7 @@ public class CommonMethodsService {
 
         // Updating Pregnant & Delivery Table
 
-        List<PregnantAndDelivery> findMother = pregnantAndDeliveryRepository.findAllByMotherMemberId(familyMemberDTO.getId(),Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<PregnantAndDelivery> findMother = pregnantAndDeliveryRepository.findAllByMotherMemberId(familyMemberDTO.getId(), Sort.by(Sort.Direction.DESC, "createdDate"));
 
         if (findMother.size() > 0) {
             for (PregnantAndDelivery ppd : findMother) {

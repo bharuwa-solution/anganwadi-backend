@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class BeneficiariesDTO {
-	
-	private String id;
-	private String familyId;
-	private String name;
-	private String centerName;
-	private String fatherName;
-	private String motherName;
-	private String category;
-	private String religion;
-	private String dob;
-	
+
+    private String id;
+    private String familyId;
+    private String name;
+    private String centerName;
+    private String fatherName;
+    private String motherName;
+    private String category;
+    private String religion;
+    private String dob;
+
 }

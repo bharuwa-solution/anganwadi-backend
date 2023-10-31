@@ -77,6 +77,38 @@ public class FamilyServiceImpl implements FamilyService {
         this.stockDistributionRepository = stockDistributionRepository;
     }
 
+    public static long getSixYearsAgoMillis(long currentTimeMillis) {
+        // Convert the provided time in milliseconds to a LocalDate
+        LocalDate currentDate = Instant.ofEpochMilli(currentTimeMillis)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        // Calculate the date 6 months ago
+        LocalDate sixYearsAgoDate = currentDate.minusYears(6);
+
+        // Convert the resulting date back to milliseconds
+        return sixYearsAgoDate
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
+    }
+
+    public static long getSixMonthsAgoMillis(long currentTimeMillis) {
+        // Convert the provided time in milliseconds to a LocalDate
+        LocalDate currentDate = Instant.ofEpochMilli(currentTimeMillis)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        // Calculate the date 6 months ago
+        LocalDate sixMonthsAgoDate = currentDate.minusMonths(6);
+
+        // Convert the resulting date back to milliseconds
+        return sixMonthsAgoDate
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
+    }
+
     public int totalHouseholdsMale(String familyId) {
         int totalMale = 0;
         LocalDateTime date = LocalDateTime.now().minusYears(6);
@@ -216,6 +248,49 @@ public class FamilyServiceImpl implements FamilyService {
 
         return addInList;
     }
+
+//    @Override
+//    public FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered) {
+//
+//        FamilyMember findId = familyMemberRepository.findById(id).get();
+//
+//        if (findId != null) {
+//
+//            findId.setRegistered(isRegistered);
+//            familyMemberRepository.save(findId);
+//
+//        }
+//
+//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        Date date = new Date(findId.getDob());
+//
+//
+//        return FamilyMemberDTO.builder()
+//                .id(findId.getId())
+//                .name(findId.getName())
+//                .relationWithOwner(findId.getRelationWithOwner())
+//                .gender(findId.getGender())
+//                .centerName(findId.getCenterName())
+//                .memberCode(findId.getMemberCode())
+//                .familyId(findId.getFamilyId())
+//                .mobileNumber(findId.getMobileNumber() == null ? "" : findId.getMobileNumber())
+//                .idType(findId.getIdType() == null ? "" : findId.getIdType())
+//                .idNumber(findId.getIdNumber() == null ? "" : findId.getIdNumber())
+//                .dob(df.format(date))
+//                .maritalStatus(findId.getMaritalStatus())
+//                .stateCode(findId.getStateCode())
+//                .handicap(findId.getHandicap())
+//                .handicapType(findId.getHandicapType())
+//                .motherName(findId.getMotherName())
+//                .fatherName(findId.getFatherName())
+//                .residentArea(findId.getResidentArea())
+//                .dateOfArrival(findId.getDateOfArrival())
+//                .dateOfLeaving(findId.getDateOfLeaving())
+//                .dateOfMortality(findId.getDateOfMortality())
+//                .photo(findId.getPhoto())
+//                .isRegistered(isRegistered)
+//                .build();
+//    }
 
     @Override
     public HouseholdsDTO saveHouseholds(HouseholdsDTO householdsDTO, String centerId)
@@ -358,114 +433,6 @@ public class FamilyServiceImpl implements FamilyService {
                 .residentArea(area).dateOfArrival(arrivalDate).dateOfLeaving(leavingDate)
                 .dateOfMortality(deathDate)
                 .photo(photo).isRegistered(isRegistered).build();
-    }
-
-//    @Override
-//    public FamilyMemberDTO updateRegisteredValue(String id, boolean isRegistered) {
-//
-//        FamilyMember findId = familyMemberRepository.findById(id).get();
-//
-//        if (findId != null) {
-//
-//            findId.setRegistered(isRegistered);
-//            familyMemberRepository.save(findId);
-//
-//        }
-//
-//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-//        Date date = new Date(findId.getDob());
-//
-//
-//        return FamilyMemberDTO.builder()
-//                .id(findId.getId())
-//                .name(findId.getName())
-//                .relationWithOwner(findId.getRelationWithOwner())
-//                .gender(findId.getGender())
-//                .centerName(findId.getCenterName())
-//                .memberCode(findId.getMemberCode())
-//                .familyId(findId.getFamilyId())
-//                .mobileNumber(findId.getMobileNumber() == null ? "" : findId.getMobileNumber())
-//                .idType(findId.getIdType() == null ? "" : findId.getIdType())
-//                .idNumber(findId.getIdNumber() == null ? "" : findId.getIdNumber())
-//                .dob(df.format(date))
-//                .maritalStatus(findId.getMaritalStatus())
-//                .stateCode(findId.getStateCode())
-//                .handicap(findId.getHandicap())
-//                .handicapType(findId.getHandicapType())
-//                .motherName(findId.getMotherName())
-//                .fatherName(findId.getFatherName())
-//                .residentArea(findId.getResidentArea())
-//                .dateOfArrival(findId.getDateOfArrival())
-//                .dateOfLeaving(findId.getDateOfLeaving())
-//                .dateOfMortality(findId.getDateOfMortality())
-//                .photo(findId.getPhoto())
-//                .isRegistered(isRegistered)
-//                .build();
-//    }
-
-    @Override
-    public List<FamilyMemberDTO> getFamilyMembers(String familyId) {
-
-        if (StringUtils.isEmpty(familyId.trim())) {
-            throw new CustomException("Family Id Is Missed, Please Check!!");
-        }
-
-        Family checkDeleted = familyRepository.findByFamilyId(familyId);
-
-        if (checkDeleted.isDeleted() && !checkDeleted.isActive()) {
-            throw new CustomException("The Family Is Deleted, Please Check With Support Team, to Re-activate It!!");
-        }
-
-        List<FamilyMemberDTO> addInList = new ArrayList<>();
-        List<FamilyMember> getMembers = familyMemberRepository.findAllByFamilyId(familyId,
-                Sort.by(Sort.Direction.ASC, "createdDate"));
-
-        for (FamilyMember passDetails : getMembers) {
-
-            long getMills = passDetails.getDob();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            Date date = new Date(getMills);
-
-            FamilyMemberDTO singleList = FamilyMemberDTO.builder().id(passDetails.getId())
-                    .name(passDetails.getName() == null ? "" : passDetails.getName())
-                    .photo(passDetails.getPhoto() == null ? "" : passDetails.getPhoto())
-                    .category(passDetails.getCategory() == null ? "" : passDetails.getCategory())
-                    .familyId(passDetails.getFamilyId() == null ? "" : passDetails.getFamilyId())
-                    .mobileNumber(passDetails.getMobileNumber() == null ? "" : passDetails.getMobileNumber())
-                    .relationWithOwner(
-                            passDetails.getRelationWithOwner() == null ? "" : passDetails.getRelationWithOwner())
-                    .idType(passDetails.getIdType() == null ? "" : passDetails.getIdType())
-                    .memberCode(passDetails.getMemberCode() == null ? "" : passDetails.getMemberCode())
-                    .motherName(passDetails.getMotherName() == null ? "" : passDetails.getMotherName())
-                    .fatherName(passDetails.getFatherName() == null ? "" : passDetails.getFatherName())
-                    .idNumber(passDetails.getIdNumber() == null ? "" : passDetails.getIdNumber())
-                    .gender(passDetails.getGender() == null ? "" : passDetails.getGender()).dob(df.format(date))
-                    .centerName(commonMethodsService.findCenterName(passDetails.getCenterId()))
-                    .category(passDetails.getCategory()) // join
-                    .idType(passDetails.getIdType()).idNumber(passDetails.getIdNumber())
-                    .maritalStatus(passDetails.getMaritalStatus() == null ? "" : passDetails.getMaritalStatus())
-                    .stateCode(passDetails.getStateCode() == null ? "" : passDetails.getStateCode())
-                    .handicap(passDetails.getHandicap() == null ? "" : passDetails.getHandicap())
-                    .handicapType(passDetails.getHandicapType() == null ? "" : passDetails.getHandicapType())
-                    .residentArea(passDetails.getResidentArea() == null ? "" : passDetails.getResidentArea())
-                    .dateOfArrival(passDetails.getDateOfArrival() == null ? "" : passDetails.getDateOfArrival())
-                    .dateOfLeaving(passDetails.getDateOfLeaving() == null ? "" : passDetails.getDateOfLeaving())
-                    .dateOfMortality(passDetails.getDateOfMortality() == null ? "" : passDetails.getDateOfMortality())
-                    .build();
-            addInList.add(singleList);
-        }
-        return addInList;
-    }
-
-    private void UpdateVaccinationTable(Visits visits) {
-        List<VaccinationSchedule> scheduleList = vaccinationScheduleRepository
-                .findAllByMemberIdAndCode(visits.getMemberId().trim(), visits.getVisitFor().trim());
-        if (scheduleList.size() > 0) {
-            for (VaccinationSchedule vs : scheduleList) {
-                vs.setVaccinationDate(visits.getVisitDateTime());
-                vaccinationScheduleRepository.save(vs);
-            }
-        }
     }
 
 //    private void updateAfterBirthSchedule(Visits visits) {
@@ -640,6 +607,71 @@ public class FamilyServiceImpl implements FamilyService {
 //            houseVisitScheduleRepository.save(addVisit_1);
 //        }
 //    }
+
+    @Override
+    public List<FamilyMemberDTO> getFamilyMembers(String familyId) {
+
+        if (StringUtils.isEmpty(familyId.trim())) {
+            throw new CustomException("Family Id Is Missed, Please Check!!");
+        }
+
+        Family checkDeleted = familyRepository.findByFamilyId(familyId);
+
+        if (checkDeleted.isDeleted() && !checkDeleted.isActive()) {
+            throw new CustomException("The Family Is Deleted, Please Check With Support Team, to Re-activate It!!");
+        }
+
+        List<FamilyMemberDTO> addInList = new ArrayList<>();
+        List<FamilyMember> getMembers = familyMemberRepository.findAllByFamilyId(familyId,
+                Sort.by(Sort.Direction.ASC, "createdDate"));
+
+        for (FamilyMember passDetails : getMembers) {
+
+            long getMills = passDetails.getDob();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = new Date(getMills);
+
+            FamilyMemberDTO singleList = FamilyMemberDTO.builder().id(passDetails.getId())
+                    .name(passDetails.getName() == null ? "" : passDetails.getName())
+                    .photo(passDetails.getPhoto() == null ? "" : passDetails.getPhoto())
+                    .category(passDetails.getCategory() == null ? "" : passDetails.getCategory())
+                    .familyId(passDetails.getFamilyId() == null ? "" : passDetails.getFamilyId())
+                    .mobileNumber(passDetails.getMobileNumber() == null ? "" : passDetails.getMobileNumber())
+                    .relationWithOwner(
+                            passDetails.getRelationWithOwner() == null ? "" : passDetails.getRelationWithOwner())
+                    .idType(passDetails.getIdType() == null ? "" : passDetails.getIdType())
+                    .memberCode(passDetails.getMemberCode() == null ? "" : passDetails.getMemberCode())
+                    .motherName(passDetails.getMotherName() == null ? "" : passDetails.getMotherName())
+                    .fatherName(passDetails.getFatherName() == null ? "" : passDetails.getFatherName())
+                    .idNumber(passDetails.getIdNumber() == null ? "" : passDetails.getIdNumber())
+                    .gender(passDetails.getGender() == null ? "" : passDetails.getGender()).dob(df.format(date))
+                    .centerName(commonMethodsService.findCenterName(passDetails.getCenterId()))
+                    .category(passDetails.getCategory()) // join
+                    .idType(passDetails.getIdType()).idNumber(passDetails.getIdNumber())
+                    .maritalStatus(passDetails.getMaritalStatus() == null ? "" : passDetails.getMaritalStatus())
+                    .stateCode(passDetails.getStateCode() == null ? "" : passDetails.getStateCode())
+                    .handicap(passDetails.getHandicap() == null ? "" : passDetails.getHandicap())
+                    .handicapType(passDetails.getHandicapType() == null ? "" : passDetails.getHandicapType())
+                    .residentArea(passDetails.getResidentArea() == null ? "" : passDetails.getResidentArea())
+                    .dateOfArrival(passDetails.getDateOfArrival() == null ? "" : passDetails.getDateOfArrival())
+                    .dateOfLeaving(passDetails.getDateOfLeaving() == null ? "" : passDetails.getDateOfLeaving())
+                    .dateOfMortality(passDetails.getDateOfMortality() == null ? "" : passDetails.getDateOfMortality())
+                    .build();
+            addInList.add(singleList);
+        }
+        return addInList;
+    }
+
+    private void UpdateVaccinationTable(Visits visits) {
+        List<VaccinationSchedule> scheduleList = vaccinationScheduleRepository
+                .findAllByMemberIdAndCode(visits.getMemberId().trim(), visits.getVisitFor().trim());
+        if (scheduleList.size() > 0) {
+            for (VaccinationSchedule vs : scheduleList) {
+                vs.setVaccinationDate(visits.getVisitDateTime());
+                vaccinationScheduleRepository.save(vs);
+            }
+        }
+    }
 
     @Override
     public VisitsDetailsDTO saveVisitsDetails(VisitsDetailsDTO visitsDetailsDTO, String centerId, String centerName)
@@ -1199,7 +1231,6 @@ public class FamilyServiceImpl implements FamilyService {
         return singleEntry;
     }
 
-
     @Override
     public List<MemberDetails> getVisitScheduler(DashboardFilter dashboardFilter) throws ParseException {
         List<MemberDetails> addInList = new ArrayList<>();
@@ -1345,7 +1376,6 @@ public class FamilyServiceImpl implements FamilyService {
         return id;
     }
 
-
     @Override
     public VisitsDetailsDTOTemp saveVisitsDetailsTemp(VisitsDetailsDTOTemp visitsDetailsDTOTemp, String centerId)
             throws ParseException {
@@ -1428,7 +1458,6 @@ public class FamilyServiceImpl implements FamilyService {
             }
         }
     }
-
 
     private void autoUpdateBirthVaccination(List<BabiesBirth> membersList) {
 
@@ -1734,6 +1763,40 @@ public class FamilyServiceImpl implements FamilyService {
         }
     }
 
+//    @Override
+//    public List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException {
+//
+//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        List<DhartiData> addInList = new ArrayList<>();
+//        Date startTime = null, endTime = null;
+//
+//        if (dashboardFilter.getStartDate().trim().length() > 0) {
+//            startTime = df.parse(dashboardFilter.getStartDate().trim());
+//        } else {
+//            startTime = df.parse(commonMethodsService.startDateOfMonth());
+//        }
+//
+//        if (dashboardFilter.getEndDate().trim().length() > 0) {
+//            endTime = df.parse(dashboardFilter.getEndDate().trim());
+//        } else {
+//            endTime = df.parse(commonMethodsService.endDateOfMonth());
+//        }
+//
+//        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime);
+//        for (PregnantAndDelivery cat : findPdd) {
+//            DhartiData singleEntry = DhartiData.builder()
+//                    .dateOfDelivery(df.format(new Date(cat.getDateOfDelivery())))
+//                    .motherId(cat.getMotherMemberId())
+//                    .category(cat.getCategory())
+//                    .startDate(df.format(startTime))
+//                    .endDate(df.format(endTime))
+//                    .build();
+//            addInList.add(singleEntry);
+//        }
+//
+//
+//        return addInList;
+//    }
 
     @Override
     public String autoUpdateCalendar() {
@@ -1777,41 +1840,6 @@ public class FamilyServiceImpl implements FamilyService {
 
         return checkMissing;
     }
-
-//    @Override
-//    public List<DhartiData> getDhartiData(DashboardFilter dashboardFilter) throws ParseException {
-//
-//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-//        List<DhartiData> addInList = new ArrayList<>();
-//        Date startTime = null, endTime = null;
-//
-//        if (dashboardFilter.getStartDate().trim().length() > 0) {
-//            startTime = df.parse(dashboardFilter.getStartDate().trim());
-//        } else {
-//            startTime = df.parse(commonMethodsService.startDateOfMonth());
-//        }
-//
-//        if (dashboardFilter.getEndDate().trim().length() > 0) {
-//            endTime = df.parse(dashboardFilter.getEndDate().trim());
-//        } else {
-//            endTime = df.parse(commonMethodsService.endDateOfMonth());
-//        }
-//
-//        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllDhartiCriteria(startTime, endTime);
-//        for (PregnantAndDelivery cat : findPdd) {
-//            DhartiData singleEntry = DhartiData.builder()
-//                    .dateOfDelivery(df.format(new Date(cat.getDateOfDelivery())))
-//                    .motherId(cat.getMotherMemberId())
-//                    .category(cat.getCategory())
-//                    .startDate(df.format(startTime))
-//                    .endDate(df.format(endTime))
-//                    .build();
-//            addInList.add(singleEntry);
-//        }
-//
-//
-//        return addInList;
-//    }
 
     @Override
     public List<DhartiData> getDhartiWomenDetails(DashboardFilter dashboardFilter) throws ParseException {
@@ -2356,7 +2384,6 @@ public class FamilyServiceImpl implements FamilyService {
         return appendRounds.toString();
     }
 
-
     private Boolean validateBeforeAdding(PregnantAndDelivery womenDetails) {
 
         boolean valid = false;
@@ -2560,7 +2587,6 @@ public class FamilyServiceImpl implements FamilyService {
         }
         return addInList;
     }
-
 
     private String getVisitMotherId(String id) {
         String motherId = id;
@@ -2789,6 +2815,65 @@ public class FamilyServiceImpl implements FamilyService {
 
         }
     }
+
+//    @Override
+//    public SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId,
+//                                                     String centerName) {
+//
+//        String familyId = saveVaccinationDTO.getFamilyId() == null ? "" : saveVaccinationDTO.getFamilyId();
+//        String motherName = saveVaccinationDTO.getMotherName() == null ? "" : saveVaccinationDTO.getMotherName();
+//        String childId = saveVaccinationDTO.getChildId() == null ? "" : saveVaccinationDTO.getChildId();
+//        String vaccinationName = saveVaccinationDTO.getVaccinationName() == null ? ""
+//                : saveVaccinationDTO.getVaccinationName();
+//        String visitFor = saveVaccinationDTO.getVisitFor() == null ? "" : saveVaccinationDTO.getVisitFor();
+//        String vaccinationCode = saveVaccinationDTO.getVaccinationCode() == null ? ""
+//                : saveVaccinationDTO.getVaccinationCode();
+//        String visitType = saveVaccinationDTO.getVisitType() == null ? "" : saveVaccinationDTO.getVisitType();
+//        String desc = saveVaccinationDTO.getDescription() == null ? "" : saveVaccinationDTO.getDescription();
+//        String visitRound = saveVaccinationDTO.getVisitRound() == null ? "" : saveVaccinationDTO.getVisitRound();
+//        String latitude = saveVaccinationDTO.getLatitude() == null ? "" : saveVaccinationDTO.getLatitude();
+//        String longitude = saveVaccinationDTO.getLongitude() == null ? "" : saveVaccinationDTO.getLongitude();
+//        String dob = saveVaccinationDTO.getDob() == null ? "" : saveVaccinationDTO.getDob();
+//        // Current Date
+//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        Date date = new Date();
+//        long mills = date.getTime();
+//
+//        String visitCat = "";
+//        List<Family> findCat = familyRepository.findAllByFamilyId(familyId);
+//
+//        for (Family cat : findCat) {
+//            visitCat = cat.getCategory();
+//        }
+//
+//        // Save in Vaccination
+//        Vaccination saveRecord = Vaccination.builder().familyId(familyId).date(mills).centerId(centerId)
+//                .centerName(commonMethodsService.findCenterName(centerId)).childId(childId)
+//                .vaccinationCode(vaccinationCode).build();
+//        vaccinationRepository.save(saveRecord);
+//
+//        // Save in Visits
+////        Visits saveVaccinationVisit = Visits.builder()
+////                .visitType(visitType)
+////                .visitFor(visitFor)
+////                .memberId(childId)
+////                .category(visitCat)
+////                .familyId(familyId)
+////                .centerName(centerName)
+////                .childDob(new Date(dob).getTime())
+////                .visitDateTime(mills)
+////                .description(desc)
+////                .latitude(latitude)
+////                .longitude(longitude)
+////                .visitRound(visitRound)
+////                .build();
+////        visitsRepository.save(saveVaccinationVisit);
+//
+//        return SaveVaccinationDTO.builder().familyId(familyId).date(df.format(mills)).motherName(motherName)
+//                .childId(childId).dob(dob).description(desc).vaccinationName(vaccinationName).visitType(visitType)
+//                .visitFor(visitFor).familyId(familyId).latitude(latitude).longitude(longitude).visitRound(visitRound)
+//                .build();
+//    }
 
     private void updateVaccinationVisitSchedule(BabiesBirth babiesBirth) {
 
@@ -3105,62 +3190,38 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
 //    @Override
-//    public SaveVaccinationDTO saveVaccinationDetails(SaveVaccinationDTO saveVaccinationDTO, String centerId,
-//                                                     String centerName) {
+//    public List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
 //
-//        String familyId = saveVaccinationDTO.getFamilyId() == null ? "" : saveVaccinationDTO.getFamilyId();
-//        String motherName = saveVaccinationDTO.getMotherName() == null ? "" : saveVaccinationDTO.getMotherName();
-//        String childId = saveVaccinationDTO.getChildId() == null ? "" : saveVaccinationDTO.getChildId();
-//        String vaccinationName = saveVaccinationDTO.getVaccinationName() == null ? ""
-//                : saveVaccinationDTO.getVaccinationName();
-//        String visitFor = saveVaccinationDTO.getVisitFor() == null ? "" : saveVaccinationDTO.getVisitFor();
-//        String vaccinationCode = saveVaccinationDTO.getVaccinationCode() == null ? ""
-//                : saveVaccinationDTO.getVaccinationCode();
-//        String visitType = saveVaccinationDTO.getVisitType() == null ? "" : saveVaccinationDTO.getVisitType();
-//        String desc = saveVaccinationDTO.getDescription() == null ? "" : saveVaccinationDTO.getDescription();
-//        String visitRound = saveVaccinationDTO.getVisitRound() == null ? "" : saveVaccinationDTO.getVisitRound();
-//        String latitude = saveVaccinationDTO.getLatitude() == null ? "" : saveVaccinationDTO.getLatitude();
-//        String longitude = saveVaccinationDTO.getLongitude() == null ? "" : saveVaccinationDTO.getLongitude();
-//        String dob = saveVaccinationDTO.getDob() == null ? "" : saveVaccinationDTO.getDob();
-//        // Current Date
+//
 //        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-//        Date date = new Date();
-//        long mills = date.getTime();
+//        List<PregnancyData> addInList = new ArrayList<>();
+//        Date startTime = null, endTime = null;
 //
-//        String visitCat = "";
-//        List<Family> findCat = familyRepository.findAllByFamilyId(familyId);
-//
-//        for (Family cat : findCat) {
-//            visitCat = cat.getCategory();
+//        if (dashboardFilter.getStartDate().trim().length() > 0) {
+//            startTime = df.parse(dashboardFilter.getStartDate().trim());
+//        } else {
+//            startTime = df.parse(commonMethodsService.startDateOfMonth());
 //        }
 //
-//        // Save in Vaccination
-//        Vaccination saveRecord = Vaccination.builder().familyId(familyId).date(mills).centerId(centerId)
-//                .centerName(commonMethodsService.findCenterName(centerId)).childId(childId)
-//                .vaccinationCode(vaccinationCode).build();
-//        vaccinationRepository.save(saveRecord);
+//        if (dashboardFilter.getEndDate().trim().length() > 0) {
+//            endTime = df.parse(dashboardFilter.getEndDate().trim());
+//        } else {
+//            endTime = df.parse(commonMethodsService.endDateOfMonth());
+//        }
 //
-//        // Save in Visits
-////        Visits saveVaccinationVisit = Visits.builder()
-////                .visitType(visitType)
-////                .visitFor(visitFor)
-////                .memberId(childId)
-////                .category(visitCat)
-////                .familyId(familyId)
-////                .centerName(centerName)
-////                .childDob(new Date(dob).getTime())
-////                .visitDateTime(mills)
-////                .description(desc)
-////                .latitude(latitude)
-////                .longitude(longitude)
-////                .visitRound(visitRound)
-////                .build();
-////        visitsRepository.save(saveVaccinationVisit);
+//        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
+//        for (PregnantAndDelivery cat : findPdd) {
 //
-//        return SaveVaccinationDTO.builder().familyId(familyId).date(df.format(mills)).motherName(motherName)
-//                .childId(childId).dob(dob).description(desc).vaccinationName(vaccinationName).visitType(visitType)
-//                .visitFor(visitFor).familyId(familyId).latitude(latitude).longitude(longitude).visitRound(visitRound)
-//                .build();
+//            PregnancyData singleEntry = PregnancyData.builder()
+//                    .lastMissedPeriodDate(df.format(new Date(cat.getLastMissedPeriodDate())))
+//                    .motherId(cat.getMotherMemberId())
+//                    .motherName(cat.getMotherName())
+//                    .startDate(df.format(startTime))
+//                    .endDate(df.format(endTime))
+//                    .build();
+//            addInList.add(singleEntry);
+//        }
+//        return addInList;
 //    }
 
     @Override
@@ -3284,41 +3345,6 @@ public class FamilyServiceImpl implements FamilyService {
         }
         return childrenData;
     }
-
-//    @Override
-//    public List<PregnancyData> getPregnancyData(@RequestBody DashboardFilter dashboardFilter) throws ParseException {
-//
-//
-//        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-//        List<PregnancyData> addInList = new ArrayList<>();
-//        Date startTime = null, endTime = null;
-//
-//        if (dashboardFilter.getStartDate().trim().length() > 0) {
-//            startTime = df.parse(dashboardFilter.getStartDate().trim());
-//        } else {
-//            startTime = df.parse(commonMethodsService.startDateOfMonth());
-//        }
-//
-//        if (dashboardFilter.getEndDate().trim().length() > 0) {
-//            endTime = df.parse(dashboardFilter.getEndDate().trim());
-//        } else {
-//            endTime = df.parse(commonMethodsService.endDateOfMonth());
-//        }
-//
-//        List<PregnantAndDelivery> findPdd = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(startTime, endTime);
-//        for (PregnantAndDelivery cat : findPdd) {
-//
-//            PregnancyData singleEntry = PregnancyData.builder()
-//                    .lastMissedPeriodDate(df.format(new Date(cat.getLastMissedPeriodDate())))
-//                    .motherId(cat.getMotherMemberId())
-//                    .motherName(cat.getMotherName())
-//                    .startDate(df.format(startTime))
-//                    .endDate(df.format(endTime))
-//                    .build();
-//            addInList.add(singleEntry);
-//        }
-//        return addInList;
-//    }
 
     private String calDuration(long missedPeriod, long endTimeInMillis) {
 //        long currentMillis = new Date().getTime();
@@ -3651,7 +3677,6 @@ public class FamilyServiceImpl implements FamilyService {
         }
     }
 
-
     @Override
     public HouseholdsDTO getHouseholdById(String id) {
 
@@ -3675,6 +3700,57 @@ public class FamilyServiceImpl implements FamilyService {
             throw new CustomException("Household Not Found");
         }
     }
+
+
+//	public void removeFromAnganwadiChildren(String primaryId) {
+//
+//		List<AnganwadiChildren> removeChild = anganwadiChildrenRepository.findAllByChildId(primaryId);
+//
+//		if (removeChild.size() > 0) {
+//			anganwadiChildrenRepository.deleteAllByChildId(primaryId);
+//		}
+//
+//	}
+//
+//	public void removeFromAttendance(String primaryId) {
+//
+//		List<Attendance> removeAttendance = attendanceRepository.findAllByChildId(primaryId);
+//		if (removeAttendance.size() > 0) {
+//			attendanceRepository.deleteAllByChildId(primaryId);
+//		}
+//	}
+//
+//	public void removeFromBabiesBirth(String primaryId) {
+//
+//		if (babiesBirthRepository.findByChildId(primaryId) != null) {
+//			BabiesBirth removeBirthRecords = babiesBirthRepository.findByChildId(primaryId);
+//			babiesBirthRepository.deleteById(removeBirthRecords.getId());
+//		}
+//	}
+//
+//	public void removeFromWeightTracking(String primaryId) {
+//
+//		List<WeightTracking> wt = weightTrackingRepository.findByChildId(primaryId,
+//				Sort.by(Sort.Direction.DESC, "createdDate"));
+//		if (wt.size() > 0) {
+//			weightTrackingRepository.deleteByChildId(primaryId);
+//		}
+//	}
+//
+//	public void removeFromVisits(String primaryId) {
+//		List<Visits> visits = visitsRepository.findAllByMemberId(primaryId);
+//		if (visits.size() > 0) {
+//			visitsRepository.deleteByMemberId(primaryId);
+//		}
+//	}
+//
+//	public void removeFromPregnancyTable(String primaryId) {
+//		List<PregnantAndDelivery> ppd = pregnantAndDeliveryRepository.findAllByMotherMemberId(primaryId,
+//				Sort.by(Sort.Direction.DESC, "createdDate"));
+//		if (ppd.size() > 0) {
+//			pregnantAndDeliveryRepository.deleteByMotherMemberId(primaryId);
+//		}
+//	}
 
     @Override
     public List<PerVaccineRecord> getVaccinationByChildId(String childId) {
@@ -3805,57 +3881,6 @@ public class FamilyServiceImpl implements FamilyService {
             throw new CustomException("Family Not Found or Already Deleted, Please Check Again");
         }
     }
-
-
-//	public void removeFromAnganwadiChildren(String primaryId) {
-//
-//		List<AnganwadiChildren> removeChild = anganwadiChildrenRepository.findAllByChildId(primaryId);
-//
-//		if (removeChild.size() > 0) {
-//			anganwadiChildrenRepository.deleteAllByChildId(primaryId);
-//		}
-//
-//	}
-//
-//	public void removeFromAttendance(String primaryId) {
-//
-//		List<Attendance> removeAttendance = attendanceRepository.findAllByChildId(primaryId);
-//		if (removeAttendance.size() > 0) {
-//			attendanceRepository.deleteAllByChildId(primaryId);
-//		}
-//	}
-//
-//	public void removeFromBabiesBirth(String primaryId) {
-//
-//		if (babiesBirthRepository.findByChildId(primaryId) != null) {
-//			BabiesBirth removeBirthRecords = babiesBirthRepository.findByChildId(primaryId);
-//			babiesBirthRepository.deleteById(removeBirthRecords.getId());
-//		}
-//	}
-//
-//	public void removeFromWeightTracking(String primaryId) {
-//
-//		List<WeightTracking> wt = weightTrackingRepository.findByChildId(primaryId,
-//				Sort.by(Sort.Direction.DESC, "createdDate"));
-//		if (wt.size() > 0) {
-//			weightTrackingRepository.deleteByChildId(primaryId);
-//		}
-//	}
-//
-//	public void removeFromVisits(String primaryId) {
-//		List<Visits> visits = visitsRepository.findAllByMemberId(primaryId);
-//		if (visits.size() > 0) {
-//			visitsRepository.deleteByMemberId(primaryId);
-//		}
-//	}
-//
-//	public void removeFromPregnancyTable(String primaryId) {
-//		List<PregnantAndDelivery> ppd = pregnantAndDeliveryRepository.findAllByMotherMemberId(primaryId,
-//				Sort.by(Sort.Direction.DESC, "createdDate"));
-//		if (ppd.size() > 0) {
-//			pregnantAndDeliveryRepository.deleteByMotherMemberId(primaryId);
-//		}
-//	}
 
     @Override
     public FamilyMemberDTO deleteFamilyMembers(String memberId, String id) {
@@ -4231,7 +4256,6 @@ public class FamilyServiceImpl implements FamilyService {
         return isValid;
     }
 
-
     @Override
     public PregnantAndDeliveryDTO updatePregnantWomenDetails(PregnantAndDeliveryDTO pregnantAndDeliveryDTO,
                                                              String centerId) throws ParseException {
@@ -4309,7 +4333,6 @@ public class FamilyServiceImpl implements FamilyService {
         }
 
     }
-
 
     @Override
     public PregnantAndDeliveryDTO deletePregnantWomenDetails(String id) {
@@ -4699,7 +4722,6 @@ public class FamilyServiceImpl implements FamilyService {
 
     }
 
-
     private List<NewBornChildDTO> childDetails(String motherId, String houseNo) {
 
         List<NewBornChildDTO> addInList = new ArrayList<>();
@@ -4742,7 +4764,6 @@ public class FamilyServiceImpl implements FamilyService {
         return addInList;
 
     }
-
 
     @Override
     public List<MotherChildDTO> getDhatriDetails(String centerId) {
@@ -5073,7 +5094,6 @@ public class FamilyServiceImpl implements FamilyService {
         return result;
     }
 
-
     private List<BeneficiariesDTO> beneficiaryPregnant() {
         List<PregnantAndDelivery> findPregnantWomen = pregnantAndDeliveryRepository.findAllByPregnancyCriteria(1672511400000L, 1703961000000L, "");
         List<BeneficiariesDTO> result = new ArrayList<>();
@@ -5147,37 +5167,5 @@ public class FamilyServiceImpl implements FamilyService {
         addInList.addAll(beneficiaryDharti());
 
         return addInList;
-    }
-
-    public static long getSixYearsAgoMillis(long currentTimeMillis) {
-        // Convert the provided time in milliseconds to a LocalDate
-        LocalDate currentDate = Instant.ofEpochMilli(currentTimeMillis)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        // Calculate the date 6 months ago
-        LocalDate sixYearsAgoDate = currentDate.minusYears(6);
-
-        // Convert the resulting date back to milliseconds
-        return sixYearsAgoDate
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
-    }
-
-    public static long getSixMonthsAgoMillis(long currentTimeMillis) {
-        // Convert the provided time in milliseconds to a LocalDate
-        LocalDate currentDate = Instant.ofEpochMilli(currentTimeMillis)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        // Calculate the date 6 months ago
-        LocalDate sixMonthsAgoDate = currentDate.minusMonths(6);
-
-        // Convert the resulting date back to milliseconds
-        return sixMonthsAgoDate
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
     }
 }

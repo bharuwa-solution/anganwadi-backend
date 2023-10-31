@@ -73,7 +73,7 @@ public class MainExceptionController implements ErrorController {
         log.error(error.getMessage());
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.PARTIAL_CONTENT);
-        setBodyError.put("message", "Parameters "+error.getHttpInputMessage()+"Are Missing, Please Check");
+        setBodyError.put("message", "Parameters " + error.getHttpInputMessage() + "Are Missing, Please Check");
         return new ResponseEntity<>(setBodyError, HttpStatus.PARTIAL_CONTENT);
     }
 
@@ -91,7 +91,7 @@ public class MainExceptionController implements ErrorController {
         log.error(error.getMessage());
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.BAD_REQUEST);
-        setBodyError.put("message","Some Data is Missing or Deleted,Please Check With Team!!!");
+        setBodyError.put("message", "Some Data is Missing or Deleted,Please Check With Team!!!");
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
 
@@ -100,7 +100,7 @@ public class MainExceptionController implements ErrorController {
         log.error(error.getMessage());
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.BAD_REQUEST);
-        setBodyError.put("message",error.getMessage());
+        setBodyError.put("message", error.getMessage());
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
 
@@ -109,7 +109,7 @@ public class MainExceptionController implements ErrorController {
         log.error(error.getMessage());
         Map<String, Object> setBodyError = new HashMap<>();
         setBodyError.put("status", HttpStatus.BAD_REQUEST);
-        setBodyError.put("message",error.getMessage());
+        setBodyError.put("message", error.getMessage());
         return new ResponseEntity<>(setBodyError, HttpStatus.BAD_REQUEST);
     }
 
